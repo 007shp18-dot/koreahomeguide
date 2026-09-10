@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { DAILY_CITY_EDITIONS, latestCityEditions } from '../content/en/daily-city-editions';
 import { RESEARCH_FIGURES } from '../content/en/research-figures';
 import { KOREAN_RESEARCH_FIGURES } from '../content/ko/research-figures';
 import type { InfographicSpec } from '../lib/infographics/infographic-types';
@@ -10,6 +11,18 @@ import {
 } from '../content/portfolio-manifest';
 
 describe('launch editorial portfolio', () => {
+  it('publishes one current edition per city with independent article destinations', () => {
+    const editions = latestCityEditions();
+    expect(editions.map(({ city }) => city)).toEqual(['seoul', 'singapore', 'dubai', 'tokyo']);
+    expect(new Set(editions.map(({ canonicalHref }) => canonicalHref)).size).toBe(4);
+    for (const edition of editions) {
+      expect(EDITORIAL_PORTFOLIO).toContain(edition);
+      expect(edition.locale).toBe('en');
+      expect(edition.sources.some(({ kind }) => kind === 'primary')).toBe(true);
+      expect(edition.publishedAt?.startsWith(edition.editionDate)).toBe(true);
+    }
+  });
+
   it('labels Seoul charts with the public building release rather than the newer raw rent release', () => {
     const charts = EDITORIAL_PORTFOLIO.flatMap(({ infographic }) => infographic ? [infographic] : [])
       .filter(({ id }) => id.replace(/^ko-/, '').startsWith('seoul-'));
@@ -42,14 +55,15 @@ describe('launch editorial portfolio', () => {
   });
 
   it('publishes the 80-item portfolio including official news and Korean counterparts', () => {
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(80);
+    const launch = EDITORIAL_PORTFOLIO.filter(record => !DAILY_CITY_EDITIONS.some(edition => edition.id === record.id));
+    expect(launch).toHaveLength(80);
     expect(Object.isFrozen(EDITORIAL_PORTFOLIO)).toBe(true);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(36);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko')).toHaveLength(36);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'zh-CN')).toHaveLength(8);
+    expect(launch.filter(({ locale }) => locale === 'en')).toHaveLength(36);
+    expect(launch.filter(({ locale }) => locale === 'ko')).toHaveLength(36);
+    expect(launch.filter(({ locale }) => locale === 'zh-CN')).toHaveLength(8);
     expect(Object.fromEntries(['news-brief', 'policy-update', 'market-brief', 'data-story', 'guide'].map((type) => [
       type,
-      EDITORIAL_PORTFOLIO.filter((record) => record.type === type).length,
+      launch.filter((record) => record.type === type).length,
     ]))).toEqual({
       'news-brief': 6,
       'policy-update': 14,
@@ -61,8 +75,8 @@ describe('launch editorial portfolio', () => {
 
   it('keeps every published claim attached to review, evidence and an internal next step', () => {
     expect(validateEditorialPortfolio(EDITORIAL_PORTFOLIO)).toBe(EDITORIAL_PORTFOLIO);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(80);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(80);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(EDITORIAL_PORTFOLIO.length);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(EDITORIAL_PORTFOLIO.length);
     for (const record of EDITORIAL_PORTFOLIO) {
       expect(record.status).toBe('published');
       expect(record.readerQuestion.length).toBeGreaterThan(record.locale === 'zh-CN' ? 8 : 20);
@@ -92,7 +106,8 @@ describe('launch editorial portfolio', () => {
   });
 
   it('preserves sources, evidence, and chart facts in every Korean counterpart', () => {
-    const english = EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en');
+    const english = EDITORIAL_PORTFOLIO.filter(({ locale, translationGroupId }) => locale === 'en' && translationGroupId !== null);
+    expect(english.length).toBeGreaterThanOrEqual(36);
     const korean = EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko');
     const chartFacts = (chart: InfographicSpec) => ({
       template: chart.template,
