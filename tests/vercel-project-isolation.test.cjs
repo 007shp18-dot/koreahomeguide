@@ -3,9 +3,6 @@ const test = require('node:test');
 
 const config = require('../vercel.json');
 
-test('legacy KoreaHomeGuide does not deploy SignedPrice feature branches', () => {
-  assert.equal(
-    config.git?.deploymentEnabled?.['codex/signedprice-*'],
-    false,
-  );
+test('legacy KoreaHomeGuide has no repository-managed deployment exclusions', () => {
+  assert.equal(config.git?.deploymentEnabled, undefined);
 });
