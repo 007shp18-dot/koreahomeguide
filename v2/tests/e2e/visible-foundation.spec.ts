@@ -215,9 +215,9 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await page.goto('/');
 
   let primaryNavigation = await openPrimaryNavigation(page);
-  await expect(primaryNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Insights', 'Tools', 'Guides']);
+  await expect(primaryNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Insights', 'News', 'Tools', 'Guides']);
   await expect(primaryNavigation.getByRole('link', { name: 'Rankings', exact: true })).toHaveCount(0);
-  await expect(primaryNavigation.getByRole('link')).toHaveCount(4);
+  await expect(primaryNavigation.getByRole('link')).toHaveCount(5);
   const primaryLinks = await primaryNavigation.getByRole('link').all();
   await expectContainedTouchTargets(page, primaryLinks);
   await expectTargetsNotToOverlap(primaryLinks);
