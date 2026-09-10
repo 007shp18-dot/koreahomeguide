@@ -1,0 +1,89 @@
+name: Refresh Korea proximity artifact
+
+on:
+  schedule:
+    - cron: '0 7 1 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: korea-proximity-refresh
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    outputs:
+      changed: ${{ steps.changed.outputs.value }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: v2/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+        working-directory: v2
+      - run: pnpm test:korea-proximity
+        working-directory: v2
+      - run: pnpm build:korea-proximity
+        working-directory: v2
+        env:
+          SEOUL_STATION_ENDPOINT: ${{ secrets.SEOUL_STATION_ENDPOINT }}
+          KOREA_SCHOOL_ENDPOINT: ${{ secrets.KOREA_SCHOOL_ENDPOINT }}
+          KOREA_BUILDING_COORDINATE_ENDPOINT: ${{ secrets.KOREA_BUILDING_COORDINATE_ENDPOINT }}
+          SEOUL_STATION_SOURCE_IDENTITY: ${{ vars.SEOUL_STATION_SOURCE_IDENTITY }}
+          KOREA_SCHOOL_SOURCE_IDENTITY: ${{ vars.KOREA_SCHOOL_SOURCE_IDENTITY }}
+          KOREA_BUILDING_COORDINATE_SOURCE_IDENTITY: ${{ vars.KOREA_BUILDING_COORDINATE_SOURCE_IDENTITY }}
+      - id: changed
+        run: |
+          if test -n "$(git status --porcelain -- v2/artifacts/korea-proximity/signedprice-korea-proximity-v1.json.gz)"; then
+            echo 'value=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'value=false' >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: steps.changed.outputs.value == 'true'
+        with:
+          name: korea-proximity-staging
+          path: v2/artifacts/korea-proximity/signedprice-korea-proximity-v1.json.gz
+          if-no-files-found: error
+
+  pull-request:
+    needs: build
+    if: needs.build.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: korea-proximity-staging
+          path: v2/artifacts/korea-proximity
+      - name: Commit and push candidate branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          node v2/scripts/korea-proximity-workflow-helper.mjs
+      - name: Create or update pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh pr view automation/korea-proximity-refresh --json number --jq .number >/dev/null 2>&1; then
+            gh pr edit automation/korea-proximity-refresh --title 'chore: refresh Korea proximity artifact' --body 'Validated Korea proximity staging artifact refresh. No snapshot registry activation is included.'
+          else
+            gh pr create --head automation/korea-proximity-refresh --title 'chore: refresh Korea proximity artifact' --body 'Validated Korea proximity staging artifact refresh. No snapshot registry activation is included.'
+          fi

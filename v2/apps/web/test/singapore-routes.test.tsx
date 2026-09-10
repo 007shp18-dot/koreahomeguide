@@ -1,0 +1,472 @@
+import { readFileSync } from 'node:fs';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('server-only', () => ({}));
+vi.mock('next/script', () => ({
+  default: ({ src }: Readonly<{ src: string }>) => <script async src={src} />,
+}));
+
+import {
+  buildSingaporeSnapshot,
+  parseUraPrivateSaleEnvelope,
+  stringifySingaporeSnapshot,
+} from '@signedprice/singapore-property';
+import { SingaporeExplorer } from '../components/singapore/singapore-explorer';
+import { SingaporeCheckWorkspace } from '../components/singapore/singapore-check-workspace';
+import { SingaporeProjectDetail } from '../components/singapore/singapore-project-detail';
+import { SingaporeSegmentDetail } from '../components/singapore/singapore-segment-detail';
+import { SingaporePage } from '../components/singapore/singapore-shell';
+import { metadata as entryMetadata } from '../app/(en)/sg/page';
+import {
+  dynamic as exploreDynamic,
+  metadata as exploreMetadata,
+} from '../app/(en)/sg/singapore/explore/page';
+import {
+  generateMetadata as generateSegmentMetadata,
+  generateStaticParams as segmentStaticParams,
+} from '../app/(en)/sg/singapore/explore/[area]/page';
+import {
+  generateMetadata as generateProjectMetadata,
+  generateStaticParams as projectStaticParams,
+} from '../app/(en)/sg/singapore/explore/[area]/[projectId]/page';
+import SingaporeSegmentLoading from '../app/(en)/sg/singapore/explore/[area]/loading';
+import SingaporeProjectLoading from '../app/(en)/sg/singapore/explore/[area]/[projectId]/loading';
+import { metadata as correctionMetadata } from '../app/(en)/sg/singapore/corrections/page';
+import { generateMetadata as generateCheckMetadata } from '../app/(en)/sg/singapore/check/page';
+import SingaporeExplorePage from '../app/(en)/sg/singapore/explore/page';
+import sitemap from '../app/sitemap';
+import {
+  buildSingaporeExploreModel,
+  buildSingaporeProjectModel,
+  buildSingaporeSegmentModel,
+} from '../lib/singapore/route-model.server';
+import { buildSingaporeCheckRouteModel } from '../lib/singapore/check-route-model.server';
+import { createSingaporeCheckEvidenceRepositories } from '../lib/singapore/check-evidence-repository.server';
+import { createSingaporeSnapshotRepository } from '../lib/singapore/snapshot-repository.server';
+
+const fixture = JSON.parse(readFileSync(
+  new URL('../../../packages/singapore-property/test/fixtures/ura-transaction-envelope.synthetic.json', import.meta.url),
+  'utf8',
+)) as unknown;
+const rights = { operations: { aggregate: 'allowed', display: 'allowed' } } as const;
+
+function snapshot() {
+  return buildSingaporeSnapshot({
+    records: [1, 2, 3, 4].flatMap((batch) => parseUraPrivateSaleEnvelope(fixture, batch)),
+    generatedAt: '2026-08-31T09:00:00.000Z',
+    rights,
+  });
+}
+
+async function repository() {
+  const source = snapshot();
+  return createSingaporeSnapshotRepository({
+    serialized: stringifySingaporeSnapshot(source),
+    expectedDigest: source.digest,
+    expectedPeriod: '2026-06..2026-08',
+    rights,
+  });
+}
+
+const repositoriesForCheck = () => createSingaporeCheckEvidenceRepositories({});
+
+describe('Singapore route SSR', () => {
+  it('places one project summary median, sample and reporting period before its full transaction evidence', async () => {
+    const store = await repository();
+    const identity = store.listProjects('CCR')[0]!;
+    const model = buildSingaporeProjectModel(store, 'ccr', identity.id);
+    if (model === null || model.status !== 'ready') throw new Error('missing project');
+    const html = renderToStaticMarkup(<SingaporeProjectDetail model={model} />);
+    const overview = html.slice(html.indexOf('id="detail-overview"'), html.indexOf('id="detail-evidence"'));
+    expect(overview).toContain(model.evidence.period);
+    expect(overview).toContain(model.display.sampleLabel);
+    expect(overview).toContain('data-summary-kind="project"');
+    expect(overview).toContain(model.display.medianPsfLabel);
+    expect(overview.indexOf('data-market-summary="true"')).toBeLessThan(overview.indexOf('data-building-media="google-place-photo"'));
+    expect(overview.split(model.display.medianPriceLabel)).toHaveLength(2);
+    const summary = html.slice(html.indexOf('id="project-summary-heading"'), html.indexOf('id="transaction-heading"'));
+    expect(summary).not.toContain(`<dd>${model.display.medianPriceLabel}</dd>`);
+    expect(html).toContain('id="transaction-heading"');
+    expect(html).toContain('Area basis');
+  });
+  it('links published projects beyond the first result page in server HTML', async () => {
+    const model = buildSingaporeExploreModel(await repository());
+    if (model.status !== 'ready') throw new Error('Missing fixture');
+    const segment = model.segments.find(item => (item.projects?.length ?? 0) > 0)!;
+    const project = segment.projects![0]!;
+    const projects = Array.from({ length: 30 }, (_, index) => ({ ...project,
+      id: `crawl-${index}`, name: `Crawl project ${index}`,
+      href: `/sg/singapore/explore/ccr/crawl-${index}/` as const, state: 'published' as const,
+    }));
+    const html = renderToStaticMarkup(<SingaporeExplorer model={{ ...model, segments: [{ ...segment, projects }] }} />);
+    expect(html).toContain('All published project prices');
+    expect(html).toContain('href="/sg/singapore/explore/ccr/crawl-29"');
+  });
+
+  it.each([1, 2])('keeps the full map coverage count on list page %i', async (initialPage) => {
+    const model = buildSingaporeExploreModel(await repository());
+    if (model.status !== 'ready') throw new Error('Missing fixture');
+    const segment = model.segments.find(item => (item.projects?.length ?? 0) > 0)!;
+    const project = segment.projects![0]!;
+    const projects = Array.from({ length: 775 }, (_, index) => ({ ...project,
+      id: `map-${index}`, name: `Map project ${index}`, district: '01', location: null,
+    }));
+    const html = renderToStaticMarkup(<SingaporeExplorer initialPage={initialPage}
+      model={{ ...model, segments: [{ ...segment, projects }] }} />);
+    expect(html).toContain('775 matching projects across all result pages');
+    expect(html).toContain('775 projects remain selectable while their area reference is unavailable');
+    expect(html).toContain(`Page ${initialPage} of 33`);
+    expect(html).not.toContain('24 projects on this page');
+  });
+  it('uses region, district, then paged project map levels while retaining the project list', async () => {
+    const model = buildSingaporeExploreModel(await repository());
+    if (model.status !== 'ready') throw new Error('Missing fixture');
+    const segment = model.segments.find(item => (item.projects?.length ?? 0) > 0)!;
+    const district = segment.projects![0]!.district;
+    const regionHtml = renderToStaticMarkup(<SingaporeExplorer model={model} />);
+    const districtHtml = renderToStaticMarkup(<SingaporeExplorer model={model} initialSegment={segment.code} />);
+    const projectHtml = renderToStaticMarkup(<SingaporeExplorer model={model} initialSegment={segment.code} initialDistrict={district} />);
+    const directDistrictHtml = renderToStaticMarkup(<SingaporeExplorer model={model} initialDistrict={district} />);
+    const searchHtml = renderToStaticMarkup(<SingaporeExplorer model={model} initialQuery={segment.projects![0]!.name} />);
+    expect(regionHtml).toContain('data-singapore-map-level="regions"');
+    expect(districtHtml).toContain('data-singapore-map-level="districts"');
+    expect(projectHtml).toContain('data-singapore-map-level="projects"');
+    expect(directDistrictHtml).toContain('data-singapore-map-level="projects"');
+    expect(searchHtml).toContain('data-singapore-map-level="projects"');
+    for (const html of [regionHtml, districtHtml, projectHtml]) expect(html).toContain('class="');
+    expect(districtHtml).toContain('matching projects');
+    expect(projectHtml).toContain('projects on this page');
+  });
+  it('keeps A and B market choices independent while switching tabs', async () => {
+    const html = renderToStaticMarkup(<SingaporeCheckWorkspace model={buildSingaporeCheckRouteModel(
+      await repositoriesForCheck(),
+      { mode: 'compare', 'a-market': 'hdb-resale', 'b-market': 'hdb-rent' },
+    )} />);
+
+    expect(html).toContain('mode=compare&amp;a-market=hdb-resale&amp;b-market=hdb-rent');
+    expect(html).toContain('aria-label="Offer A market"');
+    expect(html).toContain('aria-label="Offer B market"');
+  });
+
+  it('uses Singapore context with local product navigation and never falls through to Seoul Check', () => {
+    const html = renderToStaticMarkup(<SingaporePage><p>Singapore content</p></SingaporePage>);
+
+    expect(html).toContain('aria-label="Singapore market navigation"');
+    expect(html).toContain('aria-label="Primary navigation"');
+    expect(html).toContain('href="/sg/singapore/explore"');
+    expect(html).not.toContain('href="/kr/seoul/check/"');
+    expect(html).toMatch(/href="\/sg\/singapore\/check">Check/);
+    expect(html).toContain('data-capability-state="limited"');
+  });
+
+  it('maps the Singapore evidence route to the local Explore destination', () => {
+    const html = renderToStaticMarkup(<SingaporePage currentHref="/sg/singapore/explore/"><p>Explore</p></SingaporePage>);
+    expect(html).toMatch(/aria-current="page"[^>]*href="\/sg\/singapore\/explore"/);
+    expect(html).not.toMatch(/href="\/kr\/seoul\/[^"]*" aria-current="page"/);
+  });
+
+  it('renders Explore and ready segment/project evidence in initial HTML', async () => {
+    const store = await repository();
+    const explore = renderToStaticMarkup(<SingaporeExplorer
+      model={buildSingaporeExploreModel(store)}
+      googleMapsBrowserKey="test-google-key"
+    />);
+    const segmentModel = buildSingaporeSegmentModel(store, 'ccr');
+    if (segmentModel === null) throw new Error('missing segment');
+    const segment = renderToStaticMarkup(<SingaporeSegmentDetail model={segmentModel} />);
+    const projectIdentity = store.listProjects('CCR')[0]!;
+    const projectModel = buildSingaporeProjectModel(store, 'ccr', projectIdentity.id);
+    if (projectModel === null) throw new Error('missing project');
+    const project = renderToStaticMarkup(<SingaporeProjectDetail model={projectModel} />);
+    const html = `${explore}${segment}${project}`;
+
+    expect(explore).toContain('data-singapore-explore-workspace="true"');
+    expect(explore).toContain('data-singapore-evidence="ready"');
+    expect(explore).toContain('data-market-explore-shell="true"');
+    expect(explore).toContain('aria-label="Singapore market layers"');
+    expect(explore).toContain('URA private sales');
+    expect(explore).toContain('HDB resale');
+    expect(explore).toContain('HDB rent');
+    expect(explore).not.toContain('Compare private-sale evidence across CCR, RCR, and OCR.');
+
+    for (const label of [
+      'SGD', 'PSF', 'PSM', 'CCR', 'RCR', 'OCR', 'New sale', 'Subsale', 'Resale',
+      'URA', '2026-06..2026-08', 'Private residential sales only',
+      '/trust', '/sg/singapore/corrections',
+    ]) expect(html).toContain(label);
+    expect(html).toContain('12 private residential sale transactions');
+    expect(segment).toContain('data-market-detail-shell="true"');
+    expect(project).toContain('data-market-detail-shell="true"');
+    expect(explore).toContain('Search Singapore projects');
+    expect(html).toContain('key=test-google-key');
+    expect(html).toContain('href="/sg/singapore/explore/ccr/');
+    expect(html).toContain('CCR');
+    expect(html).toContain(`href="/sg/singapore/explore/ccr/${projectIdentity.id}"`);
+    expect(project).toContain('Compare an asking price');
+    expect(project).toContain(`a-project=${projectIdentity.id}`);
+    expect(project).not.toMatch(/a-amount=|a-area-min=|a-area-max=/);
+    expect(html).toContain('data-hdb-evidence="unavailable"');
+    expect(html).not.toMatch(/KRW|jeonse|forecast|valuation|asking-price|recommendation/i);
+    expect(html).not.toMatch(/use client/);
+  });
+
+  it('renders official nearby rail and school facts on a project page', async () => {
+    const store = await repository();
+    const identity = store.listProjects('CCR')[0]!;
+    const model = buildSingaporeProjectModel(store, 'ccr', identity.id);
+    if (model === null) throw new Error('missing project');
+    const html = renderToStaticMarkup(<SingaporeProjectDetail model={model} proximity={{
+      status: 'ready',
+      coordinateStatus: 'ready',
+      nearestStation: {
+        sourceId: 'lta:station:lentor', name: 'Lentor MRT', lines: ['MRT'], distanceMeters: 420,
+      },
+      nearestSchool: {
+        sourceId: 'moe:school:aitong', name: 'AI TONG SCHOOL', distanceMeters: 860,
+      },
+    }} />);
+
+    expect(html).toContain('Nearby MRT/LRT and schools');
+    expect(html).toContain('Lentor MRT');
+    expect(html).toContain('420 m');
+    expect(html).toContain('AI TONG SCHOOL');
+    expect(html).toContain('860 m');
+    expect(html).toContain('Straight-line distance');
+    expect(html).toContain('Land Transport Authority');
+    expect(html).toContain('Ministry of Education');
+  });
+
+  it('passes the configured Google browser key into the Singapore Explore map', async () => {
+    const source = snapshot();
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT', stringifySingaporeSnapshot(source));
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_SHA256', source.digest);
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_PERIOD', '2026-06..2026-08');
+    vi.stubEnv('GOOGLE_MAPS_BROWSER_KEY', 'page-google-key');
+
+    const html = renderToStaticMarkup(await SingaporeExplorePage());
+
+    expect(html).toContain('data-map-provider="google"');
+    expect(html).toContain('key=page-google-key');
+    vi.unstubAllEnvs();
+  });
+
+  it('renders explicit insufficient and unavailable states without monetary claims', async () => {
+    const store = await repository();
+    const insufficient = buildSingaporeSegmentModel(store, 'ocr');
+    if (insufficient === null) throw new Error('missing segment');
+    const insufficientHtml = renderToStaticMarkup(<SingaporeSegmentDetail model={insufficient} />);
+    const unavailableHtml = renderToStaticMarkup(<SingaporeExplorer model={{
+      status: 'unavailable',
+      message: 'Verified Singapore evidence unavailable',
+      correctionHref: '/sg/singapore/corrections/',
+    }} />);
+
+    expect(insufficientHtml).toContain('4 reported transactions');
+    expect(insufficientHtml).toContain('At least 5 are required');
+    expect(insufficientHtml).not.toMatch(/SGD [\d,]+/);
+    expect(unavailableHtml).toContain('Verified Singapore evidence unavailable');
+    expect(unavailableHtml).not.toMatch(/SGD [\d,]+|PSF|PSM/);
+  });
+
+  it('keeps an approved-photo surface available when a project has too few transactions', async () => {
+    const store = await repository();
+    const identity = (['CCR', 'RCR', 'OCR'] as const)
+      .flatMap((segment) => store.listProjects(segment))
+      .find((project) => !project.published);
+    if (identity === undefined) throw new Error('missing insufficient project');
+    const model = buildSingaporeProjectModel(store, identity.marketSegment.toLowerCase(), identity.id);
+    if (model === null || model.status !== 'insufficient') throw new Error('missing insufficient project model');
+
+    const html = renderToStaticMarkup(<SingaporeProjectDetail model={model} />);
+
+    expect(html).toContain('data-singapore-project="insufficient"');
+    expect(html).toContain('data-building-media="google-place-photo"');
+    expect(html).toContain(`${model.count} reported transactions`);
+    expect(html).not.toMatch(/SGD [\d,]+/);
+    expect(html).toContain('data-market-summary="true"');
+  });
+
+  it('renders fixed route loading boundaries and disables unsupported evidence links', async () => {
+    const store = await repository();
+    const explore = renderToStaticMarkup(<SingaporeExplorer model={buildSingaporeExploreModel(store)} />);
+    const loading = `${renderToStaticMarkup(<SingaporeSegmentLoading />)}${renderToStaticMarkup(<SingaporeProjectLoading />)}`;
+
+    expect(loading.match(/data-singapore-route-loading=/g)).toHaveLength(2);
+    expect(loading).toContain('aria-busy="true"');
+    expect(loading).toContain('Loading verified Singapore evidence');
+    expect(explore).toContain('data-evidence-link="unavailable"');
+    expect(explore).toContain('At least 5 transactions are required');
+    expect(explore).toContain('data-navigation-state="idle"');
+  });
+});
+
+describe('Singapore route containment', () => {
+  it('uses the standard content frame instead of viewport width', () => {
+    const css = readFileSync(
+      new URL('../components/singapore/singapore.module.css', import.meta.url),
+      'utf8',
+    );
+
+    expect(css).toMatch(/\.main\s*\{[\s\S]*?width:\s*min\(calc\(100% - \(2 \* var\(--evidence-page-gutter\)\)\),\s*var\(--evidence-workspace-frame\)\)/);
+    expect(css).toMatch(/\.mainUnframed\s*\{[^}]*width:\s*100%/);
+  });
+
+  it('generates three native areas and only published project params', async () => {
+    expect(segmentStaticParams()).toEqual([{ area: 'ccr' }, { area: 'rcr' }, { area: 'ocr' }]);
+    expect(await projectStaticParams()).toEqual([]);
+  });
+
+  it('indexes the released Singapore entry and Explore pages with self-canonicals', () => {
+    expect(entryMetadata.robots).toEqual({ index: true, follow: true });
+    expect(entryMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/sg/',
+      languages: { en: 'https://www.signedprice.com/sg/', ko: 'https://www.signedprice.com/ko/sg/', 'x-default': 'https://www.signedprice.com/sg/' },
+    });
+    expect(exploreMetadata.robots).toEqual({ index: true, follow: true });
+    expect(exploreMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/sg/singapore/explore/',
+      languages: { en: 'https://www.signedprice.com/sg/singapore/explore/', ko: 'https://www.signedprice.com/ko/sg/singapore/explore/', 'x-default': 'https://www.signedprice.com/sg/singapore/explore/' },
+    });
+  });
+
+  it('indexes ready segment and project evidence while keeping unavailable routes noindex', async () => {
+    const source = buildSingaporeSnapshot({
+      records: [1, 2, 3, 4].flatMap((batch) => parseUraPrivateSaleEnvelope(fixture, batch)),
+      generatedAt: '2026-08-31T09:00:01.000Z',
+      rights,
+    });
+    vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT', stringifySingaporeSnapshot(source));
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_SHA256', source.digest);
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_PERIOD', '2026-06..2026-08');
+
+    const store = await repository();
+    const project = store.listProjects('CCR')[0]!;
+    const segmentMetadata = await generateSegmentMetadata({
+      params: Promise.resolve({ area: 'ccr' }),
+    });
+    const projectMetadata = await generateProjectMetadata({
+      params: Promise.resolve({ area: 'ccr', projectId: project.id }),
+    });
+    const missingMetadata = await generateProjectMetadata({
+      params: Promise.resolve({ area: 'ccr', projectId: 'missing-project' }),
+    });
+
+    expect(segmentMetadata.robots).toEqual({ index: true, follow: true });
+    expect(segmentMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/sg/singapore/explore/ccr/',
+      languages: { en: 'https://www.signedprice.com/sg/singapore/explore/ccr/', ko: 'https://www.signedprice.com/ko/sg/singapore/explore/ccr/', 'x-default': 'https://www.signedprice.com/sg/singapore/explore/ccr/' },
+    });
+    expect(projectMetadata.robots).toEqual({ index: true, follow: true });
+    expect(projectMetadata.alternates).toEqual({
+      canonical: `https://www.signedprice.com/sg/singapore/explore/ccr/${project.id}/`,
+      languages: { en: `https://www.signedprice.com/sg/singapore/explore/ccr/${project.id}/`, ko: `https://www.signedprice.com/ko/sg/singapore/explore/ccr/${project.id}/`, 'x-default': `https://www.signedprice.com/sg/singapore/explore/ccr/${project.id}/` },
+    });
+    expect(missingMetadata.robots).toEqual({ index: false, follow: true });
+
+    vi.unstubAllEnvs();
+  });
+
+  it('publishes released Singapore discovery pages in the sitemap', () => {
+    expect(sitemap().map(({ url }) => url)).toEqual(expect.arrayContaining([
+      'https://www.signedprice.com/sg/',
+      'https://www.signedprice.com/sg/singapore/explore/',
+      'https://www.signedprice.com/sg/singapore/explore/ccr/',
+      'https://www.signedprice.com/sg/singapore/explore/rcr/',
+      'https://www.signedprice.com/sg/singapore/explore/ocr/',
+    ]));
+  });
+
+  it('keeps Singapore corrections noindex', () => {
+    expect(correctionMetadata.robots).toEqual({ index: false, follow: true });
+    expect(correctionMetadata).not.toHaveProperty('alternates');
+  });
+
+  it('indexes native Singapore Check after its evidence release', async () => {
+    const checkMetadata = await generateCheckMetadata({ searchParams: Promise.resolve({}) });
+    expect(checkMetadata.robots).toEqual({ index: true, follow: true });
+    expect(checkMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/sg/singapore/check/',
+      languages: { en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/', 'x-default': 'https://www.signedprice.com/sg/singapore/check/' },
+    });
+  });
+});
+
+describe('Singapore Explore state', () => {
+  it('prerenders the data-heavy Explore route once per deployment', () => {
+    expect(exploreDynamic).toBe('force-static');
+  });
+
+  it('normalizes a shared Explore URL before restoring it in the browser', async () => {
+    const componentModule = await import('../components/singapore/singapore-explorer');
+    const parseState = (componentModule as unknown as Readonly<Record<string, unknown>>)
+      .parseSingaporeExploreSearchParams;
+
+    expect(parseState).toBeTypeOf('function');
+    expect((parseState as (query: URLSearchParams) => unknown)(new URLSearchParams(
+      'q=marina&region=ccr&district=10&sort=name&page=3&project=project-id',
+    ))).toEqual({
+      query: 'marina',
+      selectedSegment: 'CCR',
+      district: '10',
+      sort: 'name',
+      page: 3,
+      selectedProjectId: 'project-id',
+    });
+    expect((parseState as (query: URLSearchParams) => unknown)(new URLSearchParams(
+      'region=bad&district=46&sort=price&page=-1&project=not%20valid',
+    ))).toEqual({
+      query: '',
+      selectedSegment: null,
+      district: 'all',
+      sort: 'transactions',
+      page: 1,
+      selectedProjectId: null,
+    });
+  });
+
+  it('builds a shareable URL from the active project filters', async () => {
+    const componentModule = await import('../components/singapore/singapore-explorer');
+    const buildHref = (componentModule as unknown as Readonly<Record<string, unknown>>).buildSingaporeExploreHref;
+
+    expect(buildHref).toBeTypeOf('function');
+    expect((buildHref as (state: unknown) => string)({
+      query: '  moulmein  ',
+      selectedSegment: 'CCR',
+      district: '11',
+      sort: 'name',
+      page: 3,
+      selectedProjectId: 'project-id',
+    })).toBe('/sg/singapore/explore/?q=moulmein&region=ccr&district=11&sort=name&page=3&project=project-id');
+  });
+
+  it('keeps map price labels compact enough to scan', async () => {
+    const componentModule = await import('../components/singapore/singapore-explorer');
+    const formatPrice = (componentModule as unknown as Readonly<Record<string, unknown>>).formatSingaporeMapPrice;
+
+    expect(formatPrice).toBeTypeOf('function');
+    expect((formatPrice as (label: string | null, fallback: string) => string)('SGD 2,550,000', '12 sales')).toBe('S$2.55M');
+    expect((formatPrice as (label: string | null, fallback: string) => string)('SGD 980,000', '12 sales')).toBe('S$980K');
+    expect((formatPrice as (label: string | null, fallback: string) => string)('SGD 980,000.50', '12 sales')).toBe('S$980K');
+    expect((formatPrice as (label: string | null, fallback: string) => string)('Not published', '12 sales')).toBe('12 sales');
+    expect((formatPrice as (label: string | null, fallback: string) => string)(null, '12 sales')).toBe('12 sales');
+  });
+
+  it('restores region, district, and sort filters in the initial result view', async () => {
+    const store = await repository();
+    const initialState = {
+      initialSegment: 'CCR',
+      initialDistrict: '10',
+      initialSort: 'name',
+    } as const;
+    const html = renderToStaticMarkup(<SingaporeExplorer
+      model={buildSingaporeExploreModel(store)}
+      {...initialState}
+    />);
+
+    expect(html).toMatch(/role="tab" aria-selected="true"><strong>CCR<\/strong>/);
+    expect(html).toMatch(/<option value="10" selected="">District 10/);
+    expect(html).toContain('<option value="name" selected="">Project name</option>');
+  });
+});

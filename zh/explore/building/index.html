@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>建筑租金数据 | 首尔租金探索</title>
+  <meta name="description" content="查看首尔具体建筑的近期官方真实签约租赁记录、典型月租、押金、面积和趋势。">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://koreahomeguide.com/zh/explore/building/">
+  <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/explore/building/">
+  <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/explore/building/">
+  <link rel="alternate" hreflang="x-default" href="https://koreahomeguide.com/explore/building/">
+  <script defer src="/privacy-consent.js"></script><script defer src="/mobile-navigation.js"></script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="compact-header">
+    <a class="brand" href="/zh/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a>
+    <nav><a href="/zh/explore/">租金探索</a><a href="/zh/tools/seoul-rent-check/">租金检查</a><a href="/zh/guides/">租房指南</a></nav>
+    <div class="header-actions"><select id="currencySelect" class="currency-select" aria-label="显示货币"><option value="KRW" selected>KRW</option><option value="USD">USD</option><option value="CNY">CNY</option></select><a id="languageSwitch" class="language-link" href="/explore/building/">EN</a></div>
+  </header>
+
+  <main class="page-shell building-detail-page">
+    <a id="backToExplore" class="building-back" href="/zh/explore/">← 返回租金探索</a>
+    <section class="building-detail-hero">
+      <span class="eyebrow">建筑租金数据</span>
+      <h1 id="buildingName">正在加载建筑…</h1>
+        <p id="buildingOfficialName" class="building-official-name" hidden></p>
+      <p id="buildingMeta">首尔 · 韩国国土交通部官方租赁成交</p>
+      <div class="explorer-trust">历史真实签约租赁记录 — 不是实时房源。</div>
+    </section>
+
+    <div class="product-layout building-product-layout">
+      <div class="product-main">
+<div id="buildingStatus" class="market-status">正在加载官方租赁成交数据…</div>
+
+    <section class="building-detail-metrics">
+      <div><span>近期合同</span><strong id="buildingContracts">—</strong><small>最近 6 个完整月份</small></div>
+      <div><span>新签月租合同</span><strong id="buildingNewContracts">—</strong><small>能够识别为新签的合同</small></div>
+      <div><span>典型面积</span><strong id="buildingArea">—</strong><small>申报面积中位数</small></div>
+      <div><span>全租押金中位数</span><strong id="buildingJeonse">—</strong><small>仅全租式合同</small></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">价格参考</span><h2>按押金区间看月租</h2></div><small>能够识别时优先使用新签合同</small></div>
+      <div id="buildingDepositBands" class="size-band-grid"><div class="explorer-empty">正在加载押金区间…</div></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">按面积</span><h2>按使用面积比较</h2></div><small>约 59㎡ 与约 84㎡ 等面积组分开统计</small></div>
+      <div id="buildingAreaGroups" class="size-band-grid"><div class="explorer-empty">正在加载面积分组…</div></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">合同类型</span><h2>新签 vs 续签</h2></div><small id="buildingContractMix">—</small></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">6 个月趋势</span><h2>月租变化</h2></div><small id="buildingChange">近期变化：—</small></div>
+      <div id="trendChart" class="trend-chart"><div class="explorer-empty">正在加载月度趋势…</div></div>
+    </section>
+
+    <section class="building-contracts-section">
+      <div class="building-section-head"><div><span class="eyebrow">近期成交</span><h2>该建筑的官方申报合同</h2></div><small>月租为 0 时表示全租（Jeonse）形式</small></div>
+      <div class="table-wrap"><table><thead><tr><th>日期</th><th>类型</th><th>面积</th><th>押金</th><th>月租</th></tr></thead><tbody id="recentBuildingContracts"><tr class="empty-row"><td colspan="5">正在加载申报合同…</td></tr></tbody></table></div>
+    </section>
+
+
+    <section id="buildingSalesSection" class="building-contracts-section" hidden>
+      <div class="building-section-head"><div><span class="eyebrow">公寓买卖</span><h2>近期公寓买卖成交</h2></div><small>官方申报买卖成交，与租赁数据分开显示</small></div>
+      <div id="buildingSaleGroups" class="size-band-grid"></div>
+      <div class="table-wrap"><table><thead><tr><th>日期</th><th>面积</th><th>成交价</th><th>楼层</th></tr></thead><tbody id="recentBuildingSales"></tbody></table></div>
+    </section>
+
+    <section class="building-rent-check-card">
+      <div><span class="eyebrow">下一步</span><h2>核对这个建筑的具体租房报价。</h2><p>系统会预填该地区、房型和近期典型值。请再改成实际报价。</p></div>
+      <a id="rentCheckCta" class="explorer-primary-link" href="/zh/tools/seoul-rent-check/">检查这个租金 →</a>
+    </section>
+
+
+      </div>
+      <aside class="context-rail" aria-label="建筑相关工具">
+        <section class="context-module soft building-context-rent-check"><span class="context-kicker">租金检查</span><h3>核对具体租房报价</h3><p>把押金、月租和面积与近期官方成交进行比较。</p><a class="context-link" href="/zh/tools/seoul-rent-check/">打开租金检查 →</a></section>
+        <section class="context-module"><span class="context-kicker">街区</span><h3>继续比较周边</h3><p>回到租金探索，比较同一区域的街区和建筑。</p><a class="context-link" href="/zh/explore/">比较街区 →</a></section>
+        <section class="context-module"><span class="context-kicker">签约前</span><h3>大额押金前先做检查</h3><p>确认登记簿、房东、确定日期与押金保障。</p><a class="context-link" href="/zh/guides/before-you-sign/">阅读指南 →</a></section>
+        <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>韩国官方成交数据仅供一般市场参考，不构成估值、实时房源或法律意见。<a href="mailto:hello@koreahomeguide.com">邮件联系我们</a>。 <a href="/zh/privacy/">隐私说明</a>。</small></footer>
+  <script src="/currency-utils.js"></script>
+  <script src="/date-utils.js"></script>
+  <script src="/building-name-utils.js"></script>
+  <script src="/location-catalog.js"></script>
+  <script src="/explore/explorer-utils.js?v=22"></script>
+  <script src="/product-analytics.js"></script>
+  <script src="/zh/explore/building/app.js?v=22"></script>
+</body>
+</html>

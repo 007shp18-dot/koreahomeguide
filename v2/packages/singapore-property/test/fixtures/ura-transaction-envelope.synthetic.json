@@ -1,0 +1,60 @@
+{
+  "Status": "Success",
+  "Message": "",
+  "Result": [
+    {
+      "project": "Example Residences",
+      "street": "Example Road",
+      "x": "28900.125",
+      "y": "31500.5",
+      "marketSegment": "CCR",
+      "transaction": [
+        {
+          "area": "100.5",
+          "floorRange": "06-10",
+          "noOfUnits": "1",
+          "contractDate": "0826",
+          "typeOfSale": "1",
+          "price": "2000000",
+          "propertyType": "Condominium",
+          "district": "10",
+          "typeOfArea": "Strata",
+          "tenure": "Freehold"
+        },
+        {
+          "area": "120",
+          "floorRange": "11-15",
+          "noOfUnits": "1",
+          "contractDate": "0726",
+          "typeOfSale": "3",
+          "price": "2450000",
+          "propertyType": "Apartment",
+          "district": "10",
+          "typeOfArea": "Strata",
+          "tenure": "99 yrs lease commencing from 2020"
+        }
+      ]
+    },
+    {
+      "project": "Example Terraces",
+      "street": "Sample Avenue",
+      "x": "34500",
+      "y": "40100",
+      "marketSegment": "OCR",
+      "transaction": [
+        {
+          "area": "210.75",
+          "floorRange": "-",
+          "noOfUnits": "1",
+          "contractDate": "0626",
+          "typeOfSale": "2",
+          "price": "3800000",
+          "propertyType": "Terrace",
+          "district": "18",
+          "typeOfArea": "Land",
+          "tenure": "Freehold"
+        }
+      ]
+    }
+  ]
+}

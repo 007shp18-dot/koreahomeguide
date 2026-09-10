@@ -1,0 +1,67 @@
+{
+  "reviewedAt": "2026-09-10",
+  "changes": [
+    {
+      "asset": "/assets/neighbourhoods/joo-chiat-352-2025.jpg",
+      "capturedAt": "2025-03-15",
+      "author": "Chainwit.",
+      "source": "https://commons.wikimedia.org/wiki/File:352_Joo_Chiat_Rd,_Singapore_(2025)_-_img_01.jpg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "asset": "/assets/neighbourhoods/joo-chiat-283-2025.jpg",
+      "capturedAt": "2025-03-15",
+      "author": "Chainwit.",
+      "source": "https://commons.wikimedia.org/wiki/File:283_Joo_Chiat_Rd,_Singapore_(2025)_-_img_01.jpg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "asset": "/assets/neighbourhoods/joo-chiat-185-2025.jpg",
+      "capturedAt": "2025-03-15",
+      "author": "Chainwit.",
+      "source": "https://commons.wikimedia.org/wiki/File:185_Joo_Chiat_Rd,_Singapore_(2025)_-_img_01.jpg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "asset": "/assets/neighbourhoods/harmonica-alley-2025.jpg",
+      "capturedAt": "2025-01-13",
+      "author": "ITA-ATU",
+      "source": "https://commons.wikimedia.org/wiki/File:Harmonica_street_2025-01.jpg",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    {
+      "asset": "/assets/neighbourhoods/inokashira-park-2025.jpg",
+      "capturedAt": "2025-03-30",
+      "author": "nakashi",
+      "source": "https://commons.wikimedia.org/wiki/File:Sakura_(cherry_blossoms)_at_inokashira_park_%E4%BA%95%E3%81%AE%E9%A0%AD%E5%85%AC%E5%9C%92%E3%81%AE%E6%A1%9C_(54419046691).jpg",
+      "license": "CC BY-SA 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/"
+    },
+    {
+      "asset": "/assets/neighbourhoods/kichijoji-station-2025.jpg",
+      "capturedAt": "2025-03-06",
+      "author": "Nesnad",
+      "source": "https://commons.wikimedia.org/wiki/File:Kichijoji_Station_2025_March_6_various_23_28_52_213000.jpeg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ],
+  "retainedRecent": [
+    "35 Joo Chiat Place · March 2025",
+    "Inokashira Park · December 2024"
+  ],
+  "pending": [
+    {
+      "slug": "yeonhui-dong",
+      "reason": "Recent capture date and commercial reuse permission not both verified for replacement photographs during this review."
+    },
+    {
+      "slug": "alserkal-al-quoz",
+      "reason": "Recent replacement photographs with verified commercial reuse permission still needed; November 2024 hero retained."
+    }
+  ]
+}

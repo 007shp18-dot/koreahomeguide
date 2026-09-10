@@ -1,0 +1,158 @@
+# Photo coverage backfill operations
+
+This runbook covers bounded photo discovery and coverage projection for the
+seeded `kr-seoul` and `sg-singapore` markets. NAVER discovery also accepts
+`ae-dubai` and will include verified Dubai building rows when that inventory is
+installed. The current production database has no Dubai building inventory, so
+unused Dubai request capacity is reassigned to Seoul in the same run.
+
+## Required production configuration
+
+Configure these values as Vercel secrets. Never print, commit, or copy the
+values into command history.
+
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | Neon production pooled connection |
+| `CONTENT_ADMIN_SECRET` | Private coverage and NAVER review routes |
+| `CRON_SECRET` | Scheduled building-enrichment route |
+| `GOOGLE_MAPS_API_KEY` | Server key, restricted to Places API (New) |
+| `GOOGLE_MAPS_BROWSER_KEY` | Browser key, restricted by SignedPrice origins and Maps JavaScript API |
+| `NAVER_API_HUB_CLIENT_ID` | NAVER API HUB application ID with Image Search enabled |
+| `NAVER_API_HUB_CLIENT_SECRET` | NAVER API HUB application secret |
+| `NAVER_SEARCH_CLIENT_ID` | Legacy NAVER Developers application ID, optional fallback only |
+| `NAVER_SEARCH_CLIENT_SECRET` | Legacy NAVER Developers application secret, optional fallback only |
+| `NAVER_MAP_CLIENT_ID` | Existing NAVER Maps browser client ID |
+
+The scheduled guardrails are `PHOTO_GOOGLE_DAILY_REQUEST_CAP`,
+`PHOTO_GOOGLE_DAILY_SPEND_CAP_USD`, and `PHOTO_NAVER_DAILY_REQUEST_CAP`.
+Google discovery defaults to five requests and an estimated 0.16 USD spend cap
+per day. With the default 0.032 USD request estimate, a 31-day month is limited
+to about 4.96 USD. Seoul and Singapore run sequentially against the same daily
+usage row so they share that collection limit. The browser key is separately
+restricted to SignedPrice origins and must never be replaced with the server
+collection key. Keep every enabled cap finite and change it only after an
+explicit budget decision.
+
+Production runs Wikimedia at minute 7, official Seoul apartment facts at minute
+17, Google at minute 47, and NAVER every 15 minutes. Providers share their
+daily request and spend caps across markets. Each enabled job is resumable
+because buildings with an approved or pending candidate are skipped and failed
+attempts receive a future retry time. Wikimedia may check up to 60 buildings per
+run. NAVER may make 250 requests per run, with up to 50 reserved for Dubai and
+25 for Singapore; unused Dubai or Singapore capacity is reassigned to Seoul.
+That schedule permits at most 24,000 NAVER requests per day, leaving 1,000 below
+the configured 25,000-request cap. The NAVER collector works in ordered groups
+of five and stops scheduling new work after 240 seconds so the route can save
+progress before its 300-second limit. Google remains capped at 30 candidates per
+run and the stricter five-request daily budget applies first.
+
+## Storage and approval boundaries
+
+- Google discovery stores the stable place ID, attribution, match decision, and
+  evidence. It does not store photo bytes or expiring photo resource names.
+- NAVER Image Search stores at most one selected image candidate per building in
+  the existing private review queue. Exact normalized building-name matches are
+  preferred, followed by larger landscape results. Candidates are labelled
+  `review_required` and `review-required`, retain NAVER attribution and matching
+  evidence, and are never projected or published without explicit approval.
+- New NAVER Image Search traffic uses NAVER API HUB. The legacy Developers
+  endpoint remains available only when the API HUB and existing NAVER news
+  credential pairs are both absent.
+- Wikimedia candidates may be stored only with their source and license data.
+- Only approved rows may reach public entity media. Street view and a parent
+  project's photo remain explicitly labelled fallbacks and do not count as an
+  exact building photo.
+- Name and locality alone require review. Automatic approval requires an exact
+  name plus postal-code agreement, or an exact name plus locality agreement and
+  coordinates within 250 metres. This intentionally rejects cross-country name
+  collisions such as a London photo for Singapore's The Interlace.
+
+## Safe health and canary checks
+
+Use an interactive shell where the secret already exists as an environment
+variable. The commands below emit only aggregate JSON and never echo secrets.
+
+```powershell
+$headers = @{ Authorization = "Bearer $env:CONTENT_ADMIN_SECRET" }
+Invoke-RestMethod -Headers $headers -Uri 'https://www.signedprice.com/api/internal/photo-coverage'
+```
+
+Dry-run one market and provider before any write:
+
+```powershell
+$body = @{ market = 'kr-seoul'; provider = 'google'; limit = 50; dryRun = $true } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Headers $headers -ContentType 'application/json' -Body $body -Uri 'https://www.signedprice.com/api/internal/photo-coverage'
+```
+
+Run a bounded provider slice only after the dry run succeeds:
+
+```powershell
+$body = @{ market = 'kr-seoul'; provider = 'google'; limit = 50; dryRun = $false } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Headers $headers -ContentType 'application/json' -Body $body -Uri 'https://www.signedprice.com/api/internal/photo-coverage'
+```
+
+For the cron route, pass `CRON_SECRET` as a bearer token and request one
+provider explicitly. Do not put the token in the URL.
+
+```powershell
+$cronHeaders = @{ Authorization = "Bearer $env:CRON_SECRET" }
+Invoke-RestMethod -Headers $cronHeaders -Uri 'https://www.signedprice.com/api/internal/building-enrichment/?market=seoul&source=google&limit=1'
+```
+
+## Database rollout evidence
+
+On 2026-09-06, all ten checked-in migrations were replayed on Neon test branch
+`br-patient-sky-b3ssnche` and production branch `br-super-butterfly-b31hhh93`.
+The property, transaction-evidence, location, and K-apt nearby-place seeds then
+passed on both branches, including an identical second run.
+
+Seed invariants on that branch were:
+
+| Population | Rows |
+| --- | ---: |
+| Seoul | 48,999 |
+| Singapore private | 3,862 |
+| Singapore HDB | 10,011 |
+| Total target entities | 62,872 |
+
+Every target entity has a verified name, address, and `legacyBuildingKey` that
+resolves to a building row. The URA evidence supplied accepted coordinates for
+3,403 Singapore private projects. K-apt supplied 2,135 school and 440 station
+rows for 573 Seoul apartment buildings. Provider results still require the
+existing exact-identity policy; these signals do not justify relaxed matching.
+
+Expected immutable seed digests:
+
+- `legacyIdDigest=d86ae08ab146e07570ccbd7b15f07a80f3ca5fd537d7199f58628348439e446a`
+- `entityIdDigest=92be10891460d8604c8b6661cd4884c3eaee9ce5791a14ec6c59a49a2d9e3729`
+
+At the same checkpoint, production contained 41 approved photo rows, 795
+official building-fact rows, 2,575 K-apt nearby-place rows, and 3,403 verified
+URA locations. The evidence tables contained 374,261 source records, 361,760
+linked observations, and 40,044 HDB metrics; the second seed inserted zero new
+rows. Identity and content digests matched on both branches, including the HDB
+metric content digest
+`751f21e307cc533f8d601de166b9d920a5889019b000f63b548698af27573bef`.
+The final production database size was 507,060,224 bytes. Vercel had the production
+pooled `DATABASE_URL`, Google server and browser keys, `CRON_SECRET`, and
+`CONTENT_ADMIN_SECRET` configured as production values. The public page keeps
+using the existing compressed-data fallback where one exists.
+
+The approved-photo total includes four exact Singapore building exteriors added
+after visual and source review: Robertson Blue, Dover Parkview, Trellis Towers,
+and JK Building. An additional free Commons sweep checked 360 Seoul and 360
+Singapore entities after deployment. Ambiguous names and wrong-location matches
+remain private in `review_required`; they are never projected as public photos.
+
+## Completion criteria
+
+Run resumable slices until the private coverage summary reports `complete =
+62,872` for the installed Seoul and Singapore inventory. The exact, provider,
+parent, street-view, and unavailable totals must also add to `62,872`. Then
+repeat the final due slice and confirm zero duplicate approvals, media,
+candidates, attempts, or coverage rows. Recheck both seed digests. When verified
+Dubai property identities are installed, add their count to the coverage target
+and confirm the NAVER job processes them without changing Dubai market-level
+research data. Keep the compressed JSON fallback in place through this
+verification.

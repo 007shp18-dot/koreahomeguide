@@ -1,0 +1,43 @@
+{
+  "name": "@signedprice/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "node scripts/apply-content-database.mjs --if-configured && node scripts/build-building-identity-index.mjs && node scripts/seed-singapore-nearby-places.mjs --if-production && node --conditions=react-server --experimental-loader ../../scripts/typescript-extension-loader.mjs --experimental-transform-types ../../scripts/build-singapore-check-form-catalog.mts --if-installed",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "node scripts/apply-content-database.mjs",
+    "db:seed:properties": "node scripts/seed-property-core.mjs",
+    "db:verify:properties": "node scripts/seed-property-core.mjs --verify-only",
+    "db:seed:evidence": "node scripts/seed-property-evidence.mjs",
+    "db:verify:evidence": "node scripts/seed-property-evidence.mjs --verify-only",
+    "db:seed:kapt-nearby": "node scripts/seed-kapt-nearby-places.mjs",
+    "db:verify:kapt-nearby": "node scripts/seed-kapt-nearby-places.mjs --verify-only",
+    "data:build:singapore-nearby": "node scripts/build-singapore-nearby-places.mjs",
+    "db:seed:singapore-nearby": "node scripts/seed-singapore-nearby-places.mjs",
+    "db:verify:singapore-nearby": "node scripts/seed-singapore-nearby-places.mjs --verify-only"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "@signedprice/korea-rent": "workspace:*",
+    "@signedprice/market-core": "workspace:*",
+    "@signedprice/singapore-property": "workspace:*",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/functions": "3.9.5",
+    "next": "16.3.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "20.19.43",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.3",
+    "typescript": "5.9.3"
+  },
+  "packageManager": "pnpm@11.19.0"
+}

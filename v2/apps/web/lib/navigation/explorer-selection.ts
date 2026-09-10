@@ -1,0 +1,384 @@
+export type ExplorerMarket = 'kr' | 'sg' | 'ae';
+export type ExplorerTransaction = 'sale' | 'jeonse' | 'monthly' | 'rent';
+export type ExplorerContractType = 'new' | 'renewal' | 'all';
+export type ExplorerArea = 'all' | 'under-40' | '40-60' | '60-85' | '85-plus';
+export type ExplorerView = 'split' | 'list' | 'table' | 'map';
+
+export type ExplorerSelection = Readonly<{
+  market: ExplorerMarket;
+  transaction: ExplorerTransaction;
+  area?: ExplorerArea;
+  propertyType?: string;
+  district?: string;
+  neighborhood?: string;
+  buildingId?: string;
+  contractType?: ExplorerContractType;
+  sort?: string;
+  view?: ExplorerView;
+}>;
+
+export type ExplorerJourneyState = Readonly<{
+  level: 'city' | 'district';
+  district: string | null;
+  contract: 'sale' | 'jeonse' | 'monthly-rent';
+  propertyType: string | null;
+  selectedEntity: string | null;
+}>;
+
+export type EntityCheckContext = Readonly<{
+  market: 'kr-seoul' | 'sg-singapore';
+  entity: string;
+  returnTo: string;
+}>;
+
+export type EntityCheckContextInput = EntityCheckContext & Readonly<{
+  selection: ExplorerSelection;
+  locale?: 'en' | 'ko';
+}>;
+
+export type ExplorerSelectionDefaults = Readonly<{
+  market: ExplorerMarket;
+  transaction: ExplorerTransaction;
+}>;
+
+export type ExplorerSelectionAllowLists = Readonly<{
+  areas?: readonly ExplorerArea[];
+  propertyTypes?: readonly string[];
+  districts?: readonly string[];
+  neighborhoodsByDistrict?: Readonly<Record<string, readonly string[]>>;
+  buildingIdsByNeighborhood?: Readonly<Record<string, readonly string[]>>;
+  sorts?: readonly string[];
+}>;
+
+export type ExplorerSearchParams =
+  | URLSearchParams
+  | Readonly<Record<string, string | readonly string[] | undefined>>;
+
+const markets = Object.freeze(['kr', 'sg', 'ae'] as const);
+const marketTransactions = Object.freeze({
+  kr: Object.freeze(['sale', 'jeonse', 'monthly'] as const),
+  sg: Object.freeze(['sale', 'rent'] as const),
+  ae: Object.freeze(['sale'] as const),
+});
+const marketDefaults = Object.freeze({
+  kr: 'sale',
+  sg: 'sale',
+  ae: 'sale',
+} as const satisfies Record<ExplorerMarket, ExplorerTransaction>);
+const contractTypes = Object.freeze(['new', 'renewal', 'all'] as const);
+const explorerViews = Object.freeze(['split', 'list', 'table', 'map'] as const);
+const identifierPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const entityMarkets = Object.freeze(['kr-seoul', 'sg-singapore'] as const);
+
+function isObject(value: unknown): value is Readonly<Record<string, unknown>> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isMarket(value: unknown): value is ExplorerMarket {
+  return typeof value === 'string' && markets.includes(value as ExplorerMarket);
+}
+
+function isTransactionFor(
+  market: ExplorerMarket,
+  value: unknown,
+): value is ExplorerTransaction {
+  return typeof value === 'string'
+    && (marketTransactions[market] as readonly string[]).includes(value);
+}
+
+function acceptedIdentifier(
+  value: unknown,
+  allowList: readonly string[] | undefined,
+): string | undefined {
+  if (typeof value !== 'string' || !identifierPattern.test(value)) return undefined;
+  if (allowList === undefined || !allowList.includes(value)) return undefined;
+  return value;
+}
+
+function serializableIdentifier(value: unknown): string | undefined {
+  return typeof value === 'string' && identifierPattern.test(value) ? value : undefined;
+}
+
+function defaultTransaction(defaults: ExplorerSelectionDefaults): ExplorerTransaction {
+  return isTransactionFor(defaults.market, defaults.transaction)
+    ? defaults.transaction
+    : marketDefaults[defaults.market];
+}
+
+export function normalizeExplorerSelection(
+  input: unknown,
+  defaults: ExplorerSelectionDefaults,
+  allowLists: ExplorerSelectionAllowLists = Object.freeze({}),
+): ExplorerSelection {
+  const source: Readonly<Record<string, unknown>> = isObject(input)
+    ? input
+    : Object.freeze({});
+  const market = isMarket(source.market) ? source.market : defaults.market;
+  const fallbackTransaction = market === defaults.market
+    ? defaultTransaction(defaults)
+    : marketDefaults[market];
+  const transaction = isTransactionFor(market, source.transaction)
+    ? source.transaction
+    : fallbackTransaction;
+  const area = acceptedIdentifier(source.area, allowLists.areas) as ExplorerArea | undefined;
+  const propertyType = acceptedIdentifier(source.propertyType, allowLists.propertyTypes);
+  const district = acceptedIdentifier(source.district, allowLists.districts);
+  const neighborhood = district === undefined
+    ? undefined
+    : acceptedIdentifier(
+        source.neighborhood,
+        allowLists.neighborhoodsByDistrict?.[district],
+      );
+  const buildingId = neighborhood === undefined
+    ? undefined
+    : acceptedIdentifier(
+        source.buildingId,
+        allowLists.buildingIdsByNeighborhood?.[neighborhood],
+      );
+  const contractType = market === 'kr'
+    && (transaction === 'jeonse' || transaction === 'monthly')
+    && typeof source.contractType === 'string'
+    && (contractTypes as readonly string[]).includes(source.contractType)
+    ? source.contractType as ExplorerContractType
+    : undefined;
+  const sort = acceptedIdentifier(source.sort, allowLists.sorts);
+  const view = typeof source.view === 'string'
+    && (explorerViews as readonly string[]).includes(source.view)
+    ? source.view as ExplorerView
+    : undefined;
+
+  return Object.freeze({
+    market,
+    transaction,
+    ...(area === undefined ? {} : { area }),
+    ...(propertyType === undefined ? {} : { propertyType }),
+    ...(district === undefined ? {} : { district }),
+    ...(neighborhood === undefined ? {} : { neighborhood }),
+    ...(buildingId === undefined ? {} : { buildingId }),
+    ...(contractType === undefined ? {} : { contractType }),
+    ...(sort === undefined ? {} : { sort }),
+    ...(view === undefined ? {} : { view }),
+  });
+}
+
+function normalizeSerializableSelection(
+  input: ExplorerSelection,
+  defaults: ExplorerSelectionDefaults,
+): ExplorerSelection {
+  const market = isMarket(input.market) ? input.market : defaults.market;
+  const fallbackTransaction = market === defaults.market
+    ? defaultTransaction(defaults)
+    : marketDefaults[market];
+  const transaction = isTransactionFor(market, input.transaction)
+    ? input.transaction
+    : fallbackTransaction;
+  const area = serializableIdentifier(input.area) as ExplorerArea | undefined;
+  const propertyType = serializableIdentifier(input.propertyType);
+  const district = serializableIdentifier(input.district);
+  const neighborhood = district === undefined
+    ? undefined
+    : serializableIdentifier(input.neighborhood);
+  const buildingId = neighborhood === undefined
+    ? undefined
+    : serializableIdentifier(input.buildingId);
+  const contractType = market === 'kr'
+    && (transaction === 'jeonse' || transaction === 'monthly')
+    && typeof input.contractType === 'string'
+    && (contractTypes as readonly string[]).includes(input.contractType)
+    ? input.contractType
+    : undefined;
+  const sort = serializableIdentifier(input.sort);
+  const view = typeof input.view === 'string'
+    && (explorerViews as readonly string[]).includes(input.view)
+    ? input.view
+    : undefined;
+  return Object.freeze({
+    market,
+    transaction,
+    ...(area === undefined ? {} : { area }),
+    ...(propertyType === undefined ? {} : { propertyType }),
+    ...(district === undefined ? {} : { district }),
+    ...(neighborhood === undefined ? {} : { neighborhood }),
+    ...(buildingId === undefined ? {} : { buildingId }),
+    ...(contractType === undefined ? {} : { contractType }),
+    ...(sort === undefined ? {} : { sort }),
+    ...(view === undefined ? {} : { view }),
+  });
+}
+
+function scalarSearchParam(input: ExplorerSearchParams, key: string): string | undefined {
+  if (input instanceof URLSearchParams) {
+    const values = input.getAll(key);
+    return values.length === 1 ? values[0] : undefined;
+  }
+  const value = input[key];
+  return typeof value === 'string' ? value : undefined;
+}
+
+const koreaBuildingEvidenceTransactions = Object.freeze(['sale', 'jeonse', 'monthly'] as const);
+const koreaBuildingEvidenceAreas = Object.freeze([
+  'all', 'under-40', '40-60', '60-85', '85-plus',
+] as const);
+
+export function createKoreaBuildingEvidenceRequestHref(input: Readonly<{
+  district: string;
+  buildingId: string;
+  searchParams: URLSearchParams;
+}>): string | null {
+  if (!identifierPattern.test(input.district) || !identifierPattern.test(input.buildingId)) {
+    return null;
+  }
+
+  const transaction = scalarSearchParam(input.searchParams, 'transaction');
+  const area = scalarSearchParam(input.searchParams, 'area');
+  const contractType = scalarSearchParam(input.searchParams, 'contractType');
+  const explicitTransaction = koreaBuildingEvidenceTransactions.includes(
+    transaction as typeof koreaBuildingEvidenceTransactions[number],
+  ) ? transaction : undefined;
+  const hasDefaultSaleContext = !input.searchParams.has('transaction')
+    && scalarSearchParam(input.searchParams, 'district') === input.district
+    && scalarSearchParam(input.searchParams, 'buildingId') === input.buildingId;
+  const selectedTransaction = explicitTransaction
+    ?? (hasDefaultSaleContext ? 'sale' : undefined);
+  const selectedArea = koreaBuildingEvidenceAreas.includes(
+    area as typeof koreaBuildingEvidenceAreas[number],
+  ) ? area : undefined;
+  const selectedContractType = contractTypes.includes(
+    contractType as typeof contractTypes[number],
+  ) ? contractType : undefined;
+
+  if (
+    selectedTransaction === undefined
+    && selectedArea === undefined
+    && selectedContractType === undefined
+  ) return null;
+
+  const query = new URLSearchParams({
+    district: input.district,
+    building: input.buildingId,
+  });
+  if (selectedTransaction !== undefined) query.set('transaction', selectedTransaction);
+  if (selectedArea !== undefined) query.set('area', selectedArea);
+  if (selectedContractType !== undefined) query.set('contractType', selectedContractType);
+  return `/api/markets/kr-seoul/building-evidence/?${query.toString()}`;
+}
+
+export function parseExplorerSelection(
+  input: ExplorerSearchParams,
+  defaults: ExplorerSelectionDefaults,
+  allowLists?: ExplorerSelectionAllowLists,
+): ExplorerSelection {
+  return normalizeExplorerSelection({
+    market: scalarSearchParam(input, 'market'),
+    transaction: scalarSearchParam(input, 'transaction'),
+    area: scalarSearchParam(input, 'area'),
+    propertyType: scalarSearchParam(input, 'propertyType'),
+    district: scalarSearchParam(input, 'district'),
+    neighborhood: scalarSearchParam(input, 'neighborhood'),
+    buildingId: scalarSearchParam(input, 'buildingId'),
+    contractType: scalarSearchParam(input, 'contractType'),
+    sort: scalarSearchParam(input, 'sort'),
+    view: scalarSearchParam(input, 'view'),
+  }, defaults, allowLists);
+}
+
+export function serializeExplorerSelection(
+  input: ExplorerSelection,
+  defaults: ExplorerSelectionDefaults,
+): string {
+  const selection = normalizeSerializableSelection(input, defaults);
+  const query = new URLSearchParams();
+  if (selection.market !== defaults.market) query.set('market', selection.market);
+  const transactionDefault = selection.market === defaults.market
+    ? defaultTransaction(defaults)
+    : marketDefaults[selection.market];
+  if (selection.transaction !== transactionDefault) {
+    query.set('transaction', selection.transaction);
+  }
+  if (selection.area !== undefined) query.set('area', selection.area);
+  if (selection.propertyType !== undefined) query.set('propertyType', selection.propertyType);
+  if (selection.district !== undefined) query.set('district', selection.district);
+  if (selection.neighborhood !== undefined) query.set('neighborhood', selection.neighborhood);
+  if (selection.buildingId !== undefined) query.set('buildingId', selection.buildingId);
+  if (selection.contractType !== undefined) query.set('contractType', selection.contractType);
+  if (selection.sort !== undefined) query.set('sort', selection.sort);
+  if (selection.view !== undefined && selection.view !== 'split') query.set('view', selection.view);
+  return query.toString();
+}
+
+export function createSelectionHref(
+  path: string,
+  selection: ExplorerSelection,
+  defaults: ExplorerSelectionDefaults,
+): string {
+  const query = serializeExplorerSelection(selection, defaults);
+  return query.length === 0 ? path : `${path}?${query}`;
+}
+
+export function createExplorerJourneyState(
+  selection: ExplorerSelection,
+): ExplorerJourneyState {
+  return Object.freeze({
+    level: selection.district === undefined ? 'city' : 'district',
+    district: selection.district ?? null,
+    contract: selection.transaction === 'monthly' ? 'monthly-rent' : selection.transaction === 'rent'
+      ? 'monthly-rent'
+      : selection.transaction,
+    propertyType: selection.propertyType ?? null,
+    selectedEntity: selection.buildingId ?? null,
+  });
+}
+
+function safeInternalReturnTo(value: unknown, market: EntityCheckContext['market'], locale: 'en' | 'ko' = 'en'): string | null {
+  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) return null;
+  if (/[\u0000-\u001f\u007f]/u.test(value)) return null;
+  const allowedPrefix = market === 'kr-seoul' ? `${locale === 'ko' ? '/ko' : ''}/kr/seoul/` : '/sg/singapore/';
+  try {
+    const target = new URL(value, 'https://signedprice.invalid');
+    if (target.origin !== 'https://signedprice.invalid' || !target.pathname.startsWith(allowedPrefix)) {
+      return null;
+    }
+    return `${target.pathname}${target.search}${target.hash}`;
+  } catch {
+    return null;
+  }
+}
+
+export function createEntityCheckHref(
+  path: string,
+  input: EntityCheckContextInput,
+): string {
+  const returnTo = safeInternalReturnTo(input.returnTo, input.market, input.locale ?? (path.startsWith('/ko/') ? 'ko' : 'en'));
+  if (!identifierPattern.test(input.entity) || returnTo === null) return path;
+  const query = new URLSearchParams();
+  query.set('market', input.market);
+  query.set('entity', input.entity);
+  query.set('returnTo', returnTo);
+  query.set('transaction', input.selection.transaction === 'rent' ? 'monthly' : input.selection.transaction);
+  if (input.selection.district !== undefined) query.set('district', input.selection.district);
+  if (input.selection.propertyType !== undefined) query.set('housing', input.selection.propertyType);
+  query.set('building', input.entity);
+  return `${path}${path.includes('?') ? '&' : '?'}${query.toString()}`;
+}
+
+export function parseEntityCheckContext(
+  input: ExplorerSearchParams,
+  allow: Readonly<{
+    market: EntityCheckContext['market'];
+    entityIds: readonly string[];
+    locale?: 'en' | 'ko';
+  }>,
+): EntityCheckContext | null {
+  const market = scalarSearchParam(input, 'market');
+  const entity = scalarSearchParam(input, 'entity');
+  const returnTo = scalarSearchParam(input, 'returnTo');
+  if (
+    market !== allow.market
+    || !entityMarkets.includes(market)
+    || entity === undefined
+    || !identifierPattern.test(entity)
+    || !allow.entityIds.includes(entity)
+  ) return null;
+  const safeReturnTo = safeInternalReturnTo(returnTo, market, allow.locale);
+  return safeReturnTo === null ? null : Object.freeze({ market, entity, returnTo: safeReturnTo });
+}

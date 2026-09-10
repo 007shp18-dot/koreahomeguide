@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Compare Seoul Rent Markets | KoreaHomeGuide</title>
+  <meta name="description" content="Compare two Seoul districts using recent official signed rental contracts and deposit-adjusted rent per square metre.">
+  <link rel="canonical" href="https://koreahomeguide.com/compare/">
+  <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/compare/">
+  <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/compare/">
+  <link rel="alternate" hreflang="x-default" href="https://koreahomeguide.com/compare/">
+  <script defer src="/privacy-consent.js"></script>
+  <script defer src="/mobile-navigation.js"></script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="core-ui compare-page">
+  <header class="compact-header"><a class="brand" href="/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a><nav><a href="/explore/">Explore</a><a href="/tools/seoul-rent-check/">Rent Check</a><a href="/guides/">Guides</a></nav><div class="header-actions"><a class="language-link" href="/zh/compare/">中文</a></div></header>
+  <main class="page-shell compare-shell">
+    <section class="compare-hero"><span class="eyebrow">MARKET COMPARE</span><h1>Compare two Seoul rent markets.</h1><p>Put two districts side by side using recent official signed contracts—not listings. KRW remains the primary reference.</p></section>
+    <form id="compareForm" class="compare-toolbar">
+      <label class="field"><span>Market A</span><select id="compareAreaA"></select></label>
+      <label class="field"><span>Market B</span><select id="compareAreaB"></select></label>
+      <label class="field"><span>Housing type</span><select id="compareType"><option value="apartment">Apartment (아파트)</option><option value="officetel">Officetel (오피스텔)</option><option value="villa">Low-rise multifamily (연립·다세대)</option><option value="detached">Detached / multi-unit (단독·다가구)</option></select></label>
+      <button class="search-button" type="submit">Compare markets</button>
+    </form>
+    <p id="compareStatus" class="market-status" aria-live="polite"></p>
+    <section id="compareResults" class="compare-results" hidden>
+      <article class="compare-market" data-compare-market="a"></article>
+      <article class="compare-market" data-compare-market="b"></article>
+    </section>
+    <p class="compare-method"><strong>Deposit-adjusted ₩/㎡</strong> = monthly rent plus 5% annual opportunity cost of the deposit, divided by floor area. It makes different deposit structures more comparable.</p>
+  </main>
+  <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>Official reported rental contracts for market reference. <a href="/about/">Method and limitations</a> · <a href="/privacy/">Privacy</a>.</small></footer>
+  <script src="/location-catalog.js"></script>
+  <script src="/date-utils.js"></script>
+  <script src="/compare/app.js"></script>
+</body>
+</html>

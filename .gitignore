@@ -1,0 +1,4 @@
+.worktrees/
+
+# Generated from installed inventory and sale identities during prebuild.
+v2/apps/web/data/building-identity-index.json.gz

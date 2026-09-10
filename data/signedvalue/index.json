@@ -1,0 +1,54 @@
+{
+ "version": "signedvalue-v1",
+ "fittedAt": "2026-08-31",
+ "asOfMonth": "202607",
+ "accuracy": {
+  "mdapePct": 8.2,
+  "rangePct": [
+   7.5,
+   9.5
+  ],
+  "coveragePct": 92.9,
+  "basis": "walk-forward out-of-sample, 4 folds, Seoul apartments, 36 months"
+ },
+ "coefficients": {
+  "lnArea": 0.8678,
+  "floorPerLevel": 0.00899
+ },
+ "areaBands": [
+  "<40",
+  "40-60",
+  "60-75",
+  "75-85",
+  "85-105",
+  "105-135",
+  "135+"
+ ],
+ "districts": {
+  "11110": "jongno",
+  "11140": "jung",
+  "11170": "yongsan",
+  "11200": "seongdong",
+  "11215": "gwangjin",
+  "11230": "dongdaemun",
+  "11260": "jungnang",
+  "11290": "seongbuk",
+  "11305": "gangbuk",
+  "11320": "dobong",
+  "11350": "nowon",
+  "11380": "eunpyeong",
+  "11410": "seodaemun",
+  "11440": "mapo",
+  "11470": "yangcheon",
+  "11500": "gangseo",
+  "11530": "guro",
+  "11545": "geumcheon",
+  "11560": "yeongdeungpo",
+  "11590": "dongjak",
+  "11620": "gwanak",
+  "11650": "seocho",
+  "11680": "gangnam",
+  "11710": "songpa",
+  "11740": "gangdong"
+ }
+}

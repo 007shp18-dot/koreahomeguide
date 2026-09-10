@@ -1,0 +1,19 @@
+.frame {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+  min-width: 0;
+  min-height: 240px;
+  margin: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  overflow: hidden;
+  background: var(--surface-strong);
+}
+.stage { position: relative; min-width: 0; min-height: 0; overflow: hidden; }
+.stage > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.caption { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 20px; margin: 0; padding: 10px 12px; color: var(--muted); background: var(--surface-strong); font-size: 12px; line-height: 1.5; letter-spacing: normal; }
+.relationship { flex: 0 1 auto; margin: 0; font-weight: 500; }
+.credit { min-width: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0; overflow-wrap: anywhere; }
+.caption a { color: inherit; text-underline-offset: 3px; }
+.caption a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }

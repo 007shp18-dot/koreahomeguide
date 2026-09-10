@@ -1,0 +1,54 @@
+import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
+import { preload } from 'react-dom';
+import { Analytics } from '@/components/privacy-safe-analytics';
+
+import { AdvertisingConsent } from '@/components/consent/advertising-consent';
+import { EditorialAnalytics } from '@/components/editorial-analytics';
+import { PublicSiteJsonLd } from '@/components/public-json-ld';
+import { advertisingConfigFromEnvironment } from '@/lib/advertising/advertising-config.server';
+import {
+  analyticsConfigFromEnvironment,
+  vercelAnalyticsEnabledFromEnvironment,
+} from '@/lib/analytics/analytics-config.server';
+import { notoSansKr } from '../fonts';
+
+import '../globals.css';
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://www.signedprice.com'),
+  title: '韩国房地产数据与指南 | signedprice',
+  description: '面向跨境租客与买家的韩国房地产成交数据、原创报告和实用中文指南。',
+};
+
+export default function ChineseRootLayout({ children }: Readonly<{ children: ReactNode }>) {
+  const analytics = analyticsConfigFromEnvironment();
+  const advertising = advertisingConfigFromEnvironment();
+  const vercelAnalyticsEnabled = vercelAnalyticsEnabledFromEnvironment();
+  preload('/fonts/archivo-latin-wght-normal.woff2', {
+    as: 'font',
+    type: 'font/woff2',
+    crossOrigin: 'anonymous',
+  });
+
+  return (
+    <html lang="zh-CN" className={notoSansKr.variable}>
+      <body>
+        {children}
+        <PublicSiteJsonLd />
+        {analytics.status === 'ready' || advertising.status === 'ready' ? (
+          <AdvertisingConsent
+            {...(analytics.status === 'ready'
+              ? { analyticsMeasurementId: analytics.measurementId }
+              : {})}
+            {...(advertising.status === 'ready'
+              ? { publisherId: advertising.publisherId }
+              : {})}
+          />
+        ) : null}
+        {analytics.status === "ready" || vercelAnalyticsEnabled ? <EditorialAnalytics vercelEnabled={vercelAnalyticsEnabled} /> : null}
+        {vercelAnalyticsEnabled ? <Analytics /> : null}
+      </body>
+    </html>
+  );
+}

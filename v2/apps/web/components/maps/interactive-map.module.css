@@ -1,0 +1,337 @@
+.frame {
+  position: relative;
+  min-width: 0;
+}
+
+.canvas {
+  width: 100%;
+  min-height: clamp(360px, 56vw, 620px);
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+}
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  background: var(--surface-strong);
+}
+
+.fallbackHidden {
+  display: none;
+}
+
+.markerStatus {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  z-index: 5;
+  max-width: min(480px, calc(100% - 28px));
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--muted);
+  background: rgb(255 255 255 / 94%);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+:global(.spMapDistrictBubble),
+:global(.spMapNeighborhoodBubble),
+:global(.spMapBuildingBubble),
+:global(.spMapClusterBubble) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 5px 10px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #c8ced7;
+  border-radius: 999px;
+  color: #172337;
+  background: #fff;
+  box-shadow: 0 2px 5px rgb(17 24 39 / 14%);
+  font: 600 12px/1.25 "Inter", "Pretendard", sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+:global(.spMapNeighborhoodBubble strong) {
+  min-width: 20px;
+  padding: 0;
+  color: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.placeWorkspace .locationStatus {
+  margin: 0;
+  padding: 10px 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+:global(.spMapNeighborhoodBubble) {
+  min-height: 32px;
+  min-width: 32px;
+  padding: 6px 9px;
+  border: 1px solid #c6d4cb;
+  color: var(--accent);
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(23 35 55 / 14%);
+  font-size: 13px;
+  font-weight: 600;
+}
+:global(.spMapBuildingBubble) {
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 2px solid #fff;
+  color: #fff;
+  background: #172337;
+  box-shadow: 0 7px 18px rgb(23 35 55 / 28%);
+}
+:global(.spMapBuildingBubble strong) { font-size: 12px; font-weight: 800; letter-spacing: -.01em; }
+:global(.spMapClusterBubble) { width: 34px; height: 34px; padding: 0; border: 2px solid #fff; color: #fff; background: #26364e; }
+:global(.spMapDistrictBubbleSelected),
+:global(.spMapNeighborhoodBubbleSelected),
+:global(.spMapBuildingBubbleSelected) { color: #fff; background: #243b64; border-color: #243b64; box-shadow: 0 0 0 3px rgb(36 59 100 / 18%); }
+
+:global(.spGoogleMarketMarker) {
+  padding: 7px 10px !important;
+  border: 2px solid rgb(255 255 255 / 96%) !important;
+  border-radius: 12px !important;
+  color: #174985 !important;
+  background: rgb(255 255 255 / 97%) !important;
+  box-shadow: 0 8px 22px rgb(17 24 39 / 24%), 0 0 0 1px rgb(23 73 133 / 22%) !important;
+  font: 600 12px/1.25 "Inter", "Pretendard", sans-serif !important;
+  white-space: nowrap !important;
+}
+
+:global(.spMapAreaGroup) { border: 1px solid #c6d4cb; border-radius: 999px; max-width: 160px; white-space: nowrap; }
+:global(.spMapAreaGroup small) { display: none; }
+:global(.spGoogleAreaGroup) { border: 1px solid #c6d4cb !important; }
+:global(.spGoogleRegionGroup) {
+  padding: 10px 14px !important;
+  border: 2px solid #fff !important;
+  border-radius: 999px !important;
+  color: #fff !important;
+  background: #243b64 !important;
+  box-shadow: 0 10px 28px rgb(36 59 100 / 34%), 0 0 0 2px rgb(36 59 100 / 28%) !important;
+  font-size: 13px !important;
+}
+:global(.spGoogleDistrictGroup) {
+  padding: 8px 11px !important;
+  border-color: #4a5cf5 !important;
+  border-radius: 999px !important;
+  color: #243b64 !important;
+  background: rgb(255 255 255 / 96%) !important;
+}
+:global(.spGoogleCluster) { border-radius: 999px !important; }
+
+:global(.spGoogleMarketMarkerSelected) {
+  border-color: #4a5cf5 !important;
+  color: #fff !important;
+  background: #4a5cf5 !important;
+  box-shadow: 0 9px 22px rgb(74 92 245 / 34%) !important;
+}
+
+.placeWorkspace {
+  position: relative;
+  min-height: 620px;
+  display: grid;
+}
+
+.toolbar {
+  position: absolute;
+  z-index: 3;
+  top: 14px;
+  left: 14px;
+  width: min(420px, calc(100% - 28px));
+  padding: 10px;
+  display: grid;
+  gap: 5px;
+  border: 1px solid rgb(222 228 236 / 90%);
+  border-radius: 12px;
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 13%);
+  backdrop-filter: blur(10px);
+}
+
+.toolbar > label {
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.toolbar > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.toolbar input,
+.toolbar button {
+  min-height: 48px;
+  padding: 0.75rem;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  font: inherit;
+}
+
+.toolbar button {
+  color: var(--surface-strong);
+  background: var(--accent);
+  border-left: 0;
+  font-weight: 850;
+}
+
+.toolbar button:disabled {
+  color: var(--muted);
+  background: var(--line);
+}
+
+.toolbar p {
+  min-height: 0;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.unavailable {
+  min-height: 240px;
+  padding: 1.25rem;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  background: repeating-linear-gradient(-45deg, var(--canvas) 0 9px, var(--line) 9px 10px);
+  text-align: center;
+}
+
+.placeWorkspace .canvas { min-height: 620px; }
+
+.staticMarketMap {
+  position: relative;
+  min-height: 520px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(28deg, transparent 0 47%, rgb(140 160 184 / 20%) 47.2% 47.8%, transparent 48%),
+    linear-gradient(152deg, transparent 0 57%, rgb(140 160 184 / 16%) 57.2% 57.8%, transparent 58%),
+    radial-gradient(ellipse at 54% 54%, #dcebdc 0 11%, transparent 11.5%),
+    linear-gradient(145deg, #e8f1f6, #f7f8f5 62%, #e0ebf2);
+}
+
+.staticMarketMap::before {
+  content: '';
+  position: absolute;
+  inset: 22% 16% 18% 13%;
+  border: 2px solid rgb(74 92 245 / 28%);
+  border-radius: 48% 35% 42% 38%;
+  background: rgb(255 255 255 / 24%);
+  transform: rotate(-7deg);
+}
+
+.staticMarketMap > small {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  color: #6f7b8e;
+  font-size: var(--text-meta);
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.staticMarketMarker {
+  position: absolute;
+  top: var(--marker-top);
+  left: var(--marker-left);
+  z-index: 2;
+  padding: 8px 10px;
+  border: 1px solid #202939;
+  border-radius: 8px;
+  color: #174985;
+  background: rgb(255 255 255 / 97%);
+  box-shadow: 0 7px 18px rgb(17 24 39 / 18%);
+  font-size: var(--text-meta);
+  font-weight: 850;
+  white-space: nowrap;
+  transform: translate(-50%, -100%);
+}
+
+@media (max-width: 560px) {
+  .placeWorkspace,
+  .placeWorkspace .canvas { min-height: 480px; }
+
+  .toolbar > div {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar button {
+    border-top: 0;
+    border-left: 2px solid var(--ink);
+  }
+}
+
+/* Maps sit inside the same light product surfaces as cards and tables. */
+.canvas {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.toolbar input,
+.toolbar button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.toolbar button { border-left: 1px solid var(--line); }
+.unavailable {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff, var(--soft-blue));
+}
+
+@media (max-width: 560px) {
+  .toolbar button { border: 1px solid var(--line); }
+}
+
+.unavailable {
+  min-height: 240px;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  padding: 24px;
+  background: var(--surface-strong);
+  color: var(--muted);
+}
+.unavailable strong { color: var(--ink); }
+.unavailable p { margin: 0; }
+
+/* Keep a 44px hit area around a small price-free location dot. */
+:global(.spMapBuildingBubble) { width: 44px; height: 44px; min-height: 44px; padding: 0; border: 0; background: transparent; box-shadow: none; }
+:global(.spMapBuildingBubble span) { display: block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; background: #243b64; box-shadow: 0 1px 4px rgb(23 35 55 / 30%); }
+:global(.spMapBuildingBubbleSelected) { background: transparent; border: 0; box-shadow: none; }
+:global(.spMapBuildingBubbleSelected span) { width: 20px; height: 20px; background: #1557d5; box-shadow: 0 0 0 5px rgb(21 87 213 / 18%); }
+
+:global(.spGoogleMarketMarkerSelected) { max-width: 190px; overflow: hidden; text-overflow: ellipsis; transform: translateY(-24px); box-shadow: 0 2px 6px rgb(17 24 39 / 14%) !important; }
+:global(.spGoogleCluster) { padding: 4px 7px !important; min-width: 22px; text-align: center; box-shadow: 0 1px 4px rgb(17 24 39 / 15%) !important; }
+
+.coordinateSource { display: block; margin-top: 3px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* One compact number per group. Location precision remains in the map legend. */
+:global(.spGoogleMarketMarker), :global(.spGoogleRegionGroup), :global(.spGoogleDistrictGroup), :global(.spGoogleCluster) {
+  padding: 6px 9px !important; min-width: 28px; border: 1px solid #c6d4cb !important;
+  border-radius: 999px !important; color: var(--accent) !important; background: #fff !important;
+  box-shadow: 0 1px 4px rgb(23 35 55 / 14%) !important;
+  font: 600 13px/1.25 "Inter", "Pretendard", sans-serif !important; text-align: center;
+}
+:global(.spGoogleMarketMarkerSelected), :global(.spMapNeighborhoodBubbleSelected), :global(.spMapDistrictBubbleSelected) {
+  color: white !important; background: var(--accent) !important; border-color: var(--accent) !important;
+  box-shadow: 0 1px 5px rgb(23 35 55 / 20%) !important;
+}
+:global(.spMapBuildingBubble span) { background: var(--accent); }
+:global(.spMapBuildingBubbleSelected span) { background: var(--accent); box-shadow: 0 0 0 4px rgb(37 99 216 / 15%); }
+
+:global(.spGoogleAreaPrice) { max-width: 240px; padding: 7px 10px !important; border-radius: 8px !important; font-size: 12px !important; white-space: normal !important; line-height: 1.4 !important; text-align: center; transform: translateY(-20px); }

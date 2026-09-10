@@ -1,0 +1,4 @@
+Delete these repository files before or immediately after uploading the replacement files:
+
+api/explore-seoul.js
+api/maps-config.js

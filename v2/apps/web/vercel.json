@@ -1,0 +1,87 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["sin1"],
+  "crons": [
+    {
+      "path": "/api/internal/data-collection/",
+      "schedule": "5 3 * * *"
+    },
+    {
+      "path": "/api/internal/hdb-buildings/",
+      "schedule": "20 3 * * *"
+    },
+    {
+      "path": "/api/internal/onemap-locations/",
+      "schedule": "35 */4 * * *"
+    },
+    {
+      "path": "/api/internal/singapore-publication/",
+      "schedule": "50 2 * * *"
+    },
+    {
+      "path": "/api/internal/tool-research-expiry/",
+      "schedule": "43 0 * * *"
+    },
+    {
+      "path": "/api/internal/news-ingest/",
+      "schedule": "17 0 * * *"
+    },
+    {
+      "path": "/api/internal/building-enrichment/?source=wikimedia&limit=60",
+      "schedule": "7 * * * *"
+    },
+    {
+      "path": "/api/internal/building-enrichment/?source=official&limit=250",
+      "schedule": "17 * * * *"
+    },
+    {
+      "path": "/api/internal/building-enrichment/?source=google&limit=30",
+      "schedule": "47 * * * *"
+    },
+    {
+      "path": "/api/internal/public-entity-projection/",
+      "schedule": "57 0 * * *"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=kr-seoul-sale",
+      "schedule": "10 18 * * *"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=kr-seoul-rent",
+      "schedule": "25 18 * * *"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=sg-private-sale",
+      "schedule": "10 2 * * *"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=sg-private-rent",
+      "schedule": "25 2 * * *"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=ae-dubai-transaction",
+      "schedule": "10 1 * * *"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=ae-dubai-rent",
+      "schedule": "25 1 * * *"
+    },
+    {
+      "path": "/api/internal/japan-refresh/",
+      "schedule": "40 * * * *"
+    },
+    {
+      "path": "/api/internal/public-entity-projection/?mediaOnly=1",
+      "schedule": "57 * * * *"
+    },
+    {
+      "path": "/api/internal/photo-source-recovery/",
+      "schedule": "31 * * * *"
+    },
+    {
+      "path": "/api/internal/editorial-publish/",
+      "schedule": "*/15 * * * *"
+    }
+  ],
+  "ignoreCommand": "exit 1"
+}

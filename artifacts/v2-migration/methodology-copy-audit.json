@@ -1,0 +1,20 @@
+[
+  {
+    "file": "deposit-conversion.js",
+    "line": 18,
+    "code": "fixed_rate_called_statutory",
+    "excerpt": "// The statutory reference rate, not a market quote. Actual landlords convert"
+  },
+  {
+    "file": "rent-check-ui-utils.js",
+    "line": 284,
+    "code": "fixed_rate_called_statutory",
+    "excerpt": "? { methodLabel:`Monthly rents normalized to your deposit at ${(rate * 100).toFixed(1)}%/year statutory reference` }"
+  },
+  {
+    "file": "zh/rent-check-ui-utils.js",
+    "line": 277,
+    "code": "fixed_rate_called_statutory",
+    "excerpt": "? { methodLabel:`按法定参考年率 ${(rate * 100).toFixed(1)}% 将月租换算到你的押金水平` }"
+  }
+]

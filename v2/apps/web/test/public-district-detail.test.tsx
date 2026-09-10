@@ -1,0 +1,277 @@
+import { readFileSync } from 'node:fs';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('server-only', () => ({}));
+
+import { DistrictDetailPage } from '../components/public-market/district-detail-page';
+import { buildPublicDistrictModel } from '../lib/public-market/area-route-model.server';
+import {
+  CITY_MEDIAN_SENTINEL,
+  PUBLIC_AREA_FIXTURE_PERIOD,
+  createPublicAreaFixture,
+} from './public-area-fixture';
+import { createPublicBuildingFixture } from './public-building-fixture';
+
+const REFERENCE_INSTANT = '2026-09-01T00:00:00.000Z';
+
+function publishedModel() {
+  const model = buildPublicDistrictModel('gangnam-gu', {
+    source: createPublicAreaFixture(),
+    period: PUBLIC_AREA_FIXTURE_PERIOD,
+    referenceInstant: REFERENCE_INSTANT,
+  });
+  if (model === null || model.status !== 'published') {
+    throw new Error('Expected published Gangnam fixture.');
+  }
+  return model;
+}
+
+function withheldModel() {
+  const model = buildPublicDistrictModel('gangnam-gu', {
+    source: createPublicAreaFixture({
+      publishedMedians: { 'jongno-gu': 500_000_000 },
+      withheldCounts: { 'gangnam-gu': 4 },
+    }),
+    period: PUBLIC_AREA_FIXTURE_PERIOD,
+    referenceInstant: REFERENCE_INSTANT,
+  });
+  if (model === null || model.status !== 'withheld') {
+    throw new Error('Expected withheld Gangnam fixture.');
+  }
+  return model;
+}
+
+describe('public district detail page', () => {
+  it('renders one published finding, distribution, local quote, FAQ, and safe JSON-LD', () => {
+    const model = publishedModel();
+    const html = renderToStaticMarkup(createElement(DistrictDetailPage, { model }));
+
+    expect(html).toContain('data-district-detail="published"');
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html).toMatch(/href="\/ko\/kr\/seoul\/explore\/?\?district=gangnam-gu"/);
+    expect(html).not.toContain('href="/ko/kr/seoul/explore/gangnam-gu/"');
+    expect(html).toContain('Explore');
+    expect(html).toContain(model.identity.nameEn);
+    expect(html).toContain(model.identity.nameKo);
+    expect(html).toContain(model.display.medianLabel!);
+    expect(html).toContain(model.display.sampleLabel);
+    expect(html).toContain('data-sample-state="published"');
+    for (const label of ['Minimum', '25th percentile', 'Median', '75th percentile', 'Maximum']) {
+      expect(html).toContain(label);
+    }
+    expect(html).toContain('name="quote"');
+    expect(html).toContain(`>${model.identity.nameEn} (${model.identity.nameKo})</option>`);
+    expect(html).toContain('data-median-comparison="true"');
+    expect(html).toContain('What was the median refundable jeonse deposit');
+    expect(html).toContain('data-structured-data="dataset"');
+    expect(html).toContain('data-structured-data="faq"');
+    expect(html).toContain('https://schema.org');
+    expect(html).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
+    expect(html).toContain('MOLIT');
+    expect(html).toContain('href="/kr/seoul/corrections"');
+    expect(html).toContain('KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)');
+    expect(html).toMatch(/href="\/trust\/?"[^>]*>Data &amp; sources<\/a>/);
+    expect(html).not.toMatch(/public P2 preview|Production launch is not authorized/i);
+    expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
+    expect(html).toContain('href="/kr/seoul/rankings"');
+    expect(html).toContain('View district rankings');
+    for (const nearby of model.nearby) {
+      expect(html).toContain(`href="/kr/seoul/explore/${nearby.slug}"`);
+    }
+    expect(model.buildingAvailability).toMatchObject({ status: 'not_loaded' });
+    expect(html).toContain('Building evidence is not loaded');
+    expect(html).toContain('The verified district artifact does not contain building records');
+    expect(html).toContain(
+      'Use district evidence or return after a verified building snapshot is installed',
+    );
+    expect(model.communitySignal).toMatchObject({
+      state: 'unavailable', code: 'storage_not_configured',
+    });
+    expect(html).toContain('Community signal');
+    expect(html).toContain('Community responses are not open yet');
+    expect(html).toContain('data-detail-main="true"');
+    expect(html).toContain('data-detail-rail="true"');
+    expect(html).toContain('Latest verified News');
+    expect(html).toContain('How SignedPrice reads reported rental contracts');
+    expect(html).toContain('Back to Seoul map');
+    expect(html).not.toMatch(/save this building/i);
+  });
+
+  it('orders the evidence story from finding to distribution, cohorts, buildings, and source', () => {
+    const html = renderToStaticMarkup(<DistrictDetailPage model={publishedModel()} />);
+    const sectionOrder = [
+      'data-section="district-summary"',
+      'data-section="district-distribution"',
+      'data-section="district-cohorts"',
+      'data-section="district-buildings"',
+      'data-section="district-source"',
+    ].map((marker) => html.indexOf(marker));
+
+    expect(sectionOrder.every((index) => index >= 0)).toBe(true);
+    expect(sectionOrder).toEqual([...sectionOrder].sort((left, right) => left - right));
+  });
+
+  it('uses the supplied Detail identity and 380px context-shell structure', () => {
+    const html = renderToStaticMarkup(<DistrictDetailPage model={publishedModel()} />);
+    const mainStart = html.indexOf('data-detail-main="true"');
+    const summary = html.indexOf('data-section="district-summary"');
+    const evidence = html.indexOf('data-section="district-distribution"');
+    const rail = html.indexOf('data-detail-rail="true"');
+
+    expect(html).toContain('data-detail-layout="evidence-rail"');
+    expect(html).toContain('data-detail-hero="district"');
+    expect(html).toContain('data-detail-hero-metric="median"');
+    expect(html).toContain('<h1><span>Gangnam-gu</span> <span>District</span></h1>');
+    expect(mainStart).toBeLessThan(summary);
+    expect(summary).toBeLessThan(evidence);
+    expect(evidence).toBeLessThan(rail);
+  });
+
+  it('renders model-owned spread and unavailable-change copy without false count precision', () => {
+    const model = buildPublicDistrictModel('gangnam-gu', {
+      source: createPublicAreaFixture({
+        publishedOverrides: { 'gangnam-gu': { chg3m: 8.4 } },
+      }),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+      referenceInstant: REFERENCE_INSTANT,
+    });
+    if (model === null || model.status !== 'published') throw new Error('Expected publication.');
+    const spread = model.display.spread;
+    const change = model.display.change;
+    if (spread === null || change === null) throw new Error('Expected interpretation copy.');
+
+    const html = renderToStaticMarkup(<DistrictDetailPage model={model} />);
+
+    expect(spread).toEqual({
+      status: 'interpretable',
+      bucket: 'narrow',
+      ratio: 0.0625,
+      label: 'Narrow middle-half spread',
+      explanation: 'The middle half spans 6.3% of the median.',
+    });
+    expect(change).toEqual({
+      status: 'not_assessable',
+      label: '3-month change not assessable',
+      sampleLabel: null,
+      reasons: ['Prior/latest sample counts were not retained in this snapshot.'],
+    });
+    expect(html).toContain(spread.label);
+    expect(html).toContain(spread.explanation);
+    expect(html).toContain(change.label);
+    expect(html).toContain(change.reasons[0]!);
+    expect(html).not.toContain('+8.4%');
+    expect(html).not.toMatch(/n 5 → 5|n \d+ → \d+/);
+  });
+
+  it('renders real period labels, filing hatch, and both legend states from the server model', () => {
+    const model = publishedModel();
+    const html = renderToStaticMarkup(<DistrictDetailPage model={model} />);
+
+    expect(model.period.months).toEqual([
+      { month: '2026-01', label: 'Jan 2026', state: 'complete' },
+      { month: '2026-02', label: 'Feb 2026', state: 'complete' },
+      { month: '2026-03', label: 'Mar 2026', state: 'complete' },
+      { month: '2026-04', label: 'Apr 2026', state: 'complete' },
+      { month: '2026-05', label: 'May 2026', state: 'complete' },
+      { month: '2026-06', label: 'Jun 2026', state: 'complete' },
+      { month: '2026-07', label: 'Jul 2026', state: 'filing_in_progress' },
+    ]);
+    expect(html.match(/data-month-state="complete"/g)).toHaveLength(6);
+    expect(html.match(/data-month-state="filing_in_progress"/g)).toHaveLength(1);
+    expect(html).toContain('Jan 2026');
+    expect(html).toContain('Jul 2026');
+    expect(html).toContain('Complete');
+    expect(html).toContain('Filing in progress');
+    expect(html).toContain(model.period.caveat!);
+    expect(html).not.toMatch(/Completed period|completed-period/);
+  });
+
+  it('renders a money-free refusal with real count, hatch, FAQ, and navigation', () => {
+    const model = withheldModel();
+    const html = renderToStaticMarkup(createElement(DistrictDetailPage, { model }));
+
+    expect(html).toContain('data-district-detail="withheld"');
+    expect(html).toContain('Not published');
+    expect(html).toContain('4 reported contracts');
+    expect(html).toContain('data-sample-state="withheld"');
+    expect(html).toContain('data-evidence-state="withheld"');
+    expect(html).toContain('data-structured-data="dataset"');
+    expect(html).toContain('data-structured-data="faq"');
+    expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
+    expect(html).toContain('href="/kr/seoul/rankings"');
+    expect(html).not.toContain('name="quote"');
+    expect(html).not.toContain('data-quote-marker');
+    expect(html).not.toMatch(/<dt>(?:Minimum|25th percentile|Median|75th percentile|Maximum)<\/dt>/);
+    expect(html).not.toContain('₩');
+    expect(html).not.toContain(String(CITY_MEDIAN_SENTINEL));
+    expect(html).not.toMatch(/"unitCode":"KRW"|"(?:min|p25|med|p75|max|chg3m)":/);
+    expect(html).toContain('Building evidence is not loaded');
+    expect(html).toContain('Community responses are not open yet');
+  });
+
+  it('shows building links only when a verified same-period artifact is installed', () => {
+    const model = buildPublicDistrictModel('gangnam-gu', {
+      source: createPublicAreaFixture(),
+      buildingSource: createPublicBuildingFixture(),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+      referenceInstant: REFERENCE_INSTANT,
+    });
+    if (model === null) throw new Error('Expected district identity.');
+    const html = renderToStaticMarkup(<DistrictDetailPage model={model} />);
+
+    expect(model.buildingAvailability).toMatchObject({ status: 'ready' });
+    expect(html).toContain('Evidence Tower');
+    expect(html).toContain('href="/kr/seoul/explore/gangnam-gu/gangnam-evidence-tower"');
+    expect(html).not.toContain('Building evidence is not loaded');
+    expect(html).toContain('Community responses are not open yet');
+  });
+
+  it('fails closed without city money or structured data when the artifact is unavailable', () => {
+    const model = buildPublicDistrictModel('gangnam-gu', {
+      source: { invalid: true },
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+      referenceInstant: REFERENCE_INSTANT,
+    });
+    if (model === null) throw new Error('Expected unavailable district identity.');
+    const html = renderToStaticMarkup(createElement(DistrictDetailPage, { model }));
+
+    expect(html).toContain('data-district-detail="unavailable"');
+    expect(html).toContain('Verified district summary unavailable');
+    expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
+    expect(html).toContain('href="/kr/seoul/rankings"');
+    expect(html).not.toContain('data-structured-data');
+    expect(html).not.toContain('₩');
+    expect(html).not.toContain(String(CITY_MEDIAN_SENTINEL));
+    expect(html).toContain('Building evidence is not loaded');
+    expect(model.communitySignal).toMatchObject({
+      state: 'unavailable', scope: null, code: 'evidence_unavailable',
+    });
+    expect(html).toContain('Community responses are not open yet');
+  });
+
+  it('escapes less-than characters in model-owned structured data', () => {
+    const model = publishedModel();
+    const unsafeModel = {
+      ...model,
+      datasetJsonLd: { ...model.datasetJsonLd, probe: '</script><script>alert(1)</script>' },
+    };
+    const html = renderToStaticMarkup(createElement(DistrictDetailPage, { model: unsafeModel }));
+
+    expect(html).not.toContain('</script><script>alert(1)</script>');
+    expect(html).toContain('\\u003c/script>\\u003cscript>alert(1)\\u003c/script>');
+  });
+
+  it('keeps navigation touch-sized, visibly focused, and single-column on mobile', () => {
+    const css = readFileSync(
+      new URL('../components/public-market/district-detail.module.css', import.meta.url),
+      'utf8',
+    );
+
+    expect(css).toMatch(/\.exploreLink,[\s\S]*\.nearby a[\s\S]*min-height:\s*44px/);
+    expect(css).toMatch(/:focus-visible[\s\S]*outline:\s*2px solid var\(--district-accent\)[\s\S]*outline-offset:\s*2px/);
+    expect(css).toMatch(/@media \(max-width:\s*720px\)[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+    expect(css).toMatch(/\.detailLayout[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+380px/);
+  });
+});

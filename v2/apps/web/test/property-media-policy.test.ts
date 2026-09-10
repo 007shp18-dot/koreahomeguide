@@ -1,0 +1,41 @@
+import { readFileSync } from 'node:fs';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { describe, expect, it } from 'vitest';
+
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../components/market-representative-photo';
+
+const seoulDetailRoute = readFileSync(
+  new URL('../app/(en)/kr/seoul/explore/[district]/[buildingId]/page.tsx', import.meta.url),
+  'utf8',
+);
+const singaporeProjectDetail = readFileSync(
+  new URL('../components/singapore/singapore-project-detail.tsx', import.meta.url),
+  'utf8',
+);
+const hdbBlockDetail = readFileSync(
+  new URL('../components/singapore/hdb-block-detail.tsx', import.meta.url),
+  'utf8',
+);
+
+describe('property media policy', () => {
+  it('never promotes street imagery into the primary property-photo position', () => {
+    expect(seoulDetailRoute).not.toContain('BuildingStreetView');
+    expect(seoulDetailRoute).toContain('ProjectedEntityMedia');
+    for (const source of [singaporeProjectDetail, hdbBlockDetail]) {
+      expect(source).not.toContain('BuildingStreetView');
+      expect(source).not.toContain('MarketRepresentativePhoto');
+      expect(source).toContain('ProjectedEntityMedia');
+    }
+  });
+
+  it('labels editorial city photography as representative rather than exact-property evidence', () => {
+    const marketPhoto = renderToStaticMarkup(createElement(MarketRepresentativePhoto, {
+      photo: MARKET_PHOTOS.seoul,
+      context: 'property',
+      locale: 'en',
+    }));
+    expect(marketPhoto).toContain('Editorial city photograph');
+    expect(marketPhoto).toContain('not this exact property');
+  });
+});

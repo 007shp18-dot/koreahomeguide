@@ -1,0 +1,201 @@
+.page {
+  min-height: 70vh;
+  padding-bottom: 72px;
+}
+
+.hero {
+  width: min(1180px, calc(100% - 40px));
+  min-height: 340px;
+  margin: 28px auto 0;
+  padding: clamp(2rem, 5vw, 4.5rem);
+  display: grid;
+  align-content: end;
+  gap: 1.25rem;
+  overflow: hidden;
+  border: 1px solid #183655;
+  border-radius: 12px;
+  color: white;
+  background:
+    radial-gradient(circle at 86% 12%, rgb(67 149 231 / 32%), transparent 32%),
+    linear-gradient(145deg, #102c4b, #091c31 72%);
+  box-shadow: 0 24px 64px rgb(10 30 52 / 14%);
+}
+
+.eyebrow {
+  color: #8fc7ff;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 13ch;
+  margin: 0;
+  font-size: clamp(2.7rem, 5.7vw, 5.3rem);
+  font-weight: 850;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.hero > p:last-child {
+  max-width: 720px;
+  margin: 0;
+  color: #c4d4e5;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.notice {
+  width: min(1180px, calc(100% - 40px));
+  margin: 18px auto 0;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(280px, 1.2fr);
+  align-items: center;
+  gap: 1.5rem 3rem;
+  border: 1px solid #dce5ee;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 10px 30px rgb(15 30 56 / 6%);
+}
+
+.notice h2,
+.grid h2 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  font-weight: 820;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.notice p,
+.grid p,
+.grid dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.grid {
+  width: min(1180px, calc(100% - 40px));
+  margin: 16px auto 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.grid article {
+  min-width: 0;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  border: 1px solid #dce5ee;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 8px 24px rgb(15 30 56 / 4%);
+}
+
+.grid dl {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.grid dl div {
+  padding-top: 0.8rem;
+  display: grid;
+  grid-template-columns: minmax(120px, 0.5fr) minmax(0, 1fr);
+  gap: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.grid dt {
+  color: var(--accent);
+  font-size: var(--text-meta);
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.meta {
+  margin: 0;
+  color: #3473b5 !important;
+  font-size: 0.75rem !important;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  line-height: 1.4 !important;
+  text-transform: uppercase;
+}
+
+.plainList {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.7rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.grid a {
+  color: var(--ink);
+  font-weight: 850;
+  overflow-wrap: anywhere;
+  text-underline-offset: 0.2em;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.actions a {
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #cdd9e6;
+  border-radius: 12px;
+  background: #f7faff;
+  text-decoration: none;
+}
+
+.actions a:first-child {
+  border-color: #1c5e9f;
+  color: white;
+  background: #164c82;
+}
+
+.grid a:focus-visible,
+.actions a:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .page { padding-bottom: 44px; }
+  .hero,
+  .notice,
+  .grid { width: calc(100% - 28px); }
+  .hero { min-height: 300px; padding: 30px 22px; }
+  .hero h1 { font-size: clamp(2.45rem, 13vw, 3.5rem); }
+  .notice { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .grid dl div { grid-template-columns: minmax(0, 1fr); gap: 0.25rem; }
+}
+
+:global(html[lang='ko']) .hero { min-height: 240px; gap: 1rem; }
+:global(html[lang='ko']) .hero h1 { max-width: 100%; font-size: clamp(1.75rem, 3.2vw, 2.75rem); line-height: 1.35; letter-spacing: -.02em; word-break: keep-all; overflow-wrap: anywhere; }
+:global(html[lang='ko']) .hero > p:last-child { line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; }
+:global(html[lang='ko']) .grid h2,
+:global(html[lang='ko']) .notice h2 { font-size: clamp(1.125rem, 2vw, 1.375rem); line-height: 1.4; letter-spacing: -.015em; word-break: keep-all; overflow-wrap: anywhere; }
+:global(html[lang='ko']) .grid p,
+:global(html[lang='ko']) .notice p { font-size: 1rem; line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; }
+:global(html[lang='ko']) .actions a { white-space: normal; line-height: 1.5; overflow-wrap: anywhere; }
+@media (min-width: 1000px) { :global(html[lang='ko']) .grid[aria-label='도시별 문의'] { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 720px) { :global(html[lang='ko']) .hero { min-height: 0; padding: 28px 22px; } }

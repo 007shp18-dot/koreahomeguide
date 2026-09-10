@@ -1,0 +1,15 @@
+/* Shared form and result vocabulary for city calculators. */
+.surface { --tool-control-height: 48px; min-width: 0; }
+.surface label { font-size: 14px; line-height: 1.5; letter-spacing: normal; text-transform: none; }
+.surface input:not([type='checkbox']):not([type='radio']):not([type='hidden']), .surface select {
+  box-sizing: border-box; width: 100%; min-width: 0; min-height: var(--tool-control-height); padding: 10px 12px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--surface-strong); color: var(--ink); font: inherit; font-size: 16px; line-height: 1.5;
+}
+.surface button[type='submit'] { min-height: 48px; padding: 10px 20px; border: 1px solid var(--accent); border-radius: 8px; background: var(--accent); color: white; font-size: 16px; line-height: 1.5; }
+.surface :is(input, select, button, a):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.surface :is(fieldset, form, aside, dl, dd) { min-width: 0; }
+.surface h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); line-height: 1.2; letter-spacing: normal; font-weight: 650; }
+.surface [data-tool-result] { border: 1px solid var(--line); border-radius: 12px; padding: 28px; background: var(--soft-blue, var(--surface)); }
+.surface [data-tool-result] :is(p, dt, dd) { font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.surface [data-tool-result] dd { white-space: normal; }
+@media(max-width:560px) { .surface [data-tool-result] { padding: 20px; } }

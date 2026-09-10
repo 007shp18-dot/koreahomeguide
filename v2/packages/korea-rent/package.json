@@ -1,0 +1,18 @@
+{
+  "name": "@signedprice/korea-rent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./browser": "./src/browser.ts",
+    "./conversion-artifact": "./src/conversion-artifact.ts",
+    "./result-validation": "./src/result-validation.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@signedprice/market-core": "workspace:*"
+  }
+}

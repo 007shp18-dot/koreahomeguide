@@ -1,0 +1,51 @@
+.frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  min-width: 0;
+  min-height: inherit;
+  overflow: hidden;
+  margin: 0;
+  background: #dfe8ef;
+}
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  padding: 24px;
+  color: #17324d;
+  text-align: center;
+  background:
+    radial-gradient(circle at 72% 28%, rgb(255 255 255 / 72%), transparent 20%),
+    linear-gradient(145deg, #edf3f7, #c7d7e5);
+}
+
+.fallback strong { font-size: 1.1rem; }
+.fallback span { color: #526071; font-size: var(--text-meta); }
+
+.frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.frame figcaption {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: fit-content;
+  max-width: 100%;
+  padding: 9px 12px;
+  color: #111827;
+  background: #fff;
+  font-size: var(--text-meta);
+  line-height: 1.45;
+}

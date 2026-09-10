@@ -1,0 +1,251 @@
+import 'server-only';
+
+type SqlRow = Readonly<Record<string, unknown>>;
+
+export type PublicEntityProjectionSqlPort = Readonly<{
+  query(statement: string, parameters?: readonly unknown[]): Promise<readonly SqlRow[]>;
+}>;
+
+export type PublicEntityProjectionPublishResult = Readonly<{
+  published: number;
+  provisional: number;
+  rejected: number;
+  rightsBlocked: number;
+  mediaPublished: number;
+}>;
+
+const REFRESH_LOCATIONS_SQL = `
+  /* public-entity-projection:refresh-locations */
+  INSERT INTO public_entity_locations (
+    entity_id, market_id, latitude, longitude, precision, provider,
+    provider_reference, rights_policy_id, verification_status, verified_at, updated_at
+  )
+  SELECT
+    entity.id, entity.market_id, entity.latitude, entity.longitude,
+    entity.local_attributes ->> 'locationPrecision',
+    entity.local_attributes ->> 'locationProvider',
+    nullif(entity.local_attributes ->> 'locationProviderReference', ''),
+    entity.local_attributes ->> 'locationRightsPolicyId',
+    'verified', entity.updated_at, now()
+  FROM property_entities AS entity
+  INNER JOIN rights_policies AS rights
+    ON rights.id = entity.local_attributes ->> 'locationRightsPolicyId'
+  WHERE entity.market_id = 'kr-seoul'
+    AND entity.kind = 'building'
+    AND entity.identity_status = 'verified'
+    AND entity.latitude IS NOT NULL
+    AND entity.longitude IS NOT NULL
+    AND entity.local_attributes ->> 'locationVerificationStatus' = 'verified'
+    AND entity.local_attributes ->> 'locationPrecision' IN ('rooftop', 'parcel', 'street')
+    AND nullif(entity.local_attributes ->> 'locationProvider', '') IS NOT NULL
+  ON CONFLICT (entity_id) WHERE verification_status = 'verified'
+  DO UPDATE SET
+    market_id = excluded.market_id,
+    latitude = excluded.latitude,
+    longitude = excluded.longitude,
+    precision = excluded.precision,
+    provider = excluded.provider,
+    provider_reference = excluded.provider_reference,
+    rights_policy_id = excluded.rights_policy_id,
+    verified_at = excluded.verified_at,
+    updated_at = now()
+`;
+
+const REFRESH_MEDIA_SQL = `
+  /* public-entity-projection:refresh-media */
+  INSERT INTO public_entity_media (
+    entity_id, media_asset_id, role, position, display_url, provider_reference,
+    attribution_name, attribution_url, exact_subject, published_at, last_checked_at
+  )
+  SELECT
+    media.subject_entity_id,
+    media.id,
+    CASE WHEN media.position = 0 THEN 'hero' ELSE 'exterior' END,
+    media.position,
+    CASE WHEN media.provider = 'google-place' THEN NULL ELSE media.object_reference END,
+    CASE WHEN media.provider = 'google-place' THEN media.provider_place_id ELSE NULL END,
+    media.attribution_name,
+    media.attribution_url,
+    media.subject_kind = 'exact-property',
+    media.approved_at,
+    media.checked_at
+  FROM media_assets AS media
+  INNER JOIN rights_policies AS rights ON rights.id = media.rights_policy_id
+  WHERE media.market_id IN ('kr-seoul', 'sg-singapore')
+    AND media.subject_entity_id IS NOT NULL
+    AND media.review_state = 'approved'
+    AND rights.can_display = true
+    AND media.approved_at IS NOT NULL
+    AND (
+      (media.provider = 'google-place' AND media.provider_place_id IS NOT NULL)
+      OR (media.provider <> 'google-place' AND media.object_reference IS NOT NULL)
+    )
+  ON CONFLICT (entity_id, media_asset_id, role)
+  DO UPDATE SET
+    position = excluded.position,
+    display_url = excluded.display_url,
+    provider_reference = excluded.provider_reference,
+    attribution_name = excluded.attribution_name,
+    attribution_url = excluded.attribution_url,
+    exact_subject = excluded.exact_subject,
+    published_at = excluded.published_at,
+    last_checked_at = excluded.last_checked_at
+`;
+
+const REFRESH_APPROVED_BUILDING_PHOTOS_SQL = `
+  /* public-entity-projection:sync-building-photos */
+  INSERT INTO media_assets (
+    market_id, subject_entity_id, kind, subject_kind, provider, provider_place_id,
+    object_reference, source_url, attribution_name, attribution_url,
+    rights_policy_id, rights_state, review_state, position, checked_at,
+    visual_reviewed_at, approved_at, approved_by, legacy_registry_key, updated_at
+  )
+  SELECT
+    entity.market_id, entity.id, 'photograph',
+    CASE WHEN photo.subject_kind = 'site-aerial' THEN 'parent-project' ELSE 'exact-property' END,
+    photo.provider,
+    photo.provider_place_id,
+    CASE WHEN photo.provider = 'google-place' THEN NULL ELSE photo.asset_url END,
+    photo.source_page_url,
+    photo.attribution_name,
+    photo.attribution_url,
+    CASE photo.provider
+      WHEN 'owned-object' THEN 'legacy-owned-media'
+      WHEN 'licensed-url' THEN 'legacy-licensed-media'
+      ELSE 'legacy-provider-display'
+    END,
+    photo.rights_status,
+    'approved',
+    photo.position,
+    photo.checked_at,
+    photo.visual_reviewed_at,
+    photo.approved_at,
+    photo.approved_by,
+    photo.registry_key,
+    now()
+  FROM building_photos AS photo
+  INNER JOIN buildings AS building ON building.key = photo.building_key
+  INNER JOIN property_entities AS entity ON entity.id = CASE
+    WHEN building.market_key = 'seoul' THEN 'kr-seoul:estate:' || building.external_id
+    WHEN building.market_key = 'singapore' THEN 'sg-' || building.key
+  END
+  WHERE photo.status = 'approved'
+    AND entity.market_id IN ('kr-seoul', 'sg-singapore')
+    AND entity.identity_status = 'verified'
+    AND photo.subject_kind IN ('building-exterior', 'building-front', 'site-aerial')
+    AND photo.approved_at IS NOT NULL
+    AND photo.approved_by IS NOT NULL
+    AND photo.visual_reviewed_at IS NOT NULL
+  ON CONFLICT (legacy_registry_key)
+  DO UPDATE SET
+    market_id = excluded.market_id,
+    subject_entity_id = excluded.subject_entity_id,
+    kind = excluded.kind,
+    subject_kind = excluded.subject_kind,
+    provider = excluded.provider,
+    provider_place_id = excluded.provider_place_id,
+    object_reference = excluded.object_reference,
+    source_url = excluded.source_url,
+    attribution_name = excluded.attribution_name,
+    attribution_url = excluded.attribution_url,
+    rights_policy_id = excluded.rights_policy_id,
+    rights_state = excluded.rights_state,
+    review_state = excluded.review_state,
+    position = excluded.position,
+    checked_at = excluded.checked_at,
+    visual_reviewed_at = excluded.visual_reviewed_at,
+    approved_at = excluded.approved_at,
+    approved_by = excluded.approved_by,
+    updated_at = now()
+`;
+
+const RECONCILE_MEDIA_SQL = `
+  /* public-entity-projection:reconcile-media */
+  WITH revoked AS (
+    UPDATE media_assets AS media
+    SET review_state = 'review_required', updated_at = now()
+    WHERE media.market_id IN ('kr-seoul', 'sg-singapore')
+      AND media.legacy_registry_key IS NOT NULL
+      AND NOT EXISTS (
+        SELECT 1 FROM building_photos AS photo
+        WHERE photo.registry_key = media.legacy_registry_key
+          AND photo.status = 'approved'
+          AND photo.approved_at IS NOT NULL AND photo.approved_by IS NOT NULL
+          AND photo.visual_reviewed_at IS NOT NULL
+          AND photo.subject_kind IN ('building-exterior', 'building-front', 'site-aerial')
+      )
+    RETURNING media.id
+  )
+  DELETE FROM public_entity_media AS public
+  USING media_assets AS media, rights_policies AS rights
+  WHERE public.media_asset_id = media.id AND rights.id = media.rights_policy_id
+    AND media.market_id IN ('kr-seoul', 'sg-singapore')
+    AND (media.id IN (SELECT id FROM revoked)
+      OR public.entity_id <> media.subject_entity_id
+      OR (media.legacy_registry_key IS NOT NULL AND NOT EXISTS (
+        SELECT 1 FROM building_photos AS photo
+        JOIN property_entities AS identity
+          ON identity.local_attributes ->> 'legacyBuildingKey' = photo.building_key
+        WHERE photo.registry_key = media.legacy_registry_key AND identity.id = public.entity_id
+      ))
+      OR media.review_state <> 'approved' OR rights.can_display = false)
+`;
+
+const COUNTS_SQL = `
+  /* public-entity-projection:counts */
+  SELECT
+    count(*) FILTER (
+      WHERE location.verification_status = 'verified' AND rights.can_display = true
+    )::text AS published,
+    count(*) FILTER (WHERE location.verification_status = 'provisional')::text AS provisional,
+    count(*) FILTER (WHERE location.verification_status = 'rejected')::text AS rejected,
+    count(*) FILTER (
+      WHERE location.verification_status = 'verified' AND rights.can_display = false
+    )::text AS rights_blocked,
+    (
+      SELECT count(*)::text FROM public_entity_media AS media
+      INNER JOIN property_entities AS entity ON entity.id = media.entity_id
+      WHERE entity.market_id IN ('kr-seoul', 'sg-singapore')
+    ) AS media_published
+  FROM public_entity_locations AS location
+  INNER JOIN rights_policies AS rights ON rights.id = location.rights_policy_id
+  WHERE location.market_id = 'kr-seoul'
+`;
+
+function count(value: unknown): number {
+  if (typeof value !== 'string' || !/^(?:0|[1-9]\d*)$/u.test(value)) {
+    throw new TypeError('Invalid public entity projection count.');
+  }
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed)) throw new TypeError('Invalid public entity projection count.');
+  return parsed;
+}
+
+export function createPublicEntityProjectionPublisher(
+  port: PublicEntityProjectionSqlPort,
+): Readonly<{ publishSeoul(): Promise<PublicEntityProjectionPublishResult>; publishMedia(): Promise<void> }> {
+  return Object.freeze({
+    async publishMedia() {
+      await port.query(RECONCILE_MEDIA_SQL);
+      await port.query(REFRESH_APPROVED_BUILDING_PHOTOS_SQL);
+      await port.query(REFRESH_MEDIA_SQL);
+    },
+    async publishSeoul() {
+      // Seoul location publication also maintains approved media for the two
+      // markets with verified building identities. The legacy method stays stable.
+      await port.query(REFRESH_LOCATIONS_SQL);
+      await port.query(RECONCILE_MEDIA_SQL);
+      await port.query(REFRESH_APPROVED_BUILDING_PHOTOS_SQL);
+      await port.query(REFRESH_MEDIA_SQL);
+      const [row] = await port.query(COUNTS_SQL);
+      if (row === undefined) throw new TypeError('Public entity projection counts unavailable.');
+      return Object.freeze({
+        published: count(row.published),
+        provisional: count(row.provisional),
+        rejected: count(row.rejected),
+        rightsBlocked: count(row.rights_blocked),
+        mediaPublished: count(row.media_published),
+      });
+    },
+  });
+}

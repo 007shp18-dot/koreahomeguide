@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>比较首尔租赁市场 | KoreaHomeGuide</title>
+  <meta name="description" content="使用近期官方真实签约合同，对比首尔两个行政区的押金校正每平方米租金、月租、押金和成交数量。">
+  <link rel="canonical" href="https://koreahomeguide.com/zh/compare/">
+  <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/compare/">
+  <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/compare/">
+  <link rel="alternate" hreflang="x-default" href="https://koreahomeguide.com/compare/">
+  <script defer src="/privacy-consent.js"></script>
+  <script defer src="/mobile-navigation.js"></script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="core-ui compare-page">
+  <header class="compact-header"><a class="brand" href="/zh/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a><nav><a href="/zh/explore/">租金探索</a><a href="/zh/tools/seoul-rent-check/">租金检查</a><a href="/zh/guides/">租房指南</a></nav><div class="header-actions"><a class="language-link" href="/compare/">EN</a></div></header>
+  <main class="page-shell compare-shell">
+    <section class="compare-hero"><span class="eyebrow">市场对比</span><h1>比较首尔两个租赁市场。</h1><p>把两个行政区放在一起，用近期官方真实签约合同对比，而不是使用房源广告。价格以韩元为主。</p></section>
+    <form id="compareForm" class="compare-toolbar">
+      <label class="field"><span>市场 A</span><select id="compareAreaA"></select></label>
+      <label class="field"><span>市场 B</span><select id="compareAreaB"></select></label>
+      <label class="field"><span>住宅类型</span><select id="compareType"><option value="apartment">公寓（아파트）</option><option value="officetel">办公住宅两用楼（Officetel / 오피스텔）</option><option value="villa">低层多户住宅（Villa / 연립·다세대）</option><option value="detached">独栋及多户住宅（단독·다가구）</option></select></label>
+      <button class="search-button" type="submit">对比市场</button>
+    </form>
+    <p id="compareStatus" class="market-status" aria-live="polite"></p>
+    <section id="compareResults" class="compare-results" hidden>
+      <article class="compare-market" data-compare-market="a"></article>
+      <article class="compare-market" data-compare-market="b"></article>
+    </section>
+    <p class="compare-method"><strong>押金校正 ₩/㎡</strong> = 月租加上押金年化 5% 的机会成本，再除以建筑面积。这样可更公平地比较不同押金结构。</p>
+  </main>
+  <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>官方真实签约租赁数据，仅供市场参考。<a href="/zh/about/">方法与局限</a> · <a href="/zh/privacy/">隐私说明</a>。</small></footer>
+  <script src="/location-catalog.js"></script>
+  <script src="/date-utils.js"></script>
+  <script src="/compare/app.js"></script>
+</body>
+</html>

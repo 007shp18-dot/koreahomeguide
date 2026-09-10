@@ -1,0 +1,22 @@
+import { describe, expect, it } from 'vitest';
+
+import {
+  PUBLIC_EDITORIAL_SURFACES,
+  publicEditorialHref,
+  publicEditorialLanguageHref,
+} from '../lib/editorial-growth/public-editorial-routes';
+
+describe('public editorial routes', () => {
+  it('keeps unsupported Chinese tools on their live English canonical URLs', () => {
+    expect(publicEditorialHref('home', 'en')).toBe('/');
+    expect(publicEditorialHref('content', 'en')).toBe('/news/');
+    expect(publicEditorialHref('check', 'zh-CN')).toBe('/kr/seoul/check/');
+    expect(publicEditorialHref('explore', 'zh-CN')).toBe('/kr/seoul/explore/');
+    expect(JSON.stringify(PUBLIC_EDITORIAL_SURFACES)).not.toContain('/design-review/');
+  });
+
+  it('switches language without changing the current surface', () => {
+    expect(publicEditorialLanguageHref('content', 'en')).toBe('/news/');
+    expect(publicEditorialLanguageHref('content', 'zh-CN')).toBe('/zh-cn/news/');
+  });
+});
