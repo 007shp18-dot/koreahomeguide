@@ -1,5 +1,0 @@
-.miniChart { margin: 0; }
-.miniChart figcaption { color: var(--muted); font-size: 13px; line-height: 20px; }
-.miniChart svg { display: block; width: 100%; height: auto; margin: 8px 0 0; overflow: visible; }
-.chartDates { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 12px; line-height: 18px; }
-.miniChart a { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; line-height: 20px; color: var(--muted); }

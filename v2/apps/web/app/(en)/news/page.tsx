@@ -18,8 +18,8 @@ export async function generateMetadata({ searchParams = Promise.resolve({}) }: N
   const filters = resolveNewsroomFilters(await searchParams);
   return indexableMetadata({
     path: filters.canonicalHref as `/${string}`,
-    title: 'Property news, policy and market insights | signedprice',
-    description: 'City stories, buying journeys, local conversations and property news for Seoul, Singapore, Dubai and Tokyo.',
+    title: filters.type === 'news' ? 'Property news across four cities | SignedPrice' : 'Insights on places and property | SignedPrice',
+    description: 'Understand neighbourhood life, housing prices, ownership costs and buying rules in Seoul, Tokyo, Singapore and Dubai.',
     ...(filters.type === 'insights' && filters.market === 'all' ? {
       languageAlternates: { en: '/news/' as const, ko: '/ko/news/' as const, 'zh-Hans': '/zh-cn/news/' as const },
     } : {}),

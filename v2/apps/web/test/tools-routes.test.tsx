@@ -14,7 +14,7 @@ it('uses Korean social images for the Korean directory and calculator',()=>{
 it.each(['en','ko','zh-CN'] as const)('publishes a translated tools directory with all three market checks: %s',locale=>{
  const html=renderToStaticMarkup(<ToolsHub locale={locale}/>);
  expect(html.match(/<h1\b/g)).toHaveLength(1);expect(html).not.toContain('Preparing');
- expect(globalNavigation(locale)).toHaveLength(4);
+ expect(globalNavigation(locale)).toHaveLength(locale === 'en' ? 5 : 4);
  expect(html).toContain('/ae/dubai/check');expect(html).toContain('/sg/singapore/check');expect(html).toContain('/tools/property-scenario');
 });
 it('groups every existing tool once by decision',()=>{

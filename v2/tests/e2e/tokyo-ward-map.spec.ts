@@ -4,7 +4,7 @@ test('Tokyo ward map changes the ward while retaining period and property filter
   await page.goto('/jp/tokyo/explore/?city=13103&year=2025&quarter=4&minArea=50');
   const map = page.locator('[data-tokyo-google-map]');
   await expect(map).toBeVisible();
-  await expect(map.getByRole('heading', { name: 'Tokyo price map' })).toBeVisible();
+  await expect(map.getByRole('heading', { name: 'Explore Tokyo by area' })).toBeVisible();
   await expect(map.getByRole('button', { name: 'Open ward and neighbourhood price map' })).toHaveCount(0);
   await map.getByText('All Tokyo wards', { exact: true }).click();
   await expect(map.locator('a[data-ward]')).toHaveCount(23);
@@ -26,7 +26,7 @@ test('Tokyo ward map changes the ward while retaining period and property filter
   const viewport = page.viewportSize()!;
   expect(geometry.x).toBeGreaterThanOrEqual(0);
   expect(geometry.x + geometry.width).toBeLessThanOrEqual(viewport.width + 1);
-  if (viewport.width <= 760) {
+  if (viewport.width <= 1050) {
     expect(geometry.listTop).not.toBeNull();
     expect(geometry.bottom).toBeLessThanOrEqual(geometry.listTop! + 1);
   }

@@ -9,10 +9,11 @@ import { SiteFooter } from '../components/site-footer';
 import { homepageCopy } from '../lib/site-copy';
 
 describe('shared navigation destinations', () => {
-  it('keeps the four global sections in the same order', () => {
+  it('separates English News from Insights and preserves translated sections', () => {
     expect(globalNavigation('en')).toEqual([
       { label: 'Explore', href: '/prices/' },
       { label: 'Insights', href: '/news/' },
+      { label: 'News', href: '/news/?type=news' },
       { label: 'Tools', href: '/tools/' },
       { label: 'Guides', href: '/guides/' },
     ]);

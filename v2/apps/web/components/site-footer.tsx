@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { SocialBrandIcon } from './social-brand-icon';
 import type { SiteFooterModel } from '../lib/site-copy';
 import { globalNavigation, marketNavigation, type SiteLocale } from '../lib/navigation/site-navigation';
 import { BrandWordmark } from './brand-mark';
@@ -6,9 +7,9 @@ import styles from './site-footer.module.css';
 
 // Official accounts connected to SignedPrice's Metricool brand.
 const socialAccounts = [
-  { label: 'Instagram', href: 'https://www.instagram.com/signedprice/' },
-  { label: 'Threads', href: 'https://www.threads.com/@signedprice' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/143759950/' },
+  { label: 'Instagram', icon: 'instagram', href: 'https://www.instagram.com/signedprice/' },
+  { label: 'Threads', icon: 'threads', href: 'https://www.threads.com/@signedprice' },
+  { label: 'LinkedIn', icon: 'linkedin', href: 'https://www.linkedin.com/company/143759950/' },
 ] as const;
 
 export function SiteFooter({ copy, locale = 'en' }: Readonly<{ copy: SiteFooterModel; locale?: SiteLocale }>) {
@@ -36,7 +37,7 @@ export function SiteFooter({ copy, locale = 'en' }: Readonly<{ copy: SiteFooterM
       <div className={styles.navigation}>{groups.map((group) => <nav key={group.label} aria-label={`Footer ${group.label}`}><p>{group.label}</p><ul className={styles.links}>{group.links.map((link) => <li key={link.href}><Link href={link.href}>{link.label}</Link></li>)}</ul></nav>)}</div>
       <nav className={styles.social} aria-label={ko ? 'SignedPrice 공식 SNS' : zh ? 'SignedPrice 官方社交账号' : 'SignedPrice social accounts'}>
         <p>{ko ? '소셜에서 만나세요' : zh ? '关注我们' : 'Follow SignedPrice'}</p>
-        <ul>{socialAccounts.map((account) => <li key={account.label}><a href={account.href} target="_blank" rel="noopener noreferrer" aria-label={`${account.label} · SignedPrice${ko ? ' · 새 탭' : zh ? ' · 新标签页' : ' · new tab'}`}>{account.label}</a></li>)}</ul>
+        <ul>{socialAccounts.map((account) => <li key={account.label}><a href={account.href} target="_blank" rel="noopener noreferrer" aria-label={`${account.label} · SignedPrice${ko ? ' · 새 탭' : zh ? ' · 新标签页' : ' · new tab'}`} title={account.label}><SocialBrandIcon name={account.icon} /></a></li>)}</ul>
       </nav>
     </div>
   </footer>;

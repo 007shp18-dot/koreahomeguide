@@ -1,3 +1,5 @@
+import insightStyles from './insights-index.module.css';
+import { InsightsIndex } from './insights-index';
 import { listNeighbourhoodStories, neighbourhoodHref } from '../../content/neighbourhood-stories';
 import { NeighbourhoodStoryCards } from './neighbourhood-story';
 import { BUDGET_GUIDE_SLUGS } from '../../content/guide-directory';
@@ -61,6 +63,7 @@ export function NewsroomIndex({ articles, policies, filters, headlines, locale =
   articles: readonly PublishedContentArticle[]; policies: readonly PolicyRecord[];
   filters: NewsroomFilters; headlines?: ReactNode; locale?: StoryLocale;
 }>) {
+  if (locale === 'en' && filters.type === 'insights') return <InsightsIndex articles={articles} market={filters.market} />;
   const ko = locale === 'ko';
   const base = ko ? '/ko/news/' : '/news/';
   const href = (type: NewsroomTypeFilter, market = filters.market) => `${ko ? '/ko' : ''}${resolveNewsroomFilters({ type, market }).canonicalHref}`;
@@ -96,6 +99,12 @@ export function NewsroomIndex({ articles, policies, filters, headlines, locale =
   const seen = new Set<string>();
   const filtered = [...(filters.type === 'insights' ? notebookItems : []), ...(filters.type === 'insights' ? standaloneItems : []), ...items, ...(['insights', 'data-stories'].includes(filters.type) ? budgetComparisons : [])].filter(item => { if (promoted.has(item.href) || seen.has(item.href)) return false; seen.add(item.href); return true; }).filter(item => filters.type === 'insights' ? true : filters.type === 'news' ? item.type === 'news-brief' : filters.type === 'policy' ? item.type === 'policy-update' : filters.type === 'market' ? item.type === 'market-brief' : item.type === 'data-story' || item.type === 'guide').sort((a, b) => b.date.localeCompare(a.date));
   const conversations = filters.market === 'all' ? CITY_STORIES.map(city => LOCAL_CONVERSATIONS.find(item => item.city === city.city)!) : LOCAL_CONVERSATIONS.filter(item => item.city === filters.market);
+  if (!ko && filters.type === 'news') return <main className={insightStyles.index} data-newsroom-layout="news" lang="en">
+    <header className={insightStyles.header}><h1>News</h1><p>What happened. Where it matters. What to read next.</p></header>
+    <nav className={insightStyles.filters} aria-label="News markets">{(['all', 'seoul', 'tokyo', 'singapore', 'dubai'] as const).map(city => <Link key={city} href={href('news', city)} aria-current={filters.market === city ? 'page' : undefined}>{city === 'all' ? 'All' : CITY_STORIES.find(item => item.city === city)!.name.en}</Link>)}</nav>
+    {headlines ?? <ExternalHeadlines market={filters.market} locale="en" />}
+    {filtered.length > 0 && <section className={insightStyles.latest}><h2>From SignedPrice</h2><ArticleRows items={filtered.slice(0, 6)} /></section>}
+  </main>;
   return <main className={styles.index} data-newsroom-layout="research" lang={locale}>
     <ResearchPageHeading title={ko ? '뉴스 & 인사이트' : 'News & Insights'} description={ko ? '마음이 가는 도시에서 나에게 맞는 집까지. 동네의 이야기와 가격, 구매의 다음 단계를 함께 읽어보세요.' : 'Find a city you connect with, a neighbourhood that fits, and a clearer path to a home of your own.'} />
     <div className={styles.filterBar} data-newsroom-filter-bar="true">

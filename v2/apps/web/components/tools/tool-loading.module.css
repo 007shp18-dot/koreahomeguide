@@ -1,8 +1,0 @@
-.page { width: min(calc(100% - 2 * var(--page-gutter)), var(--content-frame)); margin: 40px auto 80px; }
-.label { color: var(--accent); font-size: 13px; font-weight: 650; }
-.page h1 { font-size: clamp(26px, 3vw, 36px); font-weight: 600; letter-spacing: -.03em; }
-.page > p:last-of-type { color: var(--muted); }
-.workspace { margin-top: 32px; display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 24px; }
-.workspace > div { min-height: 280px; padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
-.workspace i { display: block; height: 48px; margin-bottom: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-strong); }
-@media (max-width: 700px) { .workspace { grid-template-columns: 1fr; } .workspace > div:last-child { min-height: 160px; } }

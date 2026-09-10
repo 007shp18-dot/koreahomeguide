@@ -15,34 +15,33 @@ async function expectNoHorizontalOverflow(page: Page) {
   expect(dimensions.scroll, JSON.stringify(dimensions.overflowing)).toBeLessThanOrEqual(dimensions.client);
 }
 
-test('News & Insights opens the unified hub and preserves the filter journey', async ({ page }) => {
+test('Insights keeps discovery simple and city selection works', async ({ page }) => {
   await page.goto('/prices/');
   await (await openPrimaryNavigation(page)).getByRole('link', { name: 'Insights', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/$/);
-  await expect(page.locator('header.site-header:visible details.site-header__mobile-menu')).not.toHaveAttribute('open', '');
-  await expect(page.getByRole('heading', { level: 1, name: 'News & Insights', exact: true })).toBeVisible();
-  const types = page.getByRole('navigation', { name: 'News and insight types' });
-  await expect(types.getByRole('link', { name: 'Insights', exact: true })).toHaveAttribute('aria-current', 'page');
-  await page.getByRole('navigation', { name: 'Insight types' }).getByRole('link', { name: 'Market Insight', exact: true }).click();
-  await expect(page).toHaveURL(/\/news\/\?type=market$/);
-  await expect(types.getByRole('link', { name: 'Insights', exact: true })).toHaveAttribute('aria-current', 'page');
-  await types.getByRole('link', { name: 'News', exact: true }).click();
-  await expect(page).toHaveURL(/\/news\/\?type=news$/);
-  await expect(page.getByRole('heading', { level: 2, name: 'Latest news', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Insights', exact: true })).toBeVisible();
+  const cities = page.getByRole('navigation', { name: 'Insight cities' });
+  await expect(cities.getByRole('link')).toHaveText(['All', 'Seoul', 'Tokyo', 'Singapore', 'Dubai']);
+  await expect(page.locator('main article:visible')).toHaveCount(7);
+  await page.getByText('More stories', { exact: true }).click();
+  expect(await page.locator('main article:visible').count()).toBeGreaterThan(7);
+  await cities.getByRole('link', { name: 'Tokyo', exact: true }).click();
+  await expect(page).toHaveURL(/market=tokyo/);
+  await expect(page.locator('main article[data-editorial-market]:not([data-editorial-market="jp-tokyo"])')).toHaveCount(0);
   await expectNoHorizontalOverflow(page);
 });
 
 test('Newsroom filters reviewed SignedPrice records and opens the policy lifecycle', async ({ page }) => {
   await page.goto('/news/');
 
-  await expect(page).toHaveTitle(/Property news, policy and market insights/);
-  await expect(page.getByRole('heading', { level: 1, name: 'News & Insights', exact: true })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link')).toHaveCount(3);
-  await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai', 'Tokyo']);
+  await expect(page).toHaveTitle(/Insights/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Insights', exact: true })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Insight cities' }).getByRole('link')).toHaveCount(5);
+  await expect(page.getByRole('navigation', { name: 'Insight cities' }).getByRole('link')).toHaveText(['All', 'Seoul', 'Tokyo', 'Singapore', 'Dubai']);
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(/provider|credential|ingestion|Naver News API/i);
 
-  await page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link', { name: 'Policy', exact: true }).click();
+  await page.goto('/news/?type=policy');
   await expect(page).toHaveURL(/\/news\/\?type=policy$/);
   await page.getByRole('link', { name: 'Policy tracker', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/policy\/$/);
@@ -72,9 +71,9 @@ test('archived English Insights article redirects once to the reviewed News inde
 test('Newsroom mobile filters remain touch-sized and contained', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/news/');
-  await expect(page.locator('[data-newsroom-layout="research"]')).toBeVisible();
+  await expect(page.locator('[data-newsroom-layout="insights"]')).toBeVisible();
 
-  const filters = page.locator('nav[aria-label="News and insight types"] a, nav[aria-label="News markets"] a');
+  const filters = page.locator('nav[aria-label="Insight cities"] a');
   for (const filter of await filters.all()) {
     const box = await filter.boundingBox();
     expect(box).not.toBeNull();
@@ -83,47 +82,22 @@ test('Newsroom mobile filters remain touch-sized and contained', async ({ page }
   await expectNoHorizontalOverflow(page);
 });
 
-test('News uses the shared readable type and restrained frame', async ({ page }, testInfo) => {
+test('Insights type and image layout stays readable across viewports', async ({ page }) => {
   await page.goto('/news/');
-  await expect(page.locator('[data-newsroom-layout="research"]')).toBeVisible();
-
-  const values = await page.locator('[data-newsroom-layout="research"]').evaluate((main) => {
-    const root = getComputedStyle(document.documentElement);
-    const heading = main.querySelector('h1');
-    const summary = main.querySelector('[data-research-page-heading] > p');
-    const typeFilter = main.querySelector('nav[aria-label="News and insight types"] a');
-    const marketFilter = main.querySelector('nav[aria-label="News markets"] a');
-    if (heading === null || summary === null || typeFilter === null || marketFilter === null) {
-      throw new Error('News hierarchy is incomplete');
-    }
-    return {
-      bodySize: root.getPropertyValue('--body-size').trim(),
-      uiSize: root.getPropertyValue('--ui-size').trim(),
-      readingFrame: root.getPropertyValue('--research-reading-frame').trim(),
-      headingSize: Number.parseFloat(getComputedStyle(heading).fontSize),
-      summarySize: Number.parseFloat(getComputedStyle(summary).fontSize),
-      typeFilterSize: Number.parseFloat(getComputedStyle(typeFilter).fontSize),
-      marketFilterSize: Number.parseFloat(getComputedStyle(marketFilter).fontSize),
-      typeFilterHeight: typeFilter.getBoundingClientRect().height,
-      marketFilterHeight: marketFilter.getBoundingClientRect().height,
-    };
+  const main = page.locator('[data-newsroom-layout="insights"]');
+  await expect(main).toBeVisible();
+  const values = await main.evaluate(main => {
+    const heading = main.querySelector('h1')!;
+    const deck = main.querySelector('header > p')!;
+    const filter = main.querySelector('nav a')!;
+    return { heading: parseFloat(getComputedStyle(heading).fontSize), deck: parseFloat(getComputedStyle(deck).fontSize), filter: parseFloat(getComputedStyle(filter).fontSize), height: filter.getBoundingClientRect().height };
   });
-
-  expect(values.bodySize).toBe('1rem');
-  expect(Number.parseFloat(values.uiSize)).toBe(0.875);
-  expect(values.readingFrame).toBe('720px');
-  if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
-    // The September polish deliberately reduces oversized page headings.
-    expect(values.headingSize).toBe(40);
-  } else {
-    expect(values.headingSize).toBeGreaterThanOrEqual(30);
-    expect(values.headingSize).toBeLessThanOrEqual(40);
-  }
-  expect(values.summarySize).toBeGreaterThanOrEqual(16);
-  expect(values.typeFilterSize).toBeGreaterThanOrEqual(14);
-  expect(values.marketFilterSize).toBeGreaterThanOrEqual(14);
-  expect(values.typeFilterHeight).toBeGreaterThanOrEqual(44);
-  expect(values.marketFilterHeight).toBeGreaterThanOrEqual(44);
+  expect(values.heading).toBeGreaterThanOrEqual(40);
+  expect(values.heading).toBeLessThanOrEqual(60);
+  expect(values.deck).toBeGreaterThanOrEqual(15);
+  expect(values.filter).toBeGreaterThanOrEqual(14);
+  expect(values.height).toBeGreaterThanOrEqual(44);
+  await expectNoHorizontalOverflow(page);
 });
 
 test('external headlines survive market filtering and open the original publisher', async ({ page }) => {
@@ -134,9 +108,8 @@ test('external headlines survive market filtering and open the original publishe
     ],
   } satisfies NewsWorkspaceModel;
   await page.route('**/api/news/', (route) => route.fulfill({ json: reviewedHeadlines }));
-  await page.goto('/news/');
-  await expect(page.getByRole('heading', { name: 'Latest news', exact: true })).toBeVisible();
-  await page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link', { name: 'News', exact: true }).click();
+  await page.goto('/news/?type=news');
+  await expect(page.getByRole('heading', { name: 'News', exact: true, level: 1 })).toBeVisible();
   await expect(page).toHaveURL(/type=news/);
   await page.getByRole('button', { name: 'Refresh', exact: true }).click();
   await expect(page.getByRole('link', { name: 'Singapore housing release' })).toBeVisible();
@@ -163,7 +136,7 @@ test('News & Insights and Guides keep the same global header and the guide highl
   let navigation = await openPrimaryNavigation(page);
   const newsLabels = await navigation.innerText();
   await navigation.getByRole('link', { name: 'Guides', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Buying & renting guides', exact: true, level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
   navigation = await openPrimaryNavigation(page);
   await expect(navigation).toHaveText(newsLabels, { useInnerText: true });
   const mobileMenu = page.locator('header.site-header details.site-header__mobile-menu[open]');
@@ -186,11 +159,9 @@ test('News & Insights and Guides keep the same global header and the guide highl
 test('Tokyo city journey opens its own article, chapters and Korean translation', async ({ page }) => {
   await page.goto('/news/?market=tokyo');
   const lead = page.locator('[data-newsroom-lead]');
-  await expect(lead).toContainText("A Tokyo neighbourhood you will want to come home to");
-  await page.getByText('View the buying steps', {exact:true}).click();
-  await page.getByRole('tab', { name: /Where\?/ }).click();
-  await expect(page.getByRole('tabpanel')).toContainText("Compare Nakameguro, Kiyosumi Shirakawa and Kagurazaka through the journeys you actually make, then check the street and building.");
-  await page.getByRole('tabpanel').getByRole('link', { name: /Read this article/ }).click();
+  await expect(lead).toContainText('Kichijoji');
+  await expect(page.getByText('View the buying steps', { exact: true })).toHaveCount(0);
+  await page.goto('/news/city-stories/tokyo/where/');
   await expect(page).toHaveURL(/\/news\/city-stories\/tokyo\/where\/$/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText("Choose the railway, then the street");
   await expect.poll(() => page.locator('main img').first().evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);

@@ -242,7 +242,7 @@ export function SingaporeExplorer({ locale = 'en',
       </form>
     </div>
   </>;
-  if (model.status === 'unavailable') return <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed><h1>{sgText(locale, "Explore")}</h1><p>{sgText(locale, model.message)}</p><HdbMarketPanel locale={locale} model={hdbModel} /></SingaporePage>;
+  if (model.status === 'unavailable') return <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed><div className={styles.exploreSupportingContent}><h1>{sgText(locale, "Explore")}</h1><p>{sgText(locale, model.message)}</p><HdbMarketPanel locale={locale} model={hdbModel} /></div></SingaporePage>;
   return <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed>
     <div data-singapore-explore-workspace="true" data-singapore-evidence="ready" data-navigation-state={pendingHref === null ? 'idle' : 'pending'}>
       <MarketExploreShell locale={locale} eyebrow={sgText(locale, "Singapore")} title={sgText(locale, "Explore")} period={<>{sgText(locale, model.periodLabel)}</>} layers={layers}
@@ -296,8 +296,10 @@ export function SingaporeExplorer({ locale = 'en',
         </section>}
       />
     </div>
-    {progressive ? <nav aria-label={locale === 'ko' ? '권역별 전체 단지' : 'All projects by region'}>{segments.map(segment => <Link key={segment.code} prefetch={false} href={marketHref(locale, segment.href)}>{segment.code} · {segment.projectCount}　</Link>)}</nav> : <SingaporeProjectDirectory segments={segments} locale={locale} />}
+    <div className={styles.exploreSupportingContent}>
+    {progressive ? <nav className={styles.sourceLinks} aria-label={locale === 'ko' ? '권역별 전체 단지' : 'All projects by region'}>{segments.map(segment => <Link key={segment.code} prefetch={false} href={marketHref(locale, segment.href)}>{segment.code} · {segment.projectCount}</Link>)}</nav> : <SingaporeProjectDirectory segments={segments} locale={locale} />}
     <p><Link href={marketHref(locale, "/guides/singapore-condo-buying-budget-guide/")}>{sgText(locale, "Condo buying guide: budgets, costs and ownership checks")}</Link></p>
     <HdbMarketPanel locale={locale} model={hdbModel} /><SingaporeEvidence locale={locale} model={model.evidence} compact />
+    </div>
   </SingaporePage>;
 }
