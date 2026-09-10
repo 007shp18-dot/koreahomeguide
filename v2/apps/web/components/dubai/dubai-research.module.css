@@ -234,3 +234,6 @@
   .selectionMetrics { gap: 16px 12px; }
   .selectionMetrics dd { font-size: 15px; }
 }
+
+/* The shared result panel owns the frame; avoid a second nested card. */
+.checkResultPanel[data-tool-result] > :is(.checkResultCard, .checkEmpty) { padding: 0; border: 0; border-radius: 0; background: transparent; }

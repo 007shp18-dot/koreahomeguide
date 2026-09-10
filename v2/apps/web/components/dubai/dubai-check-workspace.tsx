@@ -150,12 +150,12 @@ export function DubaiCheckWorkspace({ locale = 'en',
   const completionValue = query?.completion ?? 'ready';
   const resolved = resolveCheck(model, state, locale);
   return <div className={`${styles.checkPage} ${toolSurface.surface}`} data-dubai-check-workspace="ready">
-    <header className={styles.checkHeader}>
+    <header data-tool-header className={styles.checkHeader}>
       <div><p className={styles.eyebrow}>{t("Dubai Check")}</p><h1>{t("Compare an asking price")}</h1></div>
       <p>{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}<br />{locale === 'ko' ? `비교 그룹별 최소 ${model.context.publicationMinimum}건` : `Minimum ${model.context.publicationMinimum} records per cohort`}</p>
     </header>
-    <div className={styles.checkGrid}>
-      <section className={styles.checkFormPanel}>
+    <div data-tool-layout className={styles.checkGrid}>
+      <section data-tool-input className={styles.checkFormPanel}>
         <form action={marketHref(locale, "/ae/dubai/check/")} method="get"><PassportFormContext />
           <label><span>{t("Area")}</span><select name="area" defaultValue={areaValue} required>{model.areas.map((area) => <option key={area.slug} value={area.slug}>{t(area.name)}</option>)}</select></label>
           <label><span>{t("Home type")}</span><select name="housing" defaultValue={housingValue} required><option value="apartment">{t("Apartment")}</option><option value="villa">{t("Villa")}</option></select></label>

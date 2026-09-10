@@ -204,7 +204,7 @@ export function clusterGoogleMarketPoints(points: readonly GoogleMarketMapPoint[
   return result;
 }
 
-/** Only the selected property gets a name; overview groups keep their counts. */
+/** Named areas stay legible; dense property maps label only the selected property. */
 export function googleMarketMarkerAppearance(point: GoogleMarketMapPoint) {
   const group = point.kind === 'area' || point.kind === 'cluster';
   const label = point.showFullLabel ? point.label : group ? (point.count === undefined ? point.label : point.count.toLocaleString('en-US')) : point.selected ? point.title : undefined;
@@ -214,7 +214,7 @@ export function googleMarketMarkerAppearance(point: GoogleMarketMapPoint) {
       strokeColor: '#ffffff', strokeWeight: 2 },
     zIndex: point.selected ? 1000 : group ? 10 : 1,
     ...(label === undefined ? {} : { label: { text: label,
-      className: point.showFullLabel ? 'spGoogleMarketMarker spGoogleAreaPrice' : point.kind === 'area' ? `spGoogleMarketMarker spGoogleAreaGroup${point.level === 'region' ? ' spGoogleRegionGroup' : point.level === 'district' ? ' spGoogleDistrictGroup' : ''}`
+      className: point.showFullLabel ? `spGoogleMarketMarker spGoogleAreaPrice${point.selected ? ' spGoogleMarketMarkerSelected' : ''}` : point.kind === 'area' ? `spGoogleMarketMarker spGoogleAreaGroup${point.level === 'region' ? ' spGoogleRegionGroup' : point.level === 'district' ? ' spGoogleDistrictGroup' : ''}`
         : point.kind === 'cluster' ? 'spGoogleMarketMarker spGoogleCluster'
           : 'spGoogleMarketMarker spGoogleMarketMarkerSelected' } }),
   };

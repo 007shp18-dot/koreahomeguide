@@ -4,7 +4,7 @@ vi.mock('server-only', () => ({}));
 const mocks = vi.hoisted(() => ({ sql: vi.fn() }));
 vi.mock('../lib/db/postgres.server', () => ({ contentDatabase: () => mocks.sql, publicContentDatabase: () => mocks.sql }));
 
-import { storeBuildingFacts, loadStoredBuildingProximity } from '../lib/public-market/building-facts-store.server';
+import { storeBuildingFacts, loadStoredBuildingProximity, loadStoredReportedNearby } from '../lib/public-market/building-facts-store.server';
 
 describe('building facts database provenance', () => {
   beforeEach(() => {
@@ -59,4 +59,24 @@ describe('nearby evidence for existing legacy buildings', () => {
     const result = await loadStoredBuildingProximity({ districtSlug: 'jungnang-gu', buildingId: 'jungnang-gu-1giu390', districtLawdCd: '11260', neighborhoodName: '묵동', officialName: 'Example', housingType: 'apartment' });
     expect(result).toBeNull();
   });
+});
+
+
+test('returns K-apt names without inventing distances and preserves walking upper bounds', async () => {
+  mocks.sql.mockResolvedValue([
+    { kind: 'station', provider_id: 'kapt:A1:station:1', name: '녹천', distance_meters: null, walking_minutes: 5, lines: ['1호선'], source: 'https://www.k-apt.go.kr/' },
+    { kind: 'school', provider_id: 'kapt:A1:school:1', name: '창일초', walking_minutes: null, lines: [], source: 'https://www.k-apt.go.kr/' },
+    { kind: 'station', provider_id: 'unknown', name: 'Unverified', source: 'https://example.test' },
+  ]);
+  const identity = { districtSlug: 'dobong-gu', buildingId: 'dobong-gu-128wfm7', districtLawdCd: '11320', neighborhoodName: '창동', officialName: '창동주공18단지', housingType: 'apartment' };
+  const result = await loadStoredReportedNearby(identity);
+  expect(result).toHaveLength(2);
+  expect(result[0]).toMatchObject({ name: '녹천', walkingMinutesUpperBound: 5 });
+  expect(result[1]).toMatchObject({ name: '창일초', walkingMinutesUpperBound: null });
+  expect(result[0]).not.toHaveProperty('distanceMeters');
+  const [strings, ...values] = mocks.sql.mock.calls.at(-1)!;
+  expect((strings as TemplateStringsArray).join('')).toContain('distance_meters IS NULL');
+  expect(values).toEqual(['seoul:dobong-gu-128wfm7']);
+  mocks.sql.mockResolvedValue([{ kind: 'station', provider_id: 'kapt:A1', name: '녹천', distance_meters: null }]);
+  expect(await loadStoredBuildingProximity(identity)).toBeNull();
 });

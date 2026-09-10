@@ -23,7 +23,7 @@ function response(body: unknown, status = 200): Response {
 }
 
 describe('tool research client boundary', () => {
-  it('renders a collapsed, unchecked consent panel without making a request', () => {
+  it('renders a counter notice without a consent form or server-render request', () => {
     const fetcher = vi.fn();
     vi.stubGlobal('fetch', fetcher);
     const snapshot = createPropertyScenarioResearchSnapshot({
@@ -35,12 +35,10 @@ describe('tool research client boundary', () => {
     const html = renderToStaticMarkup(<ToolResearchShare locale="en" resultRevision="result-1" snapshot={snapshot} />);
 
     expect(fetcher).not.toHaveBeenCalled();
-    expect(html).toContain('<details');
-    expect(html).not.toContain('<details open=""');
-    expect(html).toMatch(/type="checkbox"/);
-    expect(html).not.toMatch(/type="checkbox"[^>]*checked/);
-    expect(html).toContain('SGD 1m–2m');
-    expect(html).toContain('85–120 m²');
+    expect(html).not.toContain('checkbox');
+    expect(html).toContain('We count tool usage by city');
+    expect(html).not.toContain('SGD 1m–2m');
+    expect(html).not.toContain('85–120');
     expect(html).not.toContain('1250000');
     vi.unstubAllGlobals();
   });

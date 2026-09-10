@@ -8,6 +8,7 @@ import type { MarketCollectionStatus } from '../../lib/data-operations/market-st
 import type { CollectionStatus } from '../../lib/data-operations/repository.server';
 import {HdbBuildingPanel} from './hdb-building-panel';
 import {OneMapLocationPanel} from './onemap-location-panel';
+import { JapanBackfillPanel } from './japan-backfill-panel';
 import styles from './workspace.module.css';
 
 type Publication = {sourceAsOf:string;releasedAt:string;saleCount:number;rentCount:number;digest:string};
@@ -63,6 +64,7 @@ export function CollectionPanel({initialData, onUnauthorized}: {initialData?: Da
  return <section aria-label="정기 수집 운영">
   <div className={styles.detailHeader}><h2>정기 수집 · 변경 검토</h2><button type="button" disabled={loading||busy} onClick={()=>{setLoading(true);void load();}}>{loading?'조회 중…':'수집 현황 새로고침'}</button></div>
   <section className={styles.notice} aria-label="싱가포르 화면 데이터 공개"><h3>싱가포르 거래 자료 · 화면 반영</h3>{publicationError?<p role="alert">{publicationError}</p>:publication?<p>수집 기준 {formatTime(publication.sourceAsOf)} · 마지막 공개 {formatTime(publication.releasedAt)} · 매매 {publication.saleCount.toLocaleString()}건 · 임대 {publication.rentCount.toLocaleString()}건</p>:<p>공개 버전 기록을 조회 중이거나 아직 공개한 버전이 없습니다.</p>}<button type="button" disabled={busy} onClick={()=>void publishSingapore()}>싱가포르 거래 검증 후 사이트 반영</button><p>수집 원문·세금·요금표의 검토 상태와 별도로, 검증을 통과한 싱가포르 거래 자료를 반영합니다.</p></section>
+  <JapanBackfillPanel onUnauthorized={onUnauthorized}/>
   <HdbBuildingPanel onUnauthorized={onUnauthorized}/>
   <OneMapLocationPanel onUnauthorized={onUnauthorized}/>
   <p>마지막 수집 성공과 사이트 공개는 별개입니다. 원문 검토 완료 후 조건·금액을 구조화하고 자료 승인을 거쳐야 계산에 사용할 수 있습니다.</p>

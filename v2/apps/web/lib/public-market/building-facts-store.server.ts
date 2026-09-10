@@ -2,6 +2,7 @@ import 'server-only';
 
 import { contentDatabase, publicContentDatabase } from '../db/postgres.server';
 import type { PublicEntityProximity } from '../public-data/entity-location-projection.server';
+import type { ReportedNearbyPlace } from './reported-nearby-places';
 import type { OfficialBuildingFacts } from './official-building-facts.server';
 
 export type BuildingFactsIdentity = Readonly<{
@@ -131,6 +132,7 @@ export async function loadStoredBuildingProximity(identity: BuildingFactsIdentit
   let nearestStation: PublicEntityProximity['nearestStation'] = null;
   let nearestSchool: PublicEntityProximity['nearestSchool'] = null;
   for (const row of rows) {
+    if (row.distance_meters == null) continue;
     const distanceMeters = Number(row.distance_meters);
     if (!Number.isFinite(distanceMeters) || distanceMeters < 0 || typeof row.name !== 'string'
       || !row.name.trim() || typeof row.provider_id !== 'string') continue;
@@ -143,4 +145,31 @@ export async function loadStoredBuildingProximity(identity: BuildingFactsIdentit
   return nearestStation === null && nearestSchool === null ? null : {
     status: 'ready', coordinateStatus: 'ready', nearestStation, nearestSchool,
   };
+}
+
+/** K-apt names remain useful when no measured distance is available. The seed
+ * records walking ranges as their upper bound, never an exact walking time. */
+export async function loadStoredReportedNearby(identity: BuildingFactsIdentity): Promise<readonly ReportedNearbyPlace[]> {
+  const sql = publicContentDatabase();
+  if (sql === null) return [];
+  const rows = await sql`
+    SELECT kind, provider_id, name, lines, walking_minutes, source
+    FROM nearby_places
+    WHERE building_key = ${`seoul:${identity.buildingId}`}
+      AND kind IN ('station', 'school') AND distance_meters IS NULL
+      AND source = 'https://www.k-apt.go.kr/' AND provider_id LIKE 'kapt:%'
+    ORDER BY kind, name, provider_id
+    LIMIT 40
+  `;
+  return rows.flatMap((row): ReportedNearbyPlace[] => {
+    if ((row.kind !== 'station' && row.kind !== 'school') || typeof row.name !== 'string'
+      || !row.name.trim() || typeof row.provider_id !== 'string' || !row.provider_id.startsWith('kapt:')
+      || row.source !== 'https://www.k-apt.go.kr/') return [];
+    const minutes = row.walking_minutes == null ? null : Number(row.walking_minutes);
+    return [{
+      kind: row.kind, sourceId: row.provider_id, name: row.name.trim(), source: row.source,
+      lines: Array.isArray(row.lines) ? row.lines.filter((line): line is string => typeof line === 'string' && Boolean(line.trim())) : [],
+      walkingMinutesUpperBound: row.kind === 'station' && minutes !== null && Number.isInteger(minutes) && minutes > 0 ? minutes : null,
+    }];
+  });
 }

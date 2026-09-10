@@ -1186,3 +1186,25 @@
 }
 .secondaryAction:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .requestStatus { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 0; padding: 16px 20px; font-size: 14px; line-height: 1.6; }
+
+/* The single-offer calculator uses the same two-panel workspace as other cities. */
+.main [data-tool-input] .conditions,
+.main [data-tool-input] .singleOffer { margin: 0 0 24px; padding: 0; border: 0; }
+.main [data-tool-input] .conditionGrid,
+.main [data-tool-input] .singleOffer { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; }
+.main [data-tool-input] .field { padding: 0; border: 0; }
+.main [data-tool-input] .field > span { min-height: 0; margin-bottom: 8px; }
+.main [data-tool-input] :is(.conditions, .singleOffer) > legend { display: block; min-height: 0; margin-bottom: 20px; padding: 0; border: 0; font-size: 16px; font-weight: 650; }
+.main [data-tool-input] legend > span { display: none; }
+.main [data-tool-input] .actions { min-height: 0; border: 0; }
+.main [data-tool-result] > header { display: block; min-height: 0; padding: 0 0 20px; border: 0; }
+.main [data-tool-result] > header > span { display: none; }
+.main [data-tool-result] > header h2 { padding: 0; font-size: 16px; line-height: 1.5; }
+.main [data-tool-result] :is(.resultBody, .resultEmpty) { padding: 0; }
+@media (max-width:560px) {
+  .main [data-tool-input] .conditionGrid,
+  .main [data-tool-input] .singleOffer { grid-template-columns: minmax(0, 1fr); }
+}
+.main [data-tool-result] :is(.keyFigures, .marketEvidence, .disclosure, .verdictPanel) { padding: 20px 0; border-color: var(--line); }
+.main [data-tool-result] .keyFigures dl > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.main [data-tool-result] .keyFigures dd { margin: 0; }

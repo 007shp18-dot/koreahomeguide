@@ -1,5 +1,5 @@
 import 'server-only';
-import { collectJapanSnapshot, parseJapanScope, type JapanScope } from './source.server';
+import { collectJapanSnapshot, JapanNoDataError, parseJapanScope, type JapanScope } from './source.server';
 import type { createJapanRepository } from './repository.server';
 import { TOKYO_WARDS } from './query';
 
@@ -32,6 +32,7 @@ export async function refreshJapan(repository: ReturnType<typeof createJapanRepo
     const safeStorageCode = ['lease_expired', 'candidate_incomplete', 'source_count_reduction', 'run_invalid']
       .find(code => error instanceof Error && error.message.includes(code));
     const code = phase === 'storage' ? safeStorageCode ?? 'storage_or_publication_failed'
+      : error instanceof JapanNoDataError ? 'no_data'
       : error instanceof TypeError || error instanceof SyntaxError ? 'source_invalid' : 'provider_unavailable';
     try { await repository.fail(run, code); } catch { /* Lease expires; no public pointer was changed. */ }
     return { state: 'failed' as const, code };

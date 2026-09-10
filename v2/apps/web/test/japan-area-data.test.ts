@@ -104,6 +104,14 @@ describe('Japan service failure isolation', () => {
     expect(await refreshJapan(repo, scope, 'secret', { fetchResponse: async () => new Response('', { status: 503 }) })).toMatchObject({ state: 'failed', code: 'provider_unavailable' });
     expect(repo.stage).not.toHaveBeenCalled(); expect(repo.activate).not.toHaveBeenCalled(); expect(repo.fail).toHaveBeenCalled();
   });
+  it('source404 is scoped absence and preserves the previously published release', async () => {
+    const repo = repository();
+    expect(await refreshJapan(repo, scope, 'secret', { fetchResponse: async () => new Response(null, { status: 404 }) }))
+      .toEqual({ state: 'failed', code: 'no_data' });
+    expect(repo.stage).not.toHaveBeenCalled();
+    expect(repo.activate).not.toHaveBeenCalled();
+    expect(repo.fail).toHaveBeenCalledWith(run, 'no_data');
+  });
   it('partial write or expired lease never reports publication success', async () => {
     for (const phase of ['stage','activate'] as const) {
       const repo = repository(); repo[phase].mockRejectedValue(new Error(phase === 'stage' ? 'second chunk failed' : 'lease expired'));

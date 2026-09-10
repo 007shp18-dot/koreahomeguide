@@ -40,6 +40,9 @@ describe('global property database migration', () => {
       '0025_onemap_location_collection.sql',
       '0025_photo_source_recovery.sql',
       '0026_editorial_publication_queue.sql',
+      '0027_singapore_explore_publication.sql',
+      '0028_tool_usage_daily.sql',
+      '0029_japan_backfill.sql',
     ]);
     expect(bundles.find(({ name }) => name === '0003_global_property_core.sql')?.statements.length)
       .toBeGreaterThan(10);

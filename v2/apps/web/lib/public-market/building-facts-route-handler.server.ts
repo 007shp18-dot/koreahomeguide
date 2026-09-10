@@ -1,5 +1,6 @@
 import 'server-only';
 
+import type { ReportedNearbyPlace } from './reported-nearby-places';
 import type { OfficialBuildingFacts } from './official-building-facts.server';
 import type { PublicEntityProximity } from '../public-data/entity-location-projection.server';
 
@@ -21,6 +22,7 @@ type Dependencies = Readonly<{
   }>): Promise<OfficialBuildingFacts>;
   loadStored?(input: StoredIdentity): Promise<OfficialBuildingFacts | null>;
   loadProximity?(input: StoredIdentity): Promise<PublicEntityProximity | null>;
+  loadReportedNearby?(input: StoredIdentity): Promise<readonly ReportedNearbyPlace[]>;
   loadInstalled?(input: StoredIdentity): OfficialBuildingFacts | null;
   storeReady?(
     input: StoredIdentity,
@@ -43,9 +45,10 @@ export function supplementStoredNearbyFacts(stored: OfficialBuildingFacts, insta
   } });
 }
 
-function envelope(facts: OfficialBuildingFacts, proximity?: PublicEntityProximity | null) {
+function envelope(facts: OfficialBuildingFacts, proximity?: PublicEntityProximity | null, reportedNearby?: readonly ReportedNearbyPlace[]) {
   return Object.freeze({
     schemaVersion: 1,
+    ...(reportedNearby === undefined ? {} : { reportedNearby }),
     ...(proximity === undefined ? {} : { proximity }),
     source: facts.status === 'ready' && facts.source !== undefined
       ? facts.source
@@ -77,8 +80,9 @@ export function createBuildingFactsGetHandler(dependencies: Dependencies) {
     // Read nearby evidence at request time too: a static Detail build may not
     // have had a database connection, while verified places exist now.
     const proximity = dependencies.loadProximity?.(storedIdentity).catch(() => null);
+    const reportedNearby = dependencies.loadReportedNearby?.(storedIdentity).catch(() => []);
     const installed = dependencies.loadInstalled?.(storedIdentity) ?? null;
-    const withNearby = async (facts: OfficialBuildingFacts) => envelope(facts, await proximity);
+    const withNearby = async (facts: OfficialBuildingFacts) => envelope(facts, await proximity, await reportedNearby);
     if (dependencies.loadStored !== undefined) {
       try {
         const stored = await dependencies.loadStored(storedIdentity);

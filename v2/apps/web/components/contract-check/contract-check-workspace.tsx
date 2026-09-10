@@ -1,4 +1,5 @@
 'use client';
+import toolSurface from '../tools/tool-surface.module.css';
 import { ResultLinkCopy } from './result-link-copy';
 import { BuildingSelection } from './building-selection';
 import { AmountInput } from '../amount-input';
@@ -390,8 +391,8 @@ function ReadyWorkspace({ model, locale, entityContext }: Readonly<{
   }));
   return (
     <>
-      <main className={styles.main}>
-        <section className={styles.hero}>
+      <main className={`${styles.main} ${toolSurface.surface}`}>
+        <section data-tool-header className={styles.hero}>
           <p>{locale === 'ko' ? '서울 · 실거래가 비교' : 'Seoul · Reported transactions'}</p>
           <h1>{c.compare}</h1>
           <p>{locale === 'ko' ? '매매·전세·월세 조건을 각각 비슷한 거래와 비교하세요.' : 'Compare sale, jeonse or monthly-rent offers with similar transactions.'}</p>

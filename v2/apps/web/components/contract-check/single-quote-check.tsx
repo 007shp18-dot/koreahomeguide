@@ -1,4 +1,5 @@
 'use client';
+import toolSurface from '../tools/tool-surface.module.css';
 import { BuyerNextSteps } from '../buyer-next-steps';
 import { ResultLinkCopy } from './result-link-copy';
 import { CheckBuildingSearch } from './check-building-search';
@@ -61,7 +62,7 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
     ? JSON.stringify(result)
     : 'no-result';
   return (
-    <section aria-live="polite" className={styles.resultPanel} data-check-section="verdict" data-result-focus-target="true">
+    <section data-tool-result aria-live="polite" className={styles.resultPanel} data-check-section="verdict" data-result-focus-target="true">
       <header><span>03</span><h2>{c.result}</h2></header>
       {!model.submitted || result === null ? (
         <div className={styles.resultEmpty} data-result-state="blank"><p>{locale === 'ko'
@@ -148,8 +149,8 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
   return (
     <div className={styles.page} data-primary-check="single-quote" lang={locale}>
       <SiteHeader copy={checkHeader(locale)} />
-      <main className={styles.main}>
-        <section className={styles.hero}>
+      <main className={`${styles.main} ${toolSurface.surface}`}>
+        <section data-tool-header className={styles.hero}>
           <p>{locale === 'ko' ? '서울 · 실거래가 비교' : 'Seoul · Official transaction evidence'}</p>
           <h1>{locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}</h1>
           <p>{locale === 'ko'
@@ -160,7 +161,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
           <span aria-current="page" data-check-mode="single">{c.single}</span>
           <Link data-check-mode="compare" href={localizedCheckHref(locale, '/compare/')}>{c.compare}</Link>
         </nav>
-        {pending && <p className={styles.requestStatus} role="status">{error ? (locale === 'ko' ? '비교 자료를 불러오지 못했습니다.' : 'Comparison data could not be loaded.') : (locale === 'ko' ? '입력한 조건으로 거래를 비교하고 있습니다…' : 'Comparing contracts for your inputs…')}{error && <button type="button" className={styles.secondaryAction} onClick={onRetry}>{locale === 'ko' ? '다시 시도' : 'Retry'}</button>}</p>}<form inert={pending && !error} aria-busy={pending && !error} onSubmit={onSubmit} action={localizedCheckHref(locale, '/')} className={styles.form} method="get"><PassportFormContext />
+        {pending && <p className={styles.requestStatus} role="status">{error ? (locale === 'ko' ? '비교 자료를 불러오지 못했습니다.' : 'Comparison data could not be loaded.') : (locale === 'ko' ? '입력한 조건으로 거래를 비교하고 있습니다…' : 'Comparing contracts for your inputs…')}{error && <button type="button" className={styles.secondaryAction} onClick={onRetry}>{locale === 'ko' ? '다시 시도' : 'Retry'}</button>}</p>}<div data-tool-layout><form data-tool-input inert={pending && !error} aria-busy={pending && !error} onSubmit={onSubmit} action={localizedCheckHref(locale, '/')} className={styles.form} method="get"><PassportFormContext />
           <input name="check" type="hidden" value="1" />
           {entityContext === null || buildingId !== model.selection.buildingId ? null : <>
             <input name="market" type="hidden" value={entityContext.market} />
@@ -200,7 +201,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
           </fieldset>
           <div className={styles.actions}><button type="submit">{locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}</button></div>
         </form>
-        <SingleResult model={model} locale={locale} entityContext={entityContext} />
+        <SingleResult model={model} locale={locale} entityContext={entityContext} /></div>
         <nav className={styles.contextLinks} aria-label={c.evidence}>
           {entityContext === null ? null : <Link href={entityContext.returnTo}>
             {locale === 'ko' ? `${model.buildingName ?? '선택한 단지'} 돌아가기` : `Return to ${model.buildingName ?? 'selected building'}`}

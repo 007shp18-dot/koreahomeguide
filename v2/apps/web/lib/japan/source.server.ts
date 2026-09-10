@@ -1,6 +1,10 @@
 import 'server-only';
 import { createHash } from 'node:crypto';
 
+export class JapanNoDataError extends Error {
+  constructor() { super('no_data'); this.name = 'JapanNoDataError'; }
+}
+
 export const JAPAN_SOURCE = 'https://www.reinfolib.mlit.go.jp/ex-api/external/XIT001';
 export const JAPAN_PARSER = 'xit001-area-snapshot@1';
 export const MAX_JAPAN_RECORDS = 10_000;
@@ -90,6 +94,7 @@ export async function collectJapanSnapshot(scope: JapanScope, apiKey: string,
   const response = await fetchResponse(url, { cache: 'no-store', redirect: 'error',
     signal: AbortSignal.timeout(25_000), headers: { 'Ocp-Apim-Subscription-Key': apiKey, Accept: 'application/json' } });
   // XIT001 uses 404 for no data; do not erase a prior release on absence or failure.
+  if (response.status === 404) throw new JapanNoDataError();
   if (!response.ok || !response.body) throw new Error('provider_unavailable');
   const reader = response.body.getReader();
   const chunks: Uint8Array[] = [];

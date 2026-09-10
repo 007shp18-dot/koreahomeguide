@@ -4,6 +4,7 @@ import { gzipSync } from 'node:zlib';
 import { neon } from '@neondatabase/serverless';
 import { buildSingaporeSnapshot, buildSingaporeProjectId, buildUraPrivateSaleCheckArtifact, parseSingaporeSnapshot, type UraPrivateSaleTransaction } from '@signedprice/singapore-property';
 import { createInstalledSnapshotRepository, resolveInstalledSnapshotRegistry, resolveInstalledSnapshotObject } from '../snapshots/installed-snapshot-repository.server';
+import { buildSingaporeExplorePublication } from './explore-publication-build.server';
 import { parseSingaporePublication } from './publication.server';
 
 export async function publishSingaporeObservations({ apply = false, verifyFull = false, onProgress, budgetMs = 210_000 }: { apply?: boolean; verifyFull?: boolean; onProgress?: (progress: {stage:string; count?:number; elapsedMs:number}) => void; budgetMs?:number } = {}) {
@@ -86,6 +87,7 @@ const serialized = JSON.stringify(bundle);
 const digest = createHash('sha256').update(serialized).digest('hex');
 parseSingaporePublication(serialized, digest);
 progress('bundle_verified');
+const explore = await buildSingaporeExplorePublication(publicationId, snapshot);
 if (!apply) {
  const [after] = await sql.query(WATERMARK);
  if (after?.value !== watermark?.value) throw new Error('Publication withheld: observations changed during build');
@@ -96,7 +98,7 @@ progress('ready_to_activate');
 if (apply) await sql.transaction([
  sql.query(`SELECT 1 / CASE WHEN (SELECT value FROM (${WATERMARK}) state) = $1
  AND NOT EXISTS (SELECT 1 FROM market_data_refresh_runs WHERE job IN ('sg-private-sale','sg-private-rent') AND state='running') THEN 1 ELSE 0 END AS consistent`, [watermark?.value]),
- sql.query(`INSERT INTO singapore_publication_releases(id,source_as_of,released_at,sale_count,rent_count,payload_gzip_base64,sha256) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(id) DO NOTHING`, [id,sourceAsOf,releasedAt,records.length,bundle.rentalRecordCount,gzipSync(serialized).toString('base64'),digest]),
+ sql.query(`INSERT INTO singapore_publication_releases(id,source_as_of,released_at,sale_count,rent_count,payload_gzip_base64,sha256,explore_json,explore_sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT(id) DO NOTHING`, [id,sourceAsOf,releasedAt,records.length,bundle.rentalRecordCount,gzipSync(serialized).toString('base64'),digest,explore.serialized,explore.digest]),
  sql.query(`INSERT INTO singapore_publication_active(singleton,release_id) VALUES(true,$1) ON CONFLICT(singleton) DO UPDATE SET release_id=excluded.release_id`, [id]),
 ], { isolationLevel: 'Serializable' });
 progress('complete');

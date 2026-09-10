@@ -207,3 +207,15 @@ describe('restoring existing nearby evidence', () => {
     expect(await response.json()).toMatchObject({ proximity: null });
   });
 });
+
+
+test('retains K-apt named schools when the apartment provider is unavailable', async () => {
+  const reportedNearby = [{ kind: 'school', sourceId: 'kapt:A1:school:1', name: '창일초', lines: [], walkingMinutesUpperBound: null, source: 'https://www.k-apt.go.kr/' }] as const;
+  const handler = createBuildingFactsGetHandler({
+    resolveIdentity: () => ({ districtLawdCd: '11320', neighborhoodName: '창동', officialName: '창동주공18단지', housingType: 'apartment' }),
+    load: vi.fn().mockResolvedValue({ status: 'unavailable', reason: 'configuration_missing' }),
+    loadReportedNearby: vi.fn().mockResolvedValue(reportedNearby),
+  });
+  const response = await handler(new Request('https://example.test/api?district=dobong-gu&building=dobong-gu-128wfm7'));
+  expect(await response.json()).toMatchObject({ facts: { status: 'unavailable' }, reportedNearby });
+});

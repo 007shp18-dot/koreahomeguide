@@ -1,6 +1,8 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
-vi.mock('../lib/singapore/publication.server', () => ({ activeSingaporePublication: async () => null, singaporePublicationRightsRevoked: () => false }));
+const { published } = vi.hoisted(() => ({ published: vi.fn(async (): Promise<{status: 'absent' | 'unavailable'}> => ({ status: 'absent' })) }));
+vi.mock('../lib/singapore/explore-publication.server', () => ({ loadPublishedSingaporeExplore: published }));
+afterEach(() => { vi.unstubAllEnvs(); published.mockClear(); });
 vi.mock('../lib/singapore/snapshot-repository.server', () => ({ singaporeSnapshotRepositoryFromEnvironment: () => { throw new Error('The verified index must not decompress transactions.'); } }));
 import registry from '../data/installed-snapshots.json';
 import index from '../data/singapore-explore-index.json';
@@ -13,6 +15,15 @@ describe('Singapore compact public Explore index', () => {
     if (model.status !== 'ready') throw new Error('Missing index');
     expect(model.segments).toHaveLength(3);
     expect(model.segments.reduce((total, segment) => total + (segment.projects?.length ?? 0), 0)).toBeGreaterThan(3000);
+  });
+  it('does not revive installed data when publication verification fails', async () => {
+    published.mockResolvedValueOnce({status: 'unavailable'});
+    expect((await loadSingaporeExploreIndex()).status).not.toBe('ready');
+  });
+  it('honors an explicit snapshot source without consulting the live summary', async () => {
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT', 'custom');
+    await expect(loadSingaporeExploreIndex()).rejects.toThrow('must not decompress');
+    expect(published).not.toHaveBeenCalled();
   });
   it('rejects stale release metadata and all explicit source overrides', () => {
     const changed = structuredClone(registry);
