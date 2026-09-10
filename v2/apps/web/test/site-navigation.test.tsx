@@ -57,7 +57,7 @@ describe('shared navigation destinations', () => {
     expect(languageDestinations('/rankings/', '?view=markets')).toEqual({
       en: '/rankings/?view=markets',
       ko: '/ko/rankings/?view=markets',
-      'zh-CN': null,
+      'zh-CN': '/zh-cn/rankings/?view=markets',
     });
     expect(languageDestinations('/ko/rankings/').en).toBe('/rankings/');
   });
