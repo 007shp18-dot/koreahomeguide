@@ -27,7 +27,7 @@ describe('evidence admin surfaces', () => {
   it('keeps collection and publishing available without evidence data', () => {
     for (const tab of ['collection', 'operations'] as const) {
       const html = renderToStaticMarkup(<EvidenceAdmin initialAuthenticated initialTab={tab} />);
-      expect(html).toContain(tab === 'collection' ? '수집 현황 새로고침' : '기사 작성·예약');
+      expect(html).toContain(tab === 'collection' ? '정기 수집 · 변경 검토' : '기사 작성·예약');
       if (tab === 'operations') expect(html).toContain('value="tokyo"');
     }
   });

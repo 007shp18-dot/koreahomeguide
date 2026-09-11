@@ -32,7 +32,7 @@
 @media(max-width:760px){
  .shell .overviewMetrics button{padding:1rem .5rem}
  .overviewMetrics strong{font-size:1.8rem}
- .overviewMetrics small{font-size:.7rem}
+ .overviewMetrics small{font-size:.75rem}
  .issueList li{align-items:flex-start;flex-direction:column;gap:.65rem}
  .detailHeader{flex-wrap:wrap}
 }
