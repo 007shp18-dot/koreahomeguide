@@ -24,6 +24,7 @@ type GoogleAuthorAttribution = Readonly<{
 export type GooglePlacePhotoResult = Readonly<{
   getURI: (options: Readonly<{ maxHeight: number; maxWidth: number }>) => string;
   authorAttributions: readonly GoogleAuthorAttribution[];
+  googleMapsURI?: string;
 }>;
 
 type GooglePlaceResult = Readonly<{
@@ -58,6 +59,7 @@ type GoogleReadyScope = Window & {
 type DisplayPhoto = Readonly<{
   src: string;
   attributions: readonly GoogleAuthorAttribution[];
+  sourcePageUrl?: string;
 }>;
 
 type PhotoSubjectKind = 'building-exterior' | 'building-front' | 'site-aerial' | 'map-only';
@@ -258,6 +260,7 @@ function GooglePlacePhotoForIdentity({
         label: photoApprovalLabel(approvedSubjectKind, 'google-place'),
         items: Object.freeze(results.map((result) => Object.freeze({
           src: result.getURI({ maxHeight: 900, maxWidth: 1400 }),
+          sourcePageUrl: result.googleMapsURI,
           attributions: Object.freeze([...result.authorAttributions]),
         }))),
       }));
@@ -331,15 +334,17 @@ function GooglePlacePhotoForIdentity({
       </>}
       </div>
       {photo === 'loading' ? null : <figcaption className={photoStyles.caption}>
-        <span className={photoStyles.relationship}>{locale === 'ko' ? { 'Verified place photos': '확인된 장소 사진', 'Verified building photograph': '확인된 건물 사진', 'Verified project or estate photograph': '확인된 단지 사진' }[photo.label] : locale === 'zh-CN' ? { 'Verified place photos': '经核实的场所照片', 'Verified building photograph': '经核实的楼宇照片', 'Verified project or estate photograph': '经核实的项目或社区照片' }[photo.label] : photo.label}</span>
+        <span className={photoStyles.relationship}>{locale === 'ko' ? { 'Verified place photos': 'Google Maps 장소 사진', 'Verified building photograph': '확인된 건물 사진', 'Verified project or estate photograph': '확인된 단지 사진' }[photo.label] : locale === 'zh-CN' ? { 'Verified place photos': 'Google Maps 场所照片', 'Verified building photograph': '经核实的楼宇照片', 'Verified project or estate photograph': '经核实的项目或社区照片' }[photo.label] : photo.label === 'Verified place photos' ? 'Google Maps place photos' : photo.label}</span>
         {current === null ? null : (
           <span className={photoStyles.credit} aria-label={localizedMarketCopy(locale, "Photo credit", "사진 출처")}>
+            {photo.label === 'Verified place photos' ? <span translate="no" style={{ whiteSpace: 'nowrap', fontWeight: 400, color: '#5e5e5e' }}>Google Maps · </span> : null}
             {current.attributions.map((attribution, index) => <span key={`${attribution.displayName}:${index}`}>
               {index === 0 ? null : ' · '}
               {attribution.uri === null || !linkAttribution
                 ? attribution.displayName
                 : <a href={attribution.uri}>{attribution.displayName}</a>}
             </span>)}
+            {current.sourcePageUrl ? <a href={current.sourcePageUrl} rel="noreferrer">{localizedMarketCopy(locale, 'View source photo', '원본 사진 보기')}</a> : null}
             {photo.sourcePageUrl && !current.attributions.some(a => a.uri === photo.sourcePageUrl)
               ? <a href={photo.sourcePageUrl} rel="noreferrer">{localizedMarketCopy(locale, "Photo source", "원본 사진")}</a> : null}
           </span>

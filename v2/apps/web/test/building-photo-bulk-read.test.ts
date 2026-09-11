@@ -93,4 +93,21 @@ describe('stored public photo approval bulk reader', () => {
       expect.objectContaining({ subjectKind: 'site-aerial' }),
     ]]));
   });
+  it('returns strong provider matches without fabricating a visual review and rejects a withdrawn match', async () => {
+    const candidate = {
+      registry_key: 'kr-seoul:matched', official_name: 'Matched building', address: 'Seoul',
+      publication_basis: 'provider-identity', provider: 'google-place', candidate_source: 'google',
+      status: 'review_required', rights_status: 'provider-display-only', provider_place_id: 'place-matched',
+      provider_checked_at: '2026-09-11', approved_at: '2026-09-11', subject_kind: 'building-exterior',
+      match_policy_version: 'photo-identity-v2', match_confidence: 0.97,
+      match_evidence: ['name', 'country', 'address'], source_page_url: 'https://maps.google.com/?cid=123',
+    };
+    const reader = createStoredPublicPhotoApprovalReader({ query: async () => [candidate] });
+    expect((await reader.list(['kr-seoul:matched'])).get('kr-seoul:matched')).toMatchObject({
+      publicationBasis: 'provider-identity', placeId: 'place-matched',
+    });
+    const withdrawn = createStoredPublicPhotoApprovalReader({ query: async () => [{ ...candidate, status: 'rejected' }] });
+    expect((await withdrawn.list(['kr-seoul:matched'])).size).toBe(0);
+  });
+
 });
