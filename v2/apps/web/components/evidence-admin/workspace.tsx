@@ -1,4 +1,5 @@
 'use client';
+import { OperationsOverview } from './operations-overview';
 import { EditorialOperationsPanel } from './editorial-operations-panel';
 import React, { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import Link from 'next/link';
@@ -29,11 +30,22 @@ async function api<T>(url: string, init?: RequestInit): Promise<T> {
 }
 function post(body: unknown): RequestInit { return { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }; }
 
-export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { initialAuthenticated: boolean; initialData?: PoolData | null }) {
+type AdminTab = 'overview' | 'evidence' | 'sources' | 'create' | 'research' | 'collection' | 'operations';
+const headings: Record<AdminTab, [string, string]> = {
+  overview: ['운영 현황', '수집과 기사 발행에서 지금 확인할 일을 모았습니다.'],
+  evidence: ['자료 검토', '검토 대기 자료와 분석에 쓸 근거를 정리하세요.'],
+  sources: ['출처 관리', '자료를 가져온 출처와 검토 상태를 확인하세요.'],
+  create: ['자료 등록', '확인 가능한 값과 출처를 남기세요.'],
+  research: ['Tool 공유 데이터', '사용자가 공유한 조건과 수요를 확인하세요.'],
+  collection: ['정기 수집 운영', '실행 이력과 실패 원인, 사이트 반영 상태를 확인하세요.'],
+  operations: ['배포·기사 발행', '기사를 작성·예약하고 발행 결과를 확인하세요.'],
+};
+export function EvidenceAdmin({ initialAuthenticated, initialData = null, initialTab = 'overview' }: { initialAuthenticated: boolean; initialData?: PoolData | null; initialTab?: AdminTab }) {
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const expireSession = useCallback(() => setAuthenticated(false), []);
   const [data, setData] = useState<PoolData | null>(initialData);
-  const [tab, setTab] = useState<'evidence' | 'sources' | 'create' | 'research' | 'collection' | 'operations'>('evidence');
+  const [tab, setTab] = useState<AdminTab>(initialTab);
+  const needsEvidence = ['evidence', 'sources', 'create'].includes(tab);
   const [selected, setSelected] = useState<{ entity: 'source' | 'evidence'; id: string } | null>(null);
   const [filters, setFilterValues] = useState({ market: '', status: '', quality: '', q: '', page: 1, sourcePage: 1 });
   const [checked, setChecked] = useState<string[]>([]);
@@ -58,7 +70,7 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { in
     }).catch((cause: unknown) => { if (id === requestId.current) showError(cause); })
       .finally(() => { if (id === requestId.current) setLoading(false); });
   }, [filters, showError]);
-  useEffect(() => { if (authenticated) void load(); return () => { requestId.current += 1; }; }, [authenticated, load]);
+  useEffect(() => { if (authenticated && needsEvidence) void load(); return () => { requestId.current += 1; }; }, [authenticated, needsEvidence, load]);
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = event.currentTarget; const secret = String(new FormData(form).get('secret'));
     setBusy(true); setError('');
@@ -89,30 +101,32 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { in
   const selectedRow = selected?.entity === 'source' ? data?.sources.find((row) => row.id === selected.id) : data?.evidence.find((row) => row.id === selected?.id);
   const today = new Date().toISOString().slice(0, 10);
   if (!authenticated) return <main className={styles.login}><Link href="/" prefetch={false} className={styles.brand}>signedprice<span>INTERNAL</span></Link><section className={styles.loginCard}>
-    <p className={styles.eyebrow}>PROPERTY EVIDENCE</p><h1>관리자 로그인</h1><p>부동산 자료를 등록하고 근거를 검토하는 내부 공간입니다.</p>
+    <p className={styles.eyebrow}>SIGNEDPRICE OPERATIONS</p><h1>관리자 로그인</h1><p>데이터 수집, 기사 발행과 자료 검토를 관리하는 내부 공간입니다.</p>
     <form onSubmit={login}><label>관리화면 비밀번호<input name="secret" type="password" required autoComplete="current-password" maxLength={1024} /></label><button type="submit" disabled={busy} className={styles.primary}>{busy ? '확인 중…' : '로그인'}</button></form>
     {error && <p role="alert" className={styles.error}>{error}</p>}<small>EVIDENCE_ADMIN_SECRET에 설정한 전용 비밀번호를 입력하세요. 기존 운영 키와는 별개입니다. 로그인은 8시간 유지됩니다.</small>
   </section></main>;
   return <div className={styles.shell}>
-    <aside className={styles.sidebar}><Link href="/" prefetch={false} className={styles.brand}>signedprice<span>INTERNAL</span></Link><p className={styles.eyebrow}>자료 운영</p><nav aria-label="관리 메뉴">
+    <aside className={styles.sidebar}><Link href="/" prefetch={false} className={styles.brand}>signedprice<span>INTERNAL</span></Link><p className={styles.eyebrow}>사이트 운영</p><nav aria-label="관리 메뉴">
+      <button type="button" aria-current={tab === 'overview' ? 'page' : undefined} onClick={() => { setTab('overview'); setSelected(null); }}>운영 현황</button>
       <button type="button" aria-current={tab === 'evidence' ? 'page' : undefined} onClick={() => { setTab('evidence'); setSelected(null); }}>자료 검토 <span>{data?.counts.pending ?? '—'}</span></button>
       <button type="button" aria-current={tab === 'sources' ? 'page' : undefined} onClick={() => { setTab('sources'); setSelected(null); }}>출처 관리</button>
       <button type="button" aria-current={tab === 'create' ? 'page' : undefined} onClick={() => { setTab('create'); setSelected(null); }}>자료 등록</button>
       <button type="button" aria-current={tab === 'research' ? 'page' : undefined} onClick={() => { setTab('research'); setSelected(null); }}>Tool 공유 데이터</button>
-      <button type="button" onClick={() => { setTab('operations'); setSelected(null); }}>배포·기사 발행</button>
+      <button type="button" aria-current={tab === 'operations' ? 'page' : undefined} onClick={() => { setTab('operations'); setSelected(null); }}>배포·기사 발행</button>
       <button type="button" aria-current={tab === 'collection' ? 'page' : undefined} onClick={() => { setTab('collection'); setSelected(null); }}>정기 수집 운영</button>
     </nav><div className={styles.sidebarFoot}><p>내부 전용 · 공개되지 않음</p><small>수집·원문 검토·자료 승인·사이트 공개 시점을 구분해 확인하세요.</small><button type="button" disabled={busy} onClick={() => void logout()}>로그아웃</button></div></aside>
     <main className={styles.main}>
-      <header className={styles.header}><div><p className={styles.eyebrow}>EVIDENCE WORKSPACE</p><h1>{tab === 'operations' ? '배포·기사 발행' : tab === 'collection' ? '정기 수집 운영' : tab === 'research' ? 'Tool 공유 데이터' : tab === 'sources' ? '출처 관리' : tab === 'create' ? '자료 등록' : '자료 검토'}</h1><p>{tab === 'sources' ? '자료를 가져온 출처부터 확인하세요.' : tab === 'create' ? '원문 대신 확인 가능한 값과 출처를 남기세요.' : '검토 대기 자료를 확인하고, 분석에 쓸 근거를 정리하세요.'}</p></div><button type="button" disabled={loading || busy} onClick={() => { setLoading(true); void load(); }}>{loading ? '불러오는 중…' : '새로고침'}</button></header>
-      {error && <p role="alert" className={styles.error}>{error}</p>}{message && <p role="status" className={styles.success}>{message}</p>}
-      {data && <section className={styles.stats} aria-label="전체 자료 현황">{([['pending', '검토 대기'], ['approved', '승인 자료'], ['expired', '유효기간 만료'], ['withdrawn', '철회']] as const).map(([key, label]) => <button type="button" key={key} disabled={busy} onClick={() => { setTab('evidence'); setSelected(null); setFilters({ ...filters, status: key, page: 1 }); }}><span>{label}</span><strong>{data.counts[key]}</strong></button>)}</section>}
-      {!data && <section className={styles.panel}><p role="status">{loading ? '저장된 자료를 불러오고 있습니다…' : '자료에 연결하지 못했습니다. 설정을 확인한 뒤 새로고침하세요.'}</p></section>}
-      {data && (data.sourceTotal ?? 0) > 100 && <div className={styles.pagination} style={{ marginBottom: '1rem' }} aria-label="출처 페이지"><span>선택할 출처 {filters.sourcePage} / {Math.ceil((data.sourceTotal ?? 0) / 100)} 페이지</span><button type="button" disabled={loading || busy || filters.sourcePage <= 1} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage - 1 }); }}>이전 출처</button><button type="button" disabled={loading || busy || filters.sourcePage * 100 >= (data.sourceTotal ?? 0)} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage + 1 }); }}>다음 출처</button></div>}
-      {data && <div className={selectedRow ? styles.split : ''}>
+      <header className={styles.header}><div><p className={styles.eyebrow}>SIGNEDPRICE OPERATIONS</p><h1>{headings[tab][0]}</h1><p>{headings[tab][1]}</p></div>{needsEvidence && <button type="button" disabled={loading || busy} onClick={() => { setLoading(true); void load(); }}>{loading ? '불러오는 중…' : '자료 새로고침'}</button>}</header>
+      {needsEvidence && error && <p role="alert" className={styles.error}>{error}</p>}{message && <p role="status" className={styles.success}>{message}</p>}
+      {needsEvidence && data && <section className={styles.stats} aria-label="전체 자료 현황">{([['pending', '검토 대기'], ['approved', '승인 자료'], ['expired', '유효기간 만료'], ['withdrawn', '철회']] as const).map(([key, label]) => <button type="button" key={key} disabled={busy} onClick={() => { setTab('evidence'); setSelected(null); setFilters({ ...filters, status: key, page: 1 }); }}><span>{label}</span><strong>{data.counts[key]}</strong></button>)}</section>}
+      {needsEvidence && !data && <section className={styles.panel}><p role="status">{loading ? '저장된 자료를 불러오고 있습니다…' : '자료에 연결하지 못했습니다. 설정을 확인한 뒤 새로고침하세요.'}</p></section>}
+      {needsEvidence && data && (data.sourceTotal ?? 0) > 100 && <div className={styles.pagination} style={{ marginBottom: '1rem' }} aria-label="출처 페이지"><span>선택할 출처 {filters.sourcePage} / {Math.ceil((data.sourceTotal ?? 0) / 100)} 페이지</span><button type="button" disabled={loading || busy || filters.sourcePage <= 1} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage - 1 }); }}>이전 출처</button><button type="button" disabled={loading || busy || filters.sourcePage * 100 >= (data.sourceTotal ?? 0)} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage + 1 }); }}>다음 출처</button></div>}
+      {tab === 'overview' && <OperationsOverview onNavigate={next => { setTab(next); setSelected(null); }} onUnauthorized={expireSession} />}
+      {tab === 'operations' && <section className={styles.panel}><EditorialOperationsPanel /></section>}
+      {tab === 'collection' && <section className={styles.panel}><CollectionPanel onUnauthorized={expireSession} /></section>}
+      {tab === 'research' && <section className={styles.panel}><ResearchPanel /></section>}
+      {needsEvidence && data && <div className={selectedRow ? styles.split : ''}>
         <section className={styles.panel}>
-          {tab === 'operations' && <EditorialOperationsPanel />}
-          {tab === 'collection' && <CollectionPanel onUnauthorized={expireSession} />}
-          {tab === 'research' && <ResearchPanel />}
           {tab === 'create' && <><h2>새 자료</h2><EvidenceForm sources={data.sources} busy={busy} submit={mutate} /></>}
           {tab === 'sources' && <><h2>출처 등록</h2><SourceForm busy={busy} submit={mutate} /><h2 className={styles.sectionTitle}>등록된 출처 <small>{data.sourceTotal ?? data.sources.length}건 · 현재 페이지 {data.sources.length}건</small></h2>
             {!data.sources.length ? <p className={styles.empty}>아직 등록된 출처가 없습니다. 위에서 첫 출처를 등록하세요.</p> : <ul className={styles.sourceList}>{data.sources.map((source) => <li key={source.id}><button type="button" onClick={() => setSelected({ entity: 'source', id: source.id })}><strong>{source.name}</strong><span>{sourceKinds[source.kind]} · {statuses[source.status]}</span></button></li>)}</ul>}
@@ -140,7 +154,7 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { in
           {selected.entity === 'evidence' && selectedRow.status !== 'withdrawn' && <details className={styles.correction}><summary>등록값 정정</summary><EvidenceForm key={`${selectedRow.id}-${selectedRow.version}`} sources={data.sources} busy={busy} submit={mutate} existing={selectedRow as Evidence} /></details>}
         </aside>}
       </div>}
-      <footer className={styles.footer}>승인 건수에는 만료·출처 철회 자료가 포함될 수 있습니다. 실제 활용 여부는 각 자료의 준비 점검을 확인하세요.</footer>
+      <footer className={styles.footer}>{needsEvidence ? '승인 건수에는 만료·출처 철회 자료가 포함될 수 있습니다. 실제 활용 여부는 각 자료의 준비 점검을 확인하세요.' : 'SignedPrice · 내부 운영 공간'}</footer>
     </main>
   </div>;
 }

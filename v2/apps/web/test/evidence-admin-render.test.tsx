@@ -13,9 +13,23 @@ describe('evidence admin surfaces', () => {
     expect(html).not.toContain('자료 등록하기');
   });
   it('shows an honest empty workspace with a source-first next action', () => {
-    const html = renderToStaticMarkup(<EvidenceAdmin initialAuthenticated initialData={empty} />);
+    const html = renderToStaticMarkup(<EvidenceAdmin initialAuthenticated initialData={empty} initialTab="evidence" />);
     expect(html).toContain('등록된 자료가 없습니다'); expect(html).toContain('출처 관리');
     expect(html).not.toContain('Dubai Marina');
+  });
+  it('opens operations without requiring evidence storage to load', () => {
+    const html = renderToStaticMarkup(<EvidenceAdmin initialAuthenticated />);
+    expect(html).toContain('먼저 확인하세요');
+    expect(html).toContain('국가별 거래 수집');
+    expect(html).toContain('조회 중');
+    expect(html).not.toContain('자료에 연결하지 못했습니다');
+  });
+  it('keeps collection and publishing available without evidence data', () => {
+    for (const tab of ['collection', 'operations'] as const) {
+      const html = renderToStaticMarkup(<EvidenceAdmin initialAuthenticated initialTab={tab} />);
+      expect(html).toContain(tab === 'collection' ? '수집 현황 새로고침' : '기사 작성·예약');
+      if (tab === 'operations') expect(html).toContain('value="tokyo"');
+    }
   });
   it('prevents evidence submission without a source and separates value bases', () => {
     const html = renderToStaticMarkup(<EvidenceForm sources={[]} busy={false} submit={async () => false} />);
