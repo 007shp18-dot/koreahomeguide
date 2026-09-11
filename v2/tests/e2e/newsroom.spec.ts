@@ -159,7 +159,8 @@ test('News & Insights and Guides keep the same global header and the guide highl
 test('Tokyo city journey opens its own article, chapters and Korean translation', async ({ page }) => {
   await page.goto('/news/?market=tokyo');
   const lead = page.locator('[data-newsroom-lead]');
-  await expect(lead).toContainText('Kichijoji');
+  await expect(lead).toHaveAttribute('data-editorial-market', 'jp-tokyo');
+  await expect(lead.getByRole('link', { name: /Read the story/ })).toHaveAttribute('href', /\/news\/(neighbourhoods|city-stories)\//);
   await expect(page.getByText('View the buying steps', { exact: true })).toHaveCount(0);
   await page.goto('/news/city-stories/tokyo/where/');
   await expect(page).toHaveURL(/\/news\/city-stories\/tokyo\/where\/$/);

@@ -191,3 +191,6 @@
 
   .embed { min-height: 230px; }
 }
+
+.nearbyButton { grid-column: 2; width: fit-content; min-height: 44px; padding: .6rem 1rem; border: 1px solid var(--divider); border-radius: .4rem; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.nearbyButton:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }

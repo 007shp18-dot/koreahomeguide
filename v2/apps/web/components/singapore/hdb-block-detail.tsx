@@ -69,7 +69,6 @@ export function HdbBlockDetail({ locale = 'en',
         buildingName={block.address}
         buildingKey={`singapore:block:${block.blockId}`}
         address={`${block.address}, ${town}, Singapore`}
-        registryKey={`sg-hdb:${town}:${block.address}`}
         evidenceHref="#hdb-block-evidence-heading"
         locationHref={locationHref}
       />}

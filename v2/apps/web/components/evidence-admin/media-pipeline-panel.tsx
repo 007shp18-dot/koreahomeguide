@@ -7,6 +7,7 @@ const stages: Record<string,[string,string]>={
  'identity-unverified':['건물 식별 미확정','공식 식별자·주소 검증'],
  'building-unlinked':['기존 건물 자료 연결 없음','건물 원장과 정확한 ID 연결'],
  'address-missing':['검색에 필요한 주소 없음','공식 주소 확보'],
+ 'provider-ready':['장소 매칭 완료 · 제공 사진 자동 연결','주소·위치 일치 · 사진은 공급원에서 표시'],
  'visual-review':['이용 권한 확인 · 사진 검수 대기','건물 외관 일치 여부 검수'],
  'rights-blocked':['이용 권한 미확인 후보','허가된 출처 확보 · 일괄 승인 금지'],
  'provider-error':['사진 공급원 오류','인증·요청 제한·응답 오류 확인'],
@@ -21,9 +22,10 @@ export function MediaPipelinePanel({rows}:{rows:MediaPipelineRow[]}) {
   const group=rows.filter(r=>r.market===market);const total=group.reduce((s,r)=>s+r.count,0);
   if(!total)return <p key={market}>{name}: 이 건물 원장에 집계 대상 없음. 별도 지역 통계 서비스의 부재를 의미하지 않습니다.</p>;
   const published=group.filter(r=>r.stage==='published').reduce((s,r)=>s+r.count,0);
+  const providerReady=group.filter(r=>r.stage==='provider-ready').reduce((s,r)=>s+r.count,0);
   const coordinates=group.reduce((s,r)=>s+r.coordinates,0);const publicCoordinates=group.reduce((s,r)=>s+r.publicCoordinates,0);
   return <div key={market}><h4>{name} · {total.toLocaleString()}개 대상</h4>
-   <p>공개 사진 자료 연결 {published.toLocaleString()} ({percent(published,total)}) · 좌표 보유 {coordinates.toLocaleString()} ({percent(coordinates,total)}) · 검증된 공개 좌표 {publicCoordinates.toLocaleString()} ({percent(publicCoordinates,total)})</p>
+   <p>공개 사진 자료 연결 {published.toLocaleString()} ({percent(published,total)}) · 자동 장소 사진 연결 {providerReady.toLocaleString()} ({percent(providerReady,total)}) · 좌표 보유 {coordinates.toLocaleString()} ({percent(coordinates,total)}) · 검증된 공개 좌표 {publicCoordinates.toLocaleString()} ({percent(publicCoordinates,total)})</p>
    <div className={styles.tableScroll}><table><caption>{name} · 누락 원인과 다음 처리</caption>
     <thead><tr><th scope="col">대상</th><th scope="col">상태</th><th scope="col">건수</th><th scope="col">전체 대비</th><th scope="col">다음 처리</th></tr></thead>
     <tbody>{group.map(r=><tr key={`${r.kind}:${r.stage}`}><td>{{estate:'단지',project:'프로젝트',block:'동'}[r.kind]??r.kind}</td><td>{stages[r.stage]?.[0]??r.stage}</td><td>{r.count.toLocaleString()}</td><td>{percent(r.count,total)}</td><td>{stages[r.stage]?.[1]??'상태 확인'}</td></tr>)}</tbody>

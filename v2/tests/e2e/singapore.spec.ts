@@ -81,7 +81,7 @@ test('Singapore routes fail closed while display rights are pending', async ({ p
     'href',
     'https://www.signedprice.com/sg/',
   );
-  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(3);
+  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(4);
   await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
     'href',
     'https://www.signedprice.com/sg/',

@@ -1,16 +1,18 @@
 import 'server-only';
+import { PROVIDER_PHOTO_READY_SQL } from './provider-photo-availability';
 import type { SqlPort } from '../evidence-pool/repository.server';
 
 // One row per canonical entity: counts cannot be inflated by multiple photos,
 // contracts, or location candidates. This is an operations-only inventory.
 export const MEDIA_PIPELINE_SQL = `WITH photos AS (
   SELECT building_key,
+    bool_or(${PROVIDER_PHOTO_READY_SQL}) AS provider_ready,
     bool_or(status='approved' AND approved_at IS NOT NULL AND approved_by IS NOT NULL
       AND visual_reviewed_at IS NOT NULL AND rights_status IN ('licensed','owned','provider-display-only')
       AND subject_kind IN ('building-exterior','building-front','site-aerial')) AS approved,
     bool_or(status IN ('candidate','review_required') AND rights_status IN ('licensed','owned','provider-display-only')) AS reviewable,
     bool_or(status IN ('candidate','review_required') AND rights_status NOT IN ('licensed','owned','provider-display-only')) AS rights_blocked
-  FROM building_photos GROUP BY building_key
+  FROM building_photos photo GROUP BY building_key
 ), attempts AS (
   SELECT building_key,
     bool_or(status='provider-error') AS provider_error,
@@ -37,6 +39,7 @@ export const MEDIA_PIPELINE_SQL = `WITH photos AS (
       WHEN b.identity_status <> 'verified' THEN 'identity-unverified'
       WHEN p.approved THEN CASE WHEN pub.entity_id IS NULL THEN 'publication-pending' ELSE 'published' END
       WHEN nullif(trim(coalesce(b.road_address,b.legal_address)),'') IS NULL THEN 'address-missing'
+      WHEN p.provider_ready THEN 'provider-ready'
       WHEN p.reviewable THEN 'visual-review'
       WHEN a.provider_error THEN 'provider-error'
       WHEN a.finished=2 THEN 'no-usable-result'

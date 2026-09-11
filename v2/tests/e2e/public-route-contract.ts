@@ -106,7 +106,7 @@ export const publicRoutes = [
   { path: '/news/seoul-district-price-distribution/', heading: 'Seoul rental deposits by district: what a median price hides', indexing: 'index', canonical: '/news/seoul-district-price-distribution/' },
   { path: '/guides/', heading: 'Guides', indexing: 'index', canonical: '/guides/' },
   { path: '/guides/rent-an-apartment-in-korea/', heading: 'Rent an apartment in Korea: search-to-move-in sequence', indexing: 'index', canonical: '/guides/rent-an-apartment-in-korea/' },
-  { path: '/zh-cn/news/', heading: '政策变化与市场数据，都回到原始依据。', indexing: 'index', canonical: '/zh-cn/news/' },
+  { path: '/zh-cn/news/', heading: '洞察', indexing: 'index', canonical: '/zh-cn/news/' },
   { path: '/zh-cn/guides/', heading: '先理解本地流程，再作跨境决定。', indexing: 'index', canonical: '/zh-cn/guides/' },
   { path: '/zh-cn/guides/rent-in-korea-zh/', heading: '外国人在韩国租房：从找房到入住', indexing: 'index', canonical: '/zh-cn/guides/rent-in-korea-zh/' },
   ...PUBLIC_AREA_TEST_DISTRICTS.map((district) => ({

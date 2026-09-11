@@ -1,4 +1,5 @@
 import 'server-only';
+import { PROVIDER_PHOTO_READY_SQL } from './provider-photo-availability';
 
 import { contentDatabase } from '../db/postgres.server';
 
@@ -42,17 +43,17 @@ export const SYNC_SQL = `
       photo.checked_at + interval '365 days' AS next_retry_at,
       row_number() OVER (
         PARTITION BY entity.id
-        ORDER BY photo.position, photo.id
+        ORDER BY (photo.status = 'approved') DESC, photo.position, photo.id
       ) AS preference
     FROM property_entities AS entity
     INNER JOIN buildings AS building
       ON building.key = entity.local_attributes ->> 'legacyBuildingKey'
     INNER JOIN building_photos AS photo
       ON photo.building_key = building.key
-      AND photo.status = 'approved'
-      AND photo.approved_at IS NOT NULL
-      AND photo.approved_by IS NOT NULL
-      AND photo.visual_reviewed_at IS NOT NULL
+      AND ((photo.status = 'approved'
+        AND photo.approved_at IS NOT NULL
+        AND photo.approved_by IS NOT NULL
+        AND photo.visual_reviewed_at IS NOT NULL) OR ${PROVIDER_PHOTO_READY_SQL})
       AND photo.rights_status IN ('licensed', 'owned', 'provider-display-only')
       AND building.identity_status = 'verified'
       AND photo.subject_kind IN ('building-exterior', 'building-front', 'site-aerial')

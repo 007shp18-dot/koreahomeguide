@@ -1,4 +1,5 @@
 import 'server-only';
+import { PROVIDER_PHOTO_READY_SQL, providerPhotoReady } from './provider-photo-availability';
 
 import { createPhotoReadGate } from './photo-read-gate';
 import { contentDatabase, publicContentDatabase } from '../db/postgres.server';
@@ -13,6 +14,7 @@ export function privatePhotoCandidateKey(buildingKey: string, source: 'naver-sea
 
 export type StoredPublicPhotoApproval = Readonly<{
   buildingKey?: string | null;
+  publicationBasis?: 'visual-review' | 'provider-identity';
   provider: 'google-place' | 'licensed-url' | 'owned-object';
   subjectKind: PhotoSubjectKind;
   placeId: string | null;
@@ -48,16 +50,19 @@ const PUBLIC_PHOTO_APPROVALS_SQL = `
     photo.source_page_url,
     building.official_name,
     coalesce(building.road_address, building.legal_address) AS address,
-    photo.approved_at
+    coalesce(photo.approved_at, photo.provider_checked_at) AS approved_at,
+    CASE WHEN photo.status = 'approved' THEN 'visual-review' ELSE 'provider-identity' END AS publication_basis,
+    photo.status, photo.candidate_source, photo.rights_status, photo.provider_checked_at,
+    photo.match_policy_version, photo.match_confidence, photo.match_evidence
   FROM building_photos photo
   JOIN buildings building ON building.key = photo.building_key
   WHERE photo.publication_registry_key = ANY($1::text[])
-    AND photo.status = 'approved'
-    AND photo.approved_at IS NOT NULL AND photo.approved_by IS NOT NULL
-    AND photo.visual_reviewed_at IS NOT NULL
+    AND ((photo.status = 'approved'
+      AND photo.approved_at IS NOT NULL AND photo.approved_by IS NOT NULL
+      AND photo.visual_reviewed_at IS NOT NULL) OR ${PROVIDER_PHOTO_READY_SQL})
     AND photo.rights_status IN ('licensed', 'owned', 'provider-display-only')
     AND building.identity_status = 'verified'
-  ORDER BY photo.publication_registry_key, photo.position, photo.approved_at DESC, photo.id
+  ORDER BY photo.publication_registry_key, (photo.status = 'approved') DESC, photo.position, photo.approved_at DESC, photo.id
 `;
 
 function safeHttpUrl(value: unknown): string | null {
@@ -75,6 +80,7 @@ function storedPublicPhotoApprovalFromRow(
 ): StoredPublicPhotoApproval | null {
   const provider = row.provider;
   const subjectKind = row.subject_kind;
+  if (row.publication_basis === 'provider-identity' && !providerPhotoReady(row)) return null;
   const buildingName = row.official_name;
   const address = row.address;
   const approvedAt = row.approved_at instanceof Date
@@ -90,6 +96,7 @@ function storedPublicPhotoApprovalFromRow(
   if ((provider === 'google-place' && placeId === null)
     || (provider !== 'google-place' && assetUrl === null)) return null;
   return Object.freeze({
+    publicationBasis: row.publication_basis === 'provider-identity' ? 'provider-identity' : 'visual-review',
     buildingKey: typeof row.building_key === 'string' ? row.building_key : null,
     provider: provider as StoredPublicPhotoApproval['provider'],
     subjectKind: subjectKind as PhotoSubjectKind,

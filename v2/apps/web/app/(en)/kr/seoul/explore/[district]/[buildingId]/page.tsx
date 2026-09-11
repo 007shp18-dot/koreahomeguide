@@ -8,6 +8,7 @@ import { BuildingOfficialFacts } from '@/components/public-market/building-offic
 import { KoreaBuildingEvidenceClient } from '@/components/public-market/korea-building-evidence-client';
 import { KoreaBuildingDecisionClient } from '@/components/public-market/korea-building-decision-client';
 import { KoreaObservedBuildingClient } from '@/components/public-market/korea-observed-building-client';
+import { BuildingNearbyView } from '@/components/maps/building-nearby-view';
 import { ProjectedEntityMedia } from '@/components/public-market/projected-entity-media';
 import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import { selectPublishedBuildingPhoto } from '@/lib/photos/published-photo-selection';
@@ -134,9 +135,11 @@ function projectedBuildingMediaFor(
   registryKey?: string,
   locale: 'en' | 'ko' | 'zh-CN' = 'en',
   locationHref?: string,
+  coordinate?: Readonly<{ latitude: number; longitude: number }> | null,
 ) {
   const media = selectPublishedBuildingPhoto(projection?.media ?? [], photoApproval);
-  if (media === null && registryKey === undefined) return undefined;
+  const location = projection?.location ?? coordinate;
+  if (media === null && registryKey === undefined && !location) return undefined;
   return <ProjectedEntityMedia
     locale={locale}
     buildingName={name}
@@ -145,6 +148,12 @@ function projectedBuildingMediaFor(
     registryKey={registryKey}
     showLocationAction={false}
     fallbackMarket="seoul"
+    locationMedia={location ? <BuildingNearbyView
+      key={`${name}:${location.latitude}:${location.longitude}`} locale={locale} market="seoul"
+      providerKey={process.env.NAVER_MAP_CLIENT_ID?.trim() || null} buildingName={name}
+      latitude={location.latitude} longitude={location.longitude}
+      mapHref={locationHref ? seoulBuildingLocationHref(locationHref) : '/kr/seoul/explore/'}
+    /> : undefined}
     locationHref={locationHref ? seoulBuildingLocationHref(locationHref) : undefined}
   />;
 }
@@ -476,6 +485,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       photoRegistryKey,
       locale,
       exact.backHref,
+      coordinate,
     );
     const proximity = entityProjection?.proximity ?? identity?.proximity;
     const fallback = <KoreaEvidenceBuildingDetail
@@ -529,6 +539,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       photoRegistryKey,
       locale,
       backHref,
+      observed.coordinate.status === 'ready' ? observed.coordinate : undefined,
     );
     const facts = <BuildingOfficialFacts
       districtSlug={observed.district.slug}
@@ -592,12 +603,12 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     mapHref: backHref,
     photo: null,
   });
-  const propertyMedia = projectedBuildingMediaFor(model.building.name, entityProjection, photoApproval, photoRegistryKey, locale, backHref);
   const publicCoordinate = entityProjection?.location ?? (
     model.building.latitude === null || model.building.longitude === null
       ? null
       : Object.freeze({ latitude: model.building.latitude, longitude: model.building.longitude })
   );
+  const propertyMedia = projectedBuildingMediaFor(model.building.name, entityProjection, photoApproval, photoRegistryKey, locale, backHref, publicCoordinate);
   const recentAreas = model.building.recentContracts.map(({ areaSqm }) => areaSqm);
   const observedFacts = [
     { label: 'Property type', value: model.building.housingType },

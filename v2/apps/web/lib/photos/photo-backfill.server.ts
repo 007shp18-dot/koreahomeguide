@@ -1,6 +1,8 @@
 import { photoSourceRecoverySummary } from './photo-source-recovery.server';
 import { mediaPipeline } from './media-pipeline.server';
 import 'server-only';
+import { PROVIDER_PHOTO_READY_SQL } from './provider-photo-availability';
+import { photoRolloutCapacity } from './photo-rollout-capacity';
 
 import { contentDatabase } from '../db/postgres.server';
 import {
@@ -482,7 +484,7 @@ export async function runPhotoBackfillSlice(options: PhotoBackfillOptions) {
 export async function readPhotoCoverageStatus() {
   const sql = contentDatabase();
   if (sql === null) throw new Error('database_not_configured');
-  const [coverage, providerHealth, dailyUsage, missingRows, reviewRows, reviewBreakdown, pipeline, sourceRecovery] = await Promise.all([
+  const [coverage, providerHealth, dailyUsage, missingRows, reviewRows, reviewBreakdown, pipeline, sourceRecovery, inventoryRows] = await Promise.all([
     readPhotoCoverageSummary(),
     sql`SELECT provider, state, reason, paused_until AS "pausedUntil", checked_at AS "checkedAt" FROM photo_provider_health ORDER BY provider`,
     sql`SELECT provider, usage_date AS "usageDate", request_count AS "requestCount", estimated_cost_microusd AS "estimatedCostMicrousd" FROM photo_provider_daily_usage WHERE usage_date >= current_date - 1 ORDER BY usage_date DESC, provider`,
@@ -501,8 +503,31 @@ export async function readPhotoCoverageStatus() {
       GROUP BY candidate_source, rights_status ORDER BY candidate_source, rights_status`,
     mediaPipeline({query: (statement) => sql.query(statement)}),
     photoSourceRecoverySummary({query: (statement) => sql.query(statement)}),
+    sql.query(`SELECT count(*)::integer AS total,
+      count(*) FILTER (WHERE NOT EXISTS (
+        SELECT 1 FROM building_photos photo WHERE photo.building_key=b.key
+          AND ((photo.status='approved' AND photo.approved_at IS NOT NULL
+            AND photo.approved_by IS NOT NULL AND photo.visual_reviewed_at IS NOT NULL
+            AND photo.rights_status IN ('licensed','owned','provider-display-only'))
+            OR ${PROVIDER_PHOTO_READY_SQL})
+      ))::integer AS pending
+      FROM buildings b WHERE b.identity_status='verified' AND b.market_key IN ('seoul','singapore')`),
   ]);
+  const envLimit = (name: string, fallback: number) => {
+    const value = Number(process.env[name]);
+    return Number.isFinite(value) && value >= 0 ? value : fallback;
+  };
+  const cost = requestCostUsd('google');
+  const pendingBuildings = Number(inventoryRows[0]?.pending ?? 0);
+  const capacity = (dailyRequestCap: number, dailySpendCapUsd: number) => photoRolloutCapacity({
+    pendingBuildings, dailyRequestCap, dailySpendCapUsd, estimatedRequestCostUsd: cost,
+    scheduledRequestsPerDay: 4 * 30,
+  });
   return Object.freeze({
+    rollout: {
+      totalBuildings: Number(inventoryRows[0]?.total ?? 0),
+      current: capacity(envLimit('PHOTO_GOOGLE_DAILY_REQUEST_CAP', 5), envLimit('PHOTO_GOOGLE_DAILY_SPEND_CAP_USD', 0.16)),
+    },
     coverage,
     pipeline,
     sourceRecovery,

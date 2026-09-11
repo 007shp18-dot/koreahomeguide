@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Script from 'next/script';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { buildGoogleMapsScriptUrl } from './google-place-map';
 import styles from './building-street-view.module.css';
@@ -138,6 +138,7 @@ export async function mountGoogleBuildingStreetView({
 }
 
 export function GoogleBuildingStreetView({
+  locale = 'en',
   browserKey,
   buildingName,
   latitude,
@@ -145,6 +146,7 @@ export function GoogleBuildingStreetView({
   address,
   mapHref,
 }: Readonly<{
+  locale?: 'en' | 'ko' | 'zh-CN';
   browserKey: string | null;
   buildingName: string;
   latitude?: number;
@@ -154,6 +156,10 @@ export function GoogleBuildingStreetView({
 }>) {
   const container = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'map' | 'unavailable'>('loading');
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setState(current => current === 'loading' ? 'unavailable' : current), 10_000);
+    return () => window.clearTimeout(timeout);
+  }, []);
   const initialize = useCallback(async () => {
     const sdk = (globalThis as typeof globalThis & {
       google?: Readonly<{ maps: GoogleBuildingStreetViewSdk
@@ -221,14 +227,16 @@ export function GoogleBuildingStreetView({
   if (browserKey === null || state === 'unavailable') return (
     <section className={styles.locationFallback} data-building-media="location-map-fallback">
       <span aria-hidden="true">⌖</span>
-      <div><strong>Building location</strong><p>Open the exact building area in Google Maps.</p></div>
-      <Link href={mapHref}>Open location map</Link>
+      <div><strong>{locale === 'ko' ? '건물 위치' : locale === 'zh-CN' ? '楼宇位置' : 'Building location'}</strong><p>{locale === 'ko' ? 'Google 지도에서 건물 주변을 확인하세요.' : locale === 'zh-CN' ? '在 Google 地图上查看楼宇周边。' : 'Open the building area in Google Maps.'}</p></div>
+      <Link href={mapHref}>{locale === 'ko' ? '지도에서 보기' : locale === 'zh-CN' ? '查看地图' : 'Open location map'}</Link>
     </section>
   );
   return (
     <section className={styles.frame} data-building-media="google-street-view" data-media-state={state}>
       <div ref={container} className={styles.canvas} role="region" aria-label={`Nearby Google Street View for ${buildingName}`} />
-      <p className={styles.label}>Nearby street view</p>
+      <p className={styles.photoLabel}>{state === 'map'
+        ? (locale === 'ko' ? '건물 주변 지도' : locale === 'zh-CN' ? '楼宇周边地图' : 'Building area map')
+        : (locale === 'ko' ? '주변 거리뷰' : locale === 'zh-CN' ? '周边街景' : 'Nearby street view')}</p>
       <Script
         src={buildGoogleMapsScriptUrl(browserKey)}
         strategy="lazyOnload"

@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import { BuildingNearbyView } from '../maps/building-nearby-view';
 import { GooglePlacePhoto } from '../maps/google-place-photo';
 import type { MARKET_PHOTOS } from '../market-representative-photo';
 import styles from './projected-entity-media.module.css';
@@ -31,6 +32,7 @@ export function ProjectedEntityMedia({
   fallbackMarket,
   locationHref,
   showLocationAction = true,
+  locationMedia,
 }: Readonly<{
   locale?: 'en' | 'ko' | 'zh-CN';
   buildingName: string;
@@ -44,9 +46,15 @@ export function ProjectedEntityMedia({
   fallbackMarket?: keyof typeof MARKET_PHOTOS;
   locationHref?: string;
   showLocationAction?: boolean;
+  locationMedia?: ReactNode;
 }>) {
+  const nearbyMedia = locationMedia ?? (fallbackMarket === 'singapore' && address.trim()
+    ? <BuildingNearbyView key={`${buildingName}:${address}`} locale={locale} market="singapore" providerKey={browserKey}
+        buildingName={displayBuildingName} address={`${buildingName}, ${address}`}
+        mapHref={locationHref ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${buildingName}, ${address}`)}`} />
+    : undefined);
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
-  if (media?.displayUrl && media.displayUrl === failedUrl) return <ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} buildingKey={buildingKey} media={null} evidenceHref={evidenceHref} browserKey={browserKey} registryKey={registryKey} fallbackMarket={fallbackMarket} locationHref={locationHref} showLocationAction={showLocationAction} />;
+  if (media?.displayUrl && media.displayUrl === failedUrl) return <ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} buildingKey={buildingKey} media={null} evidenceHref={evidenceHref} browserKey={browserKey} fallbackMarket={fallbackMarket} locationHref={locationHref} showLocationAction={showLocationAction} locationMedia={nearbyMedia} />;
   if (media === null || (media.displayUrl === null && !media.providerReference)) {
     if (registryKey !== undefined) return <GooglePlacePhoto
       locale={locale}
@@ -56,8 +64,9 @@ export function ProjectedEntityMedia({
       address={address}
       expectedBuildingKey={buildingKey}
       registryKey={registryKey}
-      fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} locationHref={locationHref} showLocationAction={showLocationAction} />}
+      fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} locationHref={locationHref} showLocationAction={showLocationAction} locationMedia={nearbyMedia} />}
     />;
+    if (nearbyMedia) return nearbyMedia;
     const city = fallbackMarket ? { seoul: 'Seoul', singapore: 'Singapore', dubai: 'Dubai', tokyo: 'Tokyo' }[fallbackMarket] : '';
     const mapHref = locationHref ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([buildingName, address, city].filter(Boolean).join(', '))}`;
     return <div className={styles.unavailable} data-photo-state="unavailable" data-location-fallback="true">
@@ -81,7 +90,7 @@ export function ProjectedEntityMedia({
     expectedBuildingKey={buildingKey}
     verifiedSubjectKind={media.relationship === 'parent' ? 'site-aerial' : 'building-exterior'}
     verifiedPlaceId={media.providerReference!}
-    fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} locationHref={locationHref} showLocationAction={showLocationAction} />}
+    fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} locationHref={locationHref} showLocationAction={showLocationAction} locationMedia={nearbyMedia} />}
   />;
   const focalX = media.focalX ?? 0.5;
   const focalY = media.focalY ?? 0.5;
