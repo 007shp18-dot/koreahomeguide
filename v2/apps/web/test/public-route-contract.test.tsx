@@ -132,8 +132,8 @@ describe('public migration containment', () => {
   it('uses the Korean social image by default and preserves explicit images', () => {
     const options = { path: '/ko/example/' as const, title: '한국어 예시', description: '한국어 페이지', locale: 'ko_KR' as const };
     const korean = indexableMetadata(options);
-    expect(korean.openGraph).toMatchObject({ images: ['https://www.signedprice.com/og/ko/'] });
-    expect(korean.twitter).toMatchObject({ images: ['https://www.signedprice.com/og/ko/'] });
+    expect(korean.openGraph).toMatchObject({ images: ['https://www.signedprice.com/og.png'] });
+    expect(korean.twitter).toMatchObject({ images: ['https://www.signedprice.com/og.png'] });
     expect(indexableMetadata({ ...options, imagePath: '/custom.png' }).openGraph)
       .toMatchObject({ images: ['https://www.signedprice.com/custom.png'] });
   });
@@ -187,11 +187,11 @@ describe('public migration containment', () => {
       type: 'website',
       locale: 'ko_KR',
       url: 'https://www.signedprice.com/ko/kr/seoul/explore/',
-      images: ['https://www.signedprice.com/og/ko/'],
+      images: ['https://www.signedprice.com/og.png'],
     });
     expect(korean.twitter).toMatchObject({
       card: 'summary_large_image',
-      images: ['https://www.signedprice.com/og/ko/'],
+      images: ['https://www.signedprice.com/og.png'],
     });
   });
 

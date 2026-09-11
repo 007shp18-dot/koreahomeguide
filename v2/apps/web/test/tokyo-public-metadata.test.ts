@@ -11,7 +11,7 @@ describe('Tokyo public metadata', () => {
     const { metadata } = await load();
     const canonical = `https://www.signedprice.com${path}`;
     expect(metadata.alternates?.canonical).toBe(canonical);
-    expect(metadata.openGraph).toMatchObject({ url: canonical, locale: 'en_US', images: ['https://www.signedprice.com/og/en/'] });
+    expect(metadata.openGraph).toMatchObject({ url: canonical, locale: 'en_US', images: ['https://www.signedprice.com/og.png'] });
     expect(metadata.robots).toMatchObject({ index: true, follow: true });
     expect(metadata.twitter).toMatchObject({ card: 'summary_large_image' });
   });

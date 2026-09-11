@@ -330,7 +330,7 @@ export function singaporeMetadata(metadata: import('next').Metadata): import('ne
   const ko = canonical?.replace(/(?<!\/ko)\/sg\/singapore\//, '/ko/sg/singapore/');
   const en = ko?.replace('/ko/sg/', '/sg/');
   const zh = en?.replace('/sg/', '/zh-cn/sg/');
-  const image = 'https://www.signedprice.com/og/ko/';
+  const image = 'https://www.signedprice.com/og.png';
   const title = typeof metadata.title === 'string' ? sgText('ko', metadata.title) : metadata.title;
   const description = sgText('ko', metadata.description);
   const fallbackTitle = typeof title === 'string' ? title : undefined;

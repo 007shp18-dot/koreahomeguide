@@ -7,8 +7,8 @@ import {globalNavigation,languageDestinations,marketDestination} from '../lib/na
 import {metadata as koreanToolsMetadata} from '../app/(ko)/ko/tools/page';
 it('uses Korean social images for the Korean directory and calculator',()=>{
  for(const metadata of [koreanToolsMetadata,buildPropertyScenarioMetadata('ko',false)]) {
-  expect(metadata.openGraph?.images).toEqual(['https://www.signedprice.com/og/ko/']);
-  expect(metadata.twitter?.images).toEqual(['https://www.signedprice.com/og/ko/']);
+  expect(metadata.openGraph?.images).toEqual(['https://www.signedprice.com/og.png']);
+  expect(metadata.twitter?.images).toEqual(['https://www.signedprice.com/og.png']);
  }
 });
 it.each(['en','ko','zh-CN'] as const)('publishes a translated tools directory with all four market tools: %s',locale=>{
@@ -44,7 +44,7 @@ it('gives Chinese calculator metadata its own canonical and reciprocal language 
  const chinese=buildPropertyScenarioMetadata('zh-CN',false);
  expect(chinese.alternates?.canonical).toBe('https://www.signedprice.com/zh-cn/tools/property-scenario/');
  expect(chinese.openGraph).toMatchObject({locale:'zh_CN',url:'https://www.signedprice.com/zh-cn/tools/property-scenario/'});
- expect(chinese.openGraph?.images).toEqual(['https://www.signedprice.com/og/en/']);
+ expect(chinese.openGraph?.images).toEqual(['https://www.signedprice.com/og.png']);
  for(const locale of ['en','ko','zh-CN'] as const) expect(buildPropertyScenarioMetadata(locale,false).alternates?.languages).toEqual({
   en:'https://www.signedprice.com/tools/property-scenario/',ko:'https://www.signedprice.com/ko/tools/property-scenario/',
   'zh-Hans':'https://www.signedprice.com/zh-cn/tools/property-scenario/','x-default':'https://www.signedprice.com/tools/property-scenario/',

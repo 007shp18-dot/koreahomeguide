@@ -91,11 +91,11 @@ describe('district property-type SEO routes', () => {
       openGraph: {
         url: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
         locale: 'en_US',
-        images: ['https://www.signedprice.com/og/en/'],
+        images: ['https://www.signedprice.com/og.png'],
       },
       twitter: {
         card: 'summary_large_image',
-        images: ['https://www.signedprice.com/og/en/'],
+        images: ['https://www.signedprice.com/og.png'],
       },
     });
   });
@@ -139,7 +139,7 @@ describe('district property-type SEO routes', () => {
       openGraph: {
         url: 'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/apartment/',
         locale: 'ko_KR',
-        images: ['https://www.signedprice.com/og/ko/'],
+        images: ['https://www.signedprice.com/og.png'],
       },
     });
 
