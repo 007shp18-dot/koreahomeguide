@@ -83,6 +83,10 @@
     {
       "path": "/api/internal/editorial-publish/",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/internal/morning-brief/",
+      "schedule": "0 23 * * *"
     }
   ],
   "ignoreCommand": "node ../../../scripts/release/ignore-build.mjs"

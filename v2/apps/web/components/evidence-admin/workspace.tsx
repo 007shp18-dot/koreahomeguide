@@ -1,4 +1,5 @@
 'use client';
+import { MorningBriefPanel } from './morning-brief-panel';
 import { EditorialOperationsPanel } from './editorial-operations-panel';
 import React, { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import Link from 'next/link';
@@ -33,7 +34,7 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { in
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const expireSession = useCallback(() => setAuthenticated(false), []);
   const [data, setData] = useState<PoolData | null>(initialData);
-  const [tab, setTab] = useState<'evidence' | 'sources' | 'create' | 'research' | 'collection' | 'operations'>('evidence');
+  const [tab, setTab] = useState<'evidence' | 'sources' | 'create' | 'research' | 'collection' | 'operations' | 'morning'>('evidence');
   const [selected, setSelected] = useState<{ entity: 'source' | 'evidence'; id: string } | null>(null);
   const [filters, setFilterValues] = useState({ market: '', status: '', quality: '', q: '', page: 1, sourcePage: 1 });
   const [checked, setChecked] = useState<string[]>([]);
@@ -99,6 +100,7 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { in
       <button type="button" aria-current={tab === 'sources' ? 'page' : undefined} onClick={() => { setTab('sources'); setSelected(null); }}>출처 관리</button>
       <button type="button" aria-current={tab === 'create' ? 'page' : undefined} onClick={() => { setTab('create'); setSelected(null); }}>자료 등록</button>
       <button type="button" aria-current={tab === 'research' ? 'page' : undefined} onClick={() => { setTab('research'); setSelected(null); }}>Tool 공유 데이터</button>
+      <button type="button" onClick={() => { setTab('morning'); setSelected(null); }}>아침 브리핑</button>
       <button type="button" onClick={() => { setTab('operations'); setSelected(null); }}>배포·기사 발행</button>
       <button type="button" aria-current={tab === 'collection' ? 'page' : undefined} onClick={() => { setTab('collection'); setSelected(null); }}>정기 수집 운영</button>
     </nav><div className={styles.sidebarFoot}><p>내부 전용 · 공개되지 않음</p><small>수집·원문 검토·자료 승인·사이트 공개 시점을 구분해 확인하세요.</small><button type="button" disabled={busy} onClick={() => void logout()}>로그아웃</button></div></aside>
@@ -110,6 +112,7 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { in
       {data && (data.sourceTotal ?? 0) > 100 && <div className={styles.pagination} style={{ marginBottom: '1rem' }} aria-label="출처 페이지"><span>선택할 출처 {filters.sourcePage} / {Math.ceil((data.sourceTotal ?? 0) / 100)} 페이지</span><button type="button" disabled={loading || busy || filters.sourcePage <= 1} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage - 1 }); }}>이전 출처</button><button type="button" disabled={loading || busy || filters.sourcePage * 100 >= (data.sourceTotal ?? 0)} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage + 1 }); }}>다음 출처</button></div>}
       {data && <div className={selectedRow ? styles.split : ''}>
         <section className={styles.panel}>
+          {tab === 'morning' && <MorningBriefPanel />}
           {tab === 'operations' && <EditorialOperationsPanel />}
           {tab === 'collection' && <CollectionPanel onUnauthorized={expireSession} />}
           {tab === 'research' && <ResearchPanel />}
