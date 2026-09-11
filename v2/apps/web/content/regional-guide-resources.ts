@@ -9,7 +9,7 @@ export const RESOURCE_CITIES = ['seoul', 'tokyo', 'singapore', 'dubai'] as const
 export const RESOURCE_LABELS = { checklist: text('Checklist', '체크리스트'), glossary: text('Glossary', '용어집') };
 export const REGIONAL_RESOURCES: Record<StoryCity, { name: StoryText; intro: StoryText; checklist: Item[]; glossary: Item[]; related: string }> = {
   seoul: {
-    name: text('Seoul', '서울'), intro: text('Read Korean rental listings and prepare your questions before paying a deposit.', '한국 임대 매물 표기를 이해하고 보증금을 보내기 전 확인할 질문을 정리하세요.'),
+    name: text('Seoul', '서울'), intro: text('Check ownership, deposit protection, permits and funding alongside the costs of buying or renting in Seoul.', '서울 매수·임대차 비용과 함께 소유권·보증금 보호·허가·자금 조달 조건을 확인하세요.'),
     related: '/guides/rent-an-apartment-in-korea/',
     checklist: [
       item('Confirm the listing units', '매물의 금액 단위 확인', 'Ask for deposit and monthly rent in full KRW. Do not assume a shorthand such as 1,000/80 uses a particular unit.', '보증금과 월세를 원 단위로 받으세요. 1,000/80 같은 표기는 단위를 먼저 확인합니다.'),
