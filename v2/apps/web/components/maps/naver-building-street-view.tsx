@@ -143,17 +143,18 @@ export function mountNaverBuildingStreetView({
   });
 }
 
-function LocationMapFallback({ mapHref }: Readonly<{ mapHref: string }>) {
+function LocationMapFallback({ mapHref, locale }: Readonly<{ mapHref: string; locale: 'en' | 'ko' | 'zh-CN' }>) {
   return (
     <section className={styles.locationFallback} data-building-media="location-map-fallback">
       <span aria-hidden="true">⌖</span>
-      <div><strong>Building location</strong><p>Open the exact building area in NAVER Map.</p></div>
-      <Link href={mapHref}>Open location map</Link>
+      <div><strong>{locale === 'ko' ? '건물 위치' : locale === 'zh-CN' ? '楼宇位置' : 'Building location'}</strong><p>{locale === 'ko' ? '지도에서 건물 주변을 확인하세요.' : locale === 'zh-CN' ? '在地图上查看楼宇周边。' : 'Open the building area on the map.'}</p></div>
+      <Link href={mapHref}>{locale === 'ko' ? '지도에서 보기' : locale === 'zh-CN' ? '查看地图' : 'Open location map'}</Link>
     </section>
   );
 }
 
 export function NaverBuildingStreetView({
+  locale = 'en',
   clientId,
   buildingName,
   latitude,
@@ -162,6 +163,7 @@ export function NaverBuildingStreetView({
   mapHref,
   preferMap = false,
 }: Readonly<{
+  locale?: 'en' | 'ko' | 'zh-CN';
   clientId: string | null;
   buildingName: string;
   latitude?: number;
@@ -173,6 +175,10 @@ export function NaverBuildingStreetView({
   const container = useRef<HTMLDivElement>(null);
   const mounted = useRef<ReturnType<typeof mountNaverBuildingStreetView> | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'map' | 'unavailable'>('loading');
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setState(current => current === 'loading' ? 'unavailable' : current), 10_000);
+    return () => window.clearTimeout(timeout);
+  }, []);
   const initialize = useCallback(async () => {
     const sdk = (window as NaverMapsWindow).naver?.maps;
     if (sdk === undefined || container.current === null || typeof sdk.Panorama !== 'function') {
@@ -262,12 +268,14 @@ export function NaverBuildingStreetView({
     };
   }, [initialize]);
 
-  if (clientId === null || state === 'unavailable') return <LocationMapFallback mapHref={mapHref} />;
+  if (clientId === null || state === 'unavailable') return <LocationMapFallback mapHref={mapHref} locale={locale} />;
   return (
     <section className={styles.frame} data-building-media="naver-panorama" data-media-state={state}>
       <div ref={container} className={styles.canvas} role="region" aria-label={`Nearby NAVER street view for ${buildingName}`} />
-      <p className={styles.label}>Nearby street view</p>
-      {state === 'loading' ? <div className={styles.loading} aria-live="polite"><span>Loading nearby view</span><strong>{buildingName}</strong></div> : null}
+      <p className={styles.photoLabel}>{state === 'map'
+        ? (locale === 'ko' ? '건물 주변 지도' : locale === 'zh-CN' ? '楼宇周边地图' : 'Building area map')
+        : (locale === 'ko' ? '주변 거리뷰' : locale === 'zh-CN' ? '周边街景' : 'Nearby street view')}</p>
+      {state === 'loading' ? <div className={styles.loading} aria-live="polite"><span>{locale === 'ko' ? '주변 거리뷰 불러오는 중' : locale === 'zh-CN' ? '正在加载周边街景' : 'Loading nearby view'}</span><strong>{buildingName}</strong></div> : null}
       <Script
         src={buildNaverMapsScriptUrl(
           clientId,

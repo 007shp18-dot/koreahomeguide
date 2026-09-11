@@ -306,7 +306,14 @@ function GooglePlacePhotoForIdentity({
           src={current.src}
           alt={locale === 'ko' ? `${displayBuildingName} 장소 사진 ${activePhoto + 1}` : locale === 'zh-CN' ? `${displayBuildingName} 场所照片 ${activePhoto + 1}` : `${displayBuildingName} place photo ${activePhoto + 1}`}
           decoding="async"
-          onError={() => setPhoto('unavailable')}
+          onError={() => {
+            setActivePhoto(0);
+            setPhoto((previous) => {
+              if (typeof previous === 'string') return previous;
+              const items = previous.items.filter((item) => item.src !== current.src);
+              return items.length ? { ...previous, items } : 'unavailable';
+            });
+          }}
         />
       )}
       {photo === 'loading' ? null : <>

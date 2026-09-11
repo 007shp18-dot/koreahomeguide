@@ -62,7 +62,6 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
         media={<ProjectedEntityMedia locale={locale} media={media} fallbackMarket="singapore"
           browserKey={googleMapsBrowserKey} buildingName={model.identity.project} displayBuildingName={displayName}
           buildingKey={`singapore:project:${model.identity.id}`} address={`${model.identity.street}, Singapore`}
-          registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
           locationHref={marketHref(locale, `/sg/singapore/explore/?region=${model.identity.marketSegment.toLowerCase()}&q=${encodeURIComponent(displayName)}&project=${encodeURIComponent(model.identity.id)}`)} />}
         evidence={<section className={detailStyles.section}><h2>{localizedMarketCopy(locale, "Not enough transactions to publish a price", "가격 게시에 필요한 거래가 부족합니다")}</h2>
           <p>{locale === 'ko' ? `신고 거래 ${model.count}건입니다. 중앙값은 ${model.threshold}건 이상일 때 공개합니다.` : locale === 'zh-CN' ? `${model.count} 笔申报交易，至少 ${model.threshold} 笔才公布中位数。` : `${model.count} reported transactions. A median requires at least ${model.threshold}.`}</p>
@@ -119,7 +118,6 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
           buildingKey={`singapore:project:${model.identity.id}`}
           address={`${model.identity.street}, Singapore`}
           displayBuildingName={displayName}
-          registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
           evidenceHref="#project-summary-heading"
         />}
         evidence={<><section className={styles.section} aria-labelledby="project-summary-heading">
