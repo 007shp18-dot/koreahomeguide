@@ -34,7 +34,7 @@ import { indexableMetadata } from '../lib/public-metadata';
 import { buildMarketPageModel } from '../lib/route-model';
 import { dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-repository.server';
 
-const neighbourhoodCanonicalUrls = NEIGHBOURHOOD_STORIES.map(({ slug }) => `https://www.signedprice.com${neighbourhoodHref(slug)}`);
+const neighbourhoodCanonicalUrls = NEIGHBOURHOOD_STORIES.flatMap(({ slug }) => (['en', 'ko'] as const).map(locale => `https://www.signedprice.com${neighbourhoodHref(slug, locale)}`));
 
 const period = '2026-01/2026-07';
 const portfolioUrls = EDITORIAL_PORTFOLIO.filter(record => record.slug !== 'compare-seoul-district-prices').map(({ canonicalHref }) => `https://www.signedprice.com${canonicalHref}`);

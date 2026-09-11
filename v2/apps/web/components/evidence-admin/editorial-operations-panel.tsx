@@ -18,7 +18,7 @@ export function EditorialOperationsPanel() {
  <div className={styles.formGrid}>
  <label>주소 이름<input value={slug} onChange={e=>{setSlug(e.target.value);setVersion(0);}} placeholder="neighbourhood-story" /></label>
  <label>언어<select value={locale} onChange={e=>setLocale(e.target.value)}><option value="en">English</option><option value="ko">한국어</option><option value="zh-CN">简体中文</option></select></label>
- <label>시장<select value={market} onChange={e=>setMarket(e.target.value)}><option value="global">전체·기타 도시</option><option value="seoul">서울</option><option value="singapore">싱가포르</option><option value="dubai">두바이</option></select></label>
+ <label>시장<select value={market} onChange={e=>setMarket(e.target.value)}><option value="global">전체·기타 도시</option><option value="seoul">서울</option><option value="singapore">싱가포르</option><option value="dubai">두바이</option><option value="tokyo">도쿄</option></select></label>
  <label>제목<input value={title} onChange={e=>setTitle(e.target.value)} /></label><label>요약<textarea value={summary} onChange={e=>setSummary(e.target.value)} /></label>
  <label>본문 Markdown<textarea rows={12} value={body} onChange={e=>setBody(e.target.value)} /></label>
  <label>검토자<input value={reviewer} onChange={e=>setReviewer(e.target.value)} /></label>

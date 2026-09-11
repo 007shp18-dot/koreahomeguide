@@ -27,7 +27,14 @@ test('evidence filters, bulk confirmation and consent dashboard are usable', asy
   });
   const login = await page.request.post(`${adminOrigin}/api/internal/evidence-session/`, {headers:{Origin:adminOrigin},data:{secret:'playwright-only-evidence-admin-secret-32-characters'}});
   expect(login.status(), await login.text()).toBe(200);
+  await page.route('**/api/internal/data-collection/**', route => route.fulfill({json:{sources:[],markets:[{job:'sg-private-sale',enabled:true,state:'failed',lastAttemptAt:now,lastSuccessAt:null,sourceAsOf:null,errorCode:'provider_unavailable',received:0,inserted:0,updated:0,unchanged:0,unlinked:0,consecutiveFailures:2,anomaly:null}]}}));
+  await page.route('**/api/internal/editorial-operations/**', route => route.fulfill({json:{items:[]}}));
   await page.goto(`${adminOrigin}/admin/evidence/`);
+  await expect(page.getByRole('heading',{name:'먼저 확인하세요'})).toBeVisible();
+  await expect(page.getByText('제공기관 API 응답 확인 필요',{exact:true})).toBeVisible();
+  expect(queried).toHaveLength(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.getByRole('button',{name:/^자료 검토/}).click();
   await expect(page.getByRole('button',{name:'검증 단지',exact:true})).toBeVisible();
   await page.getByLabel('수집 점검').selectOption('qualified');
   await page.getByRole('button',{name:'조회',exact:true}).click();
