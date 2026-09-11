@@ -21,7 +21,6 @@ export function GuideDirectory({ locale = 'en', market = 'all' }: Readonly<{ loc
       <Link href={`${base}/news/`}>{ko ? '도시 이야기와 시장 분석은 뉴스 & 인사이트에서' : 'For city stories and market analysis, visit News & Insights'}</Link>
     </header>
     <nav className={styles.filters} aria-label={ko ? '가이드 도시' : 'Guide markets'}>{(Object.keys(cities) as GuideMarket[]).map(city => <Link key={city} href={`${base}/guides/${city === 'all' ? '' : `?market=${city}`}`} aria-current={market === city ? 'page' : undefined}>{cities[city]}</Link>)}</nav>
-    <RegionalResourceLinks city={market} locale={locale} />
     {groups.map(group => {
       const selected = entries.filter(entry => entry.group === group.id);
       if (!selected.length) return null;
@@ -36,5 +35,6 @@ export function GuideDirectory({ locale = 'en', market = 'all' }: Readonly<{ loc
         </li>)}</ol>
       </section>;
     })}
+    <RegionalResourceLinks city={market} locale={locale} />
   </main>;
 }
