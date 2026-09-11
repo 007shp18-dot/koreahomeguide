@@ -176,8 +176,7 @@ for (const city of ['seoul', 'singapore', 'dubai']) {
   const group = { en: path, ko: `/ko${path}`, 'zh-CN': `/zh-cn${path}` };
   for (const href of Object.values(group)) routes[href] = group;
 }
-{
-  const path = '/news/dubai-rental-yield-after-costs/';
+for (const path of ['/news/dubai-rental-yield-after-costs/', '/news/tokyo-older-apartments-shinagawa-renewal-2026/']) {
   const group = { en: path, ko: `/ko${path}`, 'zh-CN': `/zh-cn${path}` };
   for (const href of Object.values(group)) routes[href] = group;
 }
