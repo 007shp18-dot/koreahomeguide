@@ -1,20 +1,33 @@
 import { expect, test } from '@playwright/test';
 
-test('Korean news filters stay on separate rows at phone widths', async ({ page }, testInfo) => {
-  await page.goto('/ko/news/?market=seoul', { waitUntil: 'domcontentloaded' });
-  for (const width of [360, 390, 430]) {
-    await page.setViewportSize({ width, height: 844 });
-    const types = page.getByRole('navigation', { name: '뉴스와 인사이트 유형', exact: true });
-    const cities = page.getByRole('navigation', { name: '기사 도시', exact: true });
-    await expect(types).toBeVisible();
-    await expect(cities).toBeVisible();
-    const top = await types.boundingBox();
-    const lower = await cities.boundingBox();
-    expect(lower!.y).toBeGreaterThanOrEqual(top!.y + top!.height);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    if (width === 390) await testInfo.attach('korean-news-phone', { body: await page.screenshot(), contentType: 'image/png' });
-  }
-});
+for (const edition of [
+  { prefix: '', title: 'News', navigation: 'News markets', cities: ['All', 'Seoul', 'Singapore', 'Dubai', 'Tokyo'] },
+  { prefix: '/ko', title: '뉴스', navigation: '뉴스 도시', cities: ['전체', '서울', '싱가포르', '두바이', '도쿄'] },
+  { prefix: '/zh-cn', title: '新闻', navigation: '新闻城市', cities: ['全部', '首尔', '新加坡', '迪拜', '东京'] },
+]) {
+  test(`News city filters stay readable and localized at phone widths: ${edition.prefix || 'en'}`, async ({ page }, testInfo) => {
+    await page.goto(`${edition.prefix}/news/?type=news&market=seoul`, { waitUntil: 'domcontentloaded' });
+    const cities = page.getByRole('navigation', { name: edition.navigation, exact: true });
+    for (const width of [360, 390, 430]) {
+      await page.setViewportSize({ width, height: 844 });
+      await expect(page.getByRole('heading', { name: edition.title, exact: true, level: 1 })).toBeVisible();
+      await expect(cities).toBeVisible();
+      await expect(cities.getByRole('link')).toHaveText(edition.cities);
+      await expect(cities.getByRole('link', { name: edition.cities[1], exact: true })).toHaveAttribute('aria-current', 'page');
+      for (const link of await cities.getByRole('link').all()) {
+        const box = await link.boundingBox();
+        expect(box!.height).toBeGreaterThanOrEqual(44);
+        expect(box!.x).toBeGreaterThanOrEqual(0);
+        expect(box!.x + box!.width).toBeLessThanOrEqual(width);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      if (width === 390) await testInfo.attach('localized-news-phone', { body: await page.screenshot(), contentType: 'image/png' });
+    }
+    await cities.getByRole('link', { name: edition.cities[4], exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`${edition.prefix}/news/\\?type=news&market=tokyo$`));
+    await expect(cities.getByRole('link', { name: edition.cities[4], exact: true })).toHaveAttribute('aria-current', 'page');
+  });
+}
 
 test('Korean guide directory separates practical reference from budget analysis', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
