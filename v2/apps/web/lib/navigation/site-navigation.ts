@@ -65,7 +65,12 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
   const english = path === '/ko' || path === '/zh-cn' ? '/' : path.replace(/^\/ko(?=\/)/, '').replace(/^\/zh-cn(?=\/)/, '');
   const destinations: Record<SiteLocale, string | null> = { en: null, ko: null, 'zh-CN': null };
   const withQuery = (value: string) => `${value === '/' ? '/' : `${value}/`}${search}`;
-  if (english === '/kr/seoul/corrections') {
+  const publishedColumn = /^\/news\/(how-to-read-property-transaction-prices-and-medians|singapore-condo-absd-60-percent-real-acquisition-cost)(?:-en|-zh)?$/.exec(english);
+  if (publishedColumn) {
+    destinations.en = withQuery(`/news/${publishedColumn[1]}-en`);
+    destinations.ko = withQuery(`/ko/news/${publishedColumn[1]}`);
+    destinations['zh-CN'] = withQuery(`/zh-cn/news/${publishedColumn[1]}-zh`);
+  } else if (english === '/kr/seoul/corrections') {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
@@ -90,6 +95,9 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
+  } else if (/^\/news\/neighbourhoods\/(?:yeonhui-dong|joo-chiat-katong|alserkal-al-quoz|kichijoji|seochon|tiong-bahru|al-satwa|yanaka)$/.test(english)) {
+    destinations.en = withQuery(english);
+    destinations.ko = withQuery(`/ko${english}`);
   } else if (/^\/news\/city-stories\/(?:seoul|singapore|dubai|tokyo)$/.test(english)) {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
@@ -115,4 +123,3 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
   }
   return destinations;
 }
-

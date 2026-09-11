@@ -11,3 +11,4 @@
 .hero.textStory{grid-template-columns:1fr;max-width:760px}.card.textStory{display:flex;align-items:flex-start;border-top:1px solid #dce3e9}.card.textStory .copy{padding-top:24px}
 
 .topicFilters{display:flex;gap:12px;margin:-12px 0 28px}.topicFilters a{padding:9px 18px;border-radius:999px;text-decoration:none;color:#536171;border:1px solid #dce3e9;font-size:14px}.topicFilters a[aria-current=page]{background:#142335;color:white;border-color:#142335}.translationNote{font-size:13px;color:#596775;margin:0 0 24px}.language{font-size:12px;letter-spacing:0;text-transform:none;color:#596775}
+.credit { overflow-wrap: anywhere; max-height: calc(100% - 16px); overflow-y: auto; }

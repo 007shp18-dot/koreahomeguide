@@ -58,10 +58,16 @@
 .hero .scenePhoto { margin-top: 0; }
 .hero .scenePhoto > img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
 .scenePhoto figcaption { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
-.photoCredit { font-size: 12px; line-height: 1.6; }
+.photoCredit { min-width: 0; max-width: 100%; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
 .photoCredit summary { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .photoCredit span { max-width: 100%; overflow-wrap: anywhere; }
 .journeyLinks { margin: 28px 0; border-block: 1px solid var(--line); }
 .journeyLinks > summary { cursor: pointer; min-height: 44px; padding-block: 12px; font-size: 14px; line-height: 1.5; }
 .journeyLinks .stages { margin-bottom: 16px; }
 .article summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+/* Credits are part of the reading column, never a reason to widen it. */
+.article, .body, .scenePhoto, .sources { min-width: 0; }
+.scenePhoto figcaption { display: block; overflow-wrap: anywhere; }
+.scenePhoto figcaption > details { margin-top: 4px; }
+.sources a, .body .references a { overflow-wrap: anywhere; word-break: normal; }

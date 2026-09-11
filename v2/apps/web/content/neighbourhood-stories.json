@@ -364,97 +364,97 @@
     ]
   },
   {
-    "slug": "seochon",
     "city": "seoul",
     "cityName": "Seoul",
-    "neighbourhood": "Seochon",
-    "title": "Seochon: the quieter side of the palace wall",
-    "deck": "Hanok lanes, a coin-token lunch at a covered market, and a valley that ends inside the city.",
-    "publishedAt": "2026-09-11",
-    "route": "Yeongchumun → Tongin Market → Suseong-dong Valley → a hanok café on the way back",
+    "deck": "A neighbourhood walk through hanok lanes, Tongin Market and the old Dae-o Bookstore.",
     "hero": {
-      "src": "/assets/editorial-2026-09/pexels-18328220.jpg",
-      "caption": "Seochon, Seoul · recent Pexels photograph",
-      "source": "https://www.pexels.com/photo/18328220/",
-      "author": "voltfather",
-      "license": "Pexels License",
-      "licenseHref": "https://www.pexels.com/license/",
-      "width": 1600,
-      "height": 2400,
-      "alt": "Hanok lanes and a narrow street in Seochon, Seoul",
-      "licenseUrl": "https://www.pexels.com/license/"
+      "alt": "Yi Sang-beom's hanok in Nuha-dong, Seochon",
+      "author": "Motoko C. K.",
+      "caption": "Yi Sang-beom's hanok in Nuha-dong, Seochon · photographed 2016 · archive image",
+      "height": 853,
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:The_House_of_Lee_Sang-beom.jpg",
+      "src": "/assets/editorial-2026-09/seochon-hanok-2016.jpg",
+      "width": 1280
     },
-    "intro": "Gyeongbokgung has two sides. Most visitors leave by the east gate toward Bukchon; fewer walk out the west gate, Yeongchumun, into Seochon. The lanes here are narrower and lower, and the neighbourhood still works as a neighbourhood — a printing shop, a rice-cake maker, a stationer — with cafés fitted in between rather than replacing them.",
+    "intro": "Seochon is the neighbourhood west of Gyeongbokgung Palace, not a single attraction. Start with its streets: tiled roofs beside brick houses, small shopfronts and the lanes linking Tongui-dong, Nuha-dong and Ogin-dong. This walk stays close to those streets, with a market lunch and a stop by Dae-o Bookstore. The archive photographs show the places in the years stated, not their current appearance.",
+    "living": "If you are considering living here, walk from a candidate address to Gyeongbokgung Station at the times you would actually commute. Check the building's condition, slopes, grocery access and parking rather than judging a home by a picturesque street. Narrow lanes also need to work for deliveries and residents' daily routines.",
+    "neighbourhood": "Seochon",
+    "publishedAt": "2026-09-11",
+    "route": "Gyeongbokgung Station → Tongui-dong and Nuha-dong lanes → Tongin Market → Dae-o Bookstore",
     "sections": [
       {
-        "title": "Start with lunch you assemble yourself",
         "paragraphs": [
-          "Tongin Market's dosirak café works on a simple system: buy a handful of brass tokens at the counter, take an empty lunch tray, and spend the tokens stall by stall — a scoop of tteokbokki here, a fried egg there, a few pieces of jeon. It is an old market's answer to the food court, and it fills a tray faster than you expect.",
-          "Eat upstairs if there is space, then walk the length of the market once more without buying anything. Notice which stalls the regulars stop at. A covered market at midday tells you more about who lives nearby than any listing description."
+          "From Gyeongbokgung Station, head into the streets west of the palace toward Tongui-dong and Nuha-dong. Look at how tiled eaves, brick walls and shop windows sit beside one another. A hanok is part of the neighbourhood here, rather than a reason to treat every doorway as a visitor entrance.",
+          "Keep to public lanes and leave residents' entrances clear. Small galleries and shops can make useful stops, but check their current opening information rather than expecting the businesses in an archive photograph to be unchanged."
         ],
         "photo": {
-          "src": "/assets/editorial-2026-09/pexels-30966650.jpg",
-          "caption": "Seochon, Seoul · recent Pexels photograph",
-          "source": "https://www.pexels.com/photo/30966650/",
-          "author": "Coman Yu",
-          "license": "Pexels License",
-          "licenseHref": "https://www.pexels.com/license/",
-          "width": 1600,
-          "height": 1063,
-          "alt": "A human-shot street view from Seochon in Seoul",
-          "licenseUrl": "https://www.pexels.com/license/"
-        }
+          "alt": "A shopfront in Seochon",
+          "author": "Luvepoli",
+          "caption": "A shopfront in Seochon · photographed 2015 · archive image",
+          "height": 675,
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Seochon_scene.jpg",
+          "src": "/assets/editorial-2026-09/seochon-shopfront-2015.jpg",
+          "width": 900
+        },
+        "title": "Begin with the lanes west of the palace"
       },
       {
-        "title": "Follow the water uphill",
         "paragraphs": [
-          "Suseong-dong Valley sits at the top of Okin-dong, where an apartment block was taken down in 2012 and the stream that the painter Jeong Seon recorded in the 1700s was brought back. It is small — a few rocks, a stone bridge, the sound of water — and that is the point. Inwangsan rises directly behind it, and the trail up begins at the valley's edge.",
-          "You do not need to climb. Sit on the stone steps for a while and watch the light move on the rock face. The valley is a ten-minute walk from a subway station and it is still, most weekday afternoons, almost empty."
+          "Tongin Market's dosirak café lets visitors use tokens to choose food from participating stalls. Pick a few dishes for a lunch tray, then use the designated eating area. Check the current service hours and participating vendors before visiting.",
+          "After lunch, walk through the market without rushing to the next stop. Alongside the visitor lunch service, it is a place for everyday shopping. Keep the passage clear for shoppers and stallholders."
         ],
         "photo": {
-          "src": "/assets/editorial-2026-09/pexels-31955756.jpg",
-          "caption": "Seochon, Seoul · recent Pexels photograph",
-          "source": "https://www.pexels.com/photo/31955756/",
-          "author": "The Journey of Frames",
-          "license": "Pexels License",
-          "licenseHref": "https://www.pexels.com/license/",
-          "width": 1600,
-          "height": 1067,
-          "alt": "A human-shot Seoul neighborhood scene near Seochon",
-          "licenseUrl": "https://www.pexels.com/license/"
-        }
+          "alt": "Visitors with lunch trays at Tongin Market",
+          "author": "Korea.net / Korean Culture and Information Service (Jeon Han)",
+          "caption": "Visitors with lunch trays at Tongin Market · photographed 2014 · archive image",
+          "height": 878,
+          "license": "CC BY-SA 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Korea_Tongin_Market_01_(12920987714).jpg",
+          "src": "/assets/editorial-2026-09/seochon-tongin-2014.jpg",
+          "width": 1280
+        },
+        "title": "Put together a lunch at Tongin Market"
       },
       {
-        "title": "Come back down through the galleries",
         "paragraphs": [
-          "Two small museums sit inside the residential grid: the Park No-soo Art Museum, in the painter's 1930s house in Okin-dong, and the Daelim Museum on Tongui-dong's café street. Pick one. The Park No-soo house is the better choice on a first visit — the garden and the interior are as much the exhibit as the paintings.",
-          "Then let the return route wander. Seochon's lanes are short and rarely straight, so a wrong turn costs a minute and usually pays it back. Finish at whichever hanok café has a courtyard seat free."
+          "Make Dae-o Bookstore a stop on the return through the lanes. The old sign and tiled roof give the building its distinctive street presence. The photograph here records its 2015 appearance; check current access and opening arrangements before planning to go inside.",
+          "For a longer walk, Suseongdong Valley at the foot of Inwangsan is an optional uphill detour beyond Ogin-dong. It is not the focus of this route: the hanok lanes, market and bookshop already make a complete Seochon walk."
         ],
         "photo": {
-          "src": "/assets/editorial-2026-09/pexels-10279357.jpg",
-          "caption": "Seochon, Seoul · recent Pexels photograph",
-          "source": "https://www.pexels.com/photo/10279357/",
-          "author": "geoyul",
-          "license": "Pexels License",
-          "licenseHref": "https://www.pexels.com/license/",
-          "width": 1600,
-          "height": 2850,
-          "alt": "A traditional Seoul streetscape near Seochon",
-          "licenseUrl": "https://www.pexels.com/license/"
-        }
+          "alt": "Dae-o Bookstore in Seochon",
+          "author": "Luvepoli",
+          "caption": "Dae-o Bookstore in Seochon · photographed 2015 · archive image",
+          "height": 675,
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Seochon_Dae-o_Bookstore.jpg",
+          "src": "/assets/editorial-2026-09/seochon-daeo-2015.jpg",
+          "width": 900
+        },
+        "title": "Finish by Dae-o Bookstore"
       }
     ],
-    "living": "Picture an ordinary weekday. Walk from a lane you liked to Gyeongbokgung Station at eight in the morning, then again at seven in the evening. Seochon's charm is in its scale, and its scale means older buildings, steep short hills and narrow roads where a delivery van fills the width. Check how far the nearest large supermarket is, and whether the building you are looking at has parking. If the answer to the last question does not matter to you, this may be your place.",
+    "slug": "seochon",
     "sources": [
       {
-        "label": "Tongin Market (Seoul Metropolitan Government / Visit Seoul)",
-        "href": "https://english.visitseoul.net/attractions/Tongin-Market_/"
+        "href": "https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=79811",
+        "label": "Korea Tourism Organization: Tongin Market"
       },
       {
-        "label": "Park No-soo Art Museum (Jongno-gu)",
-        "href": "https://www.jongno.go.kr/portalMain.do"
+        "href": "https://commons.wikimedia.org/wiki/File:The_House_of_Lee_Sang-beom.jpg",
+        "label": "Archive photograph: Yi Sang-beom's house, Nuha-dong"
+      },
+      {
+        "href": "https://commons.wikimedia.org/wiki/File:Seochon_Dae-o_Bookstore.jpg",
+        "label": "Archive photograph: Dae-o Bookstore, Seochon"
       }
-    ]
+    ],
+    "title": "Seochon: hanok lanes west of Gyeongbokgung"
   },
   {
     "slug": "tiong-bahru",

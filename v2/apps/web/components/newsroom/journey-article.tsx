@@ -47,7 +47,7 @@ export function JourneyArticle({ article, locale }: Readonly<{ article: Article;
       <span>SignedPrice</span><span>{ko ? `${minutes}분 읽기` : `${minutes} min read`}</span><a href="#article-sources">{ko ? `출처 ${article.sources.length}개` : `${article.sources.length} sources`}</a>
     </EditorialArticleHeader>
     {(photoEssay || article.kind !== 'neighborhood') && <div className={styles.hero}>{photoEssay
-      ? <NeighbourhoodPhoto id={photoEssay.hero} eager context={article.kind === 'local-issue'} />
+      ? <NeighbourhoodPhoto id={photoEssay.hero} eager context={article.kind === 'local-issue'} locale={locale} />
       : <CityStoryPhoto city={article.city} locale={locale} scene={article.city === 'seoul' && article.id === 'discover' ? undefined : photoScene} forest={article.city === 'seoul' && article.id === 'discover'} eager />}</div>}
     <div className={styles.contents}><ArticleContents locale={locale} items={article.sections.map(section => ({ id: section.id, title: section.title[locale] }))} /></div>
     <article className={styles.body}>
@@ -55,7 +55,7 @@ export function JourneyArticle({ article, locale }: Readonly<{ article: Article;
         <h2>{section.title[locale]}</h2>
         {section.paragraphs[locale].map((paragraph, index) => <p key={index}><InlineCopy text={paragraph} /></p>)}
         {section.table && <div className={styles.tableWrap} tabIndex={0} role="region" aria-label={section.table.title[locale]}><table><caption>{section.table.title[locale]}</caption><thead><tr>{section.table.columns[locale].map(column => <th key={column} scope="col">{column}</th>)}</tr></thead><tbody>{section.table.rows[locale].map((row, index) => <tr key={index}>{row.map((cell, cellIndex) => cellIndex === 0 ? <th key={cellIndex} scope="row">{cell}</th> : <td key={cellIndex}><InlineCopy text={cell} /></td>)}</tr>)}</tbody></table><p className={styles.tableNote}>{section.table.note[locale]}</p></div>}
-        {photoEssay?.sections[sectionIndex] && <NeighbourhoodPhoto id={photoEssay.sections[sectionIndex]!} />}
+        {photoEssay?.sections[sectionIndex] && <NeighbourhoodPhoto id={photoEssay.sections[sectionIndex]!} locale={locale} />}
         {article.kind !== 'neighborhood' && section.sourceIds.length > 0 && <p className={styles.references}>{ko ? '근거 자료' : 'Sources'} {section.sourceIds.map(id => <a key={id} href={`#source-${id}`} aria-label={`${ko ? '출처' : 'Source'} ${article.sources.findIndex(source => source.id === id) + 1}`}>[{article.sources.findIndex(source => source.id === id) + 1}]</a>)}</p>}
       </section>)}
       {article.city === 'seoul' && article.id === 'where' && <section className={styles.neighborhoods}><h2>{ko ? '세 동네를 더 자세히' : 'Take a closer look at each neighbourhood'}</h2><ul>{SEOUL_NEIGHBORHOODS.map(id => <li key={id}><Link href={journeyArticleHref('seoul', id, locale)}>{getJourneyArticle('seoul', id)!.title[locale]} <UiIcon name="arrow-right" /></Link></li>)}</ul></section>}

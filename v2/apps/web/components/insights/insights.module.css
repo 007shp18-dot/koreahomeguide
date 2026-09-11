@@ -366,8 +366,10 @@
   font-size: 14px;
   line-height: 1.55;
 }
-.sources a { color: var(--review-ink, var(--ink)); text-underline-offset: 3px; }
+.sources a { min-width: 0; overflow-wrap: anywhere; color: var(--review-ink, var(--ink)); text-underline-offset: 3px; }
 .sources span { flex: none; color: var(--review-muted, var(--muted)); }
+.articleBody, .sources, .sources li { min-width: 0; max-width: 100%; }
+.articleBody a, .articleBody code, .sources li { overflow-wrap: anywhere; }
 
 .editorHero { min-height: 240px; display: block; }
 .editorHero h1 { font-size: 40px; }

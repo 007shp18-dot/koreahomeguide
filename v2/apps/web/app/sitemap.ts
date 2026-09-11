@@ -170,7 +170,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ? undefined
     : validDate(dubaiEvidence.getContext().generatedAt);
   const entries: MetadataRoute.Sitemap = [
-    ...NEIGHBOURHOOD_STORIES.map(story => sitemapEntry(neighbourhoodHref(story.slug), new Date(story.publishedAt))),
+    ...NEIGHBOURHOOD_STORIES.flatMap(story => ['en', 'ko'].map(locale => sitemapEntry(neighbourhoodHref(story.slug, locale as 'en' | 'ko'), new Date(story.publishedAt)))),
     sitemapEntry('/kr/seoul/shortlist/'),
     sitemapEntry('/ko/kr/seoul/shortlist/'),
     sitemapEntry('/passport/'),

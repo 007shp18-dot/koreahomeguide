@@ -62,6 +62,8 @@ const routes: EditorialLanguageRoutes = {
 };
 // Canonical English/Korean pairs, without importing article bodies into the client.
 const koreanPairs = [
+  ['/news/singapore-condo-prices-2026-by-project/', '/ko/news/singapore-condo-prices-2026-by-project/'],
+  ['/news/tokyo-asking-price-vs-contracted-price-2026/', '/ko/news/tokyo-asking-price-vs-contracted-price-2026/'],
   [
     "/news/policy/korea-rental-deposit-protection-status/",
     "/ko/news/korea-rental-deposit-protection-status/"

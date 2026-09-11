@@ -30,7 +30,7 @@ function topicFor(title: string, type: string) {
 
 export function buildInsightItems(articles: readonly PublishedContentArticle[], market: NewsroomMarketFilter, locale: ContentLocale = 'en', topic: InsightTopic = 'all'): Insight[] {
   const storyLocale = locale === 'ko' ? 'ko' : 'en';
-  const notebook: Insight[] = listNeighbourhoodStories().map(item => ({ investment: false, language: 'en', id: `en:${item.slug}`, title: item.title, deck: item.deck, href: neighbourhoodHref(item.slug), date: item.publishedAt, city: item.city as City, topic: 'Neighborhood living', type: 'guide', photo: item.hero }));
+  const notebook: Insight[] = listNeighbourhoodStories('all', storyLocale).map(item => ({ investment: false, language: storyLocale, id: `${storyLocale}:${item.slug}`, title: item.title, deck: item.deck, href: neighbourhoodHref(item.slug, storyLocale), date: item.publishedAt, city: item.city as City, topic: 'Neighborhood living', type: 'guide', photo: item.photosWithheld ? undefined : item.hero, requiresLocalPhoto: true }));
   // Investment includes explicit local financial analyses, published market/data/policy
   // records and reviewed buying-budget guides; lifestyle stories remain in All.
   const local: Insight[] = CITY_JOURNEY_ARTICLES.filter(item => item.kind !== 'journey').map(item => ({ investment: item.kind === 'local-issue', language: storyLocale, id: `${storyLocale}:city-article-${item.city}-${item.id}`, title: item.title[storyLocale], deck: item.deck[storyLocale], href: journeyArticleHref(item.city, item.id, storyLocale), date: item.checkedAt, city: item.city, topic: topicFor(item.title.en, item.kind), type: item.kind === 'neighborhood' ? 'guide' : 'data-story', photo: journeyArticlePhoto(item.city, item.id), requiresLocalPhoto: item.kind === 'neighborhood' }));
@@ -52,21 +52,21 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
   }).sort((a, b) => b.date.slice(0, 10).localeCompare(a.date.slice(0, 10)));
 }
 
-function StoryPhoto({ item, eager = false }: { item: Insight; eager?: boolean }) {
+function StoryPhoto({ item, eager = false, locale = 'en' }: { item: Insight; eager?: boolean; locale?: ContentLocale }) {
   const photo = item.photo ?? (!item.requiresLocalPhoto && item.city ? MARKET_PHOTOS[item.city] : undefined);
   if (!photo) return null;
   return <figure className={styles.photo}>
     <Link href={item.href} data-editorial-event="article_open" aria-label={item.title} tabIndex={-1}>
       <Image src={photo.src} alt={photo.alt} fill priority={eager} sizes={eager ? '(max-width: 760px) calc(100vw - 40px), 700px' : '(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 380px'} />
     </Link>
-    {item.photo && <details className={styles.credit}><summary aria-label="Photo credit">Photo</summary><span>{item.photo.caption} · <a href={item.photo.source}>{item.photo.author}</a> · <a href={item.photo.licenseUrl}>{item.photo.license}</a></span></details>}
+    {item.photo && <details className={styles.credit}><summary aria-label={locale === 'ko' ? '사진 출처' : locale === 'zh-CN' ? '图片来源' : 'Photo credit'}>{locale === 'ko' ? '사진' : locale === 'zh-CN' ? '图片' : 'Photo'}</summary><span>{item.photo.caption} · <a href={item.photo.source}>{item.photo.author}</a> · <a href={item.photo.licenseUrl}>{item.photo.license}</a></span></details>}
   </figure>;
 }
 
 function StoryCard({ item, hero = false, locale = 'en' }: { item: Insight; hero?: boolean; locale?: ContentLocale }) {
   const Heading = hero ? 'h2' : 'h3';
   return <article className={`${hero ? styles.hero : styles.card} ${item.requiresLocalPhoto && !item.photo ? styles.textStory : ''}`} data-newsroom-lead={hero ? "Featured story" : undefined} data-editorial-content-id={item.id} data-editorial-content-type={item.type} data-editorial-locale={item.language} lang={item.language} data-editorial-market={item.city ? marketIds[item.city] : undefined}>
-    <StoryPhoto item={item} eager={hero} />
+    <StoryPhoto item={item} eager={hero} locale={locale} />
     <div className={styles.copy}><p className={styles.topic}>{item.city ? localizedCities[locale][item.city] : locale === 'ko' ? '전체 도시' : locale === 'zh-CN' ? '跨城市' : 'Across cities'} <span>·</span> {topicLabels[locale][item.topic] ?? item.topic}{item.language !== locale && <span className={styles.language}>English</span>}</p>
       <Heading><Link href={item.href} data-editorial-event="article_open">{item.title}</Link></Heading><p className={styles.deck}>{item.deck}</p>
       {hero && <Link className={styles.read} href={item.href} data-editorial-event="article_open">{copy[locale].read} <span aria-hidden="true">→</span></Link>}
@@ -105,4 +105,3 @@ export function InsightsIndex({ articles, market, locale = 'en', topic = 'all' }
     </section>}
   </main>;
 }
-

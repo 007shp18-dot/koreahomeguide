@@ -473,6 +473,9 @@
 
 .sources a {
   color: var(--review-accent);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .sources small {
@@ -774,3 +777,4 @@
 .standardArticle > :not(script):not(header):not(nav) { max-width: 700px; margin-inline: auto; }
 .standardArticle > .articlePhoto { max-width: 900px; }
 .standardArticle > .sources { margin-top: 40px; }
+.sources, .sources li, .relatedAction, .relatedAction a { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
