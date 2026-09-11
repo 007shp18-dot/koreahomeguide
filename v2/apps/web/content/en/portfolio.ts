@@ -5,6 +5,7 @@ import { DUBAI_RENTAL_YIELD } from './dubai-rental-yield';
 import { KOREA_LARGE_ESTATE_SPILLOVER } from './korea-large-estate-spillover';
 import { SINGAPORE_LENTOR_SPILLOVER } from './singapore-lentor-spillover';
 import { LATEST_MARKET_NEWS, THREE_CITY_BUYER_PULSE } from './market-news-2026-09-08';
+import { PROPERTY_INSIGHTS_2026_09_11 } from './property-insights-2026-09-11';
 import { infographic, portfolioRecord, RELEASES, SOURCES } from '../portfolio-builders';
 
 const seoulDistrictChart = infographic({
@@ -61,6 +62,7 @@ export const ENGLISH_PORTFOLIO = Object.freeze([
   KOREA_LARGE_ESTATE_SPILLOVER,
   SINGAPORE_LENTOR_SPILLOVER,
   DUBAI_RENTAL_YIELD,
+  ...PROPERTY_INSIGHTS_2026_09_11,
   portfolioRecord({
     slug: 'korea-foreign-property-reporting-status', locale: 'en', type: 'policy-update', marketId: 'kr-seoul',
     title: 'Korea foreign-buyer reporting: what changed in February 2026',

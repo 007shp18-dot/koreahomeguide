@@ -58,7 +58,7 @@ export function NewsroomArticle({ article }: Readonly<{
     ? { label: t('Guides','가이드'), href: `${prefix}/guides/` }
     : article.type === 'news-brief' ? { label: t('News', '뉴스'), href: `${prefix}/news/?type=news` } : { label: t('Insights', '인사이트'), href: `${prefix}/news/` };
   const market = article.marketId === 'kr-seoul' ? t('Seoul','서울')
-    : article.marketId === 'sg-singapore' ? t('Singapore','싱가포르') : article.marketId === 'ae-dubai' ? t('Dubai','두바이') : article.marketId === 'jp-tokyo' ? t('Tokyo','도쿄') : t('Global','전체 도시');
+    : article.marketId === 'sg-singapore' ? t('Singapore','싱가포르') : article.marketId === 'ae-dubai' ? t('Dubai','두바이') : article.slug.startsWith('tokyo-') ? t('Tokyo','도쿄') : t('Global','전체 도시');
   const relatedHref = article.relatedHref === null ? null : marketHref(article.locale, article.relatedHref);
   const relatedLabel = relatedHref?.includes('/check') ? t('Check a price', '가격 확인하기')
     : relatedHref?.includes('/explore') ? t('Explore transaction records', '실거래가 탐색하기')

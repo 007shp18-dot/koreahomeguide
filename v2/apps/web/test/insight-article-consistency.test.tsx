@@ -15,6 +15,20 @@ import { NewsroomArticle } from '../components/newsroom/newsroom-article';
 afterEach(() => vi.useRealTimers());
 
 describe('consistent insight articles and curation', () => {
+  it('publishes both recent property insights in English and Korean without draft tokens', () => {
+    for (const slug of ['singapore-condo-prices-2026-by-project', 'tokyo-asking-price-vs-contracted-price-2026']) {
+      for (const locale of ['en', 'ko'] as const) {
+        const article = getPortfolioRecord(locale, slug);
+        expect(article).not.toBeNull();
+        expect(article!.title + article!.bodyMarkdown).not.toMatch(/\[(?:n|month|date|district[^\]]*)\]/i);
+        const html = renderToStaticMarkup(<NewsroomArticle article={article!} />);
+        expect(html).toContain('id="section-1"');
+        expect(html).toContain('%2Fassets%2Feditorial-2026-09%2F');
+        expect(html).toContain('id="article-sources-title"');
+        expect(article!.canonicalHref).toBe(`${locale === 'ko' ? '/ko' : ''}/news/${slug}/`);
+      }
+    }
+  });
   it('uses the verified Seongsu street photo on both the card and the article', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-09-10T12:00:00Z'));
