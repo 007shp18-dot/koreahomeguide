@@ -109,6 +109,7 @@ async function mintToken(accessKey: string): Promise<string> {
   const response = await fetch(TOKEN_URL, {
     headers: { AccessKey: accessKey, 'User-Agent': USER_AGENT },
     cache: 'no-store',
+    signal: AbortSignal.timeout(15_000),
   });
 
   if (!response.ok) {
@@ -167,6 +168,7 @@ async function callOnce(
   const response = await fetch(url, {
     headers: { AccessKey: accessKey, Token: token, 'User-Agent': USER_AGENT },
     cache: 'no-store',
+    signal: AbortSignal.timeout(15_000),
   });
 
   if (!response.ok) {

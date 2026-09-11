@@ -29,7 +29,7 @@ import {
 function articleFromPublished(row: PublishedContentArticle & Readonly<{ canonicalHref?: string | null }>): EditorialArticle {
   return Object.freeze({
     slug: row.slug,
-    marketKey: row.marketId === 'kr-seoul' ? 'seoul' : row.marketId === 'sg-singapore' ? 'singapore' : row.marketId === 'ae-dubai' ? 'dubai' : null,
+    marketKey: row.marketId === 'kr-seoul' ? 'seoul' : row.marketId === 'sg-singapore' ? 'singapore' : row.marketId === 'ae-dubai' ? 'dubai' : row.marketId === 'jp-tokyo' ? 'tokyo' : null,
     canonicalHref: row.canonicalHref ?? undefined,
     title: row.title,
     summary: row.deck,
@@ -90,7 +90,7 @@ export async function saveEditorialArticle(input: SaveEditorialArticleInput): Pr
   )) throw new Error('publication_requirements_not_met');
   const queries = [];
   if (input.marketKey !== null) {
-    const countryCode = input.marketKey === 'seoul' ? 'KR' : input.marketKey === 'singapore' ? 'SG' : 'AE';
+    const countryCode = input.marketKey === 'seoul' ? 'KR' : input.marketKey === 'singapore' ? 'SG' : input.marketKey === 'tokyo' ? 'JP' : 'AE';
     queries.push(sql`
       INSERT INTO markets (key, name, country_code)
       VALUES (${input.marketKey}, ${editorialMarketLabels[input.marketKey]}, ${countryCode})
@@ -109,7 +109,7 @@ export async function saveEditorialArticle(input: SaveEditorialArticleInput): Pr
       ${input.status === 'published' ? new Date().toISOString() : null},
       ${input.status === 'published' ? input.reviewedBy : null},
       ${input.locale}, ${input.contentType},
-      ${input.marketKey === 'seoul' ? 'kr-seoul' : input.marketKey === 'singapore' ? 'sg-singapore' : input.marketKey === 'dubai' ? 'ae-dubai' : null},
+      ${input.marketKey === 'seoul' ? 'kr-seoul' : input.marketKey === 'singapore' ? 'sg-singapore' : input.marketKey === 'dubai' ? 'ae-dubai' : input.marketKey === 'tokyo' ? 'jp-tokyo' : null},
       ${input.status}, ${input.evidenceState}, 'SignedPrice Data Desk'
     )
     ON CONFLICT (slug) DO UPDATE SET

@@ -24,6 +24,10 @@ const marketActions = {
     { label: 'Check a Dubai price', href: '/ae/dubai/check/' },
     { label: 'Use the Dubai purchase guide', href: '/ae/dubai/guide/' },
   ],
+  tokyo: [
+    { label: 'Explore Tokyo evidence', href: '/jp/tokyo/explore/' },
+    { label: 'Compare a Tokyo price', href: '/jp/tokyo/tools/' },
+  ],
   global: [
     { label: 'Choose a market', href: '/markets/' },
     { label: 'Explore available prices', href: '/prices/' },
@@ -33,7 +37,7 @@ const marketActions = {
 export function InsightsArticle({ article }: Readonly<{ article: EditorialArticle }>) {
   const relatedActions = article.marketKey === null ? marketActions.global : marketActions[article.marketKey];
   return (
-    <main className={styles.main} data-editorial-content-id={`en:${article.slug}`} data-editorial-content-type="market-brief" data-editorial-locale="en" data-editorial-market={article.marketKey === 'seoul' ? 'kr-seoul' : article.marketKey === 'singapore' ? 'sg-singapore' : article.marketKey === 'dubai' ? 'ae-dubai' : 'global'}>
+    <main className={styles.main} data-editorial-content-id={`en:${article.slug}`} data-editorial-content-type="market-brief" data-editorial-locale="en" data-editorial-market={article.marketKey === 'seoul' ? 'kr-seoul' : article.marketKey === 'singapore' ? 'sg-singapore' : article.marketKey === 'dubai' ? 'ae-dubai' : article.marketKey === 'tokyo' ? 'jp-tokyo' : 'global'}>
       <nav className={styles.breadcrumb} aria-label="Breadcrumb">
         <Link href="/insights/">Insights</Link><span aria-hidden="true">/</span><span>{editorialMarketLabel(article.marketKey)}</span>
       </nav>

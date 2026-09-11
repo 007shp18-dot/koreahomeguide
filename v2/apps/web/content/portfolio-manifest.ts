@@ -1,3 +1,4 @@
+import { TOKYO_RENEWAL_ARTICLES } from './tokyo-renewal-2026-09-11';
 import { KOREAN_EDITORIAL_PORTFOLIO } from './ko/portfolio';
 import { KOREAN_BUYING_GUIDES } from './ko/buying-guides';
 import { BUYING_GUIDES } from './en/buying-guides';
@@ -97,6 +98,7 @@ export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Obje
   ...CHINESE_PORTFOLIO,
   ...CHINESE_MONTHLY_REPORTS,
   CHINESE_DUBAI_RENTAL_YIELD,
+  ...TOKYO_RENEWAL_ARTICLES,
 ].filter(article => article.slug !== 'compare-seoul-district-prices'))));
 
 export function listPortfolioRecords(locale?: EditorialPortfolioRecord['locale']): readonly EditorialPortfolioRecord[] {

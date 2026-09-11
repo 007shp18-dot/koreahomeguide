@@ -58,14 +58,14 @@ describe('editorial portfolio public routes', () => {
     expect(metadata.alternates).toMatchObject({ canonical: `https://www.signedprice.com${guide.canonicalHref}` });
   });
 
-  it('publishes all twelve reviewed Chinese records including investment translations', async () => {
+  it('publishes all thirteen reviewed Chinese records including investment translations', async () => {
     const records = listPortfolioRecords('zh-CN');
     const guides = records.filter(({ type }) => type === 'guide');
     const guideIndex = renderToStaticMarkup(<ChineseGuidesPage />);
     const newsIndexes = (await Promise.all(['insights', 'news', 'policy'].map(async (type) =>
       renderToStaticMarkup(await ChineseNewsPage({ searchParams: Promise.resolve({ type }) })),
     ))).join('');
-    expect(records).toHaveLength(12);
+    expect(records).toHaveLength(13);
     expect(chineseGuideParams()).toEqual(guides.map(({ slug }) => ({ slug })));
     for (const record of records) {
       expect(record.type === 'guide' ? guideIndex : newsIndexes).toContain(record.title);

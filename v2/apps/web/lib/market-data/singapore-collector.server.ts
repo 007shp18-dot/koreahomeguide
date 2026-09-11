@@ -1,14 +1,12 @@
 import 'server-only';
 
 import {
-  URA_DATA_URL,
-  URA_TOKEN_URL,
   buildSingaporeProjectId,
-  createUraClient,
   parseUraPrivateSaleEnvelope,
   type UraPrivateSaleTransaction,
 } from '@signedprice/singapore-property';
 
+import { fetchUra } from '../ura';
 import { canonicalJson, normalizeEntityName, sha256, stableId } from './normalization.server';
 import type {
   MarketRefreshJob,
@@ -178,16 +176,12 @@ async function defaultRentalEnvelopes(
   accessKey: string,
   quarters: readonly string[],
 ): Promise<readonly unknown[]> {
-  const tokenEnvelope = record(await requestUraJson(URA_TOKEN_URL, { AccessKey: accessKey }));
-  if (tokenEnvelope.Status !== 'Success' || typeof tokenEnvelope.Result !== 'string'
-    || tokenEnvelope.Result.trim() === '') throw new Error('URA provider request failed.');
-  const token = tokenEnvelope.Result.trim();
   const output: unknown[] = [];
   for (const quarter of quarters) {
-    const url = new URL(URA_DATA_URL);
-    url.searchParams.set('service', 'PMI_Resi_Rental');
-    url.searchParams.set('refPeriod', quarter);
-    output.push(await requestUraJson(url.toString(), { AccessKey: accessKey, Token: token }));
+    const { result } = await fetchUra(accessKey, 'PMI_Resi_Rental', quarter);
+    // Normalize only after the shared client has checked the provider Status.
+    // Optional envelope messages are not part of the transaction schema.
+    output.push({ Status: 'Success', Message: '', Result: result });
   }
   return Object.freeze(output);
 }
@@ -338,9 +332,14 @@ export async function collectSingaporeEvidence(input: Readonly<{
   if (!Number.isFinite(input.reference.getTime())) throw new TypeError('URA reference instant is invalid.');
   const sourceAsOf = input.reference.toISOString();
   if (input.job === 'sg-private-sale') {
-    const envelopes = await (input.fetchSaleEnvelopes ?? (() => createUraClient({
-      accessKey: input.accessKey,
-    }).fetchPrivateResidentialTransactions()))();
+    const envelopes = await (input.fetchSaleEnvelopes ?? (async () => {
+      const batches: unknown[] = [];
+      for (const batch of [1, 2, 3, 4]) {
+        const { result } = await fetchUra(input.accessKey, 'PMI_Resi_Transaction', String(batch));
+        batches.push({ Status: 'Success', Message: '', Result: result });
+      }
+      return batches;
+    }))();
     if (envelopes.length !== 4) throw new TypeError('URA private sale refresh is incomplete.');
     const refreshMonths = new Set(refreshMonthKeys(input.reference));
     const transactions = envelopes.flatMap((envelope, index) => (

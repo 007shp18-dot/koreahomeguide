@@ -1,7 +1,7 @@
 import { ENGLISH_KOREA_ARTICLES } from './english-korea-articles';
 import { OFFICIAL_PROPERTY_SOURCES as S } from './official-property-sources';
 
-export type EditorialMarketKey = 'seoul' | 'singapore' | 'dubai' | null;
+export type EditorialMarketKey = 'seoul' | 'singapore' | 'dubai' | 'tokyo' | null;
 export type EditorialStatus = 'draft' | 'review' | 'published' | 'archived';
 
 export type EditorialSource = Readonly<{
@@ -29,6 +29,7 @@ export const editorialMarketLabels: Readonly<Record<Exclude<EditorialMarketKey, 
   seoul: 'Seoul',
   singapore: 'Singapore',
   dubai: 'Dubai',
+  tokyo: 'Tokyo',
 });
 
 export function editorialMarketLabel(marketKey: EditorialMarketKey): string {
