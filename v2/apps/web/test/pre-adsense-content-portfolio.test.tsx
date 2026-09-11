@@ -18,7 +18,7 @@ const primarySourceHosts = new Set([
   'www.investkorea.org', 'english.seoul.go.kr', 'm.easylaw.go.kr',
   'www.law.go.kr', 'rt.molit.go.kr', 'www.molit.go.kr', 'land.seoul.go.kr',
   'www.fsc.go.kr', 'www.iras.gov.sg', 'www.hdb.gov.sg', 'www.ura.gov.sg',
-  'www.cbre.ae', 'easylaw.go.kr', 'www.gov.kr', 'www.hf.go.kr',
+  'www.mitsuifudosan.co.jp', 'www.cbre.ae', 'easylaw.go.kr', 'www.gov.kr', 'www.hf.go.kr',
 ]);
 
 const secondaryHosts = new Set(['kbthink.com', 'www.ajunews.com', 'v.daum.net', 'news.nate.com', 'www.guocoland.com.sg']);
@@ -30,8 +30,8 @@ function sectionCount(body: string): number {
 describe('pre-AdSense reviewed launch portfolio', () => {
   it('keeps the active portfolio and public English parameters after guide consolidation', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(88);
-    expect(english).toHaveLength(38);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(91);
+    expect(english).toHaveLength(39);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'news-brief' || type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));
@@ -55,13 +55,13 @@ describe('pre-AdSense reviewed launch portfolio', () => {
     }
   });
 
-  it('publishes twelve reviewed Simplified Chinese records including investment translations', () => {
+  it('publishes thirteen reviewed Simplified Chinese records including investment translations', () => {
     const chinese = listPortfolioRecords('zh-CN');
-    expect(chinese).toHaveLength(12);
-    expect(new Set(chinese.map(({ slug }) => slug)).size).toBe(12);
+    expect(chinese).toHaveLength(13);
+    expect(new Set(chinese.map(({ slug }) => slug)).size).toBe(13);
     expect(chinese.every(({ reviewedBy, reviewedAt }) => reviewedBy !== null && reviewedAt !== null)).toBe(true);
     expect(chinese.filter(({ type }) => type === 'policy-update')).toHaveLength(2);
-    expect(chinese.filter(({ type }) => type === 'market-brief')).toHaveLength(5);
+    expect(chinese.filter(({ type }) => type === 'market-brief')).toHaveLength(6);
     expect(chinese.filter(({ type }) => type === 'data-story')).toHaveLength(2);
     expect(chinese.filter(({ type }) => type === 'guide')).toHaveLength(3);
   });

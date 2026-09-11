@@ -59,7 +59,7 @@ export function parseEditorialArticleInput(value: unknown): SaveEditorialArticle
     : Object.freeze([]);
   if (slug === null || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(slug)
     || title === null || summary === null || bodyMarkdown === null
-    || !['global', 'seoul', 'singapore', 'dubai'].includes(String(marketValue))
+    || !['global', 'seoul', 'singapore', 'dubai', 'tokyo'].includes(String(marketValue))
     || !['draft', 'review', 'published', 'archived'].includes(String(statusValue))
     || (statusValue === 'published' && (
       reviewedBy === null
