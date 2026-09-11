@@ -1,3 +1,4 @@
+import { pricePlotScale } from '../../lib/research/price-plot';
 import { localizedMarketCopy } from '../../lib/locale/market-localization';
 import type { ResearchSize } from '../../lib/research/property-research';
 import styles from './property-research.module.css';
@@ -30,22 +31,30 @@ export function RecentTransactionPlot({ rows, locale = 'en', periodUnit }: Reado
   periodUnit?: 'month';
 }>) {
   const unit = periodUnit === 'month' ? (localizedMarketCopy(locale, " /month", " /월")) : '';
-  if (rows.length === 0) return null;
-  const months = [...new Set(rows.map((row) => row.filedMonth))].sort();
+  const points = rows.filter(row => Number.isFinite(row.primaryWon) && row.primaryWon >= 0 && /^\d{4}-(0[1-9]|1[0-2])$/.test(row.filedMonth));
+  if (points.length === 0) return null;
+  const months = [...new Set(points.map((row) => row.filedMonth))].sort();
   const monthIndex = (month: string) => Number(month.slice(0, 4)) * 12 + Number(month.slice(5, 7));
   const start = monthIndex(months[0]!);
   const span = monthIndex(months.at(-1)!) - start;
-  const max = Math.max(...rows.map((row) => row.primaryWon), 1);
+  const scale = pricePlotScale(points.map(row => row.primaryWon));
+  const axisMoney = (value: number) => new Intl.NumberFormat(locale === 'ko' ? 'ko-KR' : locale, { notation: 'compact', maximumFractionDigits: 2 }).format(value);
+  const x = (month: string) => span === 0 ? 400 : 120 + (monthIndex(month) - start) / span * 550;
+  const y = (value: number) => 210 - scale.position(value) * 170;
+  const visibleMonths = months.filter((_, i) => months.length <= 6 || i === 0 || i === months.length - 1 || i === Math.floor(months.length / 2));
   return <section className={styles.section} aria-labelledby="building-price-trend-heading" data-transaction-research="recent">
     <h3 id="building-price-trend-heading">{localizedMarketCopy(locale, "Recent reported prices", "최근 신고 가격")}</h3>
     <p>{locale === 'ko' ? `선택 조건에 해당하는 보관 거래 ${rows.length}건입니다. 각 점은 실제 신고 거래이며, 월별 전체 거래량이나 가격 지수가 아닙니다. 거래별 면적·층을 아래 표에서 함께 확인하세요.` : locale === 'zh-CN' ? `所选分组保留 ${rows.length} 笔交易。每个点是一笔申报合同，并非月度中位数或完整成交量序列。请结合下表比较面积和楼层。` : `${rows.length} retained transactions in the selected cohort. Each point is a reported contract, not a monthly median or complete volume series. Compare unit areas and floors in the table below.`}</p>
     <p className={styles.chartHint}>{localizedMarketCopy(locale, "On narrow screens, scroll the chart horizontally. Exact prices are in the transaction table below.", "좁은 화면에서는 그래프를 좌우로 스크롤하세요. 정확한 금액은 아래 거래표에서 확인할 수 있습니다.")}</p>
     <div className={styles.chartWrap} role="region" aria-label={localizedMarketCopy(locale, "Recent reported prices chart — scroll horizontally", "최근 신고 가격 그래프 — 가로로 스크롤")} tabIndex={0}>
-    <svg className={styles.chart} viewBox="0 0 720 205" role="img" aria-label={localizedMarketCopy(locale, "Individual reported prices by month, with exact transactions in the table below.", "신고월별 실제 거래 가격. 각 거래는 아래 표에서 확인할 수 있습니다.")}>
-      {[0, .5, 1].map((fraction) => <g key={fraction}><line x1="105" y1={160 - fraction * 130} x2="704" y2={160 - fraction * 130} /><text x="0" y={164 - fraction * 130}>{money(max * fraction, 'KRW', true)}{unit}</text></g>)}
-      {rows.map((row, i) => <circle key={i} cx={span === 0 ? 400 : 115 + (monthIndex(row.filedMonth) - start) / span * 575} cy={160 - row.primaryWon / max * 130} r="4" fill="currentColor" opacity=".65"><title>{`${row.filedMonth} · ${row.areaSqm} m² · ${row.primaryLabel}${unit}`}</title></circle>)}
-      <text x={span === 0 ? 400 : 115} y="190" textAnchor="middle">{months[0]}</text>{span === 0 ? null : <text x="690" y="190" textAnchor="end">{months.at(-1)}</text>}
+    <svg className={styles.chart} viewBox="0 0 720 260" role="img" aria-label={localizedMarketCopy(locale, "Individual reported prices by month, with exact transactions in the table below.", "신고월별 실제 거래 가격. 각 거래는 아래 표에서 확인할 수 있습니다.")}>
+      <text x="100" y="18" textAnchor="end">{locale === 'ko' ? '원' : locale === 'zh-CN' ? '韩元' : 'KRW'}{unit}</text>
+      {scale.ticks.map(value => <g key={value}><line x1="112" y1={y(value)} x2="690" y2={y(value)} /><text x="100" y={y(value) + 4} textAnchor="end">{axisMoney(value)}</text></g>)}
+      {visibleMonths.map(month => <g key={month}><line x1={x(month)} x2={x(month)} y1="40" y2="210" strokeDasharray="3 5" /><text x={x(month)} y="242" textAnchor="middle">{month}</text></g>)}
+      {points.map((row, i) => <circle key={i} cx={x(row.filedMonth)} cy={y(row.primaryWon)} r="4.5" fill="currentColor" stroke="var(--surface-strong, white)" strokeWidth="1.5" opacity=".8"><title>{`${row.filedMonth} · ${row.areaSqm} m² · ${row.primaryLabel}${unit}`}</title></circle>)}
     </svg>
     </div>
+    <p className={styles.chartHint}>{locale === 'ko' ? '세로축은 표시된 거래의 가격 범위에 맞췄습니다. 점 위에 마우스를 올리면 면적과 정확한 금액을 볼 수 있습니다.' : locale === 'zh-CN' ? '纵轴按已显示成交的价格范围调整。将鼠标悬停在点上可查看面积及准确金额。' : 'The vertical axis fits the displayed transaction range. Hover over a point for its area and exact price.'}</p>
   </section>;
 }
+

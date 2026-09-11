@@ -7,6 +7,7 @@ import { compareTokyoPrice, parseTokyoCheck, type TokyoCheckParams } from '@/lib
 import { readCachedTokyoPriceEvidence, type TokyoPriceEvidence } from '@/lib/japan/price-check.server';
 import { tokyoHref, tokyoText, type TokyoLocale } from './tokyo-copy';
 import styles from './tokyo-price-check.module.css';
+import toolSurface from '../tools/tool-surface.module.css';
 
 export async function TokyoPriceCheck({ searchParams, locale = 'en' }: { searchParams: Promise<TokyoCheckParams>; locale?: TokyoLocale }) {
   const params = await searchParams;
@@ -41,8 +42,9 @@ export async function TokyoPriceCheck({ searchParams, locale = 'en' }: { searchP
     <nav className={styles.markets} aria-label={text('Market tools', '국가별 도구', '各市场工具')}>
       {[[`${prefix}/kr/seoul/check/`,text('Korea','한국','韩国')],[`${prefix}/sg/singapore/check/`,text('Singapore','싱가포르','新加坡')],[`${prefix}/ae/dubai/check/`,text('Dubai','두바이','迪拜')],[href,text('Japan','일본','日本')]].map(([path,label]) => <Link key={path} href={path!} aria-current={path === href ? 'page' : undefined}>{label}</Link>)}
     </nav>
-    <div className={styles.workspace}>
-      <form action={href} method="get" className={styles.form}>
+    <div className={toolSurface.surface}>
+    <div className={styles.workspace} data-tool-layout>
+      <form action={href} method="get" className={styles.form} data-tool-input>
         <h2>{text('Your property', '비교할 매물', '您的房产')}</h2>
         <label>{text('Ward', '구', '区')}<select name="city" defaultValue={city}>{TOKYO_WARDS.map(([code,name]) => <option key={code} value={code}>{tokyoText(locale,name)}</option>)}</select></label>
         <label>{text('Neighbourhood · optional, exact source name', '동네 · 선택 사항, 원자료 이름과 일치', '街区 · 可选，须与原始名称一致')}<input name="neighbourhood" maxLength={100} defaultValue={value('neighbourhood')} /></label>
@@ -51,7 +53,7 @@ export async function TokyoPriceCheck({ searchParams, locale = 'en' }: { searchP
         <button type="submit">{text('Compare recorded prices', '실거래가와 비교하기', '比较成交价格')}</button>
         <p>{text('Condominiums only. The comparison uses reported areas within ±20% of your input and the latest published quarter for this ward.', '공동주택만 비교합니다. 입력 면적 ±20% 범위와 해당 구의 최신 공개 분기를 사용합니다.', '仅比较公寓。采用输入面积±20%范围及本区最新已发布季度。')}</p>
       </form>
-      <section className={styles.result} aria-label={text('Price comparison result','가격 비교 결과','价格比较结果')} aria-live="polite">
+      <section className={styles.result} data-tool-result aria-label={text('Price comparison result','가격 비교 결과','价格比较结果')} aria-live="polite">
         <p className={styles.eyebrow}>{text('OFFICIAL TRANSACTIONS · JPY/m²', '정부 실거래 자료 · 엔/㎡', '政府成交资料 · 日元/㎡')}</p>
         <h2>{text('How does your offer compare?', '입력한 가격은 실거래가와 얼마나 다를까?', '您的报价与成交价有何差异？')}</h2>
         {invalid ? <p role="alert">{text('Choose a Tokyo ward and enter a valid positive area and price.', '도쿄 구를 선택하고 면적과 가격을 올바른 양수로 입력하세요.', '请选择东京的区，并输入有效的正数面积和价格。')}</p>
@@ -75,6 +77,7 @@ export async function TokyoPriceCheck({ searchParams, locale = 'en' }: { searchP
           <Link href={`${prefix}/tools/property-scenario/?${scenarioQuery}`}>{text('Calculate costs & yield', '비용·수익 계산하기', '计算成本与收益')} →</Link>
         </nav>
       </section>
+    </div>
     </div>
     <section className={styles.method}><h2>{text('What this comparison can—and cannot—tell you', '비교 결과를 읽기 전에', '如何理解此比较')}</h2>
       <p>{text('The median and middle 50% use all matching published transactions, not just the first result page. Differences in age, condition, tenure and exact location remain. MLIT does not identify the individual building or unit. This is not an appraisal, a forecast, or proof that an offer is cheap or expensive.', '중앙값과 중간 50% 구간은 첫 페이지가 아닌 조건에 맞는 전체 공개 거래로 계산합니다. 준공연도·상태·권리·정확한 위치의 차이는 남아 있으며 MLIT 자료는 개별 건물이나 호실을 식별하지 않습니다. 감정평가·가격 예측이 아니며, 저평가나 고평가를 확정하지 않습니다.', '中位价及中间50%区间使用全部匹配的公开成交，而非首页结果。房龄、状况、权利及具体位置仍有差异。MLIT资料不识别具体楼盘或单元。这不是估价、预测，也不能证明报价便宜或昂贵。')}</p>

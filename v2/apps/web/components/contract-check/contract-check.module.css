@@ -1205,6 +1205,17 @@
   .main [data-tool-input] .conditionGrid,
   .main [data-tool-input] .singleOffer { grid-template-columns: minmax(0, 1fr); }
 }
-.main [data-tool-result] :is(.keyFigures, .marketEvidence, .disclosure, .verdictPanel) { padding: 20px 0; border-color: var(--line); }
-.main [data-tool-result] .keyFigures dl > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-.main [data-tool-result] .keyFigures dd { margin: 0; }
+.main [data-tool-result] :is(.keyFigures, .marketEvidence, .disclosure) { padding: 20px 0; border-color: var(--line); }
+.main [data-tool-result] .verdictPanel { margin-block: 20px; padding: 20px; border: 0; border-left: 3px solid var(--accent); background: var(--surface-strong); color: var(--ink); }
+.main [data-tool-result] .keyFigures > div { grid-template-columns: minmax(0, 1fr); }
+.main [data-tool-result] .keyFigures dl { border: 0; }
+.main [data-tool-result] .keyFigures dl > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 20px; padding: 14px 0; }
+.main [data-tool-result] .keyFigures dd { margin: 0 0 0 auto; font-variant-numeric: tabular-nums; }
+.main [data-tool-result] .keyFigures dd, .filedValues dd { overflow-wrap: normal; word-break: normal; }
+.moneyValue { display: inline-block; white-space: nowrap; }
+.moneyRange { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 8px; }
+.distributionLabels { grid-template-columns: repeat(5, minmax(5.5rem, 1fr)); gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+.distributionLabel { overflow-wrap: normal; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.main [data-tool-result] .positionCard { padding: 16px 0; border: 0; }
+
+@media (max-width: 560px) { .distributionLabels { grid-template-columns: repeat(3, minmax(5.5rem, 1fr)); } }

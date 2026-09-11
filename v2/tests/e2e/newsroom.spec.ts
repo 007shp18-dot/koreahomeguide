@@ -21,7 +21,7 @@ test('Insights keeps discovery simple and city selection works', async ({ page }
   await expect(page).toHaveURL(/\/news\/$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Insights', exact: true })).toBeVisible();
   const cities = page.getByRole('navigation', { name: 'Insight cities' });
-  await expect(cities.getByRole('link')).toHaveText(['All', 'Seoul', 'Tokyo', 'Singapore', 'Dubai']);
+  await expect(cities.getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai', 'Tokyo']);
   await expect(page.locator('main article:visible')).toHaveCount(7);
   await page.locator('summary').filter({ hasText: 'More stories' }).click();
   expect(await page.locator('main article:visible').count()).toBeGreaterThan(7);
@@ -37,7 +37,7 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
   await expect(page).toHaveTitle(/Insights/);
   await expect(page.getByRole('heading', { level: 1, name: 'Insights', exact: true })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'Insight cities' }).getByRole('link')).toHaveCount(5);
-  await expect(page.getByRole('navigation', { name: 'Insight cities' }).getByRole('link')).toHaveText(['All', 'Seoul', 'Tokyo', 'Singapore', 'Dubai']);
+  await expect(page.getByRole('navigation', { name: 'Insight cities' }).getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai', 'Tokyo']);
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(/provider|credential|ingestion|Naver News API/i);
 

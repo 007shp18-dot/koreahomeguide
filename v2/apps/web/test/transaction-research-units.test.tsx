@@ -6,7 +6,8 @@ describe('monthly detail research units', () => {
   it.each([['en', '/month'], ['ko', '/월']] as const)('labels monthly chart values and existing size medians in %s', (locale, unit) => {
     const plot = renderToStaticMarkup(<RecentTransactionPlot locale={locale} periodUnit="month"
       rows={[{ filedMonth: '2026-01', areaSqm: 50, primaryWon: 300_000, primaryLabel: '₩300,000' }]} />);
-    expect(plot).toContain(`300K ${unit}</text>`);
+    expect(plot).toContain(`${locale === 'ko' ? '원' : 'KRW'} ${unit}</text>`);
+    expect(plot).toContain(`${locale === 'ko' ? '30만' : '300K'}</text>`);
     expect(plot).toContain(`₩300,000 ${unit}</title>`);
     const table = renderToStaticMarkup(<SizeCohortResearch locale={locale} currency="KRW" periodUnit="month"
       rows={[{ group: 'monthly', size: 'Under 60 m²', count: 5, median: 300_000 }]} />);

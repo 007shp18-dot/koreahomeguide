@@ -163,10 +163,10 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           {actionLinks && <Link className="site-header__action site-header__action--offer" href={actionLinks.offer} prefetch={currentHref?.includes('/check/') ? false : undefined}>{context === 'jp-tokyo' ? (isKorean ? '매입 비용 계산' : locale === 'zh-CN' ? '计算购置成本' : 'Calculate costs') : (isKorean ? '제안 가격 확인' : locale === 'zh-CN' ? '核对报价' : 'Check an offer')}</Link>}
         </div>
         <SiteMobileMenu
-          summaryLabel={isKorean ? '메뉴 열기' : 'Open menu'}
-          summaryText={isKorean ? '메뉴' : 'Menu'}
+          summaryLabel={isKorean ? '메뉴 열기' : locale === 'zh-CN' ? '打开菜单' : 'Open menu'}
+          summaryText={isKorean ? '메뉴' : locale === 'zh-CN' ? '菜单' : 'Menu'}
         >
-          <nav aria-label={isKorean ? '전체 메뉴' : 'Site menu'}>
+          <nav aria-label={isKorean ? '전체 메뉴' : locale === 'zh-CN' ? '网站菜单' : 'Site menu'}>
             {primaryLinks.map((link) =>
               <Link
                 key={link.href}
@@ -178,13 +178,14 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
               </Link>
             )}
           </nav>
-          <nav aria-label={isKorean ? '도시 선택' : 'Choose a city'}>{visibleMarkets.map(market => <Link key={market.id} href={market.href} prefetch={currentHref?.includes('/check/') && market.href.includes('/check/') ? false : undefined} aria-current={context === market.id ? 'page' : undefined}>{market.label}</Link>)}</nav>
+          <nav aria-label={isKorean ? '도시 선택' : locale === 'zh-CN' ? '选择城市' : 'Choose a city'}>{visibleMarkets.map(market => <Link key={market.id} href={market.href} prefetch={currentHref?.includes('/check/') && market.href.includes('/check/') ? false : undefined} aria-current={context === market.id ? 'page' : undefined}>{market.label}</Link>)}</nav>
           {marketId && <nav aria-label={`${marketLabel} pages`}>{getMarketLocalNavigation(marketId, locale).map(item => <Link key={item.href} href={item.href} prefetch={currentHref?.includes('/check/') && item.href.includes('/check/') ? false : undefined}>{item.label}</Link>)}</nav>}
-          {!actionLinks && <nav aria-label={isKorean ? '저장한 건물' : 'Saved buildings'}><Link href={`${isKorean ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : ''}/saved/`}><UiIcon name="bookmark" /><span>{isKorean ? '관심 목록' : locale === 'zh-CN' ? '已保存' : 'Saved'}</span></Link></nav>}
-          {actionLinks && <nav aria-label={isKorean ? '빠른 작업' : 'Quick actions'}><Link href={actionLinks.saved}>{isKorean ? '관심 목록' : locale === 'zh-CN' ? '已保存' : 'Saved'}</Link><Link href={actionLinks.offer} prefetch={currentHref?.includes('/check/') ? false : undefined}>{context === 'jp-tokyo' ? (isKorean ? '매입 비용 계산' : locale === 'zh-CN' ? '计算购置成本' : 'Calculate costs') : (isKorean ? '제안 가격 확인' : locale === 'zh-CN' ? '核对报价' : 'Check an offer')}</Link></nav>}
+          {!actionLinks && <nav aria-label={isKorean ? '저장한 건물' : locale === 'zh-CN' ? '已收藏楼盘' : 'Saved buildings'}><Link href={`${isKorean ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : ''}/saved/`}><UiIcon name="bookmark" /><span>{isKorean ? '관심 목록' : locale === 'zh-CN' ? '已保存' : 'Saved'}</span></Link></nav>}
+          {actionLinks && <nav aria-label={isKorean ? '빠른 작업' : locale === 'zh-CN' ? '快捷操作' : 'Quick actions'}><Link href={actionLinks.saved}>{isKorean ? '관심 목록' : locale === 'zh-CN' ? '已保存' : 'Saved'}</Link><Link href={actionLinks.offer} prefetch={currentHref?.includes('/check/') ? false : undefined}>{context === 'jp-tokyo' ? (isKorean ? '매입 비용 계산' : locale === 'zh-CN' ? '计算购置成本' : 'Calculate costs') : (isKorean ? '제안 가격 확인' : locale === 'zh-CN' ? '核对报价' : 'Check an offer')}</Link></nav>}
           <Suspense fallback={<LanguageLinks pathname={fallbackPath} alternate={copy.languageSwitch} />}><SiteLanguageNavigation fallbackPath={fallbackPath} translations={editorialLanguageRoutes()} alternate={copy.languageSwitch} /></Suspense>
         </SiteMobileMenu>
       </div>
     </header><PassportBudgetContext /></>
   );
 }
+

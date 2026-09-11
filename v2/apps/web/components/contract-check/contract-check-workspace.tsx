@@ -173,15 +173,16 @@ export function MoneyField({
   );
 }
 
-export function DistributionBar({ check }: Readonly<{
+export function DistributionBar({ check, locale }: Readonly<{
+  locale: ProductLocale;
   check: Extract<SingleQuoteCheckResult, { status: 'ready' }>;
 }>) {
   const ticks = [
-    ['Min', check.distribution.minWon],
+    [locale === 'ko' ? '최저' : locale === 'zh-CN' ? '最低' : 'Min', check.distribution.minWon],
     ['P25', check.distribution.p25Won],
-    ['Median', check.distribution.medianWon],
+    [locale === 'ko' ? '중앙값' : locale === 'zh-CN' ? '中位数' : 'Median', check.distribution.medianWon],
     ['P75', check.distribution.p75Won],
-    ['Max', check.distribution.maxWon],
+    [locale === 'ko' ? '최고' : locale === 'zh-CN' ? '最高' : 'Max', check.distribution.maxWon],
   ] as const;
   return (
     <figure className={styles.distribution} data-responsive-ticks="5-desktop-3-mobile">
@@ -191,7 +192,7 @@ export function DistributionBar({ check }: Readonly<{
       <figcaption className={styles.distributionLabels}>
         {ticks.map(([label, value]) => (
           <span className={styles.distributionLabel} key={label}>
-            <small>{label}</small>{won.format(value)}
+            <small>{label}</small><span title={won.format(value)}>{new Intl.NumberFormat(locale === 'ko' ? 'ko-KR' : locale, { style: 'currency', currency: 'KRW', notation: 'compact', maximumFractionDigits: 2 }).format(value)}</span>
           </span>
         ))}
       </figcaption>
@@ -228,7 +229,7 @@ export function EvidencePositionCard({
       <p className={styles.marketVerdict}>{c.marketPosition}: {locale === 'ko' ? {below:'중간 50%보다 낮음',typical:'중간 50% 안',above:'중간 50%보다 높음'}[check.verdict] : locale === 'zh-CN' ? {below:'低于中间 50% 区间',typical:'处于中间 50% 区间',above:'高于中间 50% 区间'}[check.verdict] : check.verdict}</p>
       <p>{locale === 'ko' ? (check.difference.pct === 0 ? '중앙값과 같음' : `중앙값보다 ${Math.abs(check.difference.pct)}% ${check.difference.pct < 0 ? '낮음' : '높음'}`) : locale === 'zh-CN' ? (check.difference.pct === 0 ? '与中位数相同' : `比中位数${check.difference.pct < 0 ? '低' : '高'} ${Math.abs(check.difference.pct)}%`) : check.difference.pct === 0 ? 'At median' : `${Math.abs(check.difference.pct)}% ${check.difference.pct < 0 ? 'below' : 'above'} median`}</p>
       <p>{c.percentile}: {check.pricePercentile}</p>
-      <DistributionBar check={check} />
+      <DistributionBar check={check} locale={locale} />
       <p className={styles.fallback}>{check.fallbackDisclosure === null ? null : localizeContractText(check.fallbackDisclosure, locale)}</p>
     </article>
   );
@@ -475,3 +476,4 @@ export function ContractCheckWorkspace({ model, locale = 'en', entityContext = n
     </div>
   );
 }
+

@@ -13,7 +13,7 @@ import { MARKET_PHOTOS } from '../market-representative-photo';
 import type { NewsroomMarketFilter } from './newsroom-index';
 import styles from './insights-index.module.css';
 
-const cities = ['seoul', 'tokyo', 'singapore', 'dubai'] as const;
+const cities = ['seoul', 'singapore', 'dubai', 'tokyo'] as const;
 type City = typeof cities[number];
 const cityNames = { seoul: 'Seoul', tokyo: 'Tokyo', singapore: 'Singapore', dubai: 'Dubai' };
 const marketIds = { seoul: 'kr-seoul', tokyo: 'jp-tokyo', singapore: 'sg-singapore', dubai: 'ae-dubai' };
@@ -105,3 +105,4 @@ export function InsightsIndex({ articles, market, locale = 'en', topic = 'all' }
     </section>}
   </main>;
 }
+

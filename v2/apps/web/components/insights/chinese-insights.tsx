@@ -41,10 +41,10 @@ export function ChineseInsightsIndex({ articles }: Readonly<{
       </header>
       <nav className={styles.deskNav} aria-label="中文房地产导航">
         <Link aria-current="page" href="/zh-cn/kr/seoul/insights/">全部文章</Link>
-        <Link href="/kr/seoul/explore/">首尔成交数据</Link>
-        <Link href="/kr/seoul/check/">价格查询</Link>
-        <Link href="/kr/seoul/guide/">韩国指南</Link>
-        <Link href="/markets/">首尔 · 新加坡 · 迪拜</Link>
+        <Link href="/zh-cn/kr/seoul/explore/">首尔成交数据</Link>
+        <Link href="/zh-cn/kr/seoul/check/">价格查询</Link>
+        <Link href="/zh-cn/guides/?market=seoul">韩国指南</Link>
+        <Link href="/zh-cn/prices/">首尔 · 新加坡 · 迪拜 · 东京</Link>
       </nav>
       {lead === undefined ? null : (
         <>
@@ -104,11 +104,12 @@ export function ChineseInsightsArticle({ article }: Readonly<{
         </div>
       </article>
       <nav className={styles.articleActions} aria-label="下一步">
-        <Link href="/kr/seoul/explore/">查看首尔成交数据</Link>
-        <Link href="/kr/seoul/check/">查询价格</Link>
-        <Link href={`/news/${article.relatedEnglishSlug}/`}>Read related English report</Link>
+        <Link href="/zh-cn/kr/seoul/explore/">查看首尔成交数据</Link>
+        <Link href="/zh-cn/kr/seoul/check/">查询价格</Link>
+        <Link href={`/news/${article.relatedEnglishSlug}/`}>阅读相关英文报道</Link>
         <Link href="/zh-cn/kr/seoul/insights/">全部中文文章</Link>
       </nav>
     </main>
   );
 }
+
