@@ -22,6 +22,9 @@ describe('article reading paths', () => {
       const article = EDITORIAL_PORTFOLIO.find(record => record.locale === 'en' && record.slug === slug)!;
       expect(relatedReading(article).every(link => /rent|wolse|jeonse/.test(link.href))).toBe(true);
     }
+    for (const article of EDITORIAL_PORTFOLIO.filter(record => record.marketId === 'jp-tokyo')) {
+      expect(relatedReading(article).every(link => link.href.includes('/jp/tokyo/'))).toBe(true);
+    }
     for (const article of EDITORIAL_PORTFOLIO.filter(record => record.marketId === 'ae-dubai')) {
       expect(relatedReading(article).every(link => link.href.includes('dubai'))).toBe(true);
     }
