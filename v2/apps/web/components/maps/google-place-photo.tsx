@@ -12,6 +12,7 @@ import {
 } from './google-place-map';
 import styles from './building-street-view.module.css';
 import photoStyles from './property-photo.module.css';
+import { isRejectedGooglePlacePhoto } from './rejected-google-place-photos';
 
 const GOOGLE_MAPS_READY_EVENT = 'signedprice:google-maps-ready';
 const GOOGLE_MAPS_READY_FLAG = '__signedpriceGoogleMapsLoaded';
@@ -117,7 +118,10 @@ export async function findGooglePlacePhotos(
   const place = new Place({ id: approvedPlaceId });
   await place.fetchFields({ fields: ['photos'] });
   const boundedMaximum = Math.min(Math.max(Math.floor(maximum), 1), 5);
-  return Object.freeze([...(place.photos ?? [])].slice(0, boundedMaximum));
+  // Filter within the existing window: do not fetch more photos or replace
+  // rejected items with previously unreviewed photos beyond the request cap.
+  return Object.freeze([...(place.photos ?? [])].slice(0, boundedMaximum)
+    .filter((photo) => !isRejectedGooglePlacePhoto(photo.googleMapsURI)));
 }
 
 export async function findGooglePlacePhoto(
