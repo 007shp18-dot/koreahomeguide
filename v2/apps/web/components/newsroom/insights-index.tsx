@@ -1,3 +1,4 @@
+import {editorialImages,type EditorialImage} from '../../lib/insights/editorial-images';
 import Image from 'next/image';
 import Link from 'next/link';
 import { listNeighbourhoodStories, neighbourhoodHref, type NeighbourhoodPhoto } from '../../content/neighbourhood-stories';
@@ -18,7 +19,7 @@ type City = typeof cities[number];
 const cityNames = { seoul: 'Seoul', tokyo: 'Tokyo', singapore: 'Singapore', dubai: 'Dubai' };
 const marketIds = { seoul: 'kr-seoul', tokyo: 'jp-tokyo', singapore: 'sg-singapore', dubai: 'ae-dubai' };
 export type InsightTopic = 'all' | 'investment';
-type Insight = { investment: boolean; language: ContentLocale; id: string; title: string; deck: string; href: string; date: string; city: City | null; topic: string; type: string; photo?: NeighbourhoodPhoto; requiresLocalPhoto?: boolean };
+type Insight = { investment: boolean; language: ContentLocale; id: string; title: string; deck: string; href: string; date: string; city: City | null; topic: string; type: string; photo?: NeighbourhoodPhoto; uploadedPhoto?:EditorialImage; requiresLocalPhoto?: boolean };
 
 function topicFor(title: string, type: string) {
   if (/maintenance|holding|ownership|ten years|costs|service charge/i.test(title)) return 'Ownership costs';
@@ -40,7 +41,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
   const translatedGroups = new Set(translated.map(item => item.translationGroupId ?? item.slug));
   const fallback = locale === 'en' ? [] : english.filter(item => !translatedGroups.has(item.translationGroupId ?? item.slug) && !translated.some(local => local.slug === item.slug));
   const records = [...articles, ...fallback, ...translated.filter(item => item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))].filter(item => !isInsightReference(item.slug));
-  const analysis: Insight[] = records.filter(item => item.status === 'published' && item.evidenceState !== 'withdrawn' && item.type !== 'news-brief' && (item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))).map(item => ({ investment: ['market-brief', 'data-story', 'policy-update'].includes(item.type) || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug), language: item.locale, id: item.id, title: item.title, deck: item.deck, href: 'canonicalHref' in item ? String(item.canonicalHref) : `${item.locale === 'ko' ? '/ko' : item.locale === 'zh-CN' ? '/zh-cn' : ''}/news/${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`, date: item.publishedAt, city: cities.find(city => marketIds[city] === item.marketId) ?? null, topic: topicFor(englishTitles.get(item.slug) ?? ('translationGroupId' in item && typeof item.translationGroupId === 'string' ? englishTitles.get(item.translationGroupId) : undefined) ?? item.title, item.type), type: item.type, photo: insightPhoto(item.slug) }));
+  const analysis: Insight[] = records.filter(item => item.status === 'published' && item.evidenceState !== 'withdrawn' && item.type !== 'news-brief' && (item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))).map(item => ({ investment: ['market-brief', 'data-story', 'policy-update'].includes(item.type) || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug), language: item.locale, id: item.id, title: item.title, deck: item.deck, href: 'canonicalHref' in item ? String(item.canonicalHref) : `${item.locale === 'ko' ? '/ko' : item.locale === 'zh-CN' ? '/zh-cn' : ''}/news/${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`, date: item.publishedAt, city: cities.find(city => marketIds[city] === item.marketId) ?? null, topic: topicFor(englishTitles.get(item.slug) ?? ('translationGroupId' in item && typeof item.translationGroupId === 'string' ? englishTitles.get(item.translationGroupId) : undefined) ?? item.title, item.type), type: item.type, photo: insightPhoto(item.slug), uploadedPhoto: editorialImages(item.bodyMarkdown)[0] }));
   const seen = new Set<string>();
   const now = Date.now();
   return [...notebook, ...local, ...analysis].filter(item => {
@@ -53,6 +54,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
 }
 
 function StoryPhoto({ item, eager = false, locale = 'en' }: { item: Insight; eager?: boolean; locale?: ContentLocale }) {
+  if(item.uploadedPhoto)return <figure className={styles.photo}><Link href={item.href} data-editorial-event="article_open" aria-label={item.title} tabIndex={-1}><img src={item.uploadedPhoto.src} alt={item.uploadedPhoto.alt} loading={eager?'eager':'lazy'} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}}/></Link>{item.uploadedPhoto.caption&&<figcaption className={styles.credit}>{item.uploadedPhoto.caption}</figcaption>}</figure>;
   const photo = item.photo ?? (!item.requiresLocalPhoto && item.city ? MARKET_PHOTOS[item.city] : undefined);
   if (!photo) return null;
   return <figure className={styles.photo}>

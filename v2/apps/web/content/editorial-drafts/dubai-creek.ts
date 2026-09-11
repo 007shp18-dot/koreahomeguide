@@ -3,7 +3,11 @@ export const dubaiCreekDraft = {
  title: 'Dubai at walking pace: from Al Fahidi to the Creek',
  summary: 'A neighbourhood walk through Al Fahidi and the Dubai Creek waterfront, with practical questions for anyone wondering what everyday life here would feel like.',
  evidenceState: 'partial', reviewedBy: '',
- bodyMarkdown: `A useful way to explore Dubai is to choose a small area and give it time. Around Al Fahidi and Dubai Creek, the question becomes less about how many sights you can fit in and more about how the streets connect.
+ bodyMarkdown: `![Al Fahidi buildings and a mosque minaret in Dubai](/assets/editorial-2026-09/al-fahidi-phil6007.jpg "Al Bastakiya / Al Fahidi — Phil6007 / Wikimedia Commons / CC BY-SA 4.0")
+
+Photo: [Phil6007 / Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Al_Bastakiya_of_Dubai.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
+A useful way to explore Dubai is to choose a small area and give it time. Around Al Fahidi and Dubai Creek, the question becomes less about how many sights you can fit in and more about how the streets connect.
 
 This is a suggested self-guided walk, not a report of a recent site visit. Start in Al Fahidi, continue towards the Creek and leave Al Seef as an optional waterfront extension. Check access and opening information before setting out.
 

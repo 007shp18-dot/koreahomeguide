@@ -1,0 +1,20 @@
+import {beforeEach,describe,expect,it,vi} from 'vitest';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {EditorialMarkdown} from '../components/insights/editorial-markdown';
+import {editorialImages,imageMarkdown} from '../lib/insights/editorial-images';
+const mocks=vi.hoisted(()=>({query:vi.fn(),auth:vi.fn(),origin:vi.fn()}));
+vi.mock('server-only',()=>({}));
+vi.mock('../lib/evidence-pool/auth.server',()=>({authorized:mocks.auth,sameOrigin:mocks.origin,operatorId:()=> 'test-editor'}));
+vi.mock('../lib/db/postgres.server',()=>({contentDatabase:()=>({query:mocks.query})}));
+import {POST} from '../app/api/internal/editorial-images/route';
+import {GET} from '../app/api/editorial-images/[id]/route';
+const id='12345678-1234-1234-1234-123456789012';
+const src=`/api/editorial-images/${id}/`;
+beforeEach(()=>{vi.resetAllMocks();mocks.auth.mockReturnValue(true);mocks.origin.mockReturnValue(true);mocks.query.mockResolvedValue([]);});
+describe('editorial photo upload and publication',()=>{
+ it('blocks unauthenticated and cross-origin uploads',async()=>{mocks.auth.mockReturnValue(false);expect((await POST(new Request('https://site.test/api',{method:'POST'}))).status).toBe(401);mocks.auth.mockReturnValue(true);mocks.origin.mockReturnValue(false);expect((await POST(new Request('https://site.test/api',{method:'POST'}))).status).toBe(403);expect(mocks.query).not.toHaveBeenCalled();});
+ it('rejects SVG and oversized input without storing bytes',async()=>{expect((await POST(new Request('https://site.test/api',{method:'POST',body:'<svg/>'}))).status).toBe(415);expect((await POST(new Request('https://site.test/api',{method:'POST',body:new Uint8Array(1572865)}))).status).toBe(413);expect(mocks.query).not.toHaveBeenCalled();});
+ it('stores image bytes with a bound query and returns a stable URL',async()=>{const bytes=new Uint8Array([255,216,255,224,0,16,74,70,73,70]);const r=await POST(new Request('https://site.test/api',{method:'POST',body:bytes}));expect(r.status).toBe(201);expect((await r.json()).src).toMatch(/^\/api\/editorial-images\/[a-f0-9-]{36}\/$/);expect(mocks.query.mock.calls[0]?.[1][2]).toBe(Buffer.from(bytes).toString('base64'));});
+ it('restricts anonymous reads to references in published articles',async()=>{mocks.auth.mockReturnValue(false);const r=await GET(new Request('https://site.test'+src),{params:Promise.resolve({id})});expect(r.status).toBe(404);expect(mocks.query.mock.calls[0]?.[1]).toEqual([id,false,src]);expect(mocks.query.mock.calls[0]?.[0]).toContain("editorial_status='published'");});
+ it('renders uploaded photos and captions while rejecting external or scripted images',()=>{const markdown=imageMarkdown({src,alt:'Dubai lane',caption:'Photographer / CC BY-SA 4.0'});const html=renderToStaticMarkup(<EditorialMarkdown source={'Opening paragraph.\n'+markdown+'\n\nClosing paragraph.'}/>);expect(editorialImages(markdown)).toHaveLength(1);expect(html).toContain(`src="${src}"`);expect(html).toContain('<figcaption');expect(html).toContain('Photographer / CC BY-SA 4.0');for(const url of ['javascript:alert','https://tracker.test/photo'])expect(renderToStaticMarkup(<EditorialMarkdown source={`![x](${url})`}/>)).not.toContain('<img');});
+});

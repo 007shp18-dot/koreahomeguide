@@ -1,3 +1,4 @@
+import {editorialImages} from '../../lib/insights/editorial-images';
 import { INSIGHT_PHOTOS } from '../../content/insight-photos';
 import { NeighbourhoodPhoto } from './neighbourhood-photo';
 import { KOREAN_BUYING_GUIDE_DATA } from '../../content/ko/buying-guides';
@@ -47,7 +48,8 @@ export function NewsroomArticle({ article }: Readonly<{
   const zh = article.locale === 'zh-CN';
   const prefix = ko ? '/ko' : zh ? '/zh-cn' : '';
   const chinese: Record<string, string> = { 'Budget comparison': '预算比较', Guides: '指南', News: '新闻', Insights: '洞察', Seoul: '首尔', Singapore: '新加坡', Dubai: '迪拜', Tokyo: '东京', Global: '全球', 'Check a price': '核对价格', 'Explore transaction records': '查看成交记录', 'Compare areas': '比较地区', 'Open calculator': '打开计算器', 'Read the guide': '阅读指南', 'Read related analysis': '阅读相关分析', Breadcrumb: '当前位置', Publisher: '发布者', Published: '发布日期', Updated: '更新日期', Sources: '来源', 'Related reading and tools': '相关阅读与工具', 'Model purchase costs and rental income': '计算购房成本与租赁收入' };
-  const articlePhoto = INSIGHT_PHOTOS[article.slug];
+  const uploadedPhoto=editorialImages(article.bodyMarkdown)[0];
+  const articlePhoto = uploadedPhoto?undefined:INSIGHT_PHOTOS[article.slug];
   const budgetComparison = BUDGET_GUIDE_SLUGS.some(slug => slug === article.slug);
   const t = (en:string, translated:string) => ko ? translated : zh ? chinese[en] ?? en : en;
   const typeLabel = budgetComparison ? t('Budget comparison', '예산 비교') : ko ? ({'news-brief':'뉴스','policy-update':'정책','market-brief':'시장 분석','data-story':'데이터 분석',guide:'가이드'} as const)[article.type] : zh ? ({'news-brief':'新闻简报','policy-update':'政策更新','market-brief':'市场简报','data-story':'数据分析',guide:'指南'} as const)[article.type] : typeLabels[article.type];
