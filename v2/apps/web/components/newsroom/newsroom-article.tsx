@@ -20,6 +20,7 @@ import { marketHref } from '../../lib/locale/market-localization';
 import { RESEARCH_FIGURES } from '../../content/en/research-figures';
 import { Infographic } from '../infographics/infographic';
 import { EditorialArticleHeader } from './editorial-article-header';
+import { PracticalTool } from './practical-tool';
 import layout from './journey-article.module.css';
 import styles from './newsroom.module.css';
 
@@ -95,6 +96,7 @@ export function NewsroomArticle({ article }: Readonly<{
       <a href="#article-sources-title">{ko ? `출처 ${article.sources.length}개` : zh ? `${article.sources.length} 个来源` : `${article.sources.length} source${article.sources.length === 1 ? '' : 's'}`}</a>
       {article.updatedAt.slice(0, 10) !== article.publishedAt.slice(0, 10) && <span>{t('Updated', '수정')} <time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></span>}
     </EditorialArticleHeader>
+    {(article.locale === 'en' || article.locale === 'ko') && (article.slug === 'rent-an-apartment-in-korea' || article.slug === 'dubai-rental-yield-after-costs') && <PracticalTool key={`${article.locale}:${article.slug}`} kind={article.slug === 'rent-an-apartment-in-korea' ? 'korea' : 'dubai'} locale={article.locale} />}
     {buyingGuide ? null : <ArticleContents locale={article.locale} items={contentSections.flatMap((item, index) => item.heading ? [{ id: `section-${index + 1}`, title: item.heading }] : [])} />}
     {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} locale={article.locale} /> : null}
 {articlePhoto ? <div className={layout.hero}><NeighbourhoodPhoto id={articlePhoto} eager context locale={article.locale} /></div> : article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
