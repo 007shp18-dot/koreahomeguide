@@ -1,8 +1,9 @@
+import {editorialImages} from '../../lib/insights/editorial-images';
 import { Fragment, type ReactNode } from 'react';
 import styles from './insights.module.css';
 
 type Block = Readonly<{
-  kind: 'heading' | 'subheading' | 'paragraph' | 'list' | 'ordered' | 'table';
+  kind: 'image' | 'heading' | 'subheading' | 'paragraph' | 'list' | 'ordered' | 'table';
   content: string | readonly string[];
 }>;
 
@@ -12,6 +13,7 @@ export function parseEditorialMarkdown(source: string): readonly Block[] {
   for (let index = 0; index < lines.length;) {
     const line = lines[index]!.trim();
     if (!line) { index++; continue; }
+    if(editorialImages(line).length){blocks.push({kind:'image',content:line});index++;continue;}
     if (/^\|.*\|$/.test(line) && /^\|?\s*:?-{3,}/.test(lines[index + 1]?.trim() ?? '')) {
       const rows = [line]; index += 2;
       while (index < lines.length && /^\|.*\|$/.test(lines[index]!.trim())) rows.push(lines[index++]!.trim());
@@ -27,7 +29,7 @@ export function parseEditorialMarkdown(source: string): readonly Block[] {
       blocks.push({ kind: ordered ? 'ordered' : 'list', content: items }); continue;
     }
     const paragraph = [line]; index++;
-    while (index < lines.length && lines[index]!.trim() && !/^(?:#{2,3} |[-*] |\d+\. |\|)/.test(lines[index]!.trim())) paragraph.push(lines[index++]!.trim());
+    while (index < lines.length && lines[index]!.trim() && !editorialImages(lines[index]!.trim()).length && !/^(?:#{2,3} |[-*] |\d+\. |\|)/.test(lines[index]!.trim())) paragraph.push(lines[index++]!.trim());
     blocks.push({ kind: 'paragraph', content: paragraph.join(' ') });
   }
   return blocks;
@@ -56,6 +58,7 @@ export function EditorialMarkdown({ source }: Readonly<{ source: string }>) {
   return <div className={styles.articleBody} data-article-reading-width="720">
     {blocks.map((block, index): ReactNode => {
       const key = `${block.kind}-${index}`;
+      if(block.kind==='image'){const photo=editorialImages(block.content as string)[0]!;return <figure key={key} style={{margin:'1.5rem 0'}}><img src={photo.src} alt={photo.alt} loading="lazy" style={{display:'block',width:'100%',height:'auto',borderRadius:4}}/>{photo.caption&&<figcaption style={{fontSize:'0.875rem',marginTop:8}}>{photo.caption}</figcaption>}</figure>;}
       if (block.kind === 'heading') return <h2 key={key}>{inline(block.content as string)}</h2>;
       if (block.kind === 'subheading') return <h3 key={key}>{inline(block.content as string)}</h3>;
       if (block.kind === 'list' || block.kind === 'ordered') {
