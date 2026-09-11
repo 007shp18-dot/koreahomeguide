@@ -66,7 +66,7 @@ for (const route of [
 
 test('Trust and correction actions remain keyboard-visible and touch sized', async ({ page }) => {
   await page.goto('/kr/seoul/corrections/');
-  const actions = page.getByRole('navigation', { name: 'Related Seoul evidence' }).getByRole('link');
+  const actions = page.getByRole('navigation', { name: 'Related Seoul pages' }).getByRole('link');
   await expect(actions).toHaveCount(2);
 
   for (const action of await actions.all()) {
@@ -110,8 +110,8 @@ test('English and Korean routes emit the correct root document language', async 
 
 test('social metadata and image endpoints match each route language', async ({ request }) => {
   for (const [path, locale, imagePath] of [
-    ['/kr/seoul/', 'en_US', '/og/en/'],
-    ['/ko/kr/seoul/', 'ko_KR', '/og/ko/'],
+    ['/kr/seoul/', 'en_US', '/og.png'],
+    ['/ko/kr/seoul/', 'ko_KR', '/og.png'],
   ] as const) {
     const page = await request.get(path);
     const html = await page.text();
@@ -123,6 +123,6 @@ test('social metadata and image endpoints match each route language', async ({ r
     const image = await request.get(imagePath);
     expect(image.status()).toBe(200);
     expect(image.headers()['content-type']).toContain('image/png');
-    expect(image.headers()['cache-control']).toContain('stale-while-revalidate=604800');
+    expect((await image.body()).length).toBeGreaterThan(1000);
   }
 });

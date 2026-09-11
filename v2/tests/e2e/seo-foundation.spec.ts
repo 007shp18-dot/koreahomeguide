@@ -64,10 +64,10 @@ test('SEO foundation: every sitemap URL is terminal, indexable, and self-canonic
     const chinese = parsed.pathname.startsWith('/zh-cn/');
     expect(metaContent(html, 'property', 'og:url'), url).toBe(url);
     expect(metaContent(html, 'property', 'og:locale'), url).toBe(korean ? 'ko_KR' : chinese ? 'zh_CN' : 'en_US');
-    const neighbourhood = NEIGHBOURHOOD_STORIES.find((story) => neighbourhoodHref(story.slug) === parsed.pathname);
+    const neighbourhood = NEIGHBOURHOOD_STORIES.find((story) => neighbourhoodHref(story.slug) === parsed.pathname.replace(/^\/ko(?=\/)/, ''));
     const expectedImage = neighbourhood
       ? new URL(neighbourhood.hero.src, parsed.origin).href
-      : `https://www.signedprice.com/og/${korean ? 'ko' : 'en'}/`;
+      : 'https://www.signedprice.com/og.png';
     expect(metaContent(html, 'property', 'og:image'), url).toBe(expectedImage);
     expect(metaContent(html, 'name', 'twitter:card'), url).toBe('summary_large_image');
     expect(metaContent(html, 'name', 'twitter:image'), url).toBe(expectedImage);

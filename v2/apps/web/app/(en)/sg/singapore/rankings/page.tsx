@@ -15,7 +15,7 @@ export const metadata: Metadata = indexableMetadata({
   path: '/sg/singapore/rankings/',
   title: 'Singapore private residential project rankings | signedprice',
   description: 'Compare published URA project sale medians, unit prices and reported transaction volumes.',
-  languageAlternates: { en: '/sg/singapore/rankings/', ko: '/ko/sg/singapore/rankings/' },
+  languageAlternates: { en: '/sg/singapore/rankings/', ko: '/ko/sg/singapore/rankings/', 'zh-Hans': '/zh-cn/sg/singapore/rankings/' },
 });
 
 type Props = Readonly<{ searchParams?: Promise<Readonly<{ metric?: string | string[]; page?: string | string[] }>> }>;

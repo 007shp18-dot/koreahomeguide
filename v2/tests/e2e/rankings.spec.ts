@@ -143,7 +143,7 @@ test('Explore keeps direct product links while district evidence retains its Ran
   await expect(productNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Insights', 'News', 'Tools', 'Guides']);
   const rankingsLink = productNavigation.getByRole('link', { name: 'Rankings', exact: true });
   await expect(rankingsLink).toHaveCount(0);
-  await expect(page.getByRole('navigation', { name: 'Footer Explore' }).getByRole('link', { name: 'Rankings', exact: true })).toHaveAttribute('href', '/rankings/');
+  await expect(page.getByRole('navigation', { name: 'Footer Platform' }).getByRole('link', { name: 'Rankings', exact: true })).toHaveAttribute('href', '/rankings/');
 
 
   await page.goto('/kr/seoul/explore/jongno-gu/');

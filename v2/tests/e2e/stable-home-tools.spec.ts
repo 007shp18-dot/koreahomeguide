@@ -67,8 +67,8 @@ test('tool languages retain their published primary navigation and Corrections h
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  }
  await page.goto('/kr/seoul/corrections/');
- await expect(page.getByRole('heading',{level:1})).toHaveText('Corrections');
- await expect(page.getByRole('link',{name:'Report an issue'})).toHaveAttribute('href',/^mailto:contact@signedprice.com/);
+ await expect(page.getByRole('heading',{level:1})).toHaveText('Seoul data corrections');
+ await expect(page.getByRole('link',{name:'Report a data issue'})).toHaveAttribute('href',/^mailto:contact@signedprice.com/);
 });
 
 // Inspect the real tool routes, including empty states at every release viewport.

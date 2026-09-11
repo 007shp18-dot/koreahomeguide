@@ -15,7 +15,7 @@ export const metadata: Metadata = indexableMetadata({
   path: '/zh-cn/sg/singapore/rankings/',
   title: '新加坡私人住宅项目排名 | signedprice',
   description: '比较已公开的 URA 项目成交中位价、单位面积价格及申报成交量。',
-  languageAlternates: { en: '/zh-cn/sg/singapore/rankings/', ko: '/ko/sg/singapore/rankings/' },
+  languageAlternates: { en: '/sg/singapore/rankings/', ko: '/ko/sg/singapore/rankings/', 'zh-Hans': '/zh-cn/sg/singapore/rankings/' },
 });
 
 type Props = Readonly<{ searchParams?: Promise<Readonly<{ metric?: string | string[]; page?: string | string[] }>> }>;

@@ -178,7 +178,10 @@ for (const route of publicRoutes) {
         );
       }
     } else if (hasAlternates && 'canonical' in route) {
-      await expect(alternates).toHaveCount(3);
+      const chineseMarkets = new Set(['/kr/seoul/check/compare/', '/kr/seoul/explore/', '/sg/', '/ae/dubai/', '/sg/singapore/explore/', '/sg/singapore/explore/ccr/', '/sg/singapore/explore/rcr/', '/sg/singapore/explore/ocr/']);
+      const hasChinese = chineseMarkets.has(route.canonical);
+      await expect(alternates).toHaveCount(hasChinese ? 4 : 3);
+      if (hasChinese) await expect(page.locator('link[rel="alternate"][hreflang="zh-Hans"]')).toHaveAttribute('href', `https://www.signedprice.com/zh-cn${route.canonical}`);
       await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
         'href', `https://www.signedprice.com${route.canonical}`,
       );
@@ -390,7 +393,7 @@ for (const path of [
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://www.signedprice.com${path}`);
     if (!path.endsWith('/news/') && !path.endsWith('/guides/')) {
       await expect(page.getByText(/Reviewed by|Reviewer|SignedPrice (Research|Chinese)/i)).toHaveCount(0);
-      await expect(page.getByRole('heading', { name: /^Sources$|Source and verification/ }).first()).toBeVisible();
+      await expect(page.getByRole('heading', { name: path.startsWith('/zh-cn/') ? /^来源$/ : /^Sources$|Source and verification/ }).first()).toBeVisible();
     }
     await expectNoHorizontalPageOverflow(page);
   });
