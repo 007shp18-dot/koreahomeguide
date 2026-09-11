@@ -1,4 +1,5 @@
 import { policyExplainers } from '../policy-explainers';
+import { PROPERTY_INSIGHTS_COPY, PROPERTY_INSIGHTS_BODIES } from './property-insights-2026-09-11';
 import { ENGLISH_PORTFOLIO } from '../en/portfolio';
 import type { EditorialPortfolioRecord } from '../portfolio-types';
 import { enrichKoreanRecord } from './research-expansions';
@@ -12,6 +13,7 @@ import { KOREAN_SEOUL_59SQM_UNDER_700M } from './seoul-59sqm-under-700m';
 
 // Identity, dates, evidence, and numerical chart data are shared with the English edition.
 const copy: Readonly<Record<string, readonly [string, string, string]>> = {
+  ...PROPERTY_INSIGHTS_COPY,
   'korea-foreign-property-reporting-status': ['한국 외국인 부동산 거래 신고: 2026년 2월 달라진 사항', '외국인 거래 신고에 신원, 거주지와 해외 자금 관련 정보가 추가됐습니다. 구체적인 신고 내용은 거래에 따라 달라집니다.', '외국인이 한국 주택을 매수하기 전후에 어떤 내용을 신고해야 할까요?'],
   'seoul-land-transaction-permit-status': ['서울 토지거래허가: 필지·용도·날짜를 확인하세요', '지정 소식만으로는 충분하지 않습니다. 계약 전에 서울시의 지정 현황과 정확한 필지를 대조해 현재 적용 여부를 확인해야 합니다.', '현재 서울의 어떤 주택 매수가 토지거래허가제의 적용을 받을까요?'],
   'korea-housing-finance-rules-status': ['한국 주택금융 규정: 하나의 대출 비율로 판단하지 않기', '현재 한도는 규제지역, 차주, 보유 주택 수, 상품과 시행일에 따라 달라집니다. 감당할 수 있는 예산은 금융기관의 개별 확인이 필요합니다.', '현재 어떤 대출 제한이 주택 구입 예산에 실질적인 영향을 줄까요?'],
@@ -33,6 +35,7 @@ const copy: Readonly<Record<string, readonly [string, string, string]>> = {
   'read-singapore-private-transactions': ['싱가포르 민간 주택 거래 자료 읽기', '지역, 프로젝트, 보유권 형태, 거래 유형, 주택 면적과 공식 지수는 각각 구분해 살펴봅니다.', '매수자는 싱가포르 프로젝트별·지역별 거래 자료를 어떻게 읽어야 할까요?'],
 };
 const bodies: Readonly<Record<string, string>> = {
+  ...PROPERTY_INSIGHTS_BODIES,
   'korea-foreign-property-reporting-status': `## 시행일\n\n국토교통부는 2026년 2월 9일 신고 항목 확대를 발표하고 2026년 2월 10일부터 적용한다고 밝혔습니다.\n\n## 정보 범위\n\n공식 안내는 외국인 거래의 확대된 항목에 비자 또는 체류 자격, 국내 주소와 해외 자금 정보를 포함하고 있습니다.\n\n## 신고 전 확인\n\n최신 공식 서식을 사용하고 매수자, 부동산과 자금 경로에 따라 별도 허가, 외국환 신고나 지방자치단체 신고가 필요한지 확인하세요.\n\n## 근거의 한계\n\n이 글은 변경 사항을 기록한 것으로, 개별 거래의 신고서 작성본이나 법률 의견이 아닙니다.`,
   'seoul-land-transaction-permit-status': `## 지정 현황부터 확인\n\n서울시는 현재 지정 공고, 경계와 기간을 공개합니다. 자치구 전체에 대한 요약에 의존하지 말고 정확한 필지와 현행 공고를 검색하세요.\n\n## 거래 조건 확인\n\n기준과 의무는 지정 구역, 토지 용도, 면적, 매수 목적과 계약일에 따라 달라질 수 있습니다. 가까운 필지라도 결과가 다를 수 있습니다.\n\n## 날짜 기록\n\n지정은 연장·변경·해제될 수 있으므로 공고, 조회일과 담당 기관의 답변을 의사결정 자료에 보관하세요.\n\n## 근거의 한계\n\nSignedPrice는 허가 자격을 판단하지 않습니다. 관할 기관과 현재의 공식 지정 내용이 기준입니다.`,
   'korea-housing-finance-rules-status': `## 조건에 따라 달라지는 규정\n\n금융위원회의 2026년 조치는 전국에 하나의 대출 비율을 적용하는 해석이 왜 부적절한지 보여줍니다. 규제지역 취급과 예외는 구체적인 사안에 따라 달라집니다.\n\n## 예산 구성\n\n현금, 세금과 수수료를 최대 대출액과 구분하고, 계약 전에 금리·상환 조건·평가액 변화의 영향을 점검하세요.\n\n## 서면 확인\n\n제시된 대출액에 어떤 규정, 부동산 가치, 차주 정보와 서류 기준일이 적용됐는지 금융기관에 확인하세요.\n\n## 근거의 한계\n\n이 현황 페이지는 신용 심사 결과나 대출 제안이 아니며, 서울의 모든 매수자에게 하나의 비율이 적용된다는 뜻도 아닙니다.`,

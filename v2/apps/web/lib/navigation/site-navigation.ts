@@ -16,7 +16,7 @@ export function marketDestination(marketId: NavigationMarketId, currentHref = '/
   const tokyoPrefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const city = { 'kr-seoul': 'seoul', 'sg-singapore': 'singapore', 'ae-dubai': 'dubai', 'jp-tokyo': 'tokyo' }[marketId];
   if (/\/(?:seoul-apartment|singapore-condo|dubai-ready-apartment)-buying-budget-guide\//.test(path)) return `${prefix}/news/?market=${city}`;
-  if (marketId === 'jp-tokyo' && /\/tools\//.test(path)) return `${tokyoPrefix}/tools/property-scenario/?market=jp-tokyo&currency=JPY`;
+  if (marketId === 'jp-tokyo' && /\/tools\//.test(path)) return `${tokyoPrefix}/jp/tokyo/tools/`;
   if (path.includes('/news/') || path.includes('/insights/')) {
     const requestedType = new URLSearchParams(currentHref.split('?')[1] ?? '').get('type');
     const type = requestedType === 'headlines' ? 'news' : requestedType;
@@ -28,15 +28,14 @@ export function marketDestination(marketId: NavigationMarketId, currentHref = '/
   const section = ['explore', 'check', 'shortlist', 'rankings'].find(item => path.includes(`/${item}/`));
   if (marketId === 'jp-tokyo') {
     if (section === 'shortlist') return `${tokyoPrefix}${base}/shortlist/`;
-    if (section === 'check') return `${tokyoPrefix}/tools/property-scenario/?market=jp-tokyo&currency=JPY`;
+    if (section === 'check') return `${tokyoPrefix}/jp/tokyo/tools/`;
     return section || path === '/prices/' ? `${tokyoPrefix}${base}/explore/` : `${tokyoPrefix}${base}/`;
   }
   if (locale === 'zh-CN' && marketId === 'kr-seoul' && section === 'rankings') return '/zh-cn/rankings/?market=seoul';
-  if (locale === 'zh-CN' && marketId === 'kr-seoul' && section === 'shortlist') return '/zh-cn/saved/';
   if (section === 'rankings' && marketId === 'ae-dubai') return `${prefix}${base}/explore/`;
   if (section) return `${prefix}${base}/${section}/`;
   if (path === '/prices/') return `${prefix}${base}/explore/`;
-  if (path === '/tools/') return `${prefix}${base}/check/`;
+  if (path === '/tools/' || path === '/jp/tokyo/tools/') return `${prefix}${base}/check/`;
   return `${prefix}${marketId === 'sg-singapore' ? '/sg' : base}/`;
 }
 
@@ -71,8 +70,8 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
   } else if (/^\/kr\/seoul(?:\/(?:explore(?:\/[^/]+(?:\/[^/]+)?)?|check(?:\/compare)?|rankings|shortlist))?$/.test(english)) {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
-    if (english === '/kr/seoul' || english.includes('/explore') || english.includes('/check')) destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
-  } else if (/^\/jp\/tokyo(?:\/(?:explore|shortlist))?$/.test(english)) {
+    if (english === '/kr/seoul' || english.includes('/explore') || english.includes('/check') || english.includes('/shortlist')) destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
+  } else if (/^\/jp\/tokyo(?:\/(?:explore|shortlist|tools))?$/.test(english)) {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);

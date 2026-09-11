@@ -19,8 +19,6 @@ const nextConfig: NextConfig = {
       { source: '/insights/:slug/', destination: '/news/', permanent: true },
       { source: '/zh-cn/kr/seoul/insights/', destination: '/zh-cn/news/', permanent: true },
       { source: '/zh-cn/kr/seoul/insights/:slug/', destination: '/zh-cn/news/', permanent: true },
-      { source: '/zh-cn/kr/seoul/explore/', destination: '/kr/seoul/explore/', permanent: true },
-      { source: '/zh-cn/kr/seoul/check/', destination: '/kr/seoul/check/', permanent: true },
       { source: '/kr/seoul/guide/', destination: '/guides/', permanent: true },
       { source: '/kr/seoul/guide/rent-apartment-korea-foreigner/', destination: '/guides/rent-an-apartment-in-korea/', permanent: true },
       { source: '/kr/seoul/guide/read-seoul-apartment-sale-prices/', destination: '/guides/read-seoul-sale-transactions/', permanent: true },

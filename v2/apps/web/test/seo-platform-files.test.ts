@@ -6,21 +6,11 @@ vi.mock('server-only', () => ({}));
 afterEach(() => vi.unstubAllEnvs());
 
 describe('SignedPrice search and advertising platform files', () => {
-  it('permanently retires unsupported Chinese Explore and Check route aliases', async () => {
+  it('keeps translated Chinese Explore and Check routes in the selected language', async () => {
     const redirects = await nextConfig.redirects?.();
-
-    expect(redirects).toEqual(expect.arrayContaining([
-      {
-        source: '/zh-cn/kr/seoul/explore/',
-        destination: '/kr/seoul/explore/',
-        permanent: true,
-      },
-      {
-        source: '/zh-cn/kr/seoul/check/',
-        destination: '/kr/seoul/check/',
-        permanent: true,
-      },
-    ]));
+    for (const source of ['/zh-cn/kr/seoul/explore/', '/zh-cn/kr/seoul/check/']) {
+      expect(redirects?.some((redirect) => redirect.source === source)).toBe(false);
+    }
   });
 
   it('publishes a crawlable robots policy with the standalone sitemap', async () => {

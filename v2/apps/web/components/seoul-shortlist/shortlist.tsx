@@ -9,10 +9,11 @@ import { newlyObservedCount, validFilters, type ShortlistItem, type ShortlistRes
 import { initializeSavedBaselines, parseSavedSearch, readSavedSearch, subscribeSavedSearch, writeSavedSearch, type SavedSearch } from '@/lib/seoul-shortlist/storage';
 import styles from './shortlist.module.css';
 import { SavedCities, ShortlistCities } from '../global-shortlist/saved-cities';
+import { seoulShortlistChinese, seoulDistrictChinese } from './chinese-copy';
 const serverSnapshot = () => '';
-export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
+export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' | 'zh-CN' }) {
   const ko = locale === 'ko';
-  const t = (en: string, kr: string) => ko ? kr : en;
+  const t = (en: string, kr: string) => ko ? kr : locale === 'zh-CN' ? seoulShortlistChinese(en) : en;
   const raw = useSyncExternalStore(subscribeSavedSearch, readSavedSearch, serverSnapshot);
   const stored = useMemo(() => parseSavedSearch(raw), [raw]);
   const filtersKey = JSON.stringify(stored.filters);
@@ -42,7 +43,7 @@ export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
     const initialized = initializeSavedBaselines(latest, data.saved, new Date().toISOString());
     if (initialized !== latest) writeSavedSearch(initialized);
   }, [data]);
-  const prefix = ko ? '/ko' : '';
+  const prefix = ko ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   function persist(next: SavedSearch, success: string) {
     setMessage(writeSavedSearch(next) ? success : t('Browser storage is blocked. Changes last only for this page session.', '브라우저 저장이 차단되어 이번 페이지에서만 유지됩니다.'));
   }
@@ -68,7 +69,7 @@ export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
     const sale = item.latest;
     const price = ko ? `${(sale.priceWon / 100_000_000).toLocaleString('ko-KR', { maximumFractionDigits: 3 })}억 원` : `KRW ${sale.priceWon.toLocaleString('en-US')}`;
     return <article className={styles.card} key={item.key}>
-      <p className={styles.meta}>{ko ? district?.nameKo : district?.nameEn} · {item.neighborhood}</p><h3>{buildingDisplayName(item.name, locale)}</h3>
+      <p className={styles.meta}>{ko ? district?.nameKo : locale === 'zh-CN' ? seoulDistrictChinese[item.district] ?? district?.nameEn : district?.nameEn} · {item.neighborhood}</p><h3>{buildingDisplayName(item.name, locale)}</h3>
       {savedCard && changed && <p className={styles.badge}>{added > 0 ? t(`${added} newly observed records`, `새로 확인된 기록 ${added}건`) : t('Transaction records updated', '거래 기록 갱신')}</p>}
       <p className={styles.price}>{price}</p><p>{sale.areaSqm}㎡ · {sale.filedMonth}{sale.floor !== undefined ? ` · ${sale.floor}${t('F', '층')}` : ''}</p>
       <p className={styles.meta}>{savedCard ? t('Latest available record · all sizes', '최신 공개 거래 · 전체 면적') : t(`${item.matchingCount} matching records in the recent sample`, `공개된 최근 표본 중 조건 일치 ${item.matchingCount}건`)}</p>
@@ -83,7 +84,7 @@ export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
     <ShortlistCities current="seoul" locale={locale} />
     <form className={styles.form} key={filtersKey} onSubmit={submit} aria-label={t('Apartment search conditions', '단지 검색 조건')}>
       <label>{t('Price ceiling · KRW 100m', '매매 예산 상한 · 억 원')}<DefaultAmountInput name="budget"  min="0.1" max="1000" step="0.01" required defaultValue={stored.filters.budget / 100_000_000} /></label>
-      <label>{t('District', '지역')}<select name="district" defaultValue={stored.filters.district}><option value="all">{t('All Seoul', '서울 전체')}</option>{SEOUL_RENT_CHECK_DISTRICTS.map(d => <option value={d.slug} key={d.slug}>{ko ? d.nameKo : d.nameEn}</option>)}</select></label>
+      <label>{t('District', '지역')}<select name="district" defaultValue={stored.filters.district}><option value="all">{t('All Seoul', '서울 전체')}</option>{SEOUL_RENT_CHECK_DISTRICTS.map(d => <option value={d.slug} key={d.slug}>{ko ? d.nameKo : locale === 'zh-CN' ? seoulDistrictChinese[d.slug] ?? d.nameEn : d.nameEn}</option>)}</select></label>
       <label>{t('Minimum net area · m²', '최소 전용면적 · ㎡')}<DefaultAmountInput name="minArea"  min="1" max="500" step="0.01" required defaultValue={stored.filters.minArea} /></label>
       <label>{t('Maximum net area · m²', '최대 전용면적 · ㎡')}<DefaultAmountInput name="maxArea"  min="1" max="500" step="0.01" required defaultValue={stored.filters.maxArea} /></label>
       <button className={styles.primary} type="submit">{t('Find & save conditions', '조건 저장하고 찾기')}</button>

@@ -73,12 +73,17 @@ test('tool languages retain their published primary navigation and Corrections h
 
 // Inspect the real tool routes, including empty states at every release viewport.
 test('tool screens keep fields and results inside the viewport', async ({page}, testInfo) => {
+ test.setTimeout(90_000);
  for (const [name, path, target] of [
   ['tools', '/tools/', 'main'],
   ['calculator', '/tools/property-scenario/', '[data-property-scenario]'],
   ['seoul-check', '/kr/seoul/check/', '[data-check-section="verdict"]'],
   ['singapore-check', '/sg/singapore/check/', '[data-singapore-check-workspace]'],
   ['dubai-check', '/ae/dubai/check/', '[data-dubai-check-workspace]'],
+  ['tokyo-check', '/jp/tokyo/tools/', 'form[action="/jp/tokyo/tools/"]'],
+  ['tokyo-check-ko', '/ko/jp/tokyo/tools/', 'form[action="/ko/jp/tokyo/tools/"]'],
+  ['tokyo-check-zh', '/zh-cn/jp/tokyo/tools/', 'form[action="/zh-cn/jp/tokyo/tools/"]'],
+  ['saved-zh', '/zh-cn/saved/', 'main'],
  ] as const) {
   await page.goto(path);
   await expect(page.locator(target).filter({visible:true}).first()).toBeVisible();

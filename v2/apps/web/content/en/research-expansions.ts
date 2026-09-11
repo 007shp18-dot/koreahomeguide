@@ -1,8 +1,8 @@
 import type { EditorialPortfolioRecord } from '../portfolio-types';
 import type { ContentSource } from '../../lib/content/content-types';
 
-const source = (id: string, publisher: string, title: string, href: string): ContentSource => ({
-  id, publisher, title, href, kind: 'primary', checkedAt: '2026-09-06', publishedAt: null,
+const source = (id: string, publisher: string, title: string, href: string, checkedAt = '2026-09-06'): ContentSource => ({
+  id, publisher, title, href, kind: 'primary', checkedAt, publishedAt: null,
 });
 export const RESEARCH_SOURCES = {
   bsd: source('sg-iras-bsd', 'IRAS', 'Buyer’s Stamp Duty rates and computation', 'https://www.iras.gov.sg/taxes/stamp-duty/for-property/buying-or-acquiring-property/buyer%27s-stamp-duty-%28bsd%29'),
