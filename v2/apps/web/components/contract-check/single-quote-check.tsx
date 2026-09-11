@@ -48,6 +48,26 @@ function resultReason(
   return localizeContractText(result.message, locale);
 }
 
+type Comparable = Extract<SingleQuoteCheckResult, { status: 'ready' }>['comparableRows'][number];
+
+function ComparableTransaction({ row, model, locale, linked, adjusted }: Readonly<{
+  row: Comparable; model: SingleQuoteCheckRouteModel; locale: ProductLocale; linked: boolean; adjusted: boolean;
+}>) {
+  const monthly = model.selection.transaction === 'monthly';
+  const valueLabel = adjusted
+    ? (locale === 'ko' ? '비교용 환산 월세' : locale === 'zh-CN' ? '比较用折算月租' : 'Adjusted monthly rent')
+    : model.selection.transaction === 'sale'
+      ? (locale === 'ko' ? '신고 매매가' : locale === 'zh-CN' ? '申报成交价' : 'Reported sale price')
+      : monthly
+        ? (locale === 'ko' ? '신고 월세' : locale === 'zh-CN' ? '申报月租' : 'Reported monthly rent')
+        : (locale === 'ko' ? '신고 보증금' : locale === 'zh-CN' ? '申报保证金' : 'Reported deposit');
+  return <li className={styles.comparableTransaction}>
+    <span className={styles.comparableMeta}>{row.filedMonth} · {row.areaSqm}㎡</span>
+    <div className={styles.comparableAmount}><span>{valueLabel}</span><strong>{won.format(row.adjustedValueWon)}{monthly && <small>{locale === 'ko' ? ' / 월' : locale === 'zh-CN' ? ' / 月' : ' / month'}</small>}</strong></div>
+    {linked && <Link className={styles.comparableLink} href={`${locale === 'zh-CN' ? '/zh-cn' : locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/${row.districtSlug}/${row.buildingId}/?transaction=${model.selection.transaction}&propertyType=${model.selection.housingType}&district=${row.districtSlug}&buildingId=${row.buildingId}`}>{locale === 'ko' ? '단지 거래 보기' : locale === 'zh-CN' ? '查看楼宇成交' : 'View building transactions'} <span aria-hidden="true">↗</span></Link>}
+  </li>;
+}
+
 function SingleResult({ model, locale, entityContext }: Readonly<{
   model: SingleQuoteCheckRouteModel;
   locale: ProductLocale;
@@ -97,14 +117,17 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
           <section className={styles.marketEvidence} data-check-section="evidence" data-result-order="market-evidence">
             <h3>{c.evidence}</h3>
             <p>{result.sample.count} {c.sample} · ±{result.filters.areaTolerancePct}% {locale === 'ko' ? '면적 범위' : locale === 'zh-CN' ? "面积范围" : 'area'} · {completedMonthWindowLabel(result.evidenceWindow, locale)}</p>
-            <div className={styles.comparableRows}>
-              {result.comparableRows.map((row, index) => (
-                <p key={`${row.buildingId}-${row.filedMonth}-${index}`}>
-                  {row.filedMonth} · {row.areaSqm}㎡ · {won.format(row.adjustedValueWon)}
-                  {entityContext === null ? null : <Link href={`${locale === 'zh-CN' ? '/zh-cn' : locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/${row.districtSlug}/${row.buildingId}/?transaction=${model.selection.transaction}&propertyType=${model.selection.housingType}&district=${row.districtSlug}&buildingId=${row.buildingId}`}>{locale === 'ko' ? '단지 거래 보기' : locale === 'zh-CN' ? "查看楼宇成交" : 'View building transactions'}</Link>}
-                </p>
-              ))}
-            </div>
+            <p className={styles.comparableHint}>{locale === 'ko' ? `최근 비교 거래 ${result.comparableRows.length}건 표시` : locale === 'zh-CN' ? `显示最近 ${result.comparableRows.length} 份可比合同` : `Showing ${result.comparableRows.length} recent comparable contracts`}</p>
+            {result.comparisonBasis === 'verified-deposit-adjusted-monthly-rent' && <p className={styles.comparableHint}>{locale === 'ko' ? '아래 금액은 입력한 보증금 조건에 맞춘 비교용 환산 월세입니다.' : locale === 'zh-CN' ? '以下月租按输入的保证金条件折算，用于比较。' : 'Amounts below are monthly rents adjusted to your entered deposit for comparison.'}</p>}
+            <ol className={styles.comparableList}>
+              {result.comparableRows.slice(0, 5).map((row, index) => <ComparableTransaction key={`${row.buildingId}-${row.filedMonth}-${index}`} row={row} model={model} locale={locale} linked={entityContext !== null} adjusted={result.comparisonBasis === 'verified-deposit-adjusted-monthly-rent'} />)}
+            </ol>
+            {result.comparableRows.length > 5 && <details className={styles.comparableMore} key={researchRevision}>
+              <summary>{locale === 'ko' ? `나머지 ${result.comparableRows.length - 5}건 보기` : locale === 'zh-CN' ? `查看其余 ${result.comparableRows.length - 5} 份合同` : `Show ${result.comparableRows.length - 5} more contracts`}</summary>
+              <ol className={styles.comparableList} start={6}>
+                {result.comparableRows.slice(5).map((row, index) => <ComparableTransaction key={`${row.buildingId}-${row.filedMonth}-${index + 5}`} row={row} model={model} locale={locale} linked={entityContext !== null} adjusted={result.comparisonBasis === 'verified-deposit-adjusted-monthly-rent'} />)}
+              </ol>
+            </details>}
           </section>
           <ResultLinkCopy locale={locale} tool="single-quote" />
           <section className={styles.disclosure} data-check-section="disclosure" data-result-order="disclosure">
