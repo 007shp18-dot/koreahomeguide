@@ -1,10 +1,12 @@
-type IconName = 'arrow-right' | 'arrow-left' | 'arrow-up-right' | 'chevron-down' | 'menu';
+type IconName = 'arrow-right' | 'arrow-left' | 'arrow-up-right' | 'chevron-down' | 'menu' | 'globe' | 'bookmark';
 
 const paths: Record<IconName, string> = {
   'arrow-right': 'M5 12h14m-6-6 6 6-6 6',
   'arrow-left': 'M19 12H5m6-6-6 6 6 6',
   'arrow-up-right': 'M6 18 18 6M6 6h12v12',
   'chevron-down': 'm6 9 6 6 6-6',
+  globe: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0M3 12h18M12 3c3 3 3 15 0 18-3-3-3-15 0-18',
+  bookmark: 'M6 4h12v17l-6-4-6 4V4Z',
   menu: 'M4 7h16M4 12h16M4 17h16',
 };
 

@@ -32,8 +32,8 @@ function OverviewDecisionView({ model, decision, base, locale = 'en' }: Readonly
   return (
     <div className={styles.decisionLayout}>
       <div>
-        <p className={styles.decisionEyebrow}>{locale === 'ko' ? '임대차 가격 비교' : 'Rent comparison'}</p>
-        <h2>{locale === 'ko' ? '신고된 임대차 거래와 비교하세요' : 'Compare with reported rental contracts'}</h2>
+        <p className={styles.decisionEyebrow}>{locale === 'ko' ? '임대차 가격 비교' : locale === 'zh-CN' ? '租赁价格比较' : 'Rent comparison'}</p>
+        <h2>{locale === 'ko' ? '신고된 임대차 거래와 비교하세요' : locale === 'zh-CN' ? '与申报租赁合同比较' : 'Compare with reported rental contracts'}</h2>
         <p>
           {locale === 'ko' ? `집계 기간에 ${model.distribution.n}건의 계약이 있습니다. 매매·투자 판단에 필요한 자료는 아직 부족합니다.` : `${model.distribution.n} reported contracts are published for the declared period. Sale and investment evidence is not yet sufficient.`}
         </p>
@@ -41,11 +41,11 @@ function OverviewDecisionView({ model, decision, base, locale = 'en' }: Readonly
           className={styles.primaryAction}
           href={buildingDecisionHref({ base, mode: decision.overview.primaryMode, contract: 'all' })}
         >
-          {locale === 'ko' ? '임대차 거래 비교' : 'Compare rental contracts'}
+          {locale === 'ko' ? '임대차 거래 비교' : locale === 'zh-CN' ? '比较租赁合同' : 'Compare rental contracts'}
         </Link>
       </div>
       <dl className={styles.decisionMetrics} aria-label={t('Building evidence readiness')}>
-        <div><dt>{t('Rent evidence')}</dt><dd>{t('Published')} · {model.distribution.n}{locale === 'ko' ? '건' : ' records'}</dd></div>
+        <div><dt>{t('Rent evidence')}</dt><dd>{t('Published')} · {model.distribution.n}{locale === 'ko' ? '건' : locale === 'zh-CN' ? '笔记录' : ' records'}</dd></div>
         <div><dt>{t('Buy evidence')}</dt><dd>{decision.buy.readiness.state === 'published'
           ? t('Published')
           : t(decision.buy.readiness.title)}</dd></div>
@@ -132,7 +132,7 @@ function RentDecisionView({ model, decision, base, locale = 'en' }: Readonly<{
   }
   return (
     <div className={styles.decisionView}>
-      <p className={styles.decisionEyebrow}>{locale === 'ko' ? '신고 거래 분포' : 'Reported transaction distribution'}</p>
+      <p className={styles.decisionEyebrow}>{locale === 'ko' ? '신고 거래 분포' : locale === 'zh-CN' ? '申报交易分布' : 'Reported transaction distribution'}</p>
       <h2>{locale === 'ko' ? `${t(decision.rent.cohort)} 계약 거래` : `${decision.rent.cohort === 'all' ? 'All' : decision.rent.cohort === 'new' ? 'New' : 'Renewal'} contract evidence`}</h2>
       <p>{t(`${summary.n} reported contract${summary.n === 1 ? '' : 's'}`)}</p>
       <div data-building-distribution="true">
@@ -143,7 +143,7 @@ function RentDecisionView({ model, decision, base, locale = 'en' }: Readonly<{
         />
       </div>
       <Link className={styles.primaryAction} href={localizedSeoulHref(decision.rentCheckHref,locale)}>
-        {locale === 'ko' ? '매물 가격 비교' : 'Compare an asking rent'}
+        {locale === 'ko' ? '매물 가격 비교' : locale === 'zh-CN' ? '比较挂牌租金' : 'Compare an asking rent'}
       </Link>
     </div>
   );
@@ -165,7 +165,7 @@ function EvidenceDecisionView({ model, locale = 'en' }: Readonly<{ model: Public
       <dl className={styles.evidenceLedger}>
         <div><dt>{t('Building identity')}</dt><dd>{t('Verified by the signed building artifact.')}</dd></div>
         <div><dt>{t('Rent contracts')}</dt><dd>{locale === 'ko' ? `${model.evidence.period} · 집계 조건을 충족한 거래 ${model.evidence.publicationMinimum}건 이상일 때 가격을 표시합니다.` : `Published for ${model.evidence.period} with a minimum of ${model.evidence.publicationMinimum} eligible records.`}</dd></div>
-        <div><dt>{t('Official sale evidence')}</dt><dd>{locale === 'ko' ? '현재 이 단지 자료에 포함되지 않습니다.' : 'Not included in this building dataset.'}</dd></div>
+        <div><dt>{t('Official sale evidence')}</dt><dd>{locale === 'ko' ? '현재 이 단지 자료에 포함되지 않습니다.' : locale === 'zh-CN' ? '当前楼盘数据中未包含。' : 'Not included in this building dataset.'}</dd></div>
         <div><dt>{t('Building visual')}</dt><dd>{t('No rights-cleared source is connected.')}</dd></div>
         <div><dt>{t('Community')}</dt><dd>{t('Independent threshold state; never merged with official evidence.')}</dd></div>
       </dl>

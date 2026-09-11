@@ -25,16 +25,16 @@ describe('Simplified Chinese editorial release', () => {
     expect(home).toContain('不同的生活。');
     expect(home.match(/data-primary-action="explore"/g)).toHaveLength(4);
     expect(home).toContain('href="/zh-cn/news');
-    expect(news).toContain('首尔与新加坡的政策更新、市场简报和数据故事。');
+    expect(news).toContain('了解四座城市的房地产市场、投资决策与社区生活。');
     expect(news).toContain('data-public-editorial-frame="content"');
   });
 
-  it('opens the home analysis destination without policy updates or guides', async () => {
+  it('opens the legacy analysis destination in the shared Insights layout', async () => {
     const markup = renderToStaticMarkup(await ChineseNews({ searchParams: Promise.resolve({type: 'analysis'}) }));
-    expect(markup).toContain('data story');
-    expect(markup).toContain('market brief');
-    expect(markup).not.toContain('policy update');
-    expect(markup).not.toContain('href="/zh-cn/guides/');
+    expect(markup).toContain('data-newsroom-layout="insights"');
+    expect(markup).toContain('aria-label="洞察城市"');
+    expect(markup).toContain('/zh-cn/news?topic=investment');
+    expect(markup).not.toContain('data-newsroom-layout="news"');
   });
 
   it('uses reciprocal English and zh-Hans canonicals on indexable content', () => {
@@ -61,20 +61,19 @@ describe('Simplified Chinese editorial release', () => {
     });
   });
 
-  it('indexes only the localized editorial surfaces and bridges tools to live English products', () => {
+  it('keeps editorial surfaces indexed and renders Chinese Seoul products without redirecting', () => {
     const urls = sitemap().map(({ url }) => url);
     expect(urls).toContain('https://www.signedprice.com/zh-cn/');
     expect(urls).toContain('https://www.signedprice.com/zh-cn/news/');
     expect(urls).toContain('https://www.signedprice.com/zh-cn/guides/');
-    expect(urls).not.toContain('https://www.signedprice.com/zh-cn/kr/seoul/check/');
-    expect(urls).not.toContain('https://www.signedprice.com/zh-cn/kr/seoul/explore/');
 
-    for (const [file, destination] of [
-      ['../app/(zh-cn)/zh-cn/kr/seoul/check/page.tsx', '/kr/seoul/check/'],
-      ['../app/(zh-cn)/zh-cn/kr/seoul/explore/page.tsx', '/kr/seoul/explore/'],
+    for (const file of [
+      '../app/(zh-cn)/zh-cn/kr/seoul/check/page.tsx',
+      '../app/(zh-cn)/zh-cn/kr/seoul/explore/page.tsx',
     ] as const) {
       const source = readFileSync(new URL(file, import.meta.url), 'utf8');
-      expect(source).toContain(`redirect('${destination}')`);
+      expect(source).not.toContain('redirect(');
+      expect(source).toContain("'zh-CN'");
     }
   });
 });

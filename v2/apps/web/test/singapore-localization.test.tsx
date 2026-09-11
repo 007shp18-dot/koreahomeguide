@@ -16,7 +16,7 @@ const model: SingaporeCheckRouteModel = { mode: 'compare', catalogs: { 'ura-priv
 describe('Singapore Korean functional surfaces', () => {
   it('localizes social metadata as well as the Singapore page title', () => {
     const metadata = singaporeMetadata(indexableMetadata({ path: '/ko/sg/singapore/explore/', title: 'Singapore', description: 'Singapore prices' }));
-    expect(metadata.openGraph).toMatchObject({ locale: 'ko_KR', images: ['https://www.signedprice.com/og/ko/'], alternateLocale: ['en_US'] });
+    expect(metadata.openGraph).toMatchObject({ locale: 'ko_KR', images: ['https://www.signedprice.com/og/ko/'], alternateLocale: ['en_US', 'zh_CN'] });
     expect(metadata.twitter).toMatchObject({ images: ['https://www.signedprice.com/og/ko/'] });
     expect(metadata.alternates?.languages).toMatchObject({ 'x-default': 'https://www.signedprice.com/sg/singapore/explore/' });
   });
@@ -68,6 +68,7 @@ describe('Singapore Korean functional surfaces', () => {
     expect(metadata.alternates?.languages).toEqual({
       en: 'https://www.signedprice.com/sg/singapore/check/',
       ko: 'https://www.signedprice.com/ko/sg/singapore/check/',
+      'zh-Hans': 'https://www.signedprice.com/zh-cn/sg/singapore/check/',
       'x-default': 'https://www.signedprice.com/sg/singapore/check/',
     });
     expect(metadata.openGraph).toMatchObject({

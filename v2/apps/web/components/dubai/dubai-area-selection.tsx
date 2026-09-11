@@ -1,4 +1,6 @@
 'use client';
+import { localizedMarketCopy } from '../../lib/locale/market-localization';
+
 
 import { usePassportLocation, PassportLink } from '../passport/passport-journey';
 import { createDubaiCheckHref } from '../../lib/dubai/check-model';
@@ -44,7 +46,7 @@ export function DubaiAreaSummary({ model, locale = 'en' }: Readonly<{ model: Dub
   const stageLabel = t(stage === 'ready' ? 'Ready' : 'Off-Plan');
   return <MarketSummary locale={locale} kind="area"
     title={t(model.identity.name)}
-    location={locale === 'ko' ? '지역별 통계이며 개별 주택의 가격이 아닙니다.' : 'Area-level statistics, not a price for a specific home.'}
+    location={localizedMarketCopy(locale, "Area-level statistics, not a price for a specific home.", "지역별 통계이며 개별 주택의 가격이 아닙니다.")}
     context={t('Dubai · Area evidence')}
     metric={{
       label: `${housing} · ${stageLabel} · ${t('median sale price')}`,
@@ -56,7 +58,7 @@ export function DubaiAreaSummary({ model, locale = 'en' }: Readonly<{ model: Dub
         { label: t('Sample'), value: `${sale.n.toLocaleString('en')}${t(' registered sales')}` },
         { label: t('Median AED/m²'), value: `${money(sale.medianPricePerSqmAed)}/m²` },
       ] : []),
-      { label: locale === 'ko' ? '자료 기준일' : 'As of', value: model.context.asOfDate },
+      { label: localizedMarketCopy(locale, "As of", "자료 기준일"), value: model.context.asOfDate },
     ]}
     actions={<DubaiAreaSelection locale={locale} slug={model.identity.slug} segments={model.segments} variant="check" />}
   />;

@@ -131,6 +131,13 @@ function selectedMetricCopy(
       }[transaction],
     } as const;
   }
+  if (locale === 'zh-CN') return {
+    heroHeading: { jeonse: '比较各行政区的可退还全租押金。', monthly: '比较各行政区的申报月租。', sale: '比较各行政区的申报成交价。' }[transaction],
+    heroDescription: '首尔全部25个行政区的官方申报合同数据。可按交易、建筑类型和合同类别筛选；不足5笔合格合同不显示价格。',
+    mapHeading: { jeonse: '行政区全租押金中位数', monthly: '行政区申报月租中位数', sale: '行政区申报成交价中位数' }[transaction],
+    mapTitle: { jeonse: '首尔行政区全租押金地图', monthly: '首尔行政区申报月租地图', sale: '首尔行政区申报成交价地图' }[transaction],
+    medianLabel: { jeonse: '可退还全租押金中位数', monthly: '申报月租中位数', sale: '申报成交价中位数' }[transaction],
+  };
   return {
     heroHeading: {
       jeonse: 'Compare refundable jeonse deposits by district.',
@@ -166,6 +173,7 @@ function compactDistrictMetric(label: string | null, locale: ProductLocale): str
     const eok = value / 100_000_000;
     return `₩${eok >= 10 ? eok.toFixed(1) : eok.toFixed(2)}억`;
   }
+  if (locale === 'zh-CN') return value >= 100_000_000 ? `₩${(value / 100_000_000).toFixed(2)}亿` : `₩${(value / 10_000).toFixed(1)}万`;
   if (value >= 1_000_000_000) return `₩${(value / 1_000_000_000).toFixed(2)}B`;
   if (value >= 1_000_000) return `₩${(value / 1_000_000).toFixed(1)}M`;
   return label;
@@ -176,11 +184,11 @@ function exploreAreaBandLabel(
   locale: ProductLocale,
 ): string {
   const labels = {
-    all: locale === 'ko' ? '전체 면적' : 'All recorded areas',
-    'under-40': locale === 'ko' ? '40㎡ 미만' : 'Under 40㎡',
+    all: locale === 'ko' ? '전체 면적' : locale === 'zh-CN' ? '全部面积' : 'All recorded areas',
+    'under-40': locale === 'ko' ? '40㎡ 미만' : locale === 'zh-CN' ? '40㎡以下' : 'Under 40㎡',
     '40-60': '40–60㎡',
     '60-85': '60–85㎡',
-    '85-plus': locale === 'ko' ? '85㎡ 이상' : '85㎡+',
+    '85-plus': locale === 'ko' ? '85㎡ 이상' : locale === 'zh-CN' ? '85㎡及以上' : '85㎡+',
     'legacy-45-55': '45–55㎡',
   } as const;
   return labels[areaBand];
@@ -201,17 +209,15 @@ function ProjectedBuildingMedia({
         className={styles.photoUnavailable}
         data-building-media="location-only"
         role="img"
-        aria-label={locale === 'ko' ? '건물 사진 미제공. 건물 상세 정보는 확인할 수 있습니다.' : 'Building photo unavailable. Building details remain available.'}
+        aria-label={locale === 'ko' ? '건물 사진 미제공. 건물 상세 정보는 확인할 수 있습니다.' : locale === 'zh-CN' ? '暂无楼盘照片，仍可查看楼盘详情。' : 'Building photo unavailable. Building details remain available.'}
       >
         <span className={styles.photoUnavailableIcon} aria-hidden="true">▧</span>
-        <small aria-hidden="true">{locale === 'ko' ? '사진 없음' : 'No photo'}</small>
+        <small aria-hidden="true">{locale === 'ko' ? '사진 없음' : locale === 'zh-CN' ? '暂无照片' : 'No photo'}</small>
       </span>
     ) : (
       <section className={styles.buildingMediaUnavailable} data-building-media="location-only">
-        <strong>{locale === 'ko' ? '건물 사진 미제공' : 'Building photo unavailable'}</strong>
-        <p>{locale === 'ko'
-          ? '현재 이 건물을 식별할 수 있는 사진을 제공하지 못하고 있습니다.'
-          : 'An identifiable photo of this property is not available in this view.'}</p>
+        <strong>{locale === 'ko' ? '건물 사진 미제공' : locale === 'zh-CN' ? '暂无楼盘照片' : 'Building photo unavailable'}</strong>
+        <p>{locale === 'ko' ? '현재 이 건물을 식별할 수 있는 사진을 제공하지 못하고 있습니다.' : locale === 'zh-CN' ? '当前页面暂无可确认该房产身份的照片。' : 'An identifiable photo of this property is not available in this view.'}</p>
       </section>
     );
   }
@@ -222,10 +228,10 @@ function ProjectedBuildingMedia({
       className={styles.photoUnavailable}
       data-building-media="location-only"
       role="img"
-      aria-label={locale === 'ko' ? '건물 사진 미제공. 건물 상세 정보는 확인할 수 있습니다.' : 'Building photo unavailable. Building details remain available.'}
+      aria-label={locale === 'ko' ? '건물 사진 미제공. 건물 상세 정보는 확인할 수 있습니다.' : locale === 'zh-CN' ? '暂无楼盘照片，仍可查看楼盘详情。' : 'Building photo unavailable. Building details remain available.'}
     >
       <span className={styles.photoUnavailableIcon} aria-hidden="true">▧</span>
-      <small aria-hidden="true">{locale === 'ko' ? '사진 없음' : 'No photo'}</small>
+      <small aria-hidden="true">{locale === 'ko' ? '사진 없음' : locale === 'zh-CN' ? '暂无照片' : 'No photo'}</small>
     </span>;
   }
   const focalX = building.media.focalX ?? 0.5;
@@ -239,7 +245,7 @@ function ProjectedBuildingMedia({
       {/* Projection URLs have already passed rights and editorial review on the server. */}
       {variant === 'thumbnail' ? <Image
           src={building.media.displayUrl}
-          alt={`${buildingDisplayLabel(building, locale).title} ${locale === 'ko' ? '건물 외관' : 'building exterior'}`}
+          alt={`${buildingDisplayLabel(building, locale).title} ${locale === 'ko' ? '건물 외관' : locale === 'zh-CN' ? '建筑外观' : 'building exterior'}`}
           width={128}
           height={96}
           sizes="(max-width: 520px) 96px, 128px"
@@ -248,7 +254,7 @@ function ProjectedBuildingMedia({
         {/* eslint-disable-next-line @next/next/no-img-element -- Server projection URLs have passed rights and editorial review. */}
         <img
           src={building.media.displayUrl}
-          alt={`${buildingDisplayLabel(building, locale).title} ${locale === 'ko' ? '건물 외관' : 'building exterior'}`}
+          alt={`${buildingDisplayLabel(building, locale).title} ${locale === 'ko' ? '건물 외관' : locale === 'zh-CN' ? '建筑外观' : 'building exterior'}`}
           width={building.media.width ?? undefined}
           height={building.media.height ?? undefined}
           loading="lazy"
@@ -861,7 +867,7 @@ function ReadyAreaExplorer({
     : filteredBuildings.length;
   const buildingCountLabel = locale === 'ko'
     ? '개 건물'
-    : matchingBuildingCount === 1 ? 'building' : 'buildings';
+    : locale === 'zh-CN' ? '个楼盘' : matchingBuildingCount === 1 ? 'building' : 'buildings';
 
   return (
     <section
@@ -872,18 +878,18 @@ function ReadyAreaExplorer({
       data-explore-view={currentView}
       data-explorer-version="guide-v2"
     >
-      <header className="explore-page-heading"><h1 id="area-explorer-heading">{locale === 'ko' ? `${model.districts.find(d => d.slug === model.selectedSlug)?.nameKo ?? '서울'} 실거래가` : 'Explore'}</h1><p>{locale === 'ko' ? '서울' : 'Seoul'} · {model.source.period}</p></header>
+      <header className="explore-page-heading"><h1 id="area-explorer-heading">{locale === 'ko' ? `${model.districts.find(d => d.slug === model.selectedSlug)?.nameKo ?? '서울'} 실거래가` : locale === 'zh-CN' ? '首尔成交价探索' : 'Explore'}</h1><p>{locale === 'ko' ? '서울' : locale === 'zh-CN' ? '首尔' : 'Seoul'} · {model.source.period}</p></header>
       <div className={styles.exploreToolbar} data-explorer-region="filters">
         <div
           className={styles.transactionFilter}
           data-transaction-filter="verified-availability"
           role="group"
-          aria-label={locale === 'ko' ? '거래 유형' : 'Transaction type'}
+          aria-label={locale === 'ko' ? '거래 유형' : locale === 'zh-CN' ? '交易类型' : 'Transaction type'}
         >
           {([
-            ['sale', 'sale', locale === 'ko' ? '매매' : 'Sale'],
-            ['jeonse', 'jeonse', locale === 'ko' ? '전세' : 'Jeonse'],
-            ['monthly', 'monthly-rent', locale === 'ko' ? '월세' : 'Rent'],
+            ['sale', 'sale', locale === 'ko' ? '매매' : locale === 'zh-CN' ? '买卖' : 'Sale'],
+            ['jeonse', 'jeonse', locale === 'ko' ? '전세' : locale === 'zh-CN' ? '全租' : 'Jeonse'],
+            ['monthly', 'monthly-rent', locale === 'ko' ? '월세' : locale === 'zh-CN' ? '月租' : 'Rent'],
           ] as const).map(([transaction, mode, label]) => (
             model.transactionAvailability[transaction]
               ? <Link
@@ -895,10 +901,10 @@ function ReadyAreaExplorer({
               : <span key={transaction} aria-disabled="true" data-transaction-mode={mode}>{label}</span>
           ))}
         </div>
-        <label className={styles.toolbarSelect}><span>{locale === 'ko' ? '지역' : 'Area'}</span><select aria-label={locale === 'ko' ? '서울 25개 구' : 'All 25 Seoul districts'} value={mapDrilledToDistrict ? selected.slug : 'all'} onChange={(event) => event.currentTarget.value === 'all' ? showAllDistricts() : selectDistrict(event.currentTarget.value)}><option value="all">{locale === 'ko' ? '서울 전체' : 'All Seoul'}</option>{model.districts.map((district) => <option key={district.slug} value={district.slug} data-district-option={district.slug} title={`${district.nameKo} · ${district.medianLabel ?? copy.notPublished}`}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}</select></label>
+        <label className={styles.toolbarSelect}><span>{locale === 'ko' ? '지역' : locale === 'zh-CN' ? '地区' : 'Area'}</span><select aria-label={locale === 'ko' ? '서울 25개 구' : locale === 'zh-CN' ? '首尔全部25个行政区' : 'All 25 Seoul districts'} value={mapDrilledToDistrict ? selected.slug : 'all'} onChange={(event) => event.currentTarget.value === 'all' ? showAllDistricts() : selectDistrict(event.currentTarget.value)}><option value="all">{locale === 'ko' ? '서울 전체' : locale === 'zh-CN' ? '首尔全市' : 'All Seoul'}</option>{model.districts.map((district) => <option key={district.slug} value={district.slug} data-district-option={district.slug} title={`${district.nameKo} · ${district.medianLabel ?? copy.notPublished}`}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}</select></label>
         <div className={styles.buildingSearch} data-building-search="retained">
           <label htmlFor="explore-building-query">
-            {locale === 'ko' ? '지역 또는 건물 검색' : 'Search area or building'}
+            {locale === 'ko' ? '지역 또는 건물 검색' : locale === 'zh-CN' ? '搜索地区或楼盘' : 'Search area or building'}
           </label>
           <span className={styles.visuallyHidden}>Search buildings</span>
           <input
@@ -912,15 +918,15 @@ function ReadyAreaExplorer({
               event.preventDefault();
               submitBuildingQuery();
             }}
-            placeholder={locale === 'ko' ? '강남구, 역삼동, 건물명' : 'Gangnam-gu, Yeoksam-dong, building'}
+            placeholder={locale === 'ko' ? '강남구, 역삼동, 건물명' : locale === 'zh-CN' ? '江南区、驿三洞、楼盘名称' : 'Gangnam-gu, Yeoksam-dong, building'}
           />
-          <button className={styles.submitSearch} type="button" onClick={submitBuildingQuery}>{locale === 'ko' ? '검색' : 'Search'}</button>
+          <button className={styles.submitSearch} type="button" onClick={submitBuildingQuery}>{locale === 'ko' ? '검색' : locale === 'zh-CN' ? '搜索' : 'Search'}</button>
         </div>
         <details className={styles.advancedFilters} open={proximity.status === 'ready' && (proximity.selection.station !== null || proximity.selection.school !== null) ? true : undefined}>
-          <summary>{locale === 'ko' ? '필터' : 'Filters'}</summary>
+          <summary>{locale === 'ko' ? '필터' : locale === 'zh-CN' ? '筛选' : 'Filters'}</summary>
           <div className={styles.advancedFiltersPanel}>
             <label className={styles.toolbarSelect}>
-              <span>{locale === 'ko' ? '건물 유형' : 'Building type'}</span>
+              <span>{locale === 'ko' ? '건물 유형' : locale === 'zh-CN' ? '建筑类型' : 'Building type'}</span>
               <select
                 name="housing-type"
                 value={selectedHousingType}
@@ -932,27 +938,27 @@ function ReadyAreaExplorer({
                 }}
               >
                 {evidenceHousingOptions.map(([value, en, ko]) => (
-                  <option value={value} key={value}>{locale === 'ko' ? ko : en}</option>
+                  <option value={value} key={value}>{locale === 'ko' ? ko : locale === 'zh-CN' ? ({ all: '全部类型', apartment: '公寓', officetel: '商住公寓', villa_multifamily: '联排／多户住宅', detached: '独栋／多户住宅' }[value]) : en}</option>
                 ))}
               </select>
             </label>
             <label className={styles.sortControl}>
-              <span>{locale === 'ko' ? '정렬' : 'Sort'}</span>
+              <span>{locale === 'ko' ? '정렬' : locale === 'zh-CN' ? '排序' : 'Sort'}</span>
               <select value={sortMode} onChange={(event) => setSortMode(event.currentTarget.value as typeof sortMode)}>
-                <option value="latest">{locale === 'ko' ? '최근 신고순' : 'Newest filing'}</option>
-                <option value="evidence">{locale === 'ko' ? '거래 많은 순' : 'Most evidence'}</option>
-                <option value="name">{locale === 'ko' ? '건물명순' : 'Building name'}</option>
+                <option value="latest">{locale === 'ko' ? '최근 신고순' : locale === 'zh-CN' ? '最新申报' : 'Newest filing'}</option>
+                <option value="evidence">{locale === 'ko' ? '거래 많은 순' : locale === 'zh-CN' ? '交易数量最多' : 'Most evidence'}</option>
+                <option value="name">{locale === 'ko' ? '건물명순' : locale === 'zh-CN' ? '楼盘名称' : 'Building name'}</option>
               </select>
             </label>
             {proximity.status === 'ready' ? (
               <div className={styles.proximityFilters} data-proximity-selectors="enabled">
-                <label><span>{locale === 'ko' ? '역 인접성' : 'Station proximity'}</span><select name="station-proximity" value={proximity.selection.station?.sourceId ?? ''} onChange={(event) => router.replace(proximityHref('station', event.currentTarget.value, String(proximity.selection.station?.distanceMeters ?? 500)), { scroll: false })}><option value="">{locale === 'ko' ? '선택 안 함' : 'No station filter'}</option>{proximity.stations.map((station) => <option key={station.sourceId} value={station.sourceId}>{station.name} · {station.lines.join(', ')}</option>)}</select></label>
-                <label><span>{locale === 'ko' ? '역 거리' : 'Station distance'}</span><select name="station-distance" value={proximity.selection.station?.distanceMeters ?? ''} onChange={(event) => router.replace(proximityHref('station', proximity.selection.station?.sourceId ?? '', event.currentTarget.value), { scroll: false })}><option value="">—</option>{[250, 500, 750, 1000].map((distance) => <option key={distance} value={distance}>{distance} m</option>)}</select></label>
-                <label><span>{locale === 'ko' ? '학교 인접성' : 'School proximity'}</span><select name="school-proximity" value={proximity.selection.school?.sourceId ?? ''} onChange={(event) => router.replace(proximityHref('school', event.currentTarget.value, String(proximity.selection.school?.distanceMeters ?? 500)), { scroll: false })}><option value="">{locale === 'ko' ? '선택 안 함' : 'No school filter'}</option>{proximity.schools.map((school) => <option key={school.sourceId} value={school.sourceId}>{school.name}</option>)}</select></label>
-                <label><span>{locale === 'ko' ? '학교 거리' : 'School distance'}</span><select name="school-distance" value={proximity.selection.school?.distanceMeters ?? ''} onChange={(event) => router.replace(proximityHref('school', proximity.selection.school?.sourceId ?? '', event.currentTarget.value), { scroll: false })}><option value="">—</option>{[250, 500, 750, 1000].map((distance) => <option key={distance} value={distance}>{distance} m</option>)}</select></label>
-                <small>{locale === 'ko' ? '직선거리 기준' : 'Straight-line distance'}</small>
+                <label><span>{locale === 'ko' ? '역 인접성' : locale === 'zh-CN' ? '邻近车站' : 'Station proximity'}</span><select name="station-proximity" value={proximity.selection.station?.sourceId ?? ''} onChange={(event) => router.replace(proximityHref('station', event.currentTarget.value, String(proximity.selection.station?.distanceMeters ?? 500)), { scroll: false })}><option value="">{locale === 'ko' ? '선택 안 함' : locale === 'zh-CN' ? '不筛选车站' : 'No station filter'}</option>{proximity.stations.map((station) => <option key={station.sourceId} value={station.sourceId}>{station.name} · {station.lines.join(', ')}</option>)}</select></label>
+                <label><span>{locale === 'ko' ? '역 거리' : locale === 'zh-CN' ? '车站距离' : 'Station distance'}</span><select name="station-distance" value={proximity.selection.station?.distanceMeters ?? ''} onChange={(event) => router.replace(proximityHref('station', proximity.selection.station?.sourceId ?? '', event.currentTarget.value), { scroll: false })}><option value="">—</option>{[250, 500, 750, 1000].map((distance) => <option key={distance} value={distance}>{distance} m</option>)}</select></label>
+                <label><span>{locale === 'ko' ? '학교 인접성' : locale === 'zh-CN' ? '邻近学校' : 'School proximity'}</span><select name="school-proximity" value={proximity.selection.school?.sourceId ?? ''} onChange={(event) => router.replace(proximityHref('school', event.currentTarget.value, String(proximity.selection.school?.distanceMeters ?? 500)), { scroll: false })}><option value="">{locale === 'ko' ? '선택 안 함' : locale === 'zh-CN' ? '不筛选学校' : 'No school filter'}</option>{proximity.schools.map((school) => <option key={school.sourceId} value={school.sourceId}>{school.name}</option>)}</select></label>
+                <label><span>{locale === 'ko' ? '학교 거리' : locale === 'zh-CN' ? '学校距离' : 'School distance'}</span><select name="school-distance" value={proximity.selection.school?.distanceMeters ?? ''} onChange={(event) => router.replace(proximityHref('school', proximity.selection.school?.sourceId ?? '', event.currentTarget.value), { scroll: false })}><option value="">—</option>{[250, 500, 750, 1000].map((distance) => <option key={distance} value={distance}>{distance} m</option>)}</select></label>
+                <small>{locale === 'ko' ? '직선거리 기준' : locale === 'zh-CN' ? '按直线距离计算' : 'Straight-line distance'}</small>
               </div>
-            ) : <p className={styles.proximityUnavailable} data-proximity-state={proximity.status}>{locale === 'ko' ? '인접성 데이터를 확인할 수 없습니다.' : 'Proximity data unavailable.'}</p>}
+            ) : <p className={styles.proximityUnavailable} data-proximity-state={proximity.status}>{locale === 'ko' ? '인접성 데이터를 확인할 수 없습니다.' : locale === 'zh-CN' ? '暂无周边距离数据。' : 'Proximity data unavailable.'}</p>}
           </div>
         </details>
         <span className={styles.visuallyHidden} data-building-inventory={model.coverage.buildings.status === 'ready' ? 'observed' : 'unavailable'}>{model.coverage.buildings.status === 'ready' ? model.coverage.buildings.observed : '—'}</span>
@@ -961,15 +967,15 @@ function ReadyAreaExplorer({
       <header className={styles.resultBar} data-explorer-region="summary">
 
         <strong className={styles.resultCount}>{mapDrilledToDistrict
-          ? `${matchingBuildingCount.toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US')}${locale === 'ko' ? '개 건물' : ` ${buildingCountLabel}`}`
-          : locale === 'ko' ? '서울 25개 구' : '25 Seoul districts'} · {model.source.period}</strong>
+          ? `${matchingBuildingCount.toLocaleString(locale === 'ko' ? 'ko-KR' : locale === 'zh-CN' ? 'zh-CN' : 'en-US')}${locale === 'ko' ? '개 건물' : ` ${buildingCountLabel}`}`
+          : locale === 'ko' ? '서울 25개 구' : locale === 'zh-CN' ? '首尔25个行政区' : '25 Seoul districts'} · {model.source.period}</strong>
         <span>{!mapDrilledToDistrict
-          ? (locale === 'ko' ? '구를 선택하면 동별로 자료에 포함된 건물 수를 볼 수 있습니다.' : 'Choose a district to see observed building counts by neighborhood.')
+          ? (locale === 'ko' ? '구를 선택하면 동별로 자료에 포함된 건물 수를 볼 수 있습니다.' : locale === 'zh-CN' ? '选择行政区，查看各街区已记录的楼盘数量。' : 'Choose a district to see observed building counts by neighborhood.')
           : showBuildingLayer
             ? searchPending
-              ? (locale === 'ko' ? '현재 목록에서 검색 중입니다. Enter를 누르면 모든 결과 페이지를 검색합니다.' : 'Filtering loaded results. Press Enter to search all result pages.')
-              : (locale === 'ko' ? '전체 검색 결과: 개별 위치와 지역 묶음을 구분합니다. 다른 목록 페이지의 건물도 지역 묶음에 포함됩니다.' : 'All matches: individual locations and area-only groups, including buildings on other result pages.')
-            : (locale === 'ko' ? '신고 자료에 포함된 건물 수를 동별로 표시합니다.' : 'Neighborhood counts cover observed buildings in the evidence inventory.')}</span>
+              ? (locale === 'ko' ? '현재 목록에서 검색 중입니다. Enter를 누르면 모든 결과 페이지를 검색합니다.' : locale === 'zh-CN' ? '正在筛选已加载结果。按Enter键搜索全部结果页。' : 'Filtering loaded results. Press Enter to search all result pages.')
+              : (locale === 'ko' ? '전체 검색 결과: 개별 위치와 지역 묶음을 구분합니다. 다른 목록 페이지의 건물도 지역 묶음에 포함됩니다.' : locale === 'zh-CN' ? '全部匹配结果：包括独立位置和仅定位到区域的分组，也涵盖其他结果页中的楼盘。' : 'All matches: individual locations and area-only groups, including buildings on other result pages.')
+            : (locale === 'ko' ? '신고 자료에 포함된 건물 수를 동별로 표시합니다.' : locale === 'zh-CN' ? '各街区数量统计涵盖交易资料中已记录的楼盘。' : 'Neighborhood counts cover observed buildings in the evidence inventory.')}</span>
         <div className={styles.toolbarViews}>
           <AreaExplorerViewSwitcher
             current={currentView}
@@ -991,17 +997,17 @@ function ReadyAreaExplorer({
           </div>
           <div className={styles.mapGuide} aria-hidden="true">
             <span>{!mapDrilledToDistrict
-              ? (locale === 'ko' ? '서울 전체' : 'All Seoul')
+              ? (locale === 'ko' ? '서울 전체' : locale === 'zh-CN' ? '首尔全市' : 'All Seoul')
               : locale === 'ko' ? selected.nameKo : selected.nameEn}</span>
             <strong>{!mapDrilledToDistrict
-              ? (locale === 'ko' ? '구 선택' : 'Choose a district')
+              ? (locale === 'ko' ? '구 선택' : locale === 'zh-CN' ? '选择行政区' : 'Choose a district')
               : showBuildingLayer
-                ? (locale === 'ko' ? '건물 위치와 신고 가격' : 'Building locations and reported prices')
-                : (locale === 'ko' ? '동별 자료 포함 건물 수' : 'Observed buildings by neighborhood')}</strong>
+                ? (locale === 'ko' ? '건물 위치와 신고 가격' : locale === 'zh-CN' ? '楼盘位置与申报价格' : 'Building locations and reported prices')
+                : (locale === 'ko' ? '동별 자료 포함 건물 수' : locale === 'zh-CN' ? '各街区已记录楼盘' : 'Observed buildings by neighborhood')}</strong>
           </div>
           {mapDrilledToDistrict ? (
             <button className={styles.mapLevelButton} type="button" onClick={showAllDistricts}>
-              {locale === 'ko' ? '서울 전체 보기' : 'All Seoul districts'}
+              {locale === 'ko' ? '서울 전체 보기' : locale === 'zh-CN' ? '查看首尔全部行政区' : 'All Seoul districts'}
             </button>
           ) : null}
           <NaverDistrictMap
@@ -1019,8 +1025,8 @@ function ReadyAreaExplorer({
             onSelectBuilding={selectBuildingFromMarker}
             locale={locale}
             fallback={<div className={styles.liveMapLoading} role="status">
-              <strong>{locale === 'ko' ? '네이버 지도를 불러오는 중입니다.' : 'Loading the NAVER map.'}</strong>
-              <span>{locale === 'ko' ? '지역과 확인된 건물 위치가 곧 표시됩니다.' : 'Areas and verified building locations will appear here.'}</span>
+              <strong>{locale === 'ko' ? '네이버 지도를 불러오는 중입니다.' : locale === 'zh-CN' ? '正在加载NAVER地图。' : 'Loading the NAVER map.'}</strong>
+              <span>{locale === 'ko' ? '지역과 확인된 건물 위치가 곧 표시됩니다.' : locale === 'zh-CN' ? '地区和已核实的楼盘位置将在此显示。' : 'Areas and verified building locations will appear here.'}</span>
             </div>}
           />
 
@@ -1034,9 +1040,9 @@ function ReadyAreaExplorer({
         )}
 
         {currentView === 'map' && !showAreaResults ? null : (
-        <aside className={styles.discoveryRail} data-explorer-region="results" aria-label={locale === 'ko' ? '지역과 건물 탐색' : 'District and building discovery'}>
+        <aside className={styles.discoveryRail} data-explorer-region="results" aria-label={locale === 'ko' ? '지역과 건물 탐색' : locale === 'zh-CN' ? '探索行政区与楼盘' : 'District and building discovery'}>
           {currentView === 'map' ? <button className={styles.mapLevelButton} type="button" onClick={() => setShowAreaResults(false)}>
-            {locale === 'ko' ? '지역 목록 닫기' : 'Close area results'}
+            {locale === 'ko' ? '지역 목록 닫기' : locale === 'zh-CN' ? '关闭地区列表' : 'Close area results'}
           </button> : null}
           {mapDrilledToDistrict ? <details className={styles.railEvidenceDisclosure}>
             <summary>
@@ -1054,15 +1060,13 @@ function ReadyAreaExplorer({
               showContractGroups={model.evidenceSelection.transaction !== 'sale'}
             />}
           </details> : null}
-          <section className={styles.rail} aria-label={locale === 'ko' ? '탐색 결과' : 'Discovery results'}>
+          <section className={styles.rail} aria-label={locale === 'ko' ? '탐색 결과' : locale === 'zh-CN' ? '探索结果' : 'Discovery results'}>
           {!mapDrilledToDistrict ? (
             <div className={styles.districtBrowser} data-district-browser="seoul">
               <div className={styles.sectionHeading}>
-                <p>{locale === 'ko' ? '서울 전체' : 'All Seoul'}</p>
-                <h2 id="district-table-heading">{locale === 'ko' ? '구를 선택하세요' : 'Choose a district'}</h2>
-                <span>{locale === 'ko'
-                  ? '선택한 구의 동별 거래를 지도와 목록에서 확인하세요.'
-                  : 'See neighbourhood transactions on the map and in the list.'}</span>
+                <p>{locale === 'ko' ? '서울 전체' : locale === 'zh-CN' ? '首尔全市' : 'All Seoul'}</p>
+                <h2 id="district-table-heading">{locale === 'ko' ? '구를 선택하세요' : locale === 'zh-CN' ? '选择行政区' : 'Choose a district'}</h2>
+                <span>{locale === 'ko' ? '선택한 구의 동별 거래를 지도와 목록에서 확인하세요.' : locale === 'zh-CN' ? '在地图和列表中查看所选行政区的街区交易。' : 'See neighbourhood transactions on the map and in the list.'}</span>
               </div>
               <ul className={styles.districtList}>
                 {model.districts.map((district) => (
@@ -1096,16 +1100,14 @@ function ReadyAreaExplorer({
               <>
                 {model.buildingAvailability.status === 'not_loaded' ? (
                   <p data-building-inventory="fallback">
-                    {locale === 'ko'
-                      ? '전체 건물 목록을 불러올 수 없어 가격 자료가 있는 건물만 표시합니다.'
-                      : 'Observed inventory unavailable. Showing the verified price-ready fallback.'}
+                    {locale === 'ko' ? '전체 건물 목록을 불러올 수 없어 가격 자료가 있는 건물만 표시합니다.' : locale === 'zh-CN' ? '暂时无法加载完整楼盘列表，仅显示已有核实价格数据的楼盘。' : 'Observed inventory unavailable. Showing the verified price-ready fallback.'}
                   </p>
                 ) : null}
                 {mapNeighborhoods.length > 0 ? (
                   <label className={styles.neighborhoodSelect}>
-                    <span>{locale === 'ko' ? '동' : 'Neighborhood'}</span>
+                    <span>{locale === 'ko' ? '동' : locale === 'zh-CN' ? '街区' : 'Neighborhood'}</span>
                     <select value={selectedNeighborhood} onChange={(event) => selectNeighborhood(event.currentTarget.value)}>
-                      <option value="all">{locale === 'ko' ? '전체 동' : 'All neighborhoods'}</option>
+                      <option value="all">{locale === 'ko' ? '전체 동' : locale === 'zh-CN' ? '全部街区' : 'All neighborhoods'}</option>
                       {mapNeighborhoods.map((item) => <option key={item.id} value={item.id}>{item.title} · {item.buildingCount.toLocaleString()}</option>)}
                     </select>
                   </label>
@@ -1115,15 +1117,15 @@ function ReadyAreaExplorer({
                   {model.buildingAvailability.status === 'ready'
                     ? model.buildingAvailability.total
                     : filteredBuildings.length} {model.buildingAvailability.status === 'ready'
-                    ? copy.observedBuildings.toLocaleLowerCase(locale === 'ko' ? 'ko-KR' : 'en-US')
-                    : locale === 'ko' ? '개 가격 게시 가능 건물' : 'price-ready buildings'}
+                    ? copy.observedBuildings.toLocaleLowerCase(locale === 'ko' ? 'ko-KR' : locale === 'zh-CN' ? 'zh-CN' : 'en-US')
+                    : locale === 'ko' ? '개 가격 게시 가능 건물' : locale === 'zh-CN' ? '个可显示价格的楼盘' : 'price-ready buildings'}
                 </p>
                 {filteredBuildings.length === 0 ? (
                   <div className={styles.buildingEmpty} role="status">
-                    <strong>{locale === 'ko' ? '검색 조건에 맞는 건물이 없습니다.' : 'No buildings match this search.'}</strong>
-                    <span>{locale === 'ko' ? '검색어를 지우거나 다른 동을 선택하세요.' : 'Clear the query or choose another neighborhood.'}</span>
+                    <strong>{locale === 'ko' ? '검색 조건에 맞는 건물이 없습니다.' : locale === 'zh-CN' ? '没有符合搜索条件的楼盘。' : 'No buildings match this search.'}</strong>
+                    <span>{locale === 'ko' ? '검색어를 지우거나 다른 동을 선택하세요.' : locale === 'zh-CN' ? '清除搜索词或选择其他街区。' : 'Clear the query or choose another neighborhood.'}</span>
                     <button type="button" onClick={() => updateBuildingQuery('')}>
-                      {locale === 'ko' ? '검색 지우기' : 'Clear search'}
+                      {locale === 'ko' ? '검색 지우기' : locale === 'zh-CN' ? '清除搜索' : 'Clear search'}
                     </button>
                   </div>
                 ) : (
@@ -1156,7 +1158,7 @@ function ReadyAreaExplorer({
                           <span className={styles.buildingRowPrice}>
                             <strong>{building.medianLabel ?? '—'}</strong>
                             <small>{building.transaction === 'monthly' && building.filedDepositMedianLabel
-                              ? `${locale === 'ko' ? '보증금' : 'Deposit'} ${building.filedDepositMedianLabel}`
+                              ? `${locale === 'ko' ? '보증금' : locale === 'zh-CN' ? '押金' : 'Deposit'} ${building.filedDepositMedianLabel}`
                               : exactMetricCopy.medianLabel}</small>
                           </span>
                               <small>{exploreAreaBandLabel(model.evidenceSelection.areaBand, locale)} · {building.firstObservedMonth}–{building.lastObservedMonth} · {localizeSampleLabel(building.sampleLabel, locale)}</small>
@@ -1174,10 +1176,10 @@ function ReadyAreaExplorer({
                               type="button"
                               className={styles.buildingPreviewButton}
                               data-building-preview
-                              aria-label={locale === 'ko' ? `${display.title} 빠른 보기` : `Preview ${display.title}`}
+                              aria-label={locale === 'ko' ? `${display.title} 빠른 보기` : locale === 'zh-CN' ? `快速查看${display.title}` : `Preview ${display.title}`}
                               aria-pressed={selectedBuilding?.id === building.id}
                               onClick={() => selectBuilding(building.id, 'rail')}
-                            >{locale === 'ko' ? '빠른 보기' : 'Preview'}</button>
+                            >{locale === 'ko' ? '빠른 보기' : locale === 'zh-CN' ? '快速查看' : 'Preview'}</button>
                           </span>
                         </li>
                         );
@@ -1191,7 +1193,7 @@ function ReadyAreaExplorer({
                         onClick={() => router.replace(buildingPageHref(
                           readyBuildingAvailability.page - 1,
                         ), { scroll: false })}
-                      >{locale === 'ko' ? '이전 건물' : 'Previous buildings'}</button>
+                      >{locale === 'ko' ? '이전 건물' : locale === 'zh-CN' ? '上一页楼盘' : 'Previous buildings'}</button>
                     ) : null}
                     {visibleBuildings.length < filteredBuildings.length
                       || (readyBuildingAvailability !== null
@@ -1269,8 +1271,8 @@ function ReadyAreaExplorer({
           {model.coverage.unpublished.retainedBuildingsBelowMinimum === null
             ? <p>{copy.buildingArtifactMissing}</p>
             : <p>{model.coverage.unpublished.retainedBuildingsBelowMinimum}{countSeparator}{copy.retainedBuildingsBelowMinimum}</p>}
-          <p>{locale === 'ko' ? copy.sourceCandidatesMissing : model.coverage.unpublished.sourceBuildingCandidates.reason}</p>
-          <p>{locale === 'ko' ? '이 수치는 자료에 포함된 전체 건물 수와 다릅니다.' : 'Published cohorts are not the total observed building inventory.'}</p>
+          <p>{locale !== 'en' ? copy.sourceCandidatesMissing : model.coverage.unpublished.sourceBuildingCandidates.reason}</p>
+          <p>{locale === 'ko' ? '이 수치는 자료에 포함된 전체 건물 수와 다릅니다.' : locale === 'zh-CN' ? '已公布价格的分组数量不等于全部已记录楼盘数量。' : 'Published cohorts are not the total observed building inventory.'}</p>
         </div>
       </details>
 
@@ -1283,21 +1285,19 @@ function ReadyAreaExplorer({
         >
           <div className={styles.sectionHeading}>
             <p>{copy.buildingsEyebrow}</p>
-            <h2 id="building-table-heading">{locale === 'ko' ? '조건에 맞는 건물별 거래' : 'Matching building transactions'}</h2>
+            <h2 id="building-table-heading">{locale === 'ko' ? '조건에 맞는 건물별 거래' : locale === 'zh-CN' ? '符合条件的楼盘交易' : 'Matching building transactions'}</h2>
           </div>
           <div className={styles.tableWrap}>
             <table className={styles.table}>
-              <caption>{locale === 'ko'
-                ? '선택한 조건과 기간의 건물별 거래'
-                : 'Building transactions for the selected filters and reporting period'}</caption>
+              <caption>{locale === 'ko' ? '선택한 조건과 기간의 건물별 거래' : locale === 'zh-CN' ? '所选筛选条件及统计期间内的楼盘交易' : 'Building transactions for the selected filters and reporting period'}</caption>
               <thead>
                 <tr>
-                  <th scope="col">{locale === 'ko' ? '건물' : 'Building'}</th>
+                  <th scope="col">{locale === 'ko' ? '건물' : locale === 'zh-CN' ? '楼盘' : 'Building'}</th>
                   <th scope="col">{copy.district}</th>
                   <th scope="col">{copy.median}</th>
-                  <th scope="col">{locale === 'ko' ? '건물 유형' : 'Building type'}</th>
-                  <th scope="col">{locale === 'ko' ? '신고 건수' : 'Filings'}</th>
-                  <th scope="col">{locale === 'ko' ? '집계 기간' : 'Observed period'}</th>
+                  <th scope="col">{locale === 'ko' ? '건물 유형' : locale === 'zh-CN' ? '建筑类型' : 'Building type'}</th>
+                  <th scope="col">{locale === 'ko' ? '신고 건수' : locale === 'zh-CN' ? '申报笔数' : 'Filings'}</th>
+                  <th scope="col">{locale === 'ko' ? '집계 기간' : locale === 'zh-CN' ? '统计期间' : 'Observed period'}</th>
                   <th scope="col">{copy.evidence}</th>
                 </tr>
               </thead>
@@ -1336,13 +1336,11 @@ function ReadyAreaExplorer({
               </tbody>
             </table>
           </div>
-          <p className={styles.tableNote}>{locale === 'ko'
-            ? '자료가 없는 값은 —로 표시하며 순위에서 제외합니다.'
-            : 'Unbound values display —. Empty values are never treated as a ranking signal.'}</p>
+          <p className={styles.tableNote}>{locale === 'ko' ? '자료가 없는 값은 —로 표시하며 순위에서 제외합니다.' : locale === 'zh-CN' ? '缺失数据以—显示，不作为排名依据。' : 'Unbound values display —. Empty values are never treated as a ranking signal.'}</p>
         </section>
       ) : null}
 
-    <p className={styles.buyingGuide}><Link href="/guides/seoul-apartment-buying-budget-guide/">{locale === 'ko' ? '서울 예산별 매수 가이드 (영문)' : 'Apartment buying guide: budgets, costs and ownership checks'}</Link></p>
+    <p className={styles.buyingGuide}><Link href="/guides/seoul-apartment-buying-budget-guide/">{locale === 'ko' ? '서울 예산별 매수 가이드 (영문)' : locale === 'zh-CN' ? '公寓购买指南：预算、费用与产权核查（英文）' : 'Apartment buying guide: budgets, costs and ownership checks'}</Link></p>
       <PublicSourceBoundary
         model={model.source}
         locale={locale}
@@ -1368,9 +1366,9 @@ function groupEvidence(
 function BuildingProximityFacts({ building, locale }: Readonly<{ building: ExploreBuildingModel; locale: ProductLocale }>) {
   const proximity = building.proximity;
   if (proximity === null) return null;
-  if (proximity.coordinateStatus === 'pending_coordinate') return <small>{locale === 'ko' ? '거리 미확정' : 'Distance not confirmed'}</small>;
-  if (proximity.coordinateStatus === 'unavailable') return <small>{locale === 'ko' ? '좌표 확인 불가' : 'Coordinate unavailable'}</small>;
-  return <><small>{locale === 'ko' ? '가까운 역 · 직선거리' : 'Nearest station · straight-line distance'} · {proximity.nearestStation === null ? '—' : `${proximity.nearestStation.name} · ${proximity.nearestStation.lines.join(', ')} · ${Math.round(proximity.nearestStation.distanceMeters)} m`}</small><small>{locale === 'ko' ? '학교 인접성 · 직선거리' : 'School proximity · straight-line distance'} · {proximity.nearestSchool === null ? '—' : `${proximity.nearestSchool.name} · ${Math.round(proximity.nearestSchool.distanceMeters)} m`}</small></>;
+  if (proximity.coordinateStatus === 'pending_coordinate') return <small>{locale === 'ko' ? '거리 미확정' : locale === 'zh-CN' ? '距离待核实' : 'Distance not confirmed'}</small>;
+  if (proximity.coordinateStatus === 'unavailable') return <small>{locale === 'ko' ? '좌표 확인 불가' : locale === 'zh-CN' ? '暂无坐标' : 'Coordinate unavailable'}</small>;
+  return <><small>{locale === 'ko' ? '가까운 역 · 직선거리' : locale === 'zh-CN' ? '最近车站 · 直线距离' : 'Nearest station · straight-line distance'} · {proximity.nearestStation === null ? '—' : `${proximity.nearestStation.name} · ${proximity.nearestStation.lines.join(', ')} · ${Math.round(proximity.nearestStation.distanceMeters)} m`}</small><small>{locale === 'ko' ? '학교 인접성 · 직선거리' : locale === 'zh-CN' ? '邻近学校 · 直线距离' : 'School proximity · straight-line distance'} · {proximity.nearestSchool === null ? '—' : `${proximity.nearestSchool.name} · ${Math.round(proximity.nearestSchool.distanceMeters)} m`}</small></>;
 }
 
 function BuildingEvidencePanel({
@@ -1414,12 +1412,12 @@ function BuildingEvidencePanel({
       <span title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).location} · {localizeSampleLabel(building.sampleLabel, locale)}</span>
       <dl>
         <div><dt>{building.primaryMetric === 'monthly-rent'
-          ? (locale === 'ko' ? '월세 중앙값' : 'Monthly-rent median')
+          ? (locale === 'ko' ? '월세 중앙값' : locale === 'zh-CN' ? '月租中位数' : 'Monthly-rent median')
           : building.primaryMetric === 'sale-price'
-            ? (locale === 'ko' ? '매매가 중앙값' : 'Sale-price median')
+            ? (locale === 'ko' ? '매매가 중앙값' : locale === 'zh-CN' ? '买卖价格中位数' : 'Sale-price median')
             : copy.all}</dt><dd>{building.medianLabel}</dd></div>
         {building.primaryMetric === 'monthly-rent' ? (
-          <div><dt>{locale === 'ko' ? '신고 보증금 중앙값' : 'Filed deposit median'}</dt><dd>{building.filedDepositMedianLabel ?? copy.notPublished}</dd></div>
+          <div><dt>{locale === 'ko' ? '신고 보증금 중앙값' : locale === 'zh-CN' ? '申报押金中位数' : 'Filed deposit median'}</dt><dd>{building.filedDepositMedianLabel ?? copy.notPublished}</dd></div>
         ) : null}
         {building.transaction === 'sale' ? null : (
           <>
@@ -1447,7 +1445,7 @@ function UnavailableAreaExplorer({
       <header className={styles.unavailableHeader}>
         <p>{copy.unavailableEyebrow}</p>
         <h1 id="area-unavailable-heading">
-          {locale === 'ko' ? '검증된 구별 자료를 확인할 수 없습니다.' : model.message}
+          {locale === 'ko' ? '검증된 구별 자료를 확인할 수 없습니다.' : locale === 'zh-CN' ? '暂时无法获取已核实的行政区数据。' : model.message}
         </h1>
         <p>{copy.unavailableReason}</p>
       </header>

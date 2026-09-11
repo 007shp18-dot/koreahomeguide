@@ -152,7 +152,7 @@ export function DubaiCheckWorkspace({ locale = 'en',
   return <div className={`${styles.checkPage} ${toolSurface.surface}`} data-dubai-check-workspace="ready">
     <header data-tool-header className={styles.checkHeader}>
       <div><p className={styles.eyebrow}>{t("Dubai Check")}</p><h1>{t("Compare an asking price")}</h1></div>
-      <p>{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}<br />{locale === 'ko' ? `비교 그룹별 최소 ${model.context.publicationMinimum}건` : `Minimum ${model.context.publicationMinimum} records per cohort`}</p>
+      <p>{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}<br />{locale === 'ko' ? `비교 그룹별 최소 ${model.context.publicationMinimum}건` : locale === 'zh-CN' ? `每个比较组至少 ${model.context.publicationMinimum} 笔记录` : `Minimum ${model.context.publicationMinimum} records per cohort`}</p>
     </header>
     <div data-tool-layout className={styles.checkGrid}>
       <section data-tool-input className={styles.checkFormPanel}>

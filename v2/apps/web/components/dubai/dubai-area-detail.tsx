@@ -1,3 +1,4 @@
+import { localizedMarketCopy } from '../../lib/locale/market-localization';
 import { DubaiAreaSummary } from './dubai-area-selection';
 import { PassportLink as Link } from '../passport/passport-journey';
 
@@ -78,11 +79,11 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
     <main data-dubai-area-evidence="ready">
       <MarketDetailShell locale={locale}
       sections={[
-        { id: 'detail-overview', label: locale === 'ko' ? '지역 개요' : 'Area overview' },
-        { id: 'detail-evidence', label: locale === 'ko' ? '매매' : 'Sales' },
-        { id: 'area-rent', label: locale === 'ko' ? '임대' : 'Rent' },
-        { id: 'comparable-areas', label: locale === 'ko' ? '비교 지역' : 'Comparable areas' },
-        { id: 'detail-source', label: locale === 'ko' ? '출처' : 'Sources' },
+        { id: 'detail-overview', label: localizedMarketCopy(locale, "Area overview", "지역 개요") },
+        { id: 'detail-evidence', label: localizedMarketCopy(locale, "Sales", "매매") },
+        { id: 'area-rent', label: localizedMarketCopy(locale, "Rent", "임대") },
+        { id: 'comparable-areas', label: localizedMarketCopy(locale, "Comparable areas", "비교 지역") },
+        { id: 'detail-source', label: localizedMarketCopy(locale, "Sources", "출처") },
       ]}
       breadcrumb={<nav className={styles.breadcrumbs} aria-label={t("Breadcrumb")}>
         <Link href={marketHref(locale, "/ae/dubai/")}>{t("Dubai")}</Link><span>{t("/")}</span>
@@ -92,7 +93,7 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
       summary={<DubaiAreaSummary locale={locale} model={model} />}
       evidence={<>
         {model.segments.map((segment) => <SegmentSales locale={locale} key={segment.housing} segment={segment} />)}
-        <div id="area-rent" className={detailStyles.section}><h2>{locale === 'ko' ? '지역 임대료' : 'Area rental evidence'}</h2><p>{t("Rent source period")}: {model.context.sourcePeriods.rents.from}–{model.context.sourcePeriods.rents.to}</p>
+        <div id="area-rent" className={detailStyles.section}><h2>{localizedMarketCopy(locale, "Area rental evidence", "지역 임대료")}</h2><p>{t("Rent source period")}: {model.context.sourcePeriods.rents.from}–{model.context.sourcePeriods.rents.to}</p>
         {model.segments.map((segment) => <SegmentRent locale={locale} key={segment.housing} segment={segment} />)}</div>
           <section id="comparable-areas" className={detailStyles.section}>
             <h2>{t("Comparable areas")}</h2>
@@ -106,7 +107,7 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
           </section>
       </>}
       rail={<details className={detailStyles.disclosure}>
-            <summary>{locale === 'ko' ? '출처·기간·집계 기준' : 'Sources, periods and methodology'}</summary>
+            <summary>{localizedMarketCopy(locale, "Sources, periods and methodology", "출처·기간·집계 기준")}</summary>
             <dl>
               <div><dt>{t("Comparison window")}</dt><dd>{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}</dd></div>
               <div><dt>{t("Transaction source period")}</dt><dd>{t(model.context.sourcePeriods.transactions.from)}{t("–")}{t(model.context.sourcePeriods.transactions.to)}</dd></div>

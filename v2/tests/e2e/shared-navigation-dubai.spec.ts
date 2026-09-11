@@ -21,12 +21,12 @@ test('uses one navigation order and published language links across markets', as
       await expect(productLinks.nth(index)).toHaveAttribute('href', href);
     }
     const translations = {
-      '/prices/': [['EN', '/prices/'], ['KO', '/ko/prices/']],
+      '/prices/': [['EN', '/prices/'], ['KO', '/ko/prices/'], ['中文', '/zh-cn/prices/']],
       '/news/': [['EN', '/news/'], ['KO', '/ko/news/'], ['中文', '/zh-cn/news/']],
       '/guides/': [['EN', '/guides/'], ['KO', '/ko/guides/'], ['中文', '/zh-cn/guides/']],
-      '/kr/seoul/explore/': [['EN', '/kr/seoul/explore/'], ['KO', '/ko/kr/seoul/explore/']],
-      '/sg/singapore/explore/': [['EN', '/sg/singapore/explore/'], ['KO', '/ko/sg/singapore/explore/']],
-      '/ae/dubai/explore/': [['EN', '/ae/dubai/explore/'], ['KO', '/ko/ae/dubai/explore/']],
+      '/kr/seoul/explore/': [['EN', '/kr/seoul/explore/'], ['KO', '/ko/kr/seoul/explore/'], ['中文', '/zh-cn/kr/seoul/explore/']],
+      '/sg/singapore/explore/': [['EN', '/sg/singapore/explore/'], ['KO', '/ko/sg/singapore/explore/'], ['中文', '/zh-cn/sg/singapore/explore/']],
+      '/ae/dubai/explore/': [['EN', '/ae/dubai/explore/'], ['KO', '/ko/ae/dubai/explore/'], ['中文', '/zh-cn/ae/dubai/explore/']],
     } as const;
     const expectedLanguages = translations[path as keyof typeof translations];
     const languageLinks = (await visibleLanguageNavigation(page)).getByRole('link');

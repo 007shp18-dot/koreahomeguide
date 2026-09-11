@@ -34,7 +34,7 @@ export type MarketRepresentativePhotoProps = Readonly<{
   eager?: boolean;
   cityLabel?: string;
   context?: 'property' | 'city';
-  locale?: 'en' | 'ko';
+  locale?: 'en' | 'ko' | 'zh-CN';
 }>;
 
 export function MarketRepresentativePhoto(props: MarketRepresentativePhotoProps) {

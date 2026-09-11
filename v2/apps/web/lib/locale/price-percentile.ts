@@ -1,4 +1,5 @@
-export function formatPricePercentile(value: number, locale: 'en' | 'ko'): string {
+export function formatPricePercentile(value: number, locale: 'en' | 'ko' | 'zh-CN'): string {
+  if (locale === 'zh-CN') return `第 ${value} 百分位`;
   if (locale === 'ko') return `${value}백분위`;
   if (!Number.isInteger(value)) return `Percentile ${value}`;
   const lastTwo = value % 100;

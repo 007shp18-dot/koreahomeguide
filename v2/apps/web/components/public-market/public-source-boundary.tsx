@@ -22,25 +22,25 @@ export function PublicSourceBoundary({
 }>) {
   const copy = PUBLIC_MARKET_COPY[locale].source;
   const registryValue = transaction === 'sale'
-    ? (locale === 'ko' ? '국토교통부 신고 매매 계약' : 'MOLIT reported sale contracts')
+    ? (locale === 'ko' ? '국토교통부 신고 매매 계약' : locale === 'zh-CN' ? '韩国国土交通部申报买卖合同' : 'MOLIT reported sale contracts')
     : copy.registryValue;
   const fixedFilterValue = transaction === 'sale'
     ? (locale === 'ko'
         ? '신고 매매 계약이며 취소 건은 제외합니다.'
-        : 'Reported sale contracts. Canceled records are excluded.')
+        : locale === 'zh-CN' ? '申报买卖合同，不含已取消记录。' : 'Reported sale contracts. Canceled records are excluded.')
     : transaction === 'monthly'
       ? (locale === 'ko'
           ? '신고 월세 계약이며 보증금은 별도로 표시합니다. 취소 건은 제외합니다.'
-          : 'Reported monthly-rent contracts; filed deposit is shown separately. Canceled records are excluded.')
+          : locale === 'zh-CN' ? '申报月租合同，押金单独展示，不含已取消记录。' : 'Reported monthly-rent contracts; filed deposit is shown separately. Canceled records are excluded.')
       : transaction === 'jeonse'
         ? (locale === 'ko'
             ? '월세 0원의 신고 전세 계약이며 취소 건은 제외합니다.'
-            : 'Reported zero-monthly-rent jeonse contracts. Canceled records are excluded.')
+            : locale === 'zh-CN' ? '月租为零的申报全租合同，不含已取消记录。' : 'Reported zero-monthly-rent jeonse contracts. Canceled records are excluded.')
         : copy.fixedFilterValue;
   const combinedBoundary = transaction === 'sale'
     ? (locale === 'ko'
         ? '매매 계약에는 신규·갱신 임대차 구분을 적용하지 않습니다.'
-        : 'Rental new/renewal contract groups do not apply to reported sales.')
+        : locale === 'zh-CN' ? '新签与续约租赁分组不适用于申报买卖。' : 'Rental new/renewal contract groups do not apply to reported sales.')
     : copy.combinedBoundary;
   const content = <>
       <div className={styles.publicSourceHeading}>
@@ -65,7 +65,7 @@ export function PublicSourceBoundary({
         />
       )}
       <details className={styles.publicSourceDetails}>
-        <summary>{locale === 'ko' ? '필터·공개 기준 보기' : 'Filters and publication rules'}</summary>
+        <summary>{locale === 'ko' ? '필터·공개 기준 보기' : locale === 'zh-CN' ? '筛选与公开标准' : 'Filters and publication rules'}</summary>
         <dl>
         <div>
           <dt>{copy.registry}</dt>
@@ -113,7 +113,7 @@ export function PublicSourceBoundary({
     >
       {compact ? (
         <details className={styles.publicSourceCompactDisclosure}>
-          <summary>{locale === 'ko' ? '출처 및 공개 기준' : 'Sources & limits'}<UiIcon name="chevron-down" /></summary>
+          <summary>{locale === 'ko' ? '출처 및 공개 기준' : locale === 'zh-CN' ? '来源与范围' : 'Sources & limits'}<UiIcon name="chevron-down" /></summary>
           <div>{content}</div>
         </details>
       ) : content}

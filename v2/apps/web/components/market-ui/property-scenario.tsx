@@ -1,4 +1,5 @@
 'use client';
+
 import {bases} from '../../lib/evidence-pool/contract';
 import type {ScenarioCostOption} from '../../lib/evidence-pool/costs';
 import toolSurface from '../tools/tool-surface.module.css';
@@ -53,7 +54,7 @@ export function PropertyScenarioCalculator({ price, currency, annualRent, locale
       completed.current = true; sendToolEvent('tool_complete', {...analytics, tool:'property-scenario'});
     }
   }, [scenario, analytics]);
-  const money = (value: number) => new Intl.NumberFormat(ko ? 'ko-KR' : 'en', { style: 'currency', currency, currencyDisplay: 'code', maximumFractionDigits: 0 }).format(value);
+  const money = (value: number) => new Intl.NumberFormat(locale === 'ko' ? 'ko-KR' : locale === 'zh-CN' ? 'zh-CN' : 'en', { style: 'currency', currency, currencyDisplay: 'code', maximumFractionDigits: 0 }).format(value);
   const fields: readonly [keyof PropertyScenario, string][] = [
     ['price', ko ? '매입 가격' : (zh ? "购房价格" : 'Purchase price')], ['acquisitionCosts', ko ? '취득세·중개·법무 등 취득 비용 합계' : (zh ? "购置成本（含税费）" : 'Acquisition costs, including taxes and fees')],
     ['monthlyRent', ko ? '예상 월 임대료' : (zh ? "预计月租金" : 'Expected monthly rent')], ['annualCosts', ko ? '연간 관리·보수·세금 등 운영 비용' : (zh ? "年度运营成本（含税）" : 'Annual operating costs, including taxes')],

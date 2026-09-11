@@ -1,3 +1,4 @@
+import { localizedMarketCopy } from '../../lib/locale/market-localization';
 
 import { sgText } from '../../lib/locale/singapore-copy';
 import { marketHref, type MarketLocale } from '../../lib/locale/market-localization';
@@ -88,7 +89,7 @@ export function HdbMarketPanel({ locale = 'en', model }: Readonly<{ locale?: Mar
           />
         </div>
       </div>
-      <details id="hdb-towns" className={styles.evidenceDisclosure}><summary>{locale === 'ko' ? '모든 HDB 타운 비교 · 전체 수록 기간' : 'Compare all HDB towns · full reported period'}</summary><div className={styles.tableWrap}>
+      <details id="hdb-towns" className={styles.evidenceDisclosure}><summary>{localizedMarketCopy(locale, "Compare all HDB towns · full reported period", "모든 HDB 타운 비교 · 전체 수록 기간")}</summary><div className={styles.tableWrap}>
         <table className={`${styles.table} ${styles.hdbTable}`}>
           <caption className={styles.srOnly}>{sgText(locale, "HDB resale and rental evidence by town")}</caption>
           <thead><tr>
@@ -103,7 +104,7 @@ export function HdbMarketPanel({ locale = 'en', model }: Readonly<{ locale?: Mar
         </table>
       </div></details>
       <details className={styles.evidenceDisclosure}>
-        <summary>{locale === 'ko' ? '데이터·출처' : 'Data & sources'}</summary>
+        <summary>{localizedMarketCopy(locale, "Data & sources", "데이터·출처")}</summary>
         <div className={styles.disclosureBody}>
           <ul className={styles.limitations}>
             <li>{sgText(locale, "HDB resale prices are indicative historical transactions, not a valuation.")}</li>

@@ -45,6 +45,9 @@ const koreanPublishedHubUrls = [
   '/ko/sg/singapore/explore/', '/ko/sg/singapore/explore/ccr/',
   '/ko/sg/singapore/explore/rcr/', '/ko/sg/singapore/explore/ocr/',
   '/ko/ae/dubai/explore/', '/ko/ae/dubai/guide/',
+  '/zh-cn/sg/', '/zh-cn/ae/dubai/', '/zh-cn/sg/singapore/explore/',
+  '/zh-cn/sg/singapore/explore/ccr/', '/zh-cn/sg/singapore/explore/rcr/', '/zh-cn/sg/singapore/explore/ocr/',
+  '/zh-cn/ae/dubai/explore/', '/zh-cn/ae/dubai/guide/',
 ].map(path => `https://www.signedprice.com${path}`);
 
 const rankingCanonicalUrls = [
@@ -52,6 +55,7 @@ const rankingCanonicalUrls = [
   '/ko/rankings/',
   '/sg/singapore/rankings/',
   '/ko/sg/singapore/rankings/',
+  '/zh-cn/sg/singapore/rankings/',
 ].map(path => `https://www.signedprice.com${path}`);
 const tokyoCanonicalUrls = ['', '/ko', '/zh-cn'].flatMap(locale => ['/jp/tokyo/', '/jp/tokyo/explore/'].map(path => `https://www.signedprice.com${locale}${path}`));
 
@@ -61,10 +65,11 @@ function releasedDubaiEvidenceUrls(): string[] {
   const areaUrls = repository.listAreaRouteParams().flatMap(({ area }) => [
     `https://www.signedprice.com/ae/dubai/explore/${area}/`,
     `https://www.signedprice.com/ko/ae/dubai/explore/${area}/`,
+    `https://www.signedprice.com/zh-cn/ae/dubai/explore/${area}/`,
   ]);
   return areaUrls.length === 0
     ? areaUrls
-    : ['https://www.signedprice.com/ae/dubai/check/', 'https://www.signedprice.com/ko/ae/dubai/check/', ...areaUrls];
+    : ['https://www.signedprice.com/ae/dubai/check/', 'https://www.signedprice.com/ko/ae/dubai/check/', 'https://www.signedprice.com/zh-cn/ae/dubai/check/', ...areaUrls];
 }
 
 function artifact(published: boolean) {
@@ -370,6 +375,8 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/ko/kr/seoul/',
       'https://www.signedprice.com/ko/kr/seoul/check/',
       'https://www.signedprice.com/ko/kr/seoul/check/compare/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/check/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/check/compare/',
     ].sort());
   });
 
@@ -424,6 +431,7 @@ describe('public migration containment', () => {
     expect(urls).not.toContain('https://www.signedprice.com/kr/seoul/explore/mapo-gu/');
     expect(urls).not.toContain('https://www.signedprice.com/kr/seoul/gangnam-gu/');
     expect(urls).toContain('https://www.signedprice.com/ko/kr/seoul/explore/');
+    expect(urls).toContain('https://www.signedprice.com/zh-cn/kr/seoul/explore/');
     expect(urls).toContain('https://www.signedprice.com/ko/kr/seoul/rankings/');
   });
 
@@ -439,6 +447,7 @@ describe('public migration containment', () => {
     const localizedExplore = {
       en: 'https://www.signedprice.com/kr/seoul/explore/',
       ko: 'https://www.signedprice.com/ko/kr/seoul/explore/',
+      'zh-Hans': 'https://www.signedprice.com/zh-cn/kr/seoul/explore/',
       'x-default': 'https://www.signedprice.com/kr/seoul/explore/',
     };
 
@@ -530,6 +539,8 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/ko/kr/seoul/',
       'https://www.signedprice.com/ko/kr/seoul/check/',
       'https://www.signedprice.com/ko/kr/seoul/check/compare/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/check/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/check/compare/',
     ].sort());
 
     vi.unstubAllEnvs();
@@ -583,6 +594,8 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/ko/kr/seoul/',
       'https://www.signedprice.com/ko/kr/seoul/check/',
       'https://www.signedprice.com/ko/kr/seoul/check/compare/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/check/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/check/compare/',
     ].sort());
   });
 });

@@ -321,12 +321,12 @@ describe('Singapore route containment', () => {
     expect(entryMetadata.robots).toEqual({ index: true, follow: true });
     expect(entryMetadata.alternates).toEqual({
       canonical: 'https://www.signedprice.com/sg/',
-      languages: { en: 'https://www.signedprice.com/sg/', ko: 'https://www.signedprice.com/ko/sg/', 'x-default': 'https://www.signedprice.com/sg/' },
+      languages: { en: 'https://www.signedprice.com/sg/', ko: 'https://www.signedprice.com/ko/sg/', 'zh-Hans': 'https://www.signedprice.com/zh-cn/sg/', 'x-default': 'https://www.signedprice.com/sg/' },
     });
     expect(exploreMetadata.robots).toEqual({ index: true, follow: true });
     expect(exploreMetadata.alternates).toEqual({
       canonical: 'https://www.signedprice.com/sg/singapore/explore/',
-      languages: { en: 'https://www.signedprice.com/sg/singapore/explore/', ko: 'https://www.signedprice.com/ko/sg/singapore/explore/', 'x-default': 'https://www.signedprice.com/sg/singapore/explore/' },
+      languages: { en: 'https://www.signedprice.com/sg/singapore/explore/', ko: 'https://www.signedprice.com/ko/sg/singapore/explore/', 'zh-Hans': 'https://www.signedprice.com/zh-cn/sg/singapore/explore/', 'x-default': 'https://www.signedprice.com/sg/singapore/explore/' },
     });
   });
 
@@ -356,12 +356,12 @@ describe('Singapore route containment', () => {
     expect(segmentMetadata.robots).toEqual({ index: true, follow: true });
     expect(segmentMetadata.alternates).toEqual({
       canonical: 'https://www.signedprice.com/sg/singapore/explore/ccr/',
-      languages: { en: 'https://www.signedprice.com/sg/singapore/explore/ccr/', ko: 'https://www.signedprice.com/ko/sg/singapore/explore/ccr/', 'x-default': 'https://www.signedprice.com/sg/singapore/explore/ccr/' },
+      languages: { en: 'https://www.signedprice.com/sg/singapore/explore/ccr/', ko: 'https://www.signedprice.com/ko/sg/singapore/explore/ccr/', 'zh-Hans': 'https://www.signedprice.com/zh-cn/sg/singapore/explore/ccr/', 'x-default': 'https://www.signedprice.com/sg/singapore/explore/ccr/' },
     });
     expect(projectMetadata.robots).toEqual({ index: true, follow: true });
     expect(projectMetadata.alternates).toEqual({
       canonical: `https://www.signedprice.com/sg/singapore/explore/ccr/${project.id}/`,
-      languages: { en: `https://www.signedprice.com/sg/singapore/explore/ccr/${project.id}/`, ko: `https://www.signedprice.com/ko/sg/singapore/explore/ccr/${project.id}/`, 'x-default': `https://www.signedprice.com/sg/singapore/explore/ccr/${project.id}/` },
+      languages: { en: `https://www.signedprice.com/sg/singapore/explore/ccr/${project.id}/`, ko: `https://www.signedprice.com/ko/sg/singapore/explore/ccr/${project.id}/`, 'zh-Hans': `https://www.signedprice.com/zh-cn/sg/singapore/explore/ccr/${project.id}/`, 'x-default': `https://www.signedprice.com/sg/singapore/explore/ccr/${project.id}/` },
     });
     expect(missingMetadata.robots).toEqual({ index: false, follow: true });
 
@@ -388,7 +388,7 @@ describe('Singapore route containment', () => {
     expect(checkMetadata.robots).toEqual({ index: true, follow: true });
     expect(checkMetadata.alternates).toEqual({
       canonical: 'https://www.signedprice.com/sg/singapore/check/',
-      languages: { en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/', 'x-default': 'https://www.signedprice.com/sg/singapore/check/' },
+      languages: { en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/', 'zh-Hans': 'https://www.signedprice.com/zh-cn/sg/singapore/check/', 'x-default': 'https://www.signedprice.com/sg/singapore/check/' },
     });
   });
 });

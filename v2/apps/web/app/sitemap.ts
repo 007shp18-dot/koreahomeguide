@@ -55,19 +55,20 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   Object.freeze({ en: '/news/', ko: '/ko/news/', 'zh-Hans': '/zh-cn/news/' }),
   Object.freeze({ en: '/guides/', ko: '/ko/guides/', 'zh-Hans': '/zh-cn/guides/' }),
   Object.freeze({ en: '/kr/seoul/', ko: '/ko/kr/seoul/' }),
-  Object.freeze({ en: '/kr/seoul/check/', ko: '/ko/kr/seoul/check/' }),
+  Object.freeze({ en: '/kr/seoul/check/', ko: '/ko/kr/seoul/check/', 'zh-Hans': '/zh-cn/kr/seoul/check/' }),
   Object.freeze({
     en: '/kr/seoul/check/compare/',
     ko: '/ko/kr/seoul/check/compare/',
+    'zh-Hans': '/zh-cn/kr/seoul/check/compare/',
   }),
-  Object.freeze({ en: '/kr/seoul/explore/', ko: '/ko/kr/seoul/explore/' }),
+  Object.freeze({ en: '/kr/seoul/explore/', ko: '/ko/kr/seoul/explore/', 'zh-Hans': '/zh-cn/kr/seoul/explore/' }),
   Object.freeze({ en: '/kr/seoul/rankings/', ko: '/ko/kr/seoul/rankings/' }),
-  Object.freeze({ en: '/sg/singapore/rankings/', ko: '/ko/sg/singapore/rankings/' }),
+  Object.freeze({ en: '/sg/singapore/rankings/', ko: '/ko/sg/singapore/rankings/', 'zh-Hans': '/zh-cn/sg/singapore/rankings/' }),
   Object.freeze({ en: '/kr/seoul/shortlist/', ko: '/ko/kr/seoul/shortlist/' }),
-  Object.freeze({ en: '/sg/', ko: '/ko/sg/' }),
-  Object.freeze({ en: '/ae/dubai/', ko: '/ko/ae/dubai/' }),
+  Object.freeze({ en: '/sg/', ko: '/ko/sg/', 'zh-Hans': '/zh-cn/sg/' }),
+  Object.freeze({ en: '/ae/dubai/', ko: '/ko/ae/dubai/', 'zh-Hans': '/zh-cn/ae/dubai/' }),
   Object.freeze({ en: '/contact/', ko: '/ko/contact/' }),
-  ...['/sg/singapore/explore/', '/sg/singapore/explore/ccr/', '/sg/singapore/explore/rcr/', '/sg/singapore/explore/ocr/', '/ae/dubai/explore/', '/ae/dubai/check/', '/ae/dubai/guide/'].map(en => ({ en: en as `/${string}`, ko: `/ko${en}` as `/${string}` })),
+  ...['/sg/singapore/explore/', '/sg/singapore/explore/ccr/', '/sg/singapore/explore/rcr/', '/sg/singapore/explore/ocr/', '/ae/dubai/explore/', '/ae/dubai/check/', '/ae/dubai/guide/'].map(en => ({ en: en as `/${string}`, ko: `/ko${en}` as `/${string}`, 'zh-Hans': `/zh-cn${en}` as `/${string}` })),
   ...CITY_STORIES.map(story => ({ en: cityStoryHref(story.city) as `/${string}`, ko: cityStoryHref(story.city, 'ko') as `/${string}` })),
   ...JOURNEY_ARTICLE_ROUTES.map(({ city, id }) => ({ en: journeyArticleHref(city, id), ko: journeyArticleHref(city, id, 'ko') })),
   ...editorialLocalizedPairs,
@@ -176,6 +177,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/ko/passport/'),
     sitemapEntry('/ko/'),
     sitemapEntry('/ko/sg/'),
+    sitemapEntry('/zh-cn/sg/'),
+    sitemapEntry('/zh-cn/ae/dubai/'),
+    sitemapEntry('/zh-cn/sg/singapore/rankings/'),
+    ...['/sg/singapore/explore/', '/sg/singapore/explore/ccr/', '/sg/singapore/explore/rcr/', '/sg/singapore/explore/ocr/', '/ae/dubai/explore/', '/ae/dubai/guide/'].map(path => sitemapEntry(`/zh-cn${path}`)),
     sitemapEntry('/ko/ae/dubai/'),
     sitemapEntry('/ko/contact/'),
     sitemapEntry('/ko/guides/', guideLastModified),
@@ -247,6 +252,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       path as `/${string}`,
       modifiedByPath.get(path),
     ));
+    if (path === '/kr/seoul/explore/' || path === '/kr/seoul/check/' || path === '/kr/seoul/check/compare/') entries.push(sitemapEntry(`/zh-cn${path}`, modifiedByPath.get(path)));
   }
   if (newsReady) {
     entries.push(...newsRecords.map((record) => ({
@@ -278,11 +284,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   if (dubaiEvidence !== null) {
     const dubaiAreaParams = dubaiEvidence.listAreaRouteParams();
     entries.push(...dubaiAreaParams.flatMap(({ area: slug }) => {
-      const pair = { en: `/ae/dubai/explore/${slug}/`, ko: `/ko/ae/dubai/explore/${slug}/` } as const;
-      return [sitemapEntry(pair.en, dubaiLastModified, pair), sitemapEntry(pair.ko, dubaiLastModified, pair)];
+      const pair = { en: `/ae/dubai/explore/${slug}/`, ko: `/ko/ae/dubai/explore/${slug}/`, 'zh-Hans': `/zh-cn/ae/dubai/explore/${slug}/` } as const;
+      return [sitemapEntry(pair.en, dubaiLastModified, pair), sitemapEntry(pair.ko, dubaiLastModified, pair), sitemapEntry(pair['zh-Hans'], dubaiLastModified, pair)];
     }));
     if (dubaiAreaParams.length > 0) {
-      entries.push(sitemapEntry('/ae/dubai/check/', dubaiLastModified), sitemapEntry('/ko/ae/dubai/check/', dubaiLastModified));
+      entries.push(sitemapEntry('/ae/dubai/check/', dubaiLastModified), sitemapEntry('/ko/ae/dubai/check/', dubaiLastModified), sitemapEntry('/zh-cn/ae/dubai/check/', dubaiLastModified));
     }
   }
   const buildingEvidence = koreaEvidenceRepositoriesFromEnvironment();
@@ -300,10 +306,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         const pair = Object.freeze({
           en: `/kr/seoul/explore/${district}/${buildingId}/`,
           ko: `/ko/kr/seoul/explore/${district}/${buildingId}/`,
+          'zh-Hans': `/zh-cn/kr/seoul/explore/${district}/${buildingId}/`,
         }) satisfies LocalizedPair;
         return [
           sitemapEntry(pair.en, buildingLastModified, pair),
           sitemapEntry(pair.ko, buildingLastModified, pair),
+          sitemapEntry(pair['zh-Hans'], buildingLastModified, pair),
         ];
       }));
     entries.push(...listIndexableKoreaNeighborhoodRouteParams(buildingRecords)

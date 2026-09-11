@@ -18,7 +18,7 @@ import type {
   ContractCheckReadyRouteModel,
   ContractCheckRouteModel,
 } from '../../lib/contract-check/route-model.server';
-import type { ProductLocale } from '../../lib/locale/product-copy';
+import { localizeContractText, type ProductLocale } from '../../lib/locale/product-copy';
 import type { EntityCheckContext } from '../../lib/navigation/explorer-selection';
 import type { SiteHeaderModel } from '../../lib/site-copy';
 import { SiteHeader } from '../site-header';
@@ -69,6 +69,23 @@ export const CHECK_COPY = Object.freeze({
     explore: '실거래가에서 단지 찾기',
     guide: '계약 가이드 읽기',
   }),
+  'zh-CN': Object.freeze({
+    nav: '价格比较', mode: '比较模式', single: '比较报价', compare: '比较两组报价',
+    conditions: '房屋信息', district: '行政区', housing: '住宅类型', area: '专用面积',
+    building: '楼宇', buildingHint: '选填。可在探索页面选择楼宇。',
+    offer: '报价', transaction: '交易类型', sale: '买卖', jeonse: '全租', monthly: '月租',
+    price: '出售报价', deposit: '保证金报价', rent: '月租报价', submitCompare: '比较报价',
+    result: '结果', blank: '输入两组报价，与条件相近的申报成交数据比较。',
+    unavailable: '无法提供此比较', tradeoff: '各有取舍，无法判定哪组更优',
+    lower: '经成交数据调整后的价格位置更低。', equal: '按公开数据精度，两组报价相同。',
+    equivalent: '经验证的月度等值成本更低。', keyFigures: '关键数值',
+    upfront: '前期现金', recurring: '持续现金支出', marketPosition: '与类似成交比较',
+    notModeled: '未纳入计算', notApplicable: '不适用', percentile: '价格百分位', evidence: '市场成交依据', disclosure: '方法与来源',
+    sample: '份申报合同', median: '申报中位数', middle: '中间 50%', period: '申报期间',
+    window: '申报期间', salePeriod: '买卖申报期间', rentPeriod: '租赁申报期间', conversionPeriod: '折算率期间',
+    reference: '仅供市场参考，未假设贷款利率、税费、持有期限、涨幅或未来价值。',
+    explore: '在探索中查找楼宇', guide: '阅读合同指南',
+  }),
 } as const);
 
 type CheckCopy = typeof CHECK_COPY[ProductLocale];
@@ -77,22 +94,22 @@ export function completedMonthWindowLabel(
   window: CompletedMonthWindow,
   locale: ProductLocale = 'en',
 ): string {
-  const count = locale === 'ko'
+  const count = locale === 'zh-CN' ? `已完成 ${window.completedMonthCount} 个月` : locale === 'ko'
     ? `${window.completedMonthCount}개월 집계`
     : `${window.completedMonthCount} completed months`;
   return `${count} · ${window.startMonth}–${window.endMonth}`;
 }
 
 export function localizedCheckHref(locale: ProductLocale, suffix = ''): string {
-  return `${locale === 'ko' ? '/ko' : ''}/kr/seoul/check${suffix}`;
+  return `${locale === 'zh-CN' ? '/zh-cn' : locale === 'ko' ? '/ko' : ''}/kr/seoul/check${suffix}`;
 }
 
 export function checkHeader(locale: ProductLocale): SiteHeaderModel {
   return {
     brand: 'signedprice',
-    homeLabel: locale === 'ko' ? 'signedprice 홈' : 'SignedPrice home',
-    navigationLabel: locale === 'ko' ? '서울 서비스 메뉴' : 'Seoul product navigation',
-    marketLabel: 'Seoul', languageLabel: locale === 'ko' ? 'KO' : 'EN',
+    homeLabel: locale === 'ko' ? 'signedprice 홈' : locale === 'zh-CN' ? "SignedPrice 首页" : 'SignedPrice home',
+    navigationLabel: locale === 'ko' ? '서울 서비스 메뉴' : locale === 'zh-CN' ? "首尔服务导航" : 'Seoul product navigation',
+    marketLabel: 'Seoul', languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN',
     links: [{ label: CHECK_COPY[locale].nav, href: localizedCheckHref(locale, '/'), isCurrent: true }],
     languageSwitch: locale === 'ko'
       ? { label: 'EN', href: '/kr/seoul/check/', hrefLang: 'en' }
@@ -208,11 +225,11 @@ export function EvidencePositionCard({
           <div key={label}><dt>{label}</dt><dd>{won.format(value)}</dd></div>
         ))}
       </dl>
-      <p className={styles.marketVerdict}>{c.marketPosition}: {locale === 'ko' ? {below:'중간 50%보다 낮음',typical:'중간 50% 안',above:'중간 50%보다 높음'}[check.verdict] : check.verdict}</p>
-      <p>{locale === 'ko' ? (check.difference.pct === 0 ? '중앙값과 같음' : `중앙값보다 ${Math.abs(check.difference.pct)}% ${check.difference.pct < 0 ? '낮음' : '높음'}`) : check.difference.pct === 0 ? 'At median' : `${Math.abs(check.difference.pct)}% ${check.difference.pct < 0 ? 'below' : 'above'} median`}</p>
+      <p className={styles.marketVerdict}>{c.marketPosition}: {locale === 'ko' ? {below:'중간 50%보다 낮음',typical:'중간 50% 안',above:'중간 50%보다 높음'}[check.verdict] : locale === 'zh-CN' ? {below:'低于中间 50% 区间',typical:'处于中间 50% 区间',above:'高于中间 50% 区间'}[check.verdict] : check.verdict}</p>
+      <p>{locale === 'ko' ? (check.difference.pct === 0 ? '중앙값과 같음' : `중앙값보다 ${Math.abs(check.difference.pct)}% ${check.difference.pct < 0 ? '낮음' : '높음'}`) : locale === 'zh-CN' ? (check.difference.pct === 0 ? '与中位数相同' : `比中位数${check.difference.pct < 0 ? '低' : '高'} ${Math.abs(check.difference.pct)}%`) : check.difference.pct === 0 ? 'At median' : `${Math.abs(check.difference.pct)}% ${check.difference.pct < 0 ? 'below' : 'above'} median`}</p>
       <p>{c.percentile}: {check.pricePercentile}</p>
       <DistributionBar check={check} />
-      <p className={styles.fallback}>{check.fallbackDisclosure}</p>
+      <p className={styles.fallback}>{check.fallbackDisclosure === null ? null : localizeContractText(check.fallbackDisclosure, locale)}</p>
     </article>
   );
 }
@@ -313,7 +330,7 @@ function ResultPanel({ model, locale }: Readonly<{
         <div className={styles.resultEmpty} data-result-state="blank"><p>{c.blank}</p></div>
       ) : comparison.status === 'unavailable' ? (
         <div className={styles.resultEmpty} data-result-state="unavailable">
-          <h3>{c.unavailable}</h3><p>{comparison.message}</p>
+          <h3>{c.unavailable}</h3><p>{localizeContractText(comparison.message, locale)}</p>
         </div>
       ) : (
         <div className={styles.resultBody} data-comparison-basis={comparison.basis}>
@@ -358,8 +375,8 @@ function ResultPanel({ model, locale }: Readonly<{
                 <div><dt>{c.window}</dt><dd>{completedMonthWindowLabel(check.evidenceWindow, locale)}</dd></div>
               </dl>
             ) : <p key={id}>{c.offer} {id.toUpperCase()}: {check.status === 'unavailable'
-              ? check.message
-              : locale === 'ko' ? `비교 거래 ${check.sample.count}건 · 최소 5건 필요` : `Only ${check.sample.count} compatible contracts; five are required.`}</p>;
+              ? localizeContractText(check.message, locale)
+              : locale === 'ko' ? `비교 거래 ${check.sample.count}건 · 최소 5건 필요` : locale === 'zh-CN' ? `仅有 ${check.sample.count} 份符合条件的合同，至少需要五份。` : `Only ${check.sample.count} compatible contracts; five are required.`}</p>;
           })}</div>
         )}
       </section>
@@ -393,9 +410,9 @@ function ReadyWorkspace({ model, locale, entityContext }: Readonly<{
     <>
       <main className={`${styles.main} ${toolSurface.surface}`}>
         <section data-tool-header className={styles.hero}>
-          <p>{locale === 'ko' ? '서울 · 실거래가 비교' : 'Seoul · Reported transactions'}</p>
+          <p>{locale === 'ko' ? '서울 · 실거래가 비교' : locale === 'zh-CN' ? "首尔 · 申报成交" : 'Seoul · Reported transactions'}</p>
           <h1>{c.compare}</h1>
-          <p>{locale === 'ko' ? '매매·전세·월세 조건을 각각 비슷한 거래와 비교하세요.' : 'Compare sale, jeonse or monthly-rent offers with similar transactions.'}</p>
+          <p>{locale === 'ko' ? '매매·전세·월세 조건을 각각 비슷한 거래와 비교하세요.' : locale === 'zh-CN' ? "将买卖、全租或月租报价与类似成交比较。" : 'Compare sale, jeonse or monthly-rent offers with similar transactions.'}</p>
         </section>
         <nav aria-label={c.mode} className={styles.modeSelector} data-check-mode-selector="true">
           <Link data-check-mode="single" href={localizedCheckHref(locale, '/')}>{c.single}</Link>
@@ -415,8 +432,8 @@ function ReadyWorkspace({ model, locale, entityContext }: Readonly<{
                 {model.districts.map((district) => <option key={district.slug} value={district.slug}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}
               </select></label>
               <label className={styles.field}><span>{c.housing}</span><select value={housing} onChange={event => setHousing(event.target.value as typeof housing)} name="housing">
-                <option value="apartment">{locale === 'ko' ? '아파트' : 'Apartment'}</option><option value="officetel">{locale === 'ko' ? '오피스텔' : 'Officetel'}</option>
-                <option value="villa_multifamily">{locale === 'ko' ? '연립·다세대' : 'Villa / multifamily'}</option><option value="detached">{locale === 'ko' ? '단독·다가구' : 'Detached'}</option>
+                <option value="apartment">{locale === 'ko' ? '아파트' : locale === 'zh-CN' ? "公寓" : 'Apartment'}</option><option value="officetel">{locale === 'ko' ? '오피스텔' : locale === 'zh-CN' ? "商住公寓（Officetel）" : 'Officetel'}</option>
+                <option value="villa_multifamily">{locale === 'ko' ? '연립·다세대' : locale === 'zh-CN' ? "多户住宅" : 'Villa / multifamily'}</option><option value="detached">{locale === 'ko' ? '단독·다가구' : locale === 'zh-CN' ? "独栋住宅" : 'Detached'}</option>
               </select></label>
               <label className={styles.field}><span>{c.area} <small>㎡</small></span><input defaultValue={model.selection.areaSqm ?? ''} inputMode="decimal" name="area" /></label>
               <BuildingSelection key={`${district}-${housing}`} id={district === model.selection.districtSlug && housing === model.selection.housingType ? model.selection.buildingId : null} name={model.buildingName} locale={locale} />
@@ -432,7 +449,7 @@ function ReadyWorkspace({ model, locale, entityContext }: Readonly<{
         <nav className={styles.contextLinks} aria-label={c.evidence}>
           {entityContext === null ? null : <Link href={entityContext.returnTo}>Return to selected building</Link>}
           <Link href={localizedCheckHref(locale, '/')}>{c.single}</Link>
-          <Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/`}>{c.explore}</Link>
+          <Link href={`${locale === 'zh-CN' ? '/zh-cn' : locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/`}>{c.explore}</Link>
         </nav>
       </main>
       <footer className={styles.footer}><p>{c.reference}</p></footer>
@@ -451,8 +468,8 @@ export function ContractCheckWorkspace({ model, locale = 'en', entityContext = n
       <SiteHeader copy={checkHeader(locale)} />
       {model.status === 'ready' ? <ReadyWorkspace model={model} locale={locale} entityContext={entityContext} /> : (
         <main className={styles.unavailable} data-evidence-state="unavailable">
-          <p>{locale === 'ko' ? '서울 · 실거래가 비교' : 'Seoul · Reported transactions'}</p><h1>{c.unavailable}</h1>
-          <p>{model.message}</p><Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/`}>{c.explore}</Link>
+          <p>{locale === 'ko' ? '서울 · 실거래가 비교' : locale === 'zh-CN' ? "首尔 · 申报成交" : 'Seoul · Reported transactions'}</p><h1>{c.unavailable}</h1>
+          <p>{localizeContractText(model.message, locale)}</p><Link href={`${locale === 'zh-CN' ? '/zh-cn' : locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/`}>{c.explore}</Link>
         </main>
       )}
     </div>

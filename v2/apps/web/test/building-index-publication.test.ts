@@ -239,6 +239,7 @@ describe('Korea building search publication', () => {
     const helioLanguages = {
       en: `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
       ko: `https://www.signedprice.com/ko/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+      'zh-Hans': `https://www.signedprice.com/zh-cn/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
       'x-default': `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
     };
     expect(englishHelio?.alternates?.languages).toEqual(helioLanguages);

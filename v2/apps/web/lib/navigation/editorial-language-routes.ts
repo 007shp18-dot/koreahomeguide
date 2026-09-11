@@ -171,6 +171,16 @@ for (const [en, ko] of koreanPairs) {
   const group = { ...(routes[en] ?? {}), en, ko };
   for (const href of Object.values(group)) routes[href] = group;
 }
+for (const city of ['seoul', 'singapore', 'dubai']) {
+  const path = `/news/${city}-monthly-2026-09/`;
+  const group = { en: path, ko: `/ko${path}`, 'zh-CN': `/zh-cn${path}` };
+  for (const href of Object.values(group)) routes[href] = group;
+}
+{
+  const path = '/news/dubai-rental-yield-after-costs/';
+  const group = { en: path, ko: `/ko${path}`, 'zh-CN': `/zh-cn${path}` };
+  for (const href of Object.values(group)) routes[href] = group;
+}
 for (const { city, id } of JOURNEY_ARTICLE_ROUTES) {
   const en = journeyArticleHref(city, id);
   const ko = journeyArticleHref(city, id, 'ko');

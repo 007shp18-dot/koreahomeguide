@@ -32,7 +32,7 @@ export function ProjectedEntityMedia({
   locationHref,
   showLocationAction = true,
 }: Readonly<{
-  locale?: 'en' | 'ko';
+  locale?: 'en' | 'ko' | 'zh-CN';
   buildingName: string;
   displayBuildingName?: string;
   address?: string;
@@ -63,12 +63,12 @@ export function ProjectedEntityMedia({
     return <div className={styles.unavailable} data-photo-state="unavailable" data-location-fallback="true">
       <span className={styles.locationIcon} aria-hidden="true">⌖</span>
       <div>
-        <span className={styles.locationLabel}>{locale === 'ko' ? '건물 위치' : 'Building location'}</span>
+        <span className={styles.locationLabel}>{locale === 'ko' ? '건물 위치' : locale === 'zh-CN' ? '楼宇位置': 'Building location'}</span>
         <strong>{displayBuildingName}</strong>
         {address ? <p>{address}</p> : null}
-        <p>{locale === 'ko' ? '확인된 건물 사진이 아직 없습니다.' : 'A verified building photograph is not available yet.'}</p>
+        <p>{locale === 'ko' ? '확인된 건물 사진이 아직 없습니다.' : locale === 'zh-CN' ? '尚无经核实的楼宇照片。': 'A verified building photograph is not available yet.'}</p>
       </div>
-      {showLocationAction ? <a href={mapHref}>{locale === 'ko' ? '지도에서 위치 확인' : 'View location on map'}</a> : null}
+      {showLocationAction ? <a href={mapHref}>{locale === 'ko' ? '지도에서 위치 확인' : locale === 'zh-CN' ? '在地图上查看位置': 'View location on map'}</a> : null}
     </div>;
   }
   if (media.displayUrl === null) return <GooglePlacePhoto
@@ -94,8 +94,8 @@ export function ProjectedEntityMedia({
       decoding="async"
       onError={() => setFailedUrl(media.displayUrl)}
       alt={media.relationship === 'parent'
-        ? (locale === 'ko' ? `${displayBuildingName} 단지 전경` : `${displayBuildingName} project view`)
-        : (locale === 'ko' ? `${displayBuildingName} 건물 외관` : `${displayBuildingName} building exterior`)}
+        ? (locale === 'ko' ? `${displayBuildingName} 단지 전경` : locale === 'zh-CN' ? `${displayBuildingName} 项目景观` : `${displayBuildingName} project view`)
+        : (locale === 'ko' ? `${displayBuildingName} 건물 외관` : locale === 'zh-CN' ? `${displayBuildingName} 楼宇外观` : `${displayBuildingName} building exterior`)}
       width={media.width ?? undefined}
       height={media.height ?? undefined}
       style={{ objectPosition: `${focalX * 100}% ${focalY * 100}%` }}
@@ -103,14 +103,14 @@ export function ProjectedEntityMedia({
     </div>
     <figcaption className={photoStyles.caption}>
     <span className={photoStyles.relationship}>{media.relationship === 'parent'
-      ? (locale === 'ko' ? '소속 단지 사진' : 'Parent project photograph')
-      : (locale === 'ko' ? '확인된 건물 사진' : 'Verified building photograph')}</span>
+      ? (locale === 'ko' ? '소속 단지 사진' : locale === 'zh-CN' ? '所属项目照片': 'Parent project photograph')
+      : (locale === 'ko' ? '확인된 건물 사진' : locale === 'zh-CN' ? '经核实的楼宇照片': 'Verified building photograph')}</span>
     <span className={photoStyles.credit}>
       {media.attributionName === null ? null : media.attributionUrl === null
         ? media.attributionName
         : <a href={media.attributionUrl} rel="noreferrer">{media.attributionName}</a>}
       {media.sourcePageUrl && media.sourcePageUrl !== media.attributionUrl
-        ? <a href={media.sourcePageUrl} rel="noreferrer">{locale === 'ko' ? '원본 사진' : 'Photo source'}</a> : null}
+        ? <a href={media.sourcePageUrl} rel="noreferrer">{locale === 'ko' ? '원본 사진' : locale === 'zh-CN' ? '照片来源': 'Photo source'}</a> : null}
     </span>
     </figcaption>
   </figure>;

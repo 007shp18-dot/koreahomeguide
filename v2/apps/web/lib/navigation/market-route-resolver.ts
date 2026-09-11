@@ -22,9 +22,24 @@ function withCurrent(
 
 export function resolveMarketNavigation(input: Readonly<{
   market: ProductMarket;
-  locale: 'en' | 'ko';
+  locale: 'en' | 'ko' | 'zh-CN';
   surface: ProductSurface;
 }>): Readonly<{ links: readonly NavigationLinkModel[]; marketSwitch: readonly NavigationLinkModel[] }> {
+  if (input.locale === 'zh-CN') {
+    const labels: Record<string, string> = { Overview: '概览', Check: '价格评估', Explore: '探索', Rankings: '排名', Corrections: '数据更正', Trust: '数据与来源', Guide: '指南', News: '新闻', Community: '社区', Seoul: '首尔', Singapore: '新加坡', Dubai: '迪拜', 'Compare markets': '比较市场' };
+    const base = resolveMarketNavigation({ ...input, locale: 'en' });
+    const localize = (link: NavigationLinkModel): NavigationLinkModel => ({ ...link, label: labels[link.label] ?? link.label, href: link.href.startsWith('/trust') ? link.href : link.href === '/kr/seoul/rankings/' ? '/zh-cn/rankings/?market=seoul' : link.href === '/kr/seoul/news/' ? '/zh-cn/news/?market=seoul' : link.href === '/kr/seoul/guide/' ? '/zh-cn/guides/?market=seoul' : link.href === '/kr/seoul/community/' ? link.href : `/zh-cn${link.href}` });
+    if (input.market === 'dubai') return {
+      links: withCurrent([
+        { surface: 'home', label: '概览', href: '/zh-cn/ae/dubai/' },
+        { surface: 'explore', label: '探索', href: '/zh-cn/ae/dubai/explore/' },
+        { surface: 'check', label: '价格评估', href: '/zh-cn/ae/dubai/check/' },
+        { surface: 'guide', label: '指南', href: '/zh-cn/ae/dubai/guide/' },
+      ], input.surface),
+      marketSwitch: base.marketSwitch.map(localize),
+    };
+    return { links: base.links.map(localize), marketSwitch: base.marketSwitch.map(localize) };
+  }
   const ko = input.locale === 'ko';
   const localizedSwitch = ko ? [{ label: '서울', href: '/ko/kr/seoul/' }, { label: '싱가포르', href: '/ko/sg/' }, { label: '두바이', href: '/ko/ae/dubai/' }] : marketSwitch;
   if (input.market === 'dubai') {

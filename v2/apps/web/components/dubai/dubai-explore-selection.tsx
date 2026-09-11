@@ -1,4 +1,6 @@
 'use client';
+import { localizedMarketCopy } from '../../lib/locale/market-localization';
+
 
 import type { Ref } from 'react';
 
@@ -34,7 +36,7 @@ export function DubaiExploreSelection({
   return <section id="dubai-selected-area" className={styles.selectedArea} ref={panelRef}
     aria-labelledby="dubai-selected-area-title" data-dubai-area-selection={area.slug}>
     <header className={styles.selectionHeader}>
-      <div><p>{locale === 'ko' ? '선택한 지역' : 'Selected area'}</p>
+      <div><p>{localizedMarketCopy(locale, "Selected area", "선택한 지역")}</p>
         <h2 id="dubai-selected-area-title">{t(area.name)}</h2>
         <p>{t(segment.housing === 'apartment' ? 'Apartment' : 'Villa')} · {t(stage === 'ready' ? 'Ready' : 'Off-Plan')}</p>
       </div>
@@ -44,26 +46,24 @@ export function DubaiExploreSelection({
       <div><dt>{t('Median sale price')}</dt><dd>{money(sale.medianPriceAed)}</dd></div>
       <div><dt>{t('Median AED/m²')}</dt><dd>{money(sale.medianPricePerSqmAed)}/m²</dd></div>
       <div><dt>{t('Registered sales')}</dt><dd>{integer.format(sale.n)}</dd></div>
-      <div><dt>{t('Median annual rent')}</dt><dd>{money(segment.rent.medianAnnualRentAed)}/year</dd></div>
+      <div><dt>{t('Median annual rent')}</dt><dd>{t(`${money(segment.rent.medianAnnualRentAed)}/year`)}</dd></div>
     </dl>
     <p className={styles.selectionNote}>{locale === 'ko'
       ? `DLD 지역별 집계 · ${period} · 자료 기준 ${asOfDate}`
-      : `DLD area aggregates · ${period} · As of ${asOfDate}`}</p>
-    <nav className={styles.selectionActions} aria-label={locale === 'ko' ? '선택한 지역 살펴보기' : 'Selected area actions'}>
+      : locale === 'zh-CN' ? `DLD 区域汇总 · ${period} · 数据截至 ${asOfDate}` : `DLD area aggregates · ${period} · As of ${asOfDate}`}</p>
+    <nav className={styles.selectionActions} aria-label={localizedMarketCopy(locale, "Selected area actions", "선택한 지역 살펴보기")}>
       <Link href={marketHref(locale, createDubaiCheckHref({
         area: area.slug, housing: segment.housing, completion: stage,
         askingPriceAed: null, areaSqm: null, annualRentAed: null, returnTo,
       }))}>{t('Compare an asking price')}</Link>
       {area.href ? <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>
-        {locale === 'ko' ? '지역 분석 전체 보기' : 'Full area analysis'}
+        {localizedMarketCopy(locale, "Full area analysis", "지역 분석 전체 보기")}
       </Link> : null}
     </nav>
     <section className={styles.selectionProjects} aria-labelledby="dubai-selected-projects">
-      <h3 id="dubai-selected-projects">{locale === 'ko' ? '프로젝트별 거래 요약' : 'Project sales summaries'} <span>{projects.length}</span></h3>
+      <h3 id="dubai-selected-projects">{localizedMarketCopy(locale, "Project sales summaries", "프로젝트별 거래 요약")} <span>{projects.length}</span></h3>
       {projects.length > 0 ? <>
-        <p>{locale === 'ko'
-          ? '같은 주택 유형·완공 상태에서 30건 이상 거래된 프로젝트입니다. 일부 프로젝트만 포함합니다.'
-          : 'Same home type and sale stage. Projects with at least 30 registered sales; partial coverage.'}</p>
+        <p>{localizedMarketCopy(locale, "Same home type and sale stage. Projects with at least 30 registered sales; partial coverage.", "같은 주택 유형·완공 상태에서 30건 이상 거래된 프로젝트입니다. 일부 프로젝트만 포함합니다.")}</p>
         <div className={styles.selectionProjectList}>
           {projects.map(project => <button key={project.id} type="button"
             aria-pressed={selectedProject?.id === project.id} aria-controls="dubai-project-summary"
@@ -76,13 +76,9 @@ export function DubaiExploreSelection({
           <h4>{t(selectedProject.name)}</h4>
           <p>{t('DLD project ')}{selectedProject.projectNumber} · {period}</p>
           <p>{money(selectedProject.medianPriceAed)} · {integer.format(selectedProject.n)} {t('registered sales')}</p>
-          <p>{t('Area location only')}. {locale === 'ko'
-            ? '지도는 프로젝트의 정확한 건물 위치를 표시하지 않습니다.'
-            : 'The map remains on the area; a precise project location is not verified.'}</p>
+          <p>{t('Area location only')}. {localizedMarketCopy(locale, "The map remains on the area; a precise project location is not verified.", "지도는 프로젝트의 정확한 건물 위치를 표시하지 않습니다.")}</p>
         </div> : null}
-      </> : <p>{locale === 'ko'
-        ? '이 조건의 프로젝트별 집계는 아직 없습니다. 위 지역 통계로 비교할 수 있습니다.'
-        : 'Project-level summaries are not published for this selection yet. Area figures remain available above.'}</p>}
+      </> : <p>{localizedMarketCopy(locale, "Project-level summaries are not published for this selection yet. Area figures remain available above.", "이 조건의 프로젝트별 집계는 아직 없습니다. 위 지역 통계로 비교할 수 있습니다.")}</p>}
     </section>
   </section>;
 }

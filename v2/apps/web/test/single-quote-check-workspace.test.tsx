@@ -32,6 +32,17 @@ const saleRecords: readonly SingleQuoteComparable[] = Object.freeze(
 );
 
 describe('primary single quote Check workspace', () => {
+  test('renders Chinese labels with the same transaction controls and localized destinations', () => {
+    const html = renderToStaticMarkup(<SingleQuoteCheckWorkspace model={baseModel} locale="zh-CN" />);
+    expect(html).toContain('比较报价');
+    expect(html).toContain('出售报价');
+    expect(html).toContain('name="price"');
+    expect(html).toContain('value="sale"');
+    expect(html).toContain('/zh-cn/kr/seoul/check/compare');
+    expect(html).toContain('/zh-cn/kr/seoul/explore');
+    expect(html).not.toContain('Compare an asking price');
+  });
+
   test('offers sale, jeonse and monthly while retaining all-type A/B compare as secondary', () => {
     const html = renderToStaticMarkup(<SingleQuoteCheckWorkspace model={baseModel} />);
 

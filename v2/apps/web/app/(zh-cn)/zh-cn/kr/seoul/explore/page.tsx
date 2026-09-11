@@ -1,5 +1,10 @@
-import { redirect } from 'next/navigation';
+import SeoulExplorePage from '@/components/public-market/seoul-explore-page.server';
+import { buildSeoulExploreMetadata } from '@/lib/public-market/seoul-explore-metadata';
 
-export default function ChineseExploreBridge() {
-  redirect('/kr/seoul/explore/');
+type Props = Readonly<{ searchParams: Promise<Record<string, string | string[] | undefined>> }>;
+export async function generateMetadata({ searchParams }: Props) {
+  return buildSeoulExploreMetadata('zh-CN', await searchParams);
+}
+export default function Page({ searchParams = Promise.resolve({}) }: Partial<Props> = {}) {
+  return SeoulExplorePage({ searchParams, locale: 'zh-CN' });
 }

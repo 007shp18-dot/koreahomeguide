@@ -50,9 +50,9 @@ const buildings: Readonly<Record<string, string>> = {
   '에스케이북한산시티': 'SK Bukhansan City', '백련산힐스테이트1차': 'Baengnyeonsan Hillstate 1',
   '백련산힐스테이트3차': 'Baengnyeonsan Hillstate 3', '남서울힐스테이트': 'Namseoul Hillstate',
 };
-export function neighborhoodDisplayName(name: string, locale: 'en' | 'ko'): string {
+export function neighborhoodDisplayName(name: string, locale: 'en' | 'ko' | 'zh-CN'): string {
   return locale === 'en' && typeof neighborhoods[name] === 'string' ? `${neighborhoods[name]} · ${name}` : name;
 }
-export function buildingDisplayName(name: string, locale: 'en' | 'ko'): string {
+export function buildingDisplayName(name: string, locale: 'en' | 'ko' | 'zh-CN'): string {
   return locale === 'en' && typeof buildings[name] === 'string' ? `${buildings[name]} · ${name}` : name;
 }

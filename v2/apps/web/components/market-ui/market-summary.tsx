@@ -11,7 +11,7 @@ export type MarketSummaryProps = Readonly<{
   trend?: ReactNode;
   id?: string;
   kind?: 'building' | 'project' | 'area';
-  locale?: 'en' | 'ko';
+  locale?: 'en' | 'ko' | 'zh-CN';
 }>;
 
 /** Presentational only: each market supplies the meaning, scope and available facts. */

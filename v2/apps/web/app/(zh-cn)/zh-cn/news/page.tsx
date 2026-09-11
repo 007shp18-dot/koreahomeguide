@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { InsightsIndex } from '@/components/newsroom/insights-index';
+import { resolveNewsroomFilters } from '@/components/newsroom/newsroom-index';
 
 import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
 import { EditorialPortfolioIndex } from '@/components/newsroom/editorial-portfolio-index';
@@ -12,8 +14,11 @@ const tabs = [['insights', '洞察'], ['news', '新闻'], ['policy', '政策']] 
 const insightTabs = [['insights', '全部洞察'], ['market', '市场洞察'], ['data-stories', '数据故事']] as const;
 const isInsight = (type: string) => ['insights', 'market', 'data-stories'].includes(type);
 
-export default async function ChineseNewsPage({ searchParams }: Readonly<{ searchParams?: Promise<{ type?: string | string[] }> }> = {}) {
-  const requested = (await searchParams)?.type;
+export default async function ChineseNewsPage({ searchParams }: Readonly<{ searchParams?: Promise<Record<string, string | readonly string[] | undefined>> }> = {}) {
+  const params = await searchParams ?? {};
+  const requested = params.type;
+  const filters = resolveNewsroomFilters(params);
+  if (filters.type === 'insights') return <EditorialGrowthPublicFrame locale="zh-CN" surface="content" currentHref={`/zh-cn${filters.canonicalHref}`}><InsightsIndex articles={await listNewsroomArticles('zh-CN')} market={filters.market} topic={filters.topic} locale="zh-CN" /></EditorialGrowthPublicFrame>;
   const type = typeof requested === 'string' && [...tabs, ...insightTabs].some(([id]) => id === requested) ? requested : 'insights';
   const records = (await listNewsroomArticles('zh-CN')).filter(article => article.type !== 'guide'
     && (type === 'insights' ? article.type === 'data-story' || article.type === 'market-brief'

@@ -46,19 +46,19 @@ describe('public editorial shell', () => {
     expect(markup).not.toContain('/design-review/');
   });
 
-  it('uses independent Chinese navigation and zero-tracking locale scope', () => {
+  it('uses Chinese navigation and localized live product destinations', () => {
     const markup = renderToStaticMarkup(
       <EditorialGrowthPublicShell surface="content" model={{ ...MODEL, locale: 'zh-CN' }} />,
     );
 
     expect(markup).toContain('lang="zh-CN"');
     expect(markup).toContain('data-review-locale="zh-CN"');
-    expect(markup).toContain('href="/kr/seoul/check"');
-    expect(markup).toContain('href="/prices"');
-    expect(markup).not.toContain('/zh-cn/kr/seoul/check');
-    expect(markup).not.toContain('/zh-cn/kr/seoul/explore');
+    expect(markup).toContain('href="/zh-cn/kr/seoul/check"');
+    expect(markup).toContain('href="/zh-cn/prices"');
+    expect(markup).not.toContain('href="/kr/seoul/check"');
+    expect(markup).not.toContain('href="/kr/seoul/explore"');
     expect(markup).toContain('>探索<');
-    expect(markup).toMatch(/href="\/rankings\/?"[^>]*>地区排名<\/a>/);
+    expect(markup).toMatch(/href="\/zh-cn\/rankings\/?"[^>]*>地区排名<\/a>/);
     expect(markup).not.toContain('aria-label="探索菜单"');
     expect(markup).not.toContain('>价格<');
     expect(markup).not.toContain('/design-review/');

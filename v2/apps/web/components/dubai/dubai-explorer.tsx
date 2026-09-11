@@ -1,4 +1,6 @@
 'use client';
+import { localizedMarketCopy } from '../../lib/locale/market-localization';
+
 import { retainPassportContext } from '../../lib/passport/journey';
 
 import { PassportLink as Link } from '../passport/passport-journey';
@@ -293,9 +295,7 @@ export function DubaiExplorer({ locale = 'en',
           onSelectProject={setSelectedProjectId} onClose={() => selectArea(null)} panelRef={selectionRef}
           returnTo={buildDubaiExploreHref({ query, housing, stage, budgetMaximumAed, yieldMinimumPct,
             page: activePage, selectedArea: selected.area.slug, selectedProject: selectedProject?.id ?? null })}
-        /> : <p className={styles.selectionPrompt}>{locale === 'ko'
-          ? '지역을 선택하면 가격·임대료와 프로젝트별 거래 요약이 여기에 표시됩니다.'
-          : 'Select an area to see prices, rent and project sales summaries here.'}</p>}
+        /> : <p className={styles.selectionPrompt}>{localizedMarketCopy(locale, "Select an area to see prices, rent and project sales summaries here.", "지역을 선택하면 가격·임대료와 프로젝트별 거래 요약이 여기에 표시됩니다.")}</p>}
         <header className={styles.resultHeader}>
           <div><h2 id="dubai-area-results">{t("Area prices")}</h2><p>{t(results.length.toLocaleString('en'))}{t(" matching areas · ")}{t(housing)}{t(" · ")}{t(stage)}</p></div>
           <small>{t(results.length === 0 ? 'No matches' : `${(activePage - 1) * DUBAI_EXPLORE_PAGE_SIZE + 1}–${Math.min(activePage * DUBAI_EXPLORE_PAGE_SIZE, results.length)} shown`)}</small>
@@ -305,9 +305,9 @@ export function DubaiExplorer({ locale = 'en',
             <button type="button" aria-pressed={area.slug === selectedArea} aria-controls="dubai-selected-area" onClick={() => selectArea(selectedArea === area.slug ? null : area.slug)}>
               <span><strong title={t(area.name)}>{t(area.name)}</strong><small>{t(housing === 'apartment' ? 'Apartment' : 'Villa')}{t(" · ")}{t(stage === 'ready' ? 'Ready' : 'Off-Plan')}</small></span>
             </button>
-            <p className={styles.resultPrice}><strong>{t(money(sale.medianPriceAed))}</strong><span>{t(sale.n.toLocaleString('en'))} {locale === 'ko' ? '건 거래' : 'sales'} · {t(moneyPerSqm(sale.medianPricePerSqmAed))}</span></p>
+            <p className={styles.resultPrice}><strong>{t(money(sale.medianPriceAed))}</strong><span>{t(sale.n.toLocaleString('en'))} {localizedMarketCopy(locale, "sales", "건 거래")} · {t(moneyPerSqm(sale.medianPricePerSqmAed))}</span></p>
             <details className={styles.resultEvidence} data-area-evidence="true">
-              <summary>{locale === 'ko' ? '가격·임대료 자세히 보기' : 'Price and rent details'}</summary>
+              <summary>{localizedMarketCopy(locale, "Price and rent details", "가격·임대료 자세히 보기")}</summary>
             <dl className={styles.areaMetrics}>
               <div><dt>{t("Median sale price")}</dt><dd>{t(money(sale.medianPriceAed))}</dd></div>
               <div><dt>{t("Median AED/m²")}</dt><dd>{t(moneyPerSqm(sale.medianPricePerSqmAed))}</dd></div>
@@ -318,7 +318,7 @@ export function DubaiExplorer({ locale = 'en',
             </details>
             {area.href === null
               ? <span className={styles.unavailableLink}>{t("Area details unavailable")}</span>
-              : <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>{locale === 'ko' ? '지역 분석 전체 보기' : 'Full area analysis'}</Link>}
+              : <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>{localizedMarketCopy(locale, "Full area analysis", "지역 분석 전체 보기")}</Link>}
           </article>)}
           {results.length === 0 ? <p className={styles.emptyState}>{t("No areas match these filters. Increase the budget or lower the ratio threshold.")}</p> : null}
         </div>
@@ -335,6 +335,6 @@ export function DubaiExplorer({ locale = 'en',
         <p className={styles.mapDisclosure}>{t("Markers locate areas. They do not represent units or listings.")}</p>
       </section>}
     />
-    <p className={styles.exploreSupport}><span>{locale === 'ko' ? '구매를 준비하고 있나요?' : 'Planning a purchase?'}</span><Link href={marketHref(locale, "/guides/dubai-ready-apartment-buying-budget-guide/")}>{locale === 'ko' ? '예산·구매 비용 가이드' : 'Read the budget & buying costs guide'}<UiIcon name="arrow-right" /></Link></p>
+    <p className={styles.exploreSupport}><span>{localizedMarketCopy(locale, "Planning a purchase?", "구매를 준비하고 있나요?")}</span><Link href={marketHref(locale, "/guides/dubai-ready-apartment-buying-budget-guide/")}>{localizedMarketCopy(locale, "Read the budget & buying costs guide", "예산·구매 비용 가이드")}<UiIcon name="arrow-right" /></Link></p>
   </div>;
 }

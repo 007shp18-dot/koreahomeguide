@@ -16,6 +16,10 @@ function spreadCopy(
   locale: ProductLocale,
 ): Readonly<{ label: string; explanation: string }> {
   if (locale === 'en') return spread;
+  if (locale === 'zh-CN') {
+    if (spread.status === 'unavailable') return { label: '无法评估分布宽度', explanation: '解读中间50%区间宽度需要大于零的有效中位数。' };
+    return { label: { narrow: '较窄的中间50%区间', moderate: '适中的中间50%区间', wide: '较宽的中间50%区间' }[spread.bucket], explanation: `中间50%区间宽度为中位数的${(spread.ratio * 100).toFixed(1)}%。` };
+  }
   if (spread.status === 'unavailable') {
     return {
       label: '분포 폭 확인 불가',

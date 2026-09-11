@@ -15,16 +15,17 @@ it('lists every published Singapore project with the same canonical and publicat
   expect(repository).not.toBeNull();
   const entries = await sitemap();
   const projectEntries = entries.filter(({ url }) => url.includes('/singapore/explore/'));
-  expect(projectEntries).toHaveLength(4824);
-  expect(projectEntries).toHaveLength(repository!.listProjectRouteParams().length * 2);
+  expect(projectEntries).toHaveLength(7236);
+  expect(projectEntries).toHaveLength(repository!.listProjectRouteParams().length * 3);
   const entriesByUrl = new Map(projectEntries.map(entry => [entry.url, entry]));
   expect(new Set(entries.map(({ url }) => url)).size).toBe(entries.length);
   for (const { area, projectId } of repository!.listProjectRouteParams()) {
     const en = `https://www.signedprice.com/sg/singapore/explore/${area}/${projectId}/`;
     const ko = `https://www.signedprice.com/ko/sg/singapore/explore/${area}/${projectId}/`;
-    for (const url of [en, ko]) expect(entriesByUrl.get(url)).toMatchObject({
+    const zh = `https://www.signedprice.com/zh-cn/sg/singapore/explore/${area}/${projectId}/`;
+    for (const url of [en, ko, zh]) expect(entriesByUrl.get(url)).toMatchObject({
       url,
-      alternates: { languages: { en, ko, 'x-default': en } },
+      alternates: { languages: { en, ko, 'zh-Hans': zh, 'x-default': en } },
       lastModified: new Date(repository!.getContext().generatedAt),
     });
     expect(repository!.getProject(area, projectId)?.published).toBe(true);

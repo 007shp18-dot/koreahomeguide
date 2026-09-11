@@ -21,7 +21,7 @@ const ENGLISH_NAMES: Readonly<Record<string, Readonly<Record<string, string>>>> 
   },
 };
 
-export function seoulNeighborhoodLabel(districtSlug: string, name: string, locale: 'en' | 'ko'): string {
+export function seoulNeighborhoodLabel(districtSlug: string, name: string, locale: 'en' | 'ko' | 'zh-CN'): string {
   if (!getSeoulDistrictBySlug(districtSlug)) return name;
   const alias = ENGLISH_NAMES[districtSlug]?.[name.trim()];
   return locale === 'en' && typeof alias === 'string' ? `${alias} · ${name}` : neighborhoodDisplayName(name, locale);

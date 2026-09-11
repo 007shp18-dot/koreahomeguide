@@ -52,16 +52,16 @@ function CohortEvidence({ model, locale = 'en' }: Readonly<{ model: PublicBuildi
         <div>
           <dt>{t("New contracts")}</dt>
           <dd>{model.building.groups.new.published
-            ? `${money.format(model.building.groups.new.med)} · ${model.building.groups.new.n}${locale === 'ko' ? '건' : ' records'}`
-            : `${t('Not published')} · ${model.building.groups.new.n}${locale === 'ko' ? '건' : ' records'}`}</dd>
+            ? `${money.format(model.building.groups.new.med)} · ${model.building.groups.new.n}${locale === 'ko' ? '건' : locale === 'zh-CN' ? '笔记录' : ' records'}`
+            : `${t('Not published')} · ${model.building.groups.new.n}${locale === 'ko' ? '건' : locale === 'zh-CN' ? '笔记录' : ' records'}`}</dd>
         </div>
         <div>
           <dt>{t("Renewal contracts")}</dt>
           <dd>{model.building.groups.renewal.published
-            ? `${money.format(model.building.groups.renewal.med)} · ${model.building.groups.renewal.n}${locale === 'ko' ? '건' : ' records'}`
-            : `${t('Not published')} · ${model.building.groups.renewal.n}${locale === 'ko' ? '건' : ' records'}`}</dd>
+            ? `${money.format(model.building.groups.renewal.med)} · ${model.building.groups.renewal.n}${locale === 'ko' ? '건' : locale === 'zh-CN' ? '笔记录' : ' records'}`
+            : `${t('Not published')} · ${model.building.groups.renewal.n}${locale === 'ko' ? '건' : locale === 'zh-CN' ? '笔记录' : ' records'}`}</dd>
         </div>
-        <div><dt>{t("Unclassified type")}</dt><dd>{model.building.unknownContractCount}{locale === 'ko' ? '건' : ' records'}</dd></div>
+        <div><dt>{t("Unclassified type")}</dt><dd>{model.building.unknownContractCount}{locale === 'ko' ? '건' : locale === 'zh-CN' ? '笔记录' : ' records'}</dd></div>
       </dl>
     </section>
   );
@@ -82,7 +82,7 @@ function FloorEvidence({ model, locale = 'en' }: Readonly<{ model: PublicBuildin
         ) : (
           <strong>{model.floorCoefficient.coefficient}</strong>
         )}
-        <p>{model.floorCoefficient.pairCount}{locale === 'ko' ? '쌍의 비교 가능한 거래' : ' eligible pairs'}</p>
+        <p>{model.floorCoefficient.pairCount}{locale === 'ko' ? '쌍의 비교 가능한 거래' : locale === 'zh-CN' ? '组合格配对' : ' eligible pairs'}</p>
         <p>{t(model.floorCoefficient.basis)}</p>
       </div>
     </section>
@@ -216,7 +216,7 @@ export function BuildingEvidenceDetails({ model, locale = 'en', includeSource = 
       <CohortEvidence model={model} locale={locale} />
       <RecentContractEvidence model={model} locale={locale} />
       <details className={detailStyles.disclosure}>
-        <summary>{locale === 'ko' ? '층·면적별 분석과 집계 기준' : 'Floor and size analysis and methodology'}</summary>
+        <summary>{locale === 'ko' ? '층·면적별 분석과 집계 기준' : locale === 'zh-CN' ? '楼层与面积分析及统计方法' : 'Floor and size analysis and methodology'}</summary>
         <FloorEvidence model={model} locale={locale} />
         <AreaBandEvidence model={model} locale={locale} />
         <BuildingNavigation model={model} locale={locale} />
