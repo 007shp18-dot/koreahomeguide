@@ -4,8 +4,33 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('next/script', () => ({ default: () => null }));
 
 import { GooglePlacePhoto, findGooglePlacePhotos, photoApprovalLabel } from '../components/maps/google-place-photo';
+import { rejectedGooglePlacePhotos } from '../components/maps/rejected-google-place-photos';
 
 describe('approved Google place photo gallery', () => {
+  it.each(rejectedGooglePlacePhotos)('excludes reviewed $building photo without removing good photos or expanding the cap', async ({ source }) => {
+    const good = { getURI: () => 'https://photos.example.test/exterior.jpg', authorAttributions: [] };
+    const rejected = { ...good, googleMapsURI: source };
+    const outsideWindow = { ...good, googleMapsURI: 'https://maps.google.com/unreviewed' };
+    class Place {
+      photos = [good, rejected, good, good, good, outsideWindow];
+      async fetchFields() {}
+      static searchByText = vi.fn();
+    }
+    const result = await findGooglePlacePhotos(Place, 'approved-place');
+    expect(result).toEqual([good, good, good, good]);
+    expect(result).not.toContain(outsideWindow);
+    expect(Place.searchByText).not.toHaveBeenCalled();
+  });
+
+  it('returns no photo when the only available photo was visually rejected', async () => {
+    class Place {
+      photos = [{ getURI: () => '', authorAttributions: [], googleMapsURI: rejectedGooglePlacePhotos[3].source }];
+      async fetchFields() {}
+      static searchByText = vi.fn();
+    }
+    await expect(findGooglePlacePhotos(Place, 'approved-place')).resolves.toEqual([]);
+  });
+
   it('returns no more than five live photos with their author credits', async () => {
     const photos = Array.from({ length: 7 }, (_, index) => ({
       getURI: () => `https://photos.example.test/${index + 1}.jpg`,

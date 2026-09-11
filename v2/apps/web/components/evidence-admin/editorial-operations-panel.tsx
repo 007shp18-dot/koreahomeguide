@@ -20,7 +20,11 @@ export function EditorialOperationsPanel(){
  const notice=useRef<HTMLParagraphElement>(null);
  useEffect(()=>{if(message)notice.current?.scrollIntoView({block:'nearest',behavior:'smooth'});},[message]);
  const load=useCallback(async()=>{const data=await api(endpoint);setItems(data.items);setLoaded(true);},[]);
- useEffect(()=>{void load().catch(e=>setMessage(e.message));},[load]);
+ useEffect(()=>{
+  let active=true;
+  void api(endpoint).then(data=>{if(active){setItems(data.items);setLoaded(true);}}).catch(e=>{if(active)setMessage(e.message);});
+  return ()=>{active=false;};
+ },[]);
  useEffect(()=>{if(!dirty)return;const protect=(e:BeforeUnloadEvent)=>{e.preventDefault();};window.addEventListener('beforeunload',protect);return()=>window.removeEventListener('beforeunload',protect);},[dirty]);
  const canLeave=()=>!dirty||window.confirm('저장하지 않은 변경이 있습니다. 버리고 다른 글을 열까요?');
  function change<K extends keyof Article>(key:K,value:Article[K]){setArticle(a=>({...a,[key]:value}));setDirty(true);setMessage('');}

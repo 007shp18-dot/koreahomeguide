@@ -1,0 +1,170 @@
+{
+  "date": "2026-09-11",
+  "scope": "Public static associations and currently eligible Google Place galleries; not a visual audit of all acquisition candidates or all dynamic panoramas.",
+  "static": {
+    "reviewedAssociations": 96,
+    "uniqueImages": 92,
+    "retainedAssociations": 94,
+    "rejected": [
+      {
+        "id": "40",
+        "reason": "Photo foreground is dominated by a drainage canal and footpath; the apartment buildings are cut off at the top. Unsuitable as the building exterior hero."
+      },
+      {
+        "id": "141",
+        "reason": "Drainage ditch and nursery dominate the image; Normanton Park towers are only a small distant background. Unsuitable building hero despite correct source title."
+      }
+    ],
+    "reviewedIds": [
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "25",
+      "26",
+      "32",
+      "34",
+      "37",
+      "40",
+      "50",
+      "59",
+      "61",
+      "65",
+      "66",
+      "67",
+      "68",
+      "69",
+      "70",
+      "71",
+      "72",
+      "73",
+      "84",
+      "88",
+      "96",
+      "99",
+      "103",
+      "104",
+      "108",
+      "133",
+      "134",
+      "141",
+      "142",
+      "143",
+      "144",
+      "145",
+      "146",
+      "147",
+      "148",
+      "149",
+      "150",
+      "151",
+      "152",
+      "153",
+      "154",
+      "155",
+      "156",
+      "157",
+      "168",
+      "169",
+      "170",
+      "171",
+      "172",
+      "173",
+      "174",
+      "175",
+      "176",
+      "182",
+      "192",
+      "1579",
+      "2494",
+      "3006",
+      "3007",
+      "4005",
+      "4006",
+      "11976",
+      "12974",
+      "21920",
+      "23904",
+      "26881",
+      "28855",
+      "42294",
+      "42295",
+      "42296",
+      "42300",
+      "42311",
+      "42312",
+      "42313",
+      "42314",
+      "42315"
+    ]
+  },
+  "google": {
+    "galleries": 11,
+    "photosVisuallyReviewed": 51,
+    "rejected": [
+      {
+        "building": "KI RESIDENCES AT BROOKVALE",
+        "reason": "View from the property toward unrelated neighboring buildings; not the selected building.",
+        "source": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIABIhBr1QAJzMMtIAgvMnby4LtO!2e10!4m2!3m1!1s0x31da15aa627c9909:0xe15be951ce31824f"
+      },
+      {
+        "building": "FORESTVILLE",
+        "reason": "Supermarket interior, not residential building exterior.",
+        "source": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgICis87C4gE!2e10!4m2!3m1!1s0x31da13980dcbad91:0x63cd598af1fd2511"
+      },
+      {
+        "building": "BELLEWATERS",
+        "reason": "Indoor window blinds close-up, no building exterior.",
+        "source": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgID4muGT-gE!2e10!4m2!3m1!1s0x31da160ad4eaa87f:0x3a8eff05ec17bd3f"
+      },
+      {
+        "building": "경남아너스빌",
+        "reason": "Distant sunset skyline viewed from a building; no identifiable selected property exterior.",
+        "source": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgID0r_2upQE!2e10!4m2!3m1!1s0x357c9f0e20e0b659:0xad13be8009824335"
+      },
+      {
+        "building": "PARKTOWN RESIDENCE",
+        "reason": "Indoor birthday/event room rendering, not a building exterior.",
+        "source": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIDfrbaAvQE!2e10!4m2!3m1!1s0x31da3dc65d98838f:0xbf467e81a9244712"
+      },
+      {
+        "building": "신내우디안1단지",
+        "reason": "Tree canopy close-up, building not visible.",
+        "source": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgID-7PGomwE!2e10!4m2!3m1!1s0x357cbb4a826c88f7:0xe885987b679c2a3f"
+      },
+      {
+        "building": "신내우디안1단지",
+        "reason": "Tree canopy close-up, building not visible.",
+        "source": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIC-0oyGiQE!2e10!4m2!3m1!1s0x357cbb4a826c88f7:0xe885987b679c2a3f"
+      },
+      {
+        "building": "신내우디안1단지",
+        "reason": "Decorative night lights close-up, building not visible.",
+        "source": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIDN-_mS6AE!2e10!4m2!3m1!1s0x357cbb4a826c88f7:0xe885987b679c2a3f"
+      }
+    ],
+    "notes": "Retained project models/renderings, exterior construction views and estate amenities when related to the selected project. Provider results can change; exact-photo exclusions do not certify future uploads."
+  },
+  "priorPendingCleanup": {
+    "rejectedAssociations": 127,
+    "batch": "photo-identity-audit-2026-09-11",
+    "note": "Separate from this public visual audit."
+  },
+  "limits": "Existing acquisition caps, six-hour acquisition cadence, click-to-load panoramas and five-photo gallery request window unchanged."
+}
