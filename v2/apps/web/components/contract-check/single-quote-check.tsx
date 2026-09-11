@@ -127,7 +127,7 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
               <ol className={styles.comparableList} start={6}>
                 {result.comparableRows.slice(5).map((row, index) => <ComparableTransaction key={`${row.buildingId}-${row.filedMonth}-${index + 5}`} row={row} model={model} locale={locale} linked={entityContext !== null} adjusted={result.comparisonBasis === 'verified-deposit-adjusted-monthly-rent'} />)}
               </ol>
-            </details>
+            </details>}
           </section>
           <ResultLinkCopy locale={locale} tool="single-quote" />
           <section className={styles.disclosure} data-check-section="disclosure" data-result-order="disclosure">
