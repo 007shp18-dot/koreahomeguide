@@ -39,6 +39,9 @@ export function relatedReading(article: Pick<PublishedContentArticle, 'slug' | '
       { label: 'Build a Dubai ready-apartment budget', href: '/guides/dubai-ready-apartment-buying-budget-guide/' },
       { label: 'Calculate rental yield after costs', href: '/news/dubai-rental-yield-after-costs/' },
       { label: 'Follow the Dubai purchase steps', href: '/ae/dubai/guide/' },
+    ] : article.marketId === 'jp-tokyo' ? [
+      { label: article.locale === 'ko' ? '도쿄 실거래가 탐색하기' : article.locale === 'zh-CN' ? '查看东京成交记录' : 'Explore Tokyo transactions', href: '/jp/tokyo/explore/' },
+      { label: article.locale === 'ko' ? '도쿄 시장 한눈에 보기' : article.locale === 'zh-CN' ? '东京市场概览' : 'Tokyo market overview', href: '/jp/tokyo/' },
     ] : article.marketId === 'sg-singapore' ? [
       { label: 'Read Singapore project transactions', href: '/guides/read-singapore-private-transactions/' },
       { label: 'Compare CCR, RCR and OCR project prices', href: '/news/singapore-ccr-rcr-ocr-comparison/' },
