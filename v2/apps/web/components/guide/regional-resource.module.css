@@ -1,0 +1,28 @@
+.page { width: min(760px, calc(100% - 40px)); margin: 0 auto; padding: 32px 0 80px; color: var(--ink, #17212f); }
+.page *, .directory * { box-sizing: border-box; }
+.breadcrumb, .switcher { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 14px; line-height: 1.6; }
+.page a, .directory a { color: inherit; text-underline-offset: 4px; }
+.page header { margin: 36px 0; }
+.page h1 { margin: 0 0 18px; font-size: clamp(30px, 4vw, 42px); line-height: 1.25; letter-spacing: -.025em; }
+.page h2, .directory h2 { font-size: 24px; line-height: 1.4; margin: 30px 0 14px; }
+.page p { font-size: 16px; line-height: 1.8; margin: 12px 0; }
+.switcher { border-block: 1px solid var(--line, #dce2e9); padding: 14px 0; margin-bottom: 24px; }
+.switcher a[aria-current=page] { font-weight: 700; text-decoration-thickness: 2px; }
+.checklist { list-style: none; margin: 0; padding: 0; }
+.checklist li { padding: 24px 0; border-bottom: 1px solid var(--line, #dce2e9); }
+.checklist label { display: flex; align-items: flex-start; gap: 16px; cursor: pointer; line-height: 1.75; font-size: 16px; }
+.checklist input { width: 20px; height: 20px; flex: 0 0 20px; margin: 5px 0 0; accent-color: #17212f; }
+.checklist strong { display: block; font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+.glossary { margin: 0; }
+.glossary > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px 28px; padding: 24px 0; border-bottom: 1px solid var(--line, #dce2e9); }
+.glossary dt { font-size: 18px; font-weight: 600; line-height: 1.6; }
+.glossary dd { margin: 0; font-size: 16px; line-height: 1.8; }
+.page .note { font-size: 14px; color: var(--muted, #536174); }
+.directory { margin-block: 32px; color: var(--ink, #17212f); }
+.directory ul { list-style: none; padding: 0; }
+.directory li { border-top: 1px solid var(--line, #dce2e9); padding-block: 18px; }
+.directory li > span { display: block; font-weight: 600; margin-bottom: 10px; font-size: 18px; }
+.directory nav { display: flex; flex-wrap: wrap; gap: 16px 28px; line-height: 1.6; font-size: 16px; }
+.page :is(a,input):focus-visible, .directory a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+@media (max-width: 540px) { .glossary > div { grid-template-columns: minmax(0, 1fr); gap: 10px; } }
+@media print { .page { width: 100%; padding: 0; } .breadcrumb, .switcher { display: none; } .checklist li, .glossary > div { break-inside: avoid; } }

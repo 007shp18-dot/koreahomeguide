@@ -9,7 +9,6 @@ import { ArticleContents } from './article-contents';
 import { NeighbourhoodPhoto, PHOTO_ESSAYS } from './neighbourhood-photo';
 import { CityStoryPhoto } from './city-story-photo';
 import { EditorialArticleHeader } from './editorial-article-header';
-import { PracticalTool } from './practical-tool';
 import styles from './journey-article.module.css';
 
 // Research copy supports links, without accepting HTML or arbitrary markup.
@@ -47,7 +46,6 @@ export function JourneyArticle({ article, locale }: Readonly<{ article: Article;
     <EditorialArticleHeader topic={`${city.name[locale]} · ${kind}`} title={article.title[locale]} deck={article.deck[locale]}>
       <span>SignedPrice</span><span>{ko ? `${minutes}분 읽기` : `${minutes} min read`}</span><a href="#article-sources">{ko ? `출처 ${article.sources.length}개` : `${article.sources.length} sources`}</a>
     </EditorialArticleHeader>
-    {article.id === 'which-home' && (article.city === 'tokyo' || article.city === 'singapore') && <PracticalTool key={`${locale}:${article.city}`} kind={article.city === 'tokyo' ? 'japan' : 'singapore'} locale={locale} />}
     {(photoEssay || article.kind !== 'neighborhood') && <div className={styles.hero}>{photoEssay
       ? <NeighbourhoodPhoto id={photoEssay.hero} eager context={article.kind === 'local-issue'} locale={locale} />
       : <CityStoryPhoto city={article.city} locale={locale} scene={article.city === 'seoul' && article.id === 'discover' ? undefined : photoScene} forest={article.city === 'seoul' && article.id === 'discover'} eager />}</div>}

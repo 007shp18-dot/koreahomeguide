@@ -4,6 +4,7 @@ import { getJourneyArticle } from '../../content/city-journey-articles';
 import { journeyArticleHref, localIssueHref } from '../../content/city-journey-routes';
 import type { StoryCity } from '../../content/city-stories';
 import { guideDirectory } from '../../content/guide-directory';
+import { REGIONAL_RESOURCES, RESOURCE_TYPES, RESOURCE_LABELS, regionalResourceHref } from '../../content/regional-guide-resources';
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
 import { MARKET_PHOTOS } from '../market-representative-photo';
 import styles from './editorial-guides.module.css';
@@ -37,6 +38,7 @@ export function EditorialGuides({ market, query = '' }: Readonly<{ market: Story
     })
     : guideDirectory('en', market).map(entry => ({ ...entry, label: entry.group === 'buy' ? 'Buying' : 'Renting' }));
   const groups = [
+    { id: 'resources', title: `${city} checklists & glossary`, entries: RESOURCE_TYPES.map(resource => ({ id: resource, label: RESOURCE_LABELS[resource].en, title: `${city} ${RESOURCE_LABELS[resource].en.toLowerCase()}`, deck: resource === 'checklist' ? REGIONAL_RESOURCES[market].intro.en : 'Understand the local terms in listings, documents and cost breakdowns.', href: regionalResourceHref(market, resource) })) },
     { id: 'before-buying', title: 'Before you buy', entries: before },
     { id: 'owning', title: 'Owning & ongoing costs', entries: owning },
     { id: 'essential', title: `Essential ${city} guides`, entries: essential },
@@ -63,7 +65,7 @@ export function EditorialGuides({ market, query = '' }: Readonly<{ market: Story
     {groups.every(group => !group.entries.length) && <p className={styles.empty}>No matching guides. Try “cost”, “buy” or a different city.</p>}
     {groups.filter(group => group.entries.length).map(group => <section key={group.id} className={styles.section} aria-labelledby={group.id}>
       <h2 id={group.id}>{group.title}</h2>
-      <ul className={group.id === 'essential' ? styles.rows : styles.cards}>{group.entries.map(entry => <li key={entry.id}>
+      <ul className={group.id === 'essential' || group.id === 'resources' ? styles.rows : styles.cards}>{group.entries.map(entry => <li key={entry.id}>
         <Link href={entry.href} className={styles.entry}>
           <span className={styles.label}>{entry.label}</span><h3>{entry.title}</h3><p>{entry.deck}</p><span className={styles.read}>{entry.label === 'Calculator' ? 'Open calculator' : 'Read more'} <span aria-hidden="true">→</span></span>
         </Link>

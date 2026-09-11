@@ -1,4 +1,5 @@
 import 'server-only';
+import { resourceParams, regionalResourceHref } from '../content/regional-guide-resources';
 import { NEIGHBOURHOOD_STORIES, neighbourhoodHref } from '../content/neighbourhood-stories';
 
 import type { MetadataRoute } from 'next';
@@ -72,6 +73,7 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   ...CITY_STORIES.map(story => ({ en: cityStoryHref(story.city) as `/${string}`, ko: cityStoryHref(story.city, 'ko') as `/${string}` })),
   ...JOURNEY_ARTICLE_ROUTES.map(({ city, id }) => ({ en: journeyArticleHref(city, id), ko: journeyArticleHref(city, id, 'ko') })),
   ...editorialLocalizedPairs,
+  ...resourceParams().map(({ slug, resource }) => ({ en: regionalResourceHref(slug, resource), ko: regionalResourceHref(slug, resource, 'ko') })),
 ] as const);
 
 function languageAlternates(
