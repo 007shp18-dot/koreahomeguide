@@ -1,0 +1,22 @@
+import {beforeEach,describe,expect,it,vi} from 'vitest';
+const mocks=vi.hoisted(()=>({query:vi.fn(),authorized:vi.fn(),sameOrigin:vi.fn(),publish:vi.fn(),parse:vi.fn()}));
+vi.mock('server-only',()=>({}));
+vi.mock('../lib/evidence-pool/auth.server',()=>({authorized:mocks.authorized,sameOrigin:mocks.sameOrigin,operatorId:()=> 'operator-test'}));
+vi.mock('../lib/db/postgres.server',()=>({contentDatabase:()=>({query:mocks.query})}));
+vi.mock('../app/api/internal/content-articles/route',()=>({parseEditorialArticleInput:mocks.parse}));
+vi.mock('../lib/operations/editorial-publication.server',()=>({publishDueEditorial:mocks.publish}));
+vi.mock('../content/portfolio-manifest',()=>({getPortfolioRecord:()=>null}));
+import {GET,POST} from '../app/api/internal/editorial-operations/route';
+const id='12345678-1234-1234-1234-123456789012';
+const payload={slug:'dubai-new-story',locale:'en',contentType:'data-story',evidenceState:'partial'};
+const request=(action:string,version=2)=>new Request('https://www.signedprice.com/api/internal/editorial-operations/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,article:payload,version})});
+beforeEach(()=>{vi.resetAllMocks();mocks.authorized.mockReturnValue(true);mocks.sameOrigin.mockReturnValue(true);mocks.parse.mockReturnValue(payload);mocks.query.mockResolvedValue([{id,version:3,state:'draft'}]);mocks.publish.mockResolvedValue([{id,state:'published'}]);});
+describe('editorial admin revisions',()=>{
+ it('protects private lists and writes from unauthenticated access',async()=>{mocks.authorized.mockReturnValue(false);expect((await GET(new Request('https://www.signedprice.com/api/internal/editorial-operations/'))).status).toBe(401);expect((await POST(request('draft'))).status).toBe(401);expect(mocks.query).not.toHaveBeenCalled();});
+ it('rejects cross-origin writes',async()=>{mocks.sameOrigin.mockReturnValue(false);expect((await POST(request('publish'))).status).toBe(403);expect(mocks.publish).not.toHaveBeenCalled();});
+ it('saves revisions only to the queue without publishing',async()=>{expect((await POST(request('draft'))).status).toBe(200);expect(mocks.publish).not.toHaveBeenCalled();expect(mocks.query.mock.calls).toHaveLength(1);expect(mocks.query.mock.calls[0]![0]).toContain('INSERT INTO editorial_publication_queue');expect(mocks.query.mock.calls[0]![1][5]).toBe(2);});
+ it('publishes only the requested saved item',async()=>{const r=await POST(request('publish'));expect(r.status).toBe(200);expect(mocks.publish).toHaveBeenCalledExactlyOnceWith(id);expect(mocks.query.mock.calls[0]![1][2]).toBe('scheduled');});
+ it('does not publish stale revisions',async()=>{mocks.query.mockResolvedValue([]);expect((await POST(request('publish'))).status).toBe(409);expect(mocks.publish).not.toHaveBeenCalled();});
+ it('rejects invalid publication content before saving',async()=>{mocks.parse.mockReturnValue(null);expect((await POST(request('publish'))).status).toBe(422);expect(mocks.query).not.toHaveBeenCalled();});
+ it('opens stored articles read-only with a parameterized slug',async()=>{const r=await GET(new Request('https://www.signedprice.com/api/internal/editorial-operations/?slug=dubai-new-story'));expect(r.status).toBe(200);expect(mocks.query.mock.calls[0]![1]).toEqual(['dubai-new-story']);expect(mocks.query.mock.calls[0]![0]).toContain('content_source_links');});
+});

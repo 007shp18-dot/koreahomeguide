@@ -7,16 +7,16 @@ export function publicationPaths(input: Pick<SaveEditorialArticleInput,'locale'|
  const prefix=input.locale==='en'?'':input.locale==='ko'?'/ko':'/zh-cn';
  return [`${prefix}/news/`,`${prefix}/news/${input.slug}/`,'/editorial-sitemap.xml'];
 }
-export async function publishDueEditorial() {
+export async function publishDueEditorial(targetId?: string) {
  const sql=contentDatabase();if(!sql)throw new Error('database_not_configured');
  // A lease prevents two workers publishing the same item; expired leases are recoverable.
  const rows=await sql.query(`WITH due AS (
  SELECT id FROM editorial_publication_queue WHERE
- (state='scheduled' AND scheduled_at<=now()) OR (state IN ('publishing','refreshing') AND lease_until<now())
+ ((state='scheduled' AND scheduled_at<=now()) OR (state IN ('publishing','refreshing') AND lease_until<now())) AND ($1::uuid IS NULL OR id=$1::uuid)
  ORDER BY scheduled_at LIMIT 10 FOR UPDATE SKIP LOCKED
  ) UPDATE editorial_publication_queue q SET state=CASE WHEN q.state='refreshing' THEN 'refreshing' ELSE 'publishing' END,
  lease_until=now()+interval '10 minutes',attempts=attempts+1,updated_at=now()
- FROM due WHERE q.id=due.id RETURNING q.*`);
+ FROM due WHERE q.id=due.id RETURNING q.*`,[targetId ?? null]);
  const results=[];
  for(const row of rows) {
   const payload=row.payload as Record<string,unknown>;
