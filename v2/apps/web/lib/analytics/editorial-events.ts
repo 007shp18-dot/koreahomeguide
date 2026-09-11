@@ -7,7 +7,6 @@ export const EDITORIAL_EVENTS = Object.freeze([
   'article_to_check',
   'policy_source_open',
   'infographic_data_open',
-  'article_tool_use',
 ] as const);
 
 export type EditorialMarket = ContentMarketId | 'jp-tokyo';

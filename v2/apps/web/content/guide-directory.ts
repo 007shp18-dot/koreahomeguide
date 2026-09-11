@@ -1,6 +1,6 @@
 import { listPortfolioRecords } from './portfolio-manifest';
 
-export type GuideMarket = 'all' | 'seoul' | 'singapore' | 'dubai';
+export type GuideMarket = 'all' | 'seoul' | 'tokyo' | 'singapore' | 'dubai';
 export type GuideLocale = 'en' | 'ko';
 export const BUDGET_GUIDE_SLUGS = [
   'seoul-apartment-buying-budget-guide',

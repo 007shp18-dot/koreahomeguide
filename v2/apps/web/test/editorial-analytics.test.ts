@@ -12,13 +12,13 @@ const base = Object.freeze({
 describe('privacy-safe editorial analytics', () => {
   it.each<EditorialEvent>([
     'article_open', 'article_complete', 'article_to_explore', 'article_to_check',
-    'policy_source_open', 'infographic_data_open', 'article_tool_use',
+    'policy_source_open', 'infographic_data_open',
   ])('creates the allowlisted %s journey event', (event) => {
     expect(createEditorialEvent(event, base)).toEqual({ event, ...base });
   });
 
   it('drops addresses, amounts, search text, identity and arbitrary fields', () => {
-    const event = createEditorialEvent('article_tool_use', {
+    const event = createEditorialEvent('article_to_check', {
       ...base,
       address: 'private address', quotedPrice: 900_000_000, contractAmount: 1,
       searchText: 'building query', userId: 'user-1', arbitrary: 'not allowed',
