@@ -46,7 +46,7 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
     return href(`/jp/tokyo/explore/?${next}`);
   };
   const yen = new Intl.NumberFormat('en', { style: 'currency', currency: 'JPY', maximumFractionDigits: 0 });
-  const wardName = (city: string) => TOKYO_WARDS.find(([code]) => code === city)?.[1] ?? 'Ward';
+  const wardName = (city: string) => TOKYO_WARDS.find(([code]) => code === city)?.[1] ? t(TOKYO_WARDS.find(([code]) => code === city)![1]) : t('Ward');
   const scopeLink = ({ city, year, quarter }: JapanPublishedScope) => {
     const next = new URLSearchParams({ city, year, quarter, type: filters.type });
     if (filters.minArea !== null) next.set('minArea', String(filters.minArea));
@@ -65,29 +65,14 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
   return <>
     <SiteHeader copy={{ ...homepageCopy.header, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', homeHref: locale === 'en' ? '/' : locale === 'ko' ? '/ko/' : '/zh-cn/', marketLabel: t('Tokyo'), links: [{ label: t('Explore'), href: href('/jp/tokyo/explore/'), isCurrent: true }] }} />
     <main className={styles.page}>
-      <div className={styles.exploreFrame}>
-        <aside className={styles.regionRail} data-tokyo-region-rail="true" aria-label="Tokyo ward navigation">
-          <p className={styles.regionRailEyebrow}>{t('Tokyo')}</p>
-          <h2>{t('Explore Tokyo by area')}</h2>
-          <p>{t('Choose a ward, then a neighbourhood to compare recorded home prices.')}</p>
-          <nav aria-label="Tokyo wards">
-            {TOKYO_WARDS.map(([city, name]) => {
-              const available = coverage?.find(item => item.city === city);
-              return <Link key={city} data-ward={city} aria-current={scope.city === city ? 'location' : undefined} href={scopeLink(available ?? { city, year: scope.year, quarter: scope.quarter, sourceCount: 0 })} prefetch={false}>
-                <span>{name}</span><small>{available ? `${available.year} Q${available.quarter}` : t('View coverage')}</small>
-              </Link>;
-            })}
-          </nav>
-        </aside>
-        <div className={styles.exploreContent}>
-      <MarketExploreShell eyebrow={t("Tokyo")} title={t("Explore")} period={`${TOKYO_WARDS.find(([code]) => code === scope.city)?.[1] ?? 'Ward'} · ${scope.year} Q${scope.quarter} · JPY`}
+      <MarketExploreShell eyebrow={t("Tokyo")} title={t("Explore")} period={`${wardName(scope.city)} · ${scope.year} Q${scope.quarter} · JPY`}
         layers={<div>
           <p className={styles.intro}>{t('Choose a ward, then a neighbourhood to compare recorded home prices.')}</p>
           <p className={styles.propertyScope}>{filters.type === TOKYO_CONDOMINIUM_TYPE ? t('Apartments & condominiums') : filters.type || t('All property types')} · {t('Change property type in More filters.')}</p>
       <form key={JSON.stringify([scope, filters.q, filters.type, filters.minArea, filters.maxArea, useLatestPeriod])} className={styles.filters} action={href("/jp/tokyo/explore/")} method="get" aria-label="Tokyo transaction filters">
         <div className={styles.primaryFilters}>
         <label className={styles.search}>{t('Neighbourhood, layout or built year')}<input name="q" placeholder="Azabu, 2LDK, 2010…" defaultValue={filters.q} maxLength={100} /></label>
-        <label>{t('Ward')}<select name="city" defaultValue={scope.city}>{TOKYO_WARDS.map(([code, name]) => <option value={code} key={code}>{name}</option>)}</select></label>
+        <label>{t('Ward')}<select name="city" defaultValue={scope.city}>{TOKYO_WARDS.map(([code, name]) => <option value={code} key={code}>{t(name)}</option>)}</select></label>
         <button type="submit">{t('Explore transactions')}</button>
         </div>
         <details className={styles.advancedFilters} aria-label="More filters" open={advancedFiltersActive}>
@@ -113,15 +98,19 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
       </div>}
         </div>}
         discovery={<>
-      {error ? <div className={styles.empty} role="alert"><h2>{t('Transactions are unavailable')}</h2><p>{error}</p></div> : data === null ? <div className={styles.empty}>
+      <div data-tokyo-area-directory="true"><Suspense fallback={<p role="status">{t('Loading area transactions…')}</p>}>
+        <TokyoMapPanel view="directory" locale={locale} city={scope.city} year={scope.year} quarter={scope.quarter}
+          filters={{ q: filters.q, neighbourhood: filters.neighbourhood, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />
+      </Suspense></div>
+      {error ? <div className={styles.empty} role="alert"><h2>{t('Transactions are unavailable')}</h2><p>{t(error)}</p></div> : data === null ? <div className={styles.empty}>
         <h2>{t('Prices for this period are not available yet.')}</h2>
         <p>{t('We have not published records for this ward and quarter. This does not mean that no homes traded.')}</p>
-        {availableInWard && <Link className={styles.emptyLink} href={scopeLink(availableInWard)}>View {wardName(availableInWard.city)} · {availableInWard.year} Q{availableInWard.quarter} <UiIcon name="arrow-right" /></Link>}
-        <Link className={styles.emptyLink} href="/news/city-stories/tokyo/">Find your Tokyo neighbourhood <UiIcon name="arrow-right" /></Link>
+        {availableInWard && <Link className={styles.emptyLink} href={scopeLink(availableInWard)}>{t('View')} {wardName(availableInWard.city)} · {availableInWard.year} Q{availableInWard.quarter} <UiIcon name="arrow-right" /></Link>}
+        <Link className={styles.emptyLink} href={locale === 'ko' ? "/ko/news/city-stories/tokyo/" : locale === 'zh-CN' ? "/zh-cn/news/?market=tokyo" : "/news/city-stories/tokyo/"}>{t('Find your Tokyo neighbourhood')} <UiIcon name="arrow-right" /></Link>
       </div> : <>
         <div id="tokyo-transactions" className={styles.results}><h2>{data.filteredCount.toLocaleString('en')} {t('recorded transactions')}</h2><p>{(filters.neighbourhood || filters.q) ? `${filters.neighbourhood || filters.q} · ` : ''}{wardName(scope.city)} · {scope.year} Q{scope.quarter}</p></div>
-        {(filters.neighbourhood || filters.q) && <Link className={styles.clearSearch} href={scopeLink({ ...scope, sourceCount: data.sourceCount })} prefetch={false}>Show all neighbourhoods in {wardName(scope.city)}</Link>}
-        <p className={styles.source}>{data.sourceCount.toLocaleString('en')} records in this ward and quarter · Source retrieved {new Date(data.retrievedAt).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</p>
+        {(filters.neighbourhood || filters.q) && <Link className={styles.clearSearch} href={scopeLink({ ...scope, sourceCount: data.sourceCount })} prefetch={false}>{locale === 'ko' ? `${wardName(scope.city)} 전체 동네 보기` : locale === 'zh-CN' ? `查看${wardName(scope.city)}所有街区` : `Show all neighbourhoods in ${wardName(scope.city)}`}</Link>}
+        <p className={styles.source}>{data.sourceCount.toLocaleString('en')} {locale === 'ko' ? '건 · 이 구·분기 전체 거래' : locale === 'zh-CN' ? '笔 · 本区本季度全部成交' : 'records in this ward and quarter'} · {t('Source retrieved')} {new Date(data.retrievedAt).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</p>
         <p className={styles.source}>{t('Price, high to low · Area-level records; building names are not disclosed.')}</p>
         <div className={styles.list}>
           {data.records.map(row => <article className={styles.row} key={row.recordReference}>
@@ -133,25 +122,23 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
         {!data.records.length && <p>{t('No published records match these filters. Try a wider area range or another neighbourhood.')}</p>}
         <nav className={styles.pagination} aria-label="Transaction pages">
           {filters.page > 1 && <Link href={pageLink(filters.page - 1)}><UiIcon name="arrow-left" /> {t('Previous')}</Link>}
-          <span>Page {filters.page} of {Math.max(1, Math.ceil(data.filteredCount / 20))}</span>
+          <span>{t('Page')} {filters.page} {t('of')} {Math.max(1, Math.ceil(data.filteredCount / 20))}</span>
           {filters.page * 20 < data.filteredCount && <Link href={pageLink(filters.page + 1)}>{t('Next')} <UiIcon name="arrow-right" /></Link>}
         </nav>
       </>}
         </>}
         spatial={<Suspense fallback={<p className={styles.mapLoading} role="status">{t('Preparing Tokyo ward map…')}</p>}>
-          <TokyoMapPanel locale={locale} city={scope.city} year={scope.year} quarter={scope.quarter}
+          <TokyoMapPanel view="map" locale={locale} city={scope.city} year={scope.year} quarter={scope.quarter}
             filters={{ q: filters.q, neighbourhood: filters.neighbourhood, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />
         </Suspense>}
       />
-        </div>
-      </div>
       <div className={styles.sourcePanel}>
       <details className={styles.method}><summary>{t('About these recorded prices')}</summary>
-        <p>These are completed transactions reported by area, not homes currently for sale. The source does not disclose building names, exact addresses or unit identities.</p>
-        <p>Dates are reported by quarter. Prices and areas use the precision supplied by MLIT. Homes with an area range are left out when you set a minimum or maximum area; similar-looking records can be separate transactions.</p>
+        <p>{t('These are completed transactions reported by area, not homes currently for sale. The source does not disclose building names, exact addresses or unit identities.')}</p>
+        <p>{t('Dates are reported by quarter. Prices and areas use the precision supplied by MLIT. Homes with an area range are left out when you set a minimum or maximum area; similar-looking records can be separate transactions.')}</p>
       </details>
-      <p className={styles.source}>Source: <a href="https://www.reinfolib.mlit.go.jp/">MLIT Real Estate Information Library</a> · Transaction price information, edited by SignedPrice.</p>
-      <nav className={styles.links} aria-label="Tokyo research"><Link href={href("/jp/tokyo/")}>{t('Market overview')}</Link><Link href="/news/?market=tokyo">Tokyo stories &amp; insights</Link><a href="https://www.reinfolib.mlit.go.jp/" rel="noreferrer">Data source</a></nav>
+      <p className={styles.source}>{t('Source')}: <a href="https://www.reinfolib.mlit.go.jp/">{t('MLIT Real Estate Information Library')}</a> · {t('Transaction price information, edited by SignedPrice.')}</p>
+      <nav className={styles.links} aria-label="Tokyo research"><Link href={href("/jp/tokyo/")}>{t('Market overview')}</Link><Link href={`${locale === 'en' ? '' : locale === 'ko' ? '/ko' : '/zh-cn'}/news/?market=tokyo`}>{t('Tokyo stories & insights')}</Link><a href="https://www.reinfolib.mlit.go.jp/" rel="noreferrer">{t('Data source')}</a></nav>
       </div>
     </main>
     <SiteFooter locale={locale} copy={homepageCopy.footer} />

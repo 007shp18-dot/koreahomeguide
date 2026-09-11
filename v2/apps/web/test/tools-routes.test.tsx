@@ -3,7 +3,7 @@ import {renderToStaticMarkup} from 'react-dom/server';
 import {ToolsHub} from '../components/tools/tools-hub';
 import {buildPropertyScenarioMetadata} from '../lib/tools/property-scenario-metadata';
 import {SiteHeader} from '../components/site-header';
-import {globalNavigation,languageDestinations} from '../lib/navigation/site-navigation';
+import {globalNavigation,languageDestinations,marketDestination} from '../lib/navigation/site-navigation';
 import {metadata as koreanToolsMetadata} from '../app/(ko)/ko/tools/page';
 it('uses Korean social images for the Korean directory and calculator',()=>{
  for(const metadata of [koreanToolsMetadata,buildPropertyScenarioMetadata('ko',false)]) {
@@ -55,4 +55,25 @@ it('keeps market tools in the agreed country order: Korea, Singapore, Dubai, Jap
  const html=renderToStaticMarkup(<ToolsHub locale="en"/>);
  const order=['single-quote','singapore-check','dubai-check','tokyo-budget'].map(tool=>html.indexOf(`data-tool-id="${tool}"`));
  expect(order).toEqual([...order].sort((left,right)=>left-right));
+});
+
+it('retains the Tokyo tool and its inputs across all three languages',()=>{
+ expect(languageDestinations('/jp/tokyo/tools/', '?city=13103&area=60&price=90000000')).toEqual({
+  en:'/jp/tokyo/tools/?city=13103&area=60&price=90000000',
+  ko:'/ko/jp/tokyo/tools/?city=13103&area=60&price=90000000',
+  'zh-CN':'/zh-cn/jp/tokyo/tools/?city=13103&area=60&price=90000000',
+ });
+});
+
+it('keeps the price-check task when switching away from Japan',()=>{
+ expect(marketDestination('kr-seoul','/jp/tokyo/tools/','ko')).toBe('/ko/kr/seoul/check/');
+ expect(marketDestination('sg-singapore','/jp/tokyo/tools/','zh-CN')).toBe('/zh-cn/sg/singapore/check/');
+});
+
+it('opens translated price tools from the Chinese directory',()=>{
+ const html=renderToStaticMarkup(<ToolsHub locale="zh-CN"/>);
+ for(const path of ['/kr/seoul/check','/sg/singapore/check','/ae/dubai/check','/jp/tokyo/tools']) {
+  expect(html).toContain(`href="/zh-cn${path}`);
+ }
+ expect(html).not.toContain(' · English');
 });

@@ -35,8 +35,8 @@ describe('shared navigation destinations', () => {
   it('retains Tokyo tools and saved tasks in every supported language', () => {
     for (const locale of ['en', 'ko', 'zh-CN'] as const) {
       const prefix = locale === 'en' ? '' : locale === 'ko' ? '/ko' : '/zh-cn';
-      expect(marketDestination('jp-tokyo', `${prefix}/tools/`, locale)).toBe(`${prefix}/tools/property-scenario/?market=jp-tokyo&currency=JPY`);
-      expect(marketDestination('jp-tokyo', `${prefix}/kr/seoul/check/`, locale)).toBe(`${prefix}/tools/property-scenario/?market=jp-tokyo&currency=JPY`);
+      expect(marketDestination('jp-tokyo', `${prefix}/tools/`, locale)).toBe(`${prefix}/jp/tokyo/tools/`);
+      expect(marketDestination('jp-tokyo', `${prefix}/kr/seoul/check/`, locale)).toBe(`${prefix}/jp/tokyo/tools/`);
       expect(marketDestination('jp-tokyo', `${prefix}/kr/seoul/shortlist/`, locale)).toBe(`${prefix}/jp/tokyo/shortlist/`);
       expect(marketDestination('jp-tokyo', `${prefix}/news/?type=news&market=seoul`, locale)).toBe(`${prefix}/news/?type=news&market=tokyo`);
     }

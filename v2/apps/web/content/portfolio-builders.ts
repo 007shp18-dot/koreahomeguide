@@ -35,7 +35,7 @@ type RecordInput = Readonly<{
   slug: string;
   locale: ContentLocale;
   type: PortfolioContentType;
-  marketId: ContentMarketId;
+  marketId: ContentMarketId | null;
   title: string;
   deck: string;
   question: string;

@@ -1,4 +1,6 @@
-import { BudgetSearch } from '@/components/global-shortlist/budget-search';
-import { ToolsShell } from '@/components/tools/tools-shell';
-export const metadata = { title: '도쿄 주택 예산 도구 | SignedPrice', robots: { index: false, follow: true } };
-export default function Page() { return <ToolsShell locale="ko" href="/ko/jp/tokyo/tools/"><BudgetSearch market="tokyo" locale="ko" embedded /></ToolsShell>; }
+import { TokyoPriceCheck } from '@/components/japan/tokyo-price-check';
+import type { TokyoCheckParams } from '@/lib/japan/price-check';
+export const metadata = { title: '도쿄 매물 가격 비교 | SignedPrice', robots: { index: false, follow: true } };
+export default function Page({ searchParams }: { searchParams: Promise<TokyoCheckParams> }) {
+  return <TokyoPriceCheck locale="ko" searchParams={searchParams} />;
+}

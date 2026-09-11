@@ -111,11 +111,7 @@
 .recordDetails { margin-top: 6px; }
 .recordDetails summary { width: fit-content; min-height: 36px; align-content: center; font-size: 13px; line-height: 1.5; color: var(--muted); cursor: pointer; }
 .recordDetails summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-@media (min-width: 761px) and (max-width: 1050px) {
-  .page :global([data-layout='split']) { grid-template-columns: minmax(0, 1fr); }
-  .page :global([data-market-shell-region='discovery']) { grid-column: 1; grid-row: 2; }
-  .page :global([data-market-shell-region='spatial']) { position: static; grid-row: 1; }
-}
+
 @media (max-width: 760px) {
   .page :global([data-layout='split']) { grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .page :global([data-market-shell-region='discovery']) { grid-column: 1; grid-row: 2; }
@@ -135,29 +131,7 @@
   .mapViewport :global([data-map-provider='google']) :global([role='region']) { min-height: 320px; height: 320px; }
 }
 
-.exploreFrame { width: min(calc(100% - 2 * var(--page-gutter)), var(--workspace-frame)); margin: 0 auto; display: grid; grid-template-columns: 224px minmax(0, 1fr); gap: 40px; align-items: start; }
-.exploreContent { min-width: 0; }
-.regionRail { position: sticky; top: 24px; min-width: 0; padding: 20px 0; border-top: 2px solid var(--ink); }
-.regionRailEyebrow { margin: 0 0 8px; color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-.regionRail h2 { margin: 0; font-size: 18px; line-height: 1.4; }
-.regionRail > p:not(.regionRailEyebrow) { margin: 8px 0 18px; color: var(--muted); font-size: 13px; line-height: 1.6; }
-.regionRail nav { display: grid; max-height: min(70vh, 640px); overflow-y: auto; border-top: 1px solid var(--line); scrollbar-width: thin; }
-.regionRail nav a { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; min-width: 0; padding: 11px 0; border-bottom: 1px solid var(--line); color: var(--ink); font-size: 14px; text-decoration: none; }
-.regionRail nav a:hover, .regionRail nav a[aria-current='location'] { color: var(--accent); }
-.regionRail nav a[aria-current='location'] { font-weight: 700; }
-.regionRail nav span { min-width: 0; overflow-wrap: anywhere; }
-.regionRail nav small { flex: 0 0 auto; color: var(--muted); font-size: 12px; white-space: nowrap; }
-.regionRail nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-@media (max-width: 900px) {
-  .exploreFrame { grid-template-columns: 184px minmax(0, 1fr); gap: 24px; }
-  .regionRail nav { max-height: 560px; }
+@media (min-width: 761px) {
+  .list { max-height: 600px; overflow-y: auto; overscroll-behavior: contain; padding-right: 12px; }
+  .page :global([data-market-shell-region='spatial']) { position: sticky; top: 24px; }
 }
-@media (max-width: 760px) {
-  .exploreFrame { width: calc(100% - 40px); display: block; }
-  .regionRail { position: static; padding: 16px 0 12px; }
-  .regionRail > p:not(.regionRailEyebrow), .regionRail h2 { display: none; }
-  .regionRail nav { display: flex; max-height: none; overflow-x: auto; overflow-y: hidden; gap: 8px; border-top: 0; padding-bottom: 4px; }
-  .regionRail nav a { flex: 0 0 auto; display: block; min-height: 44px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-strong); }
-  .regionRail nav small { display: block; margin-top: 2px; }
-}
-@media (min-width: 761px) { .areaMap .wardDirectory { display: none; } }

@@ -121,13 +121,12 @@ describe('Tokyo transaction exploration', () => {
     expect(html).not.toContain('0 recorded transactions');
     expect(html).toMatch(/href="\/news\/city-stories\/tokyo\/?"/);
   });
-  it('shows the Tokyo wards as a persistent left-side region rail', async () => {
+  it('keeps one two-column workspace without an extra ward rail', async () => {
     read.mockResolvedValue(null);
     const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({}) }));
-    expect(html).toContain('aria-label="Tokyo ward navigation"');
-    expect(html).toContain('data-tokyo-region-rail="true"');
-    expect(html).toContain('data-ward="13103"');
-    expect(html).toContain('data-ward="13123"');
+    expect(html).not.toContain('data-tokyo-region-rail');
+    expect(html.match(/data-layout="split"/g)).toHaveLength(1);
+    expect(html).toContain('data-tokyo-area-directory');
   });
 
   it('opens on apartment transactions but preserves an explicit all-property selection', async () => {
