@@ -73,7 +73,7 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
           <nav aria-label="Tokyo wards">
             {TOKYO_WARDS.map(([city, name]) => {
               const available = coverage?.find(item => item.city === city);
-              return <Link key={city} data-ward={city} aria-current={scope.city === city ? 'location' : undefined} href={scopeLink(available ?? { city, year: scope.year, quarter: scope.quarter })} prefetch={false}>
+              return <Link key={city} data-ward={city} aria-current={scope.city === city ? 'location' : undefined} href={scopeLink(available ?? { city, year: scope.year, quarter: scope.quarter, sourceCount: 0 })} prefetch={false}>
                 <span>{name}</span><small>{available ? `${available.year} Q${available.quarter}` : t('View coverage')}</small>
               </Link>;
             })}
