@@ -27,9 +27,10 @@ async function openVisibleContextMenu(page: Page, className: string): Promise<Lo
 
 export async function visibleProductNavigation(page: Page): Promise<Locator> {
   const mobile = await openVisibleMobileMenu(page);
-  const isKorean = await page.locator('html').getAttribute('lang') === 'ko';
+  const language = await page.locator('html').getAttribute('lang');
+  const menuName = language === 'ko' ? '전체 메뉴' : language?.startsWith('zh') ? '网站菜单' : 'Site menu';
   const navigation = mobile
-    ? mobile.getByRole('navigation', { name: isKorean ? '전체 메뉴' : 'Site menu', exact: true })
+    ? mobile.getByRole('navigation', { name: menuName, exact: true })
     : page.getByRole('navigation', { name: 'Primary navigation', exact: true });
   return navigation.filter({ visible: true });
 }
