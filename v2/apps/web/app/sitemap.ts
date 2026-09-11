@@ -190,7 +190,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/ko/news/', latestDate(EDITORIAL_PORTFOLIO.filter(({ locale, type }) => locale === 'ko' && type !== 'guide').map(({ updatedAt }) => updatedAt))),
     ...['/sg/singapore/explore/', '/sg/singapore/explore/ccr/', '/sg/singapore/explore/rcr/', '/sg/singapore/explore/ocr/', '/ae/dubai/explore/', '/ae/dubai/guide/'].map(path => sitemapEntry(`/ko${path}`)),
     sitemapEntry('/zh-cn/passport/'),
-    sitemapEntry('/zh-cn/kr/seoul/explore/', areaLastModified),
     sitemapEntry('/markets/'),
     sitemapEntry('/prices/', summaryLastModified),
     sitemapEntry('/news/', latestDate([
@@ -253,7 +252,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       path as `/${string}`,
       modifiedByPath.get(path),
     ));
-    if (path === '/kr/seoul/check/' || path === '/kr/seoul/check/compare/') entries.push(sitemapEntry(`/zh-cn${path}`, modifiedByPath.get(path)));
+    if (path === '/kr/seoul/explore/' || path === '/kr/seoul/check/' || path === '/kr/seoul/check/compare/') entries.push(sitemapEntry(`/zh-cn${path}`, modifiedByPath.get(path)));
   }
   if (newsReady) {
     entries.push(...newsRecords.map((record) => ({
