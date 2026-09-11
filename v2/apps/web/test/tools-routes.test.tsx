@@ -15,7 +15,7 @@ it.each(['en','ko','zh-CN'] as const)('publishes a translated tools directory wi
  const html=renderToStaticMarkup(<ToolsHub locale={locale}/>);
  expect(html.match(/<h1\b/g)).toHaveLength(1);expect(html).not.toContain('Preparing');
  expect(globalNavigation(locale)).toHaveLength(5);
- expect(html).toContain('/jp/tokyo/shortlist');expect(html).toContain('/ae/dubai/check');expect(html).toContain('/sg/singapore/check');expect(html).toContain('/tools/property-scenario');
+ expect(html).toContain('/jp/tokyo/tools');expect(html).toContain('/ae/dubai/check');expect(html).toContain('/sg/singapore/check');expect(html).toContain('/tools/property-scenario');
 });
 it('groups every existing tool once by decision',()=>{
  const html=renderToStaticMarkup(<ToolsHub locale="en"/>);
