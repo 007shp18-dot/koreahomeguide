@@ -521,13 +521,12 @@ export async function readPhotoCoverageStatus() {
   const pendingBuildings = Number(inventoryRows[0]?.pending ?? 0);
   const capacity = (dailyRequestCap: number, dailySpendCapUsd: number) => photoRolloutCapacity({
     pendingBuildings, dailyRequestCap, dailySpendCapUsd, estimatedRequestCostUsd: cost,
-    scheduledRequestsPerDay: 144 * 30,
+    scheduledRequestsPerDay: 4 * 30,
   });
   return Object.freeze({
     rollout: {
       totalBuildings: Number(inventoryRows[0]?.total ?? 0),
       current: capacity(envLimit('PHOTO_GOOGLE_DAILY_REQUEST_CAP', 5), envLimit('PHOTO_GOOGLE_DAILY_SPEND_CAP_USD', 0.16)),
-      proposalsNotActivated: [100, 1000, 4000].map(limit => capacity(limit, limit * cost)),
     },
     coverage,
     pipeline,

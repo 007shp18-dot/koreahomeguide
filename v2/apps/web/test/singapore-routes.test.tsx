@@ -83,7 +83,7 @@ describe('Singapore route SSR', () => {
     expect(overview).toContain(model.display.sampleLabel);
     expect(overview).toContain('data-summary-kind="project"');
     expect(overview).toContain(model.display.medianPsfLabel);
-    expect(overview.indexOf('data-market-summary="true"')).toBeLessThan(overview.indexOf('data-building-media="google-place-photo"'));
+    expect(overview.indexOf('data-market-summary="true"')).toBeLessThan(overview.indexOf('data-building-media="nearby-view-on-demand"'));
     expect(overview.split(model.display.medianPriceLabel)).toHaveLength(2);
     const summary = html.slice(html.indexOf('id="project-summary-heading"'), html.indexOf('id="transaction-heading"'));
     expect(summary).not.toContain(`<dd>${model.display.medianPriceLabel}</dd>`);
@@ -269,7 +269,7 @@ describe('Singapore route SSR', () => {
     expect(unavailableHtml).not.toMatch(/SGD [\d,]+|PSF|PSM/);
   });
 
-  it('keeps an approved-photo surface available when a project has too few transactions', async () => {
+  it('shows the immediate location fallback without a photo lookup when a project has too few transactions', async () => {
     const store = await repository();
     const identity = (['CCR', 'RCR', 'OCR'] as const)
       .flatMap((segment) => store.listProjects(segment))
@@ -281,7 +281,7 @@ describe('Singapore route SSR', () => {
     const html = renderToStaticMarkup(<SingaporeProjectDetail model={model} />);
 
     expect(html).toContain('data-singapore-project="insufficient"');
-    expect(html).toContain('data-building-media="google-place-photo"');
+    expect(html).toContain('data-building-media="nearby-view-on-demand"');
     expect(html).toContain(`${model.count} reported transactions`);
     expect(html).not.toMatch(/SGD [\d,]+/);
     expect(html).toContain('data-market-summary="true"');

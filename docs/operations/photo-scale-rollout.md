@@ -26,15 +26,13 @@ https://developers.google.com/maps/documentation/places/web-service/policies
 
 ## Capacity and costs
 
-The Google schedule now runs every ten minutes with at most thirty candidates per
-run: a theoretical ceiling of 4,320 searches per day before provider latency and
-limits. Existing daily request and spend caps remain in force. Changing scheduling
-alone does not increase the paid daily request allowance.
+The Google schedule remains every six hours with at most thirty candidates per
+run, alongside the existing daily request and spend caps. The user explicitly
+requested that limits remain unchanged and no paid collection increase be made.
 
-The authenticated photo-coverage endpoint includes rollout.current and inactive
-proposals at 100, 1,000 and 4,000 requests/day. Estimates use the configured cost per
-search (default USD 0.032), exclude retries and photo views, and do not promise that
-every search yields a usable photograph. Budget increases are not activated.
+The authenticated photo-coverage endpoint includes rollout.current. Estimates use
+the configured cost per search (default USD 0.032), exclude retries and photo views,
+and do not promise that every search yields a usable photograph.
 
 The operations pipeline separates provider-ready associations from visual-review
 and rights-blocked queues. NAVER discovery remains paused: 40,550 pending rows are

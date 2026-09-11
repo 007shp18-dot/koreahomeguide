@@ -27,7 +27,7 @@ export function BuildingNearbyView({ locale = 'en', market, providerKey, buildin
     : <GoogleView locale={locale} browserKey={providerKey} buildingName={buildingName}
         latitude={latitude} longitude={longitude} address={address} mapHref={mapHref} />;
 
-  return <section className={styles.locationFallback} data-building-media="nearby-view-on-demand">
+  return <section className={styles.locationFallback} data-building-media="nearby-view-on-demand" data-location-fallback="true">
     <span aria-hidden="true">⌖</span>
     <div><strong>{buildingName}</strong>
       {address ? <p>{address}</p> : null}
@@ -36,6 +36,6 @@ export function BuildingNearbyView({ locale = 'en', market, providerKey, buildin
     </div>
     {providerKey ? <button className={styles.nearbyButton} type="button" onClick={() => setOpened(true)}>
       {locale === 'ko' ? '주변 거리뷰 보기' : locale === 'zh-CN' ? '查看周边街景' : 'View nearby streets'}
-    </button> : <a href={mapHref}>{locale === 'ko' ? '지도에서 보기' : locale === 'zh-CN' ? '查看地图' : 'View on map'}</a>}
+    </button> : <a href={mapHref}>{locale === 'ko' ? '지도에서 보기' : locale === 'zh-CN' ? '查看地图' : 'View location on map'}</a>}
   </section>;
 }
