@@ -23,13 +23,22 @@ describe('daily neighbourhood publication', () => {
       for (const other of NEIGHBOURHOOD_STORIES.filter(other => other.city !== story.city)) expect(html).not.toContain(neighbourhoodHref(other.slug).replace(/\/$/, ''));
     }
   });
-  it('renders four actual local photos per article with dates, credits, and matching article schema', () => {
+  it('renders four attributed local or hosted photos per article with dates, credits, and matching article schema', () => {
     for (const story of NEIGHBOURHOOD_STORIES) {
       const photos = [story.hero, ...story.sections.map(section => section.photo)];
       expect(new Set(photos.map(photo => photo.src)).size).toBeGreaterThanOrEqual(4);
       const html = renderToStaticMarkup(<NeighbourhoodArticle story={story} />);
       for (const photo of photos) {
-        expect(existsSync(fileURLToPath(new URL(`../public${photo.src}`, import.meta.url)))).toBe(true);
+        if (photo.src.startsWith('/')) {
+          expect(existsSync(fileURLToPath(new URL(`../public${photo.src}`, import.meta.url)))).toBe(true);
+        } else {
+          const photoUrl = new URL(photo.src);
+          expect(photoUrl.protocol).toBe('https:');
+          expect(photoUrl.hostname).toBe('images.pexels.com');
+          expect(photoUrl.pathname).toMatch(/^\/photos\/\d+\//);
+          expect(photo.author).toBeTruthy();
+          expect(photo.licenseUrl).toBe('https://www.pexels.com/license/');
+        }
         expect(html).toContain(photo.src);
         expect(html).toContain(photo.licenseUrl);
         expect(photo.width).toBeGreaterThan(0);
