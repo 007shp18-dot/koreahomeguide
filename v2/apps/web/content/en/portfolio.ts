@@ -1,6 +1,6 @@
 import { policyExplainers } from '../policy-explainers';
 import { AFFORDABLE_RESALE_STORIES } from './affordable-resale';
-import { enrichEnglishRecord, RESEARCH_SOURCES } from './research-expansions';
+import { enrichEnglishRecord } from './research-expansions';
 import { DUBAI_RENTAL_YIELD } from './dubai-rental-yield';
 import { KOREA_LARGE_ESTATE_SPILLOVER } from './korea-large-estate-spillover';
 import { SINGAPORE_LENTOR_SPILLOVER } from './singapore-lentor-spillover';
@@ -175,29 +175,4 @@ export const ENGLISH_PORTFOLIO = Object.freeze([
   portfolioRecord({ slug: 'compare-seoul-district-prices', locale: 'en', type: 'guide', marketId: 'kr-seoul', title: 'Compare Seoul district prices without mixing cohorts', deck: 'Hold transaction type, property type, area, period and publication threshold constant before reading rank.', question: 'How can districts be compared without mixing period, type, and area?', points: [['Choose one cohort', 'Fix sale or rent, housing type, size band and evidence period across every district.'], ['Read distribution and count', 'The median alone hides spread and thin samples; unavailable rows are not zero-priced markets.'], ['Move to buildings', 'District rank is discovery. Verify the exact building and recent compatible contracts next.']], boundary: 'District rankings do not rank quality of life, legal safety, liquidity or future returns.', sources: [SOURCES.koreaTransactions], evidenceReleaseIds: [RELEASES.sale, RELEASES.rent], relatedHref: '/kr/seoul/rankings/' }),
   portfolioRecord({ slug: 'buy-property-in-korea-as-foreigner', locale: 'en', type: 'guide', marketId: 'kr-seoul', title: 'Buy property in Korea as a foreigner: verified sequence', deck: 'Coordinate identity, transaction evidence, funding, restrictions, reporting, contract and registration before committing.', question: 'What is the verified sequence for a foreign buyer purchasing in Korea?', points: [['Verify the asset', 'Match the exact unit, owner, registry, building record and current restrictions before discussing payment.'], ['Verify money and reports', 'Confirm lender terms, cash path, taxes, fees and the foreign-buyer reports that apply to the date and funding source.'], ['Close with current records', 'Write conditions clearly, recheck records before final payment and complete reporting and registration with traceable evidence.']], boundary: 'This is a decision sequence, not legal, tax, lending or investment advice.', sources: [SOURCES.koreaForeignReporting, SOURCES.seoulPermit], evidenceReleaseIds: [RELEASES.policyKorea, RELEASES.sale], relatedHref: '/kr/seoul/explore/?transaction=sale', translationGroupId: 'buy-korea' }),
   portfolioRecord({ slug: 'read-singapore-private-transactions', locale: 'en', type: 'guide', marketId: 'sg-singapore', title: 'Read Singapore private-property transaction evidence', deck: 'Keep region, project, tenure, sale type, unit size and official index layers separate.', question: 'How should a buyer read project and regional transaction evidence in Singapore?', points: [['Choose the housing system', 'Private residential and HDB evidence have different eligibility, tenure and source boundaries and should not be pooled.'], ['Open the project', 'Confirm identity and compare compatible project transactions by tenure, sale type, size and date.'], ['Use the index separately', 'URA’s quarterly index describes a market series; project transaction distributions answer a different question.']], boundary: 'Released transaction evidence is not an asking-price feed, appraisal or recommendation.', sources: [SOURCES.singaporeUra], evidenceReleaseIds: [RELEASES.singapore], relatedHref: '/sg/singapore/explore/' }),
-  portfolioRecord({
-    slug: 'singapore-condo-prices-2026-by-project', translationGroupId: 'singapore-condo-prices-2026-by-project', locale: 'en', type: 'market-brief', marketId: 'sg-singapore',
-    title: 'Singapore condo prices in 2026: S$1,680 psf is a starting point. The project is the price.',
-    deck: 'URA caveat records show why the average condo price is too broad: project, size and sale type can matter more than the regional label.',
-    question: 'What do Singapore condo caveats show when the comparison stays at project level?',
-    points: [
-      ['The headline number', 'A five-year project-level screen places the median of project medians at roughly S$1,680 psf, but that summary is not a current apartment price.'],
-      ['The budget screen', 'Eighteen projects cleared the 80–100 square metre, S$1.5 million resale screen in H1 2026; 135 of 138 included resales were at or below the ceiling.'],
-      ['The buyer profile', 'A foreign buyer subject to the standard 60% ABSD rate adds S$900,000 to a S$1.5 million purchase before BSD and other costs.'],
-    ], boundary: 'URA caveats are reported transaction evidence, not live listings, appraisals or forecasts. Project, tenure, size and sale type remain essential context.',
-    sources: [RESEARCH_SOURCES.uraTransactions], evidenceReleaseIds: [RELEASES.singaporeCaveats, RELEASES.singapore], relatedHref: '/sg/singapore/explore/', publishedAt: '2026-09-11T00:00:00.000Z',
-  }),
-  portfolioRecord({
-    slug: 'tokyo-asking-price-vs-contracted-price-2026', translationGroupId: 'tokyo-asking-price-vs-contracted-price-2026', locale: 'en', type: 'market-brief', marketId: null,
-    title: "Tokyo's resale condo price is still rising. The number of people paying it is not.",
-    deck: 'July 2026 contracted prices in Tokyo’s 23 wards rose 2.7% year on year while contracts fell 17.2%. For a buyer, the gap between asking and contracted price is where the negotiation starts.',
-    question: 'Why should a Tokyo buyer compare asking prices with contracted prices before making an offer?',
-    points: [
-      ['The two July numbers', 'The 23-ward contracted-price median reached ¥1.358 million per square metre, up 2.7% year on year, while contracts fell 17.2%.'],
-      ['Central divergence', 'Chiyoda, Chuo and Minato contracted prices fell 5.9% year on year as active listings rose 50.5%.'],
-      ['The closing number', 'A listing is an opening position. REINS and MLIT contracted-price records show the number that actually closed.'],
-    ], boundary: 'REINS and MLIT series have different methods; listing prices are not completed transactions, and SignedPrice does not forecast or recommend purchases.',
-    sources: [RESEARCH_SOURCES.reinsTokyo, RESEARCH_SOURCES.mlitLibrary], evidenceReleaseIds: [RELEASES.tokyoReinsJuly, RELEASES.tokyoMlitJuly], relatedHref: '/jp/tokyo/explore/', publishedAt: '2026-09-11T00:00:00.000Z',
-  }),
-
 ].map(enrichEnglishRecord));

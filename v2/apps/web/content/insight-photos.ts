@@ -28,8 +28,6 @@ export const INSIGHT_PHOTOS: Readonly<Record<string, NeighbourhoodPhotoId>> = {
   'seoul-new-renewal-rent-gap': 'yeonhui-community',
   'korea-deposit-monthly-rent-cost-structure': 'mangwon-night',
   'singapore-ccr-rcr-ocr-comparison': 'sg-flats',
-  'singapore-condo-prices-2026-by-project': 'sg-scala',
-  'tokyo-asking-price-vs-contracted-price-2026': 'tokyo-apartments',
 };
 
 export function insightPhoto(slug: string): NeighbourhoodPhoto | undefined {

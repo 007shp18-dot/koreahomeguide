@@ -9,9 +9,6 @@ export const RELEASES = Object.freeze({
   sale: 'installed-kr-sale-2026-09-02',
   conversion: 'installed-kr-conversion-2026-09-02',
   singapore: 'installed-sg-private-sale-2026-09-02',
-  singaporeCaveats: 'installed-sg-ura-caveats-2026-09-11',
-  tokyoReinsJuly: 'official-jp-reins-2026-07',
-  tokyoMlitJuly: 'official-jp-mlit-2026-07',
   policyKorea: 'official-kr-policy-2026-09-04',
   policySingapore: 'official-sg-policy-2026-09-04',
 });
@@ -35,7 +32,7 @@ type RecordInput = Readonly<{
   slug: string;
   locale: ContentLocale;
   type: PortfolioContentType;
-  marketId: ContentMarketId | null;
+  marketId: ContentMarketId;
   title: string;
   deck: string;
   question: string;
