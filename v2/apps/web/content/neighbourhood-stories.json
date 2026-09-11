@@ -506,14 +506,14 @@
         ],
         "photo": {
           "src": "/assets/editorial-2026-09/pexels-28665040.jpg",
-          "caption": "Singapore apartment architecture · recent Pexels photograph",
+          "caption": "Gardens by the Bay, Singapore · city context, not Tiong Bahru housing",
           "source": "https://www.pexels.com/photo/28665040/",
           "author": "Jurgen Lasa",
           "license": "Pexels License",
           "licenseHref": "https://www.pexels.com/license/",
           "width": 1600,
           "height": 1067,
-          "alt": "A contemporary Singapore residential facade",
+          "alt": "Glass conservatory architecture at Gardens by the Bay in Singapore",
           "licenseUrl": "https://www.pexels.com/license/"
         }
       },
@@ -524,16 +524,16 @@
           "Finish with coffee on a shaded corner. Tiong Bahru's cafés come and go, but the pavement tables under the walk-ups stay, and the light at five in the afternoon is the estate's best argument."
         ],
         "photo": {
-          "src": "/assets/editorial-2026-09/pexels-18340309.jpg",
-          "caption": "Singapore streetscape · recent Pexels photograph",
-          "source": "https://www.pexels.com/photo/18340309/",
-          "author": "Fabian Reck",
-          "license": "Pexels License",
-          "licenseHref": "https://www.pexels.com/license/",
+          "src": "/assets/editorial-2026-09/tiong-bahru-market-amos-lee.jpg",
+          "caption": "Market food stalls in Singapore · photograph by Amos Lee",
+          "source": "https://unsplash.com/photos/9Ecs6Rvz-yw",
+          "author": "Amos Lee",
+          "license": "Unsplash License",
+          "licenseHref": "https://unsplash.com/license",
           "width": 1600,
-          "height": 1067,
-          "alt": "A Singapore street with low-rise buildings and greenery",
-          "licenseUrl": "https://www.pexels.com/license/"
+          "height": 900,
+          "alt": "People buying food from market stalls in Singapore",
+          "licenseUrl": "https://unsplash.com/license"
         }
       }
     ],
