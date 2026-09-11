@@ -12,6 +12,10 @@ export const RESEARCH_SOURCES = {
   lease: source('seoul-rental-structures', 'Seoul Metropolitan Government', 'Wolse and jeonse', 'https://english.seoul.go.kr/service/living/housing/1-wolse-jeonse/'),
   protection: source('kr-foreign-lease-protection', 'Ministry of Government Legislation / Easy Law', 'Lease agreements for foreign nationals', 'https://m.easylaw.go.kr/MOM/SubCsmOvRetrieve.laf?ccfNo=1&cciNo=1&cnpClsNo=1&csmSeq=2495&langCd=700101'),
   ura: source('sg-ura-q2-2026', 'Urban Redevelopment Authority', 'Q2 2026 real estate statistics, 24 July 2026', 'https://www.ura.gov.sg/news/media/pr26-57/'),
+  uraTransactions: source('sg-ura-private-transactions', 'Urban Redevelopment Authority', 'Private residential property transactions and caveats', 'https://www.ura.gov.sg/Corporate/Property/Property-Data/Private-Residential-Properties', '2026-09-11'),
+  reinsTokyo: source('jp-reins-tokyo-2026-07', 'REINS', 'Tokyo metropolitan condominium market report, July 2026', 'https://www.reins.or.jp/library/', '2026-09-11'),
+  reinsKinki: source('jp-reins-kinki-2026-07', 'Kinki Real Estate Information Network System', 'Kinki condominium market report, July 2026', 'https://www.kinkireins.or.jp/', '2026-09-11'),
+  mlitLibrary: source('jp-mlit-real-estate-library', 'Ministry of Land, Infrastructure, Transport and Tourism', 'Real Estate Information Library', 'https://www.reinfolib.mlit.go.jp/', '2026-09-11'),
 } as const;
 
 type Expansion = Readonly<{ body: string; sources?: readonly ContentSource[]; updatedAt?: string; revisionNote?: string }>;
@@ -302,6 +306,118 @@ In Singapore Explore, start with a region and open a project. Compare transactio
 ## Questions for a purchase decision
 
 A falling regional index is not sufficient reason to call a project cheap. Identify the comparable units and investigate why the offered price differs. Likewise, a rising index does not settle whether acquisition costs or financing leave the purchase within budget.`, },
+  'singapore-condo-prices-2026-by-project': {
+    sources: [RESEARCH_SOURCES.uraTransactions, RESEARCH_SOURCES.ura, RESEARCH_SOURCES.bsd, RESEARCH_SOURCES.absd, RESEARCH_SOURCES.fta],
+    body: `## The headline number is not a home
+
+SignedPrice's five-year URA caveat screen contains 1,744 private residential projects with at least one lodged caveat between August 2021 and August 2026. The median of the project-level unit-price medians is about S$18,000 per square metre, or roughly S$1,680 per square foot.
+
+That number is useful as a map. It is not the price of a typical apartment you can buy today. A project with two small resales and a project with a deep stream of larger transactions can both contribute one project median. The project, size band and sale type still decide what the number means.
+
+## A regional index can hide a project-level reversal
+
+URA's Q2 2026 release put the overall private residential price index up 0.5% quarter on quarter. The regional split was sharper: CCR rose 1.8%, while RCR fell 1.2% and OCR fell 0.1%.
+
+Those are market indices, not returns for every condominium. Within one region, new launches, resales, lease tenure, unit size and the mix of projects can pull the observed result in different directions. A buyer reading RCR's minus 1.2% still needs to open the project and read its caveats.
+
+The regional label is where the search begins. It is not where the comparison ends.
+
+## What the caveats say about size and money
+
+A fixed budget produces a more useful screen than an island-wide average. In SignedPrice's H1 2026 resale screen for 80–100 square metre units below S$1.5 million, 18 projects cleared the publication threshold. Of 138 included resales, 135 were at or below the price ceiling.
+
+| Screen | What it shows |
+| --- | --- |
+| 80–100 m², resale, H1 2026 | 18 qualifying projects |
+| Same screen | 135 of 138 resales at or below S$1.5m |
+| Compact stock below S$700k | Mostly one-bedroom and studio observations |
+| Example compact resales | Centra Studios and The Octet, roughly S$618k–S$631k for units around 35 m² |
+
+These are historical caveats, not live listings. A project appearing in the screen does not mean a comparable unit is available today.
+
+## New sales and resales should not share one average
+
+URA labels the sale type in the underlying record. New sales, sub-sales and resales answer different questions and should be separated before a price comparison is made.
+
+A new-launch median can move because a particular month contained a different set of projects. A resale median can move because the units that changed hands were smaller, older or in another part of the project. Blending the categories creates a number that looks precise but describes the mix of that month more than the home a buyer is considering.
+
+For a resale search, start with resale caveats. Hold project, tenure, size and period stable. Widen one boundary at a time and keep the change visible.
+
+## The number that matters more than the headline price: 60%
+
+For a foreign individual subject to the standard ABSD rate, a S$1.5 million residential purchase adds S$900,000 of Additional Buyer's Stamp Duty. Buyer's Stamp Duty adds about S$44,600 under the current marginal bands. Price plus those two duties is therefore about S$2,444,600 before legal, financing and ownership costs.
+
+That example is buyer-specific. Singapore citizens and permanent residents have different ABSD treatment, and qualifying nationals of the United States, Switzerland, Liechtenstein, Norway and Iceland can receive Singapore-citizen treatment under the relevant free-trade-agreement rules. Check the buyer profile before comparing a Singapore price with a budget in another country.
+
+## Read the project, not the region
+
+Three checks should sit beside every Singapore condo price:
+
+1. **Sample depth.** A project with two resales has a median, but not much evidence around it. Keep the filing count and date range visible.
+2. **Tenure.** A 99-year leasehold project part-way through its lease and a freehold project next door are not the same asset simply because their psf is similar.
+3. **Sale type.** New sale, sub-sale and resale are separate labels. Compare the category you intend to buy.
+
+Start with [Singapore Explore](/sg/singapore/explore/), open the project, then use the [Singapore check tool](/sg/singapore/check/) to place an asking price beside the relevant caveats.
+
+## Source and scope
+
+Source: URA private residential transaction records and caveats, August 2021–August 2026, retrieved 11 September 2026; IRAS BSD, ABSD and FTA guidance, checked 11 September 2026. The S$18,000 per square metre figure is a SignedPrice project-level summary, not an official island-wide average or price index. Historical caveats are not available listings, appraisals or forecasts.`,
+    updatedAt: '2026-09-11T00:00:00.000Z',
+    revisionNote: 'Published 11 September 2026 after project, size, sale-type and buyer-cost checks were reconciled against the cited sources.',
+  },
+  'tokyo-asking-price-vs-contracted-price-2026': {
+    sources: [RESEARCH_SOURCES.reinsTokyo, RESEARCH_SOURCES.reinsKinki, RESEARCH_SOURCES.mlitLibrary],
+    body: `## July produced a split
+
+In July 2026, a resale condominium in Tokyo's 23 wards changed hands at a median of ¥1.358 million per square metre, according to the REINS contracted-price series. That was 2.7% higher than a year earlier and the 75th consecutive month of year-on-year growth.
+
+The number of contracts told a different story. Contracts fell 17.2% from a year earlier, the seventh consecutive monthly decline.
+
+A price that rises while the number of completed deals falls is not a simple strength signal. It can mean that the sellers still closing are the ones who do not need to cut, while marginal listings wait or leave the market.
+
+## Central Tokyo stopped following the aggregate
+
+Chiyoda, Chuo and Minato—the three wards that appear in many overseas buyer searches—recorded contracted prices 5.9% below July 2025. Active listings in the same group rose 50.5%.
+
+More homes available, fewer contracts and lower closing prices is a different negotiating environment from the one implied by the 23-ward headline. The aggregate stayed positive because the outer wards carried more of the reported growth.
+
+That is why “Tokyo prices are still rising” is too broad a sentence for a buyer deciding between one ward and another.
+
+## Two prices are published
+
+Japan gives buyers an unusually useful distinction: the price a seller asks and the price a buyer actually contracts at are different evidence layers.
+
+REINS reports contracted prices from broker activity. The Ministry of Land, Infrastructure, Transport and Tourism publishes transaction and contracted-price series through its Real Estate Information Library. Asking prices live on listing portals and represent the seller's opening position—not the amount that closed.
+
+In Osaka, a Kinki REINS comparison for the same period showed a gap of about ¥16.3 million between the average new-listing price and the average contracted price. The gap is not a universal discount. It is a reminder to compare the two series before treating a listing as a market value.
+
+## What a foreign buyer should price in
+
+Japan's market is accessible to overseas buyers in principle, but the practical constraint is often financing. Many domestic lenders require residency, domestic income or a local borrowing history. A non-resident buyer may therefore need an all-cash structure or financing arranged in another jurisdiction.
+
+The purchase budget also needs room for brokerage, registration and acquisition taxes, then the recurring costs of fixed-asset tax, building management and repair-reserve contributions. The exact amount depends on the property and buyer. Confirm it before using a listing price as a cash budget.
+
+The question is not only whether a foreign buyer can own the apartment. It is whether the purchase still works after the financing and holding timeline are written down.
+
+## Compare the closing number before you negotiate
+
+For a Tokyo shortlist:
+
+1. Find the 町名 and building-age band in the [Tokyo Explore data](/jp/tokyo/explore/).
+2. Read contracted prices per square metre over the latest comparable quarters.
+3. Put the listing's asking price beside the contracted range.
+4. Keep area, tenure, building age and sale type consistent.
+5. Treat a thin sample as a prompt for more checking, not as a precise valuation.
+
+The useful output is not a citywide forecast. It is a better question for the agent: why is this apartment's asking price above or below the contracts that actually closed?
+
+## Source and scope
+
+Source: REINS Tokyo metropolitan monthly market report, July 2026; Kinki REINS monthly market report, July 2026; MLIT Real Estate Information Library, retrieved 11 September 2026. REINS contracted prices and MLIT transaction series use different collection methods and should not be merged into one index. Listing prices are not completed transactions. SignedPrice does not forecast prices or recommend purchases.`,
+    updatedAt: '2026-09-11T00:00:00.000Z',
+    revisionNote: 'Published 11 September 2026 after contracted-price, listing-volume and foreign-buyer scope checks were recorded.',
+  },
+
 };
 
 export function enrichEnglishRecord(record: EditorialPortfolioRecord): EditorialPortfolioRecord {
