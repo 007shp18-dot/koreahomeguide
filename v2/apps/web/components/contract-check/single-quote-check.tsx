@@ -89,8 +89,8 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
           <section className={styles.keyFigures} data-result-order="key-figures">
             <h3>{c.keyFigures}</h3>
             <div><dl>
-              <div><dt>{c.median}</dt><dd>{won.format(result.distribution.medianWon)}</dd></div>
-              <div><dt>{c.middle}</dt><dd>{won.format(result.distribution.p25Won)}–{won.format(result.distribution.p75Won)}</dd></div>
+              <div><dt>{c.median}</dt><dd><span className={styles.moneyValue}>{won.format(result.distribution.medianWon)}</span></dd></div>
+              <div><dt>{c.middle}</dt><dd className={styles.moneyRange}><span className={styles.moneyValue}>{won.format(result.distribution.p25Won)}</span><span>–</span><span className={styles.moneyValue}>{won.format(result.distribution.p75Won)}</span></dd></div>
               <div><dt>{c.percentile}</dt><dd>{result.pricePercentile}</dd></div>
             </dl></div>
           </section>

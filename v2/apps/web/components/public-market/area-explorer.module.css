@@ -2138,6 +2138,27 @@
   .buildingDialogBody { padding: .85rem; }
 }
 
+/* A list can be thousands of pixels tall: keep its preview within the viewport. */
+.workspace[data-explorer-layout='list'] .buildingDrawer {
+  position: fixed;
+  inset: 88px 24px 24px auto;
+  width: min(440px, calc(100vw - 48px));
+  max-height: calc(100dvh - 112px);
+  z-index: 40;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgb(20 32 48 / 18%);
+}
+.buildingDialogHeader > div { min-width: 0; }
+.buildingDialogHeader button { flex-shrink: 0; }
+@media (max-width: 800px) {
+  .workspace[data-explorer-layout='list'] .buildingDrawer {
+    inset: auto 12px 12px;
+    width: calc(100% - 24px);
+    max-height: min(70dvh, 600px);
+  }
+}
+
 .buyingGuide {
   width: min(100%, var(--evidence-workspace-frame));
   margin: 0 auto;

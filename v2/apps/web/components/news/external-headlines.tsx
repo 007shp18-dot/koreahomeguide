@@ -52,14 +52,14 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
     {!editorial && <header><div><h2 id="external-headlines-heading">{title}</h2><p>{ko ? '지금 나온 소식, 집을 고르는 사람에게 중요한 점.' : zh ? '近期报道，以及对购房选择的影响。' : 'What happened, and why it matters when choosing a home.'}</p></div>
       {preview ? <Link href={allHref}>{ko ? '뉴스 모두 보기' : zh ? '查看全部新闻' : 'All news'} <UiIcon name="arrow-right" /></Link> : <button type="button" onClick={() => setRefresh(value => value + 1)}>{ko ? '새로고침' : zh ? '刷新' : 'Refresh'}</button>}
     </header>}
-    {status === 'loading' ? <p role="status">{ko ? '뉴스를 불러오는 중…' : 'Loading headlines…'}</p> : null}
-    {status === 'error' ? <p role="status">{ko ? '새 소식을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.' : 'Unable to refresh. Please try again.'} <button type="button" onClick={() => setRefresh(value => value + 1)}>{ko ? '다시 시도' : 'Try again'}</button></p> : null}
-    {status === 'ready' && visible.length === 0 ? <p>{ko ? '이 도시의 새 소식은 아직 없습니다.' : 'No news is available for this city yet.'}</p> : null}
+    {status === 'loading' ? <p role="status">{ko ? '뉴스를 불러오는 중…' : zh ? '正在加载新闻…' : 'Loading headlines…'}</p> : null}
+    {status === 'error' ? <p role="status">{ko ? '새 소식을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.' : zh ? '暂时无法更新新闻，请稍后重试。' : 'Unable to refresh. Please try again.'} <button type="button" onClick={() => setRefresh(value => value + 1)}>{ko ? '다시 시도' : zh ? '重试' : 'Try again'}</button></p> : null}
+    {status === 'ready' && visible.length === 0 ? <p>{ko ? '이 도시의 새 소식은 아직 없습니다.' : zh ? '该城市暂无新闻。' : 'No news is available for this city yet.'}</p> : null}
     <p className={styles.source}>{ko ? '외부 뉴스 제목과 원문 링크는 자동 갱신됩니다. 기사 주장은 SignedPrice의 검증된 거래 분석과 구분됩니다.' : zh ? '外部新闻标题与原文链接自动更新，报道观点不代表 SignedPrice 已验证的交易分析。' : 'Source headlines and original links update automatically. Reported claims are separate from SignedPrice’s verified transaction analysis.'}</p>
     {lead && <article className={`${styles.lead} ${failedPhoto === lead.market ? styles.textLead : ''}`} aria-labelledby="lead-news-title">
       {failedPhoto !== lead.market && <figure className={styles.leadPhoto}>
         <div><Image src={MARKET_PHOTOS[lead.market].src} alt={MARKET_PHOTOS[lead.market].alt} fill priority sizes="(max-width: 740px) calc(100vw - 40px), (max-width: 1280px) 55vw, 640px" onError={() => setFailedPhoto(lead.market)} style={{ objectFit: 'cover', objectPosition: `${MARKET_PHOTOS[lead.market].focalPoint.x}% ${MARKET_PHOTOS[lead.market].focalPoint.y}%` }} /></div>
-        <figcaption>{lead.marketLabel} · Representative city photograph</figcaption>
+        <figcaption>{lead.marketLabel} · {ko ? '도시 대표 사진' : zh ? '城市代表照片' : 'Representative city photograph'}</figcaption>
       </figure>}
       <div className={styles.leadCopy}>
         <span className={styles.topic}>{lead.marketLabel} · {lead.category}</span>
@@ -80,6 +80,7 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
         <a className={styles.original} href={item.url} target="_blank" rel="noreferrer">{ko ? '원문 읽기' : zh ? '阅读原文' : 'Read original'} <UiIcon name="arrow-up-right" /></a>
       </li>)}
     </ol>
-    {!preview && visible.length < items.length ? <button type="button" onClick={() => setPage(value => value + 1)}>{ko ? '뉴스 더 보기' : 'More headlines'}</button> : null}
+    {!preview && visible.length < items.length ? <button type="button" onClick={() => setPage(value => value + 1)}>{ko ? '뉴스 더 보기' : zh ? '更多新闻' : 'More headlines'}</button> : null}
   </section>;
 }
+
