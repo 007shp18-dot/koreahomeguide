@@ -98,10 +98,10 @@ describe('SignedPrice cohort zero SEO', () => {
     });
     expect(koreanMetadata.openGraph).toMatchObject({
       locale: 'ko_KR',
-      images: ['https://www.signedprice.com/og/ko/'],
+      images: ['https://www.signedprice.com/og.png'],
     });
     expect(koreanMetadata.twitter).toMatchObject({
-      images: ['https://www.signedprice.com/og/ko/'],
+      images: ['https://www.signedprice.com/og.png'],
     });
   });
 

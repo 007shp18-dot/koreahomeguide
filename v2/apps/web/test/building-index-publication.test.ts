@@ -333,7 +333,7 @@ describe('Korea building search publication', () => {
       openGraph: {
         locale: 'ko_KR',
         url: `https://www.signedprice.com/ko/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
-        images: ['https://www.signedprice.com/og/ko/'],
+        images: ['https://www.signedprice.com/og.png'],
       },
     });
   }, 20_000);

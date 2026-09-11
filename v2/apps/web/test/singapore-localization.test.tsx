@@ -16,8 +16,8 @@ const model: SingaporeCheckRouteModel = { mode: 'compare', catalogs: { 'ura-priv
 describe('Singapore Korean functional surfaces', () => {
   it('localizes social metadata as well as the Singapore page title', () => {
     const metadata = singaporeMetadata(indexableMetadata({ path: '/ko/sg/singapore/explore/', title: 'Singapore', description: 'Singapore prices' }));
-    expect(metadata.openGraph).toMatchObject({ locale: 'ko_KR', images: ['https://www.signedprice.com/og/ko/'], alternateLocale: ['en_US', 'zh_CN'] });
-    expect(metadata.twitter).toMatchObject({ images: ['https://www.signedprice.com/og/ko/'] });
+    expect(metadata.openGraph).toMatchObject({ locale: 'ko_KR', images: ['https://www.signedprice.com/og.png'], alternateLocale: ['en_US', 'zh_CN'] });
+    expect(metadata.twitter).toMatchObject({ images: ['https://www.signedprice.com/og.png'] });
     expect(metadata.alternates?.languages).toMatchObject({ 'x-default': 'https://www.signedprice.com/sg/singapore/explore/' });
   });
   it('localizes the comparison form while preserving submitted IDs and source values', () => {
@@ -73,10 +73,10 @@ describe('Singapore Korean functional surfaces', () => {
     });
     expect(metadata.openGraph).toMatchObject({
       locale: 'ko_KR',
-      images: ['https://www.signedprice.com/og/ko/'],
+      images: ['https://www.signedprice.com/og.png'],
     });
     expect(metadata.twitter).toMatchObject({
-      images: ['https://www.signedprice.com/og/ko/'],
+      images: ['https://www.signedprice.com/og.png'],
     });
     expect(metadata.title).toBe('싱가포르 매물 가격 비교 | signedprice');
   });

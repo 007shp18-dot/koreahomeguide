@@ -51,11 +51,11 @@ describe('nested Seoul district route', () => {
       openGraph: {
         url: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
         locale: 'en_US',
-        images: ['https://www.signedprice.com/og/en/'],
+        images: ['https://www.signedprice.com/og.png'],
       },
       twitter: {
         card: 'summary_large_image',
-        images: ['https://www.signedprice.com/og/en/'],
+        images: ['https://www.signedprice.com/og.png'],
       },
     });
     expect(html).toContain('data-district-detail="published"');

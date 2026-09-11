@@ -72,10 +72,10 @@ describe('signedprice homepage copy', () => {
 
   it('uses the Korean social image for the Korean Seoul shortlist', () => {
     expect(koreanShortlistMetadata.openGraph?.images).toEqual([
-      'https://www.signedprice.com/og/ko/',
+      'https://www.signedprice.com/og.png',
     ]);
     expect(koreanShortlistMetadata.twitter?.images).toEqual([
-      'https://www.signedprice.com/og/ko/',
+      'https://www.signedprice.com/og.png',
     ]);
   });
 

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import type { EditorialPortfolioRecord } from '../content/portfolio-types';
 
 export const SIGNEDPRICE_ORIGIN = 'https://www.signedprice.com' as const;
+export const SIGNEDPRICE_SOCIAL_IMAGE = '/og.png' as const;
 
 export function publicCanonical(path: `/${string}`): string {
   return `${SIGNEDPRICE_ORIGIN}${path}`;
@@ -116,7 +117,11 @@ export function indexableMetadata({
     'x-default': publicCanonical(languageAlternates.en),
   };
   const canonical = publicCanonical(path);
-  const image = publicCanonical(imagePath ?? (locale === 'ko_KR' ? '/og/ko/' : '/og/en/'));
+  // Locale routes historically supplied /og/en/, /og/ko/ or /og/zh/.
+  // Share the current four-city brand card while preserving custom article images.
+  const image = publicCanonical(!imagePath || /^\/og\/(en|ko|zh)\/$/.test(imagePath)
+    ? SIGNEDPRICE_SOCIAL_IMAGE
+    : imagePath);
   return {
     title,
     description,
