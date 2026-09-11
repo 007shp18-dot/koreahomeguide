@@ -10,6 +10,7 @@ import {
   type NaverGeocodeAddress,
 } from './naver-district-map';
 import styles from './building-street-view.module.css';
+import { streetViewGeometry } from './street-view-geometry';
 
 const NAVER_MAPS_READY_EVENT = 'signedprice:naver-maps-ready';
 const NAVER_MAPS_READY_FLAG = '__signedpriceNaverMapsLoaded';
@@ -28,7 +29,8 @@ function notifyNaverMapsReady() {
 }
 
 type NaverPanoramaInstance = Readonly<{
-  getLocation: () => Readonly<{ panoId?: string }> | null;
+  getLocation: () => Readonly<{ panoId?: string; coord?: Readonly<{ lat: () => number; lng: () => number }> }> | null;
+  setPov: (pov: Readonly<{ pan: number; tilt: number; fov: number }>) => void;
   destroy?: () => void;
 }>;
 
@@ -133,7 +135,14 @@ export function mountNaverBuildingStreetView({
     position: new sdk.LatLng(latitude, longitude),
   });
   const listener = sdk.Event.addListener(panorama, 'pano_changed', () => {
-    onState(panorama.getLocation()?.panoId ? 'ready' : 'unavailable');
+    const location = panorama.getLocation();
+    const camera = location?.coord;
+    const geometry = camera && streetViewGeometry(
+      { latitude: camera.lat(), longitude: camera.lng() }, { latitude, longitude }, 150,
+    );
+    if (!location?.panoId || !geometry) { onState('unavailable'); return; }
+    panorama.setPov({ pan: geometry.heading, tilt: 5, fov: 100 });
+    onState('ready');
   });
   return Object.freeze({
     dispose: () => {

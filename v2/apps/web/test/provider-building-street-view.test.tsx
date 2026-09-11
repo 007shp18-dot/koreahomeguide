@@ -21,6 +21,55 @@ import {
 } from '../components/maps/naver-building-street-view';
 
 describe('provider building street view', () => {
+  it('does not construct Google panoramas with missing or distant camera coordinates', async () => {
+    const construct = vi.fn();
+    for (const location of [{ pano: 'missing-position' }, { pano: 'remote', latLng: { lat: () => 1.30, lng: () => 103.86 } }]) {
+      await expect(mountGoogleBuildingStreetView({
+        sdk: {
+          StreetViewService: class { async getPanorama() { return { data: { location } }; } },
+          StreetViewPanorama: class { constructor() { construct(); } },
+          StreetViewSource: { GOOGLE: 'google', OUTDOOR: 'outdoor' },
+        },
+        element: {} as HTMLElement, latitude: 1.28, longitude: 103.86,
+      })).resolves.toBe('unavailable');
+    }
+    expect(construct).not.toHaveBeenCalled();
+  });
+
+  it('rejects NAVER results outside the building area and cleans up listeners', () => {
+    let changed = () => {};
+    const setPov = vi.fn();
+    const destroy = vi.fn();
+    const removeListener = vi.fn();
+    const onState = vi.fn();
+    const mounted = mountNaverBuildingStreetView({
+      sdk: {
+        LatLng: class {},
+        Panorama: class {
+          getLocation() { return { panoId: 'far-away', coord: { lat: () => 37.51, lng: () => 127.03 } }; }
+          setPov = setPov;
+          destroy = destroy;
+        },
+        Event: { addListener: (_target, _event, callback) => { changed = callback; return callback; }, removeListener },
+      },
+      element: {} as HTMLElement, latitude: 37.50, longitude: 127.03, onState,
+    });
+    changed();
+    expect(onState).toHaveBeenCalledWith('unavailable');
+    expect(setPov).not.toHaveBeenCalled();
+    mounted.dispose();
+    expect(removeListener).toHaveBeenCalledWith(changed);
+    expect(destroy).toHaveBeenCalledOnce();
+  });
+
+  it('rejects ambiguous Google address results before selecting a panorama', async () => {
+    const result = { geometry: { location: { lat: () => 1.3, lng: () => 103.8 } } };
+    for (const results of [[result, result], [{ ...result, partial_match: true }]]) {
+      await expect(resolveGoogleBuildingLocation({
+        sdk: { Geocoder: class { async geocode() { return { results }; } } }, address: 'Example, Singapore',
+      })).rejects.toThrow('Ambiguous');
+    }
+  });
   it('mounts NAVER Panorama at the verified coordinate and reports a nearby pano', () => {
     const events: Array<() => void> = [];
     const panoramas: unknown[] = [];
@@ -31,7 +80,8 @@ describe('provider building street view', () => {
       constructor(readonly element: HTMLElement, readonly options: unknown) {
         panoramas.push(this);
       }
-      getLocation() { return { panoId: 'verified-nearby-pano' }; }
+      getLocation() { return { panoId: 'verified-nearby-pano', coord: { lat: () => 37.5009, lng: () => 127.031 } }; }
+      setPov(pov: unknown) { expect(pov).toEqual({ pan: 0, tilt: 5, fov: 100 }); }
       destroy() { return undefined; }
     }
     const states: string[] = [];
@@ -69,9 +119,10 @@ describe('provider building street view', () => {
         expect(request).toEqual({
           location: { lat: 1.2834, lng: 103.8607 },
           radius: 50,
-          source: 'OUTDOOR',
+          sources: ['GOOGLE', 'OUTDOOR'],
+          preference: 'nearest',
         });
-        return { data: { location: { pano: 'nearby-pano-id' } } };
+        return { data: { location: { pano: 'nearby-pano-id', latLng: { lat: () => 1.2833, lng: () => 103.8607 } } } };
       }
     }
     class StreetViewPanorama {
@@ -85,7 +136,7 @@ describe('provider building street view', () => {
       sdk: {
         StreetViewService,
         StreetViewPanorama,
-        StreetViewSource: { OUTDOOR: 'OUTDOOR' },
+        StreetViewSource: { OUTDOOR: 'OUTDOOR', GOOGLE: 'GOOGLE' },
       },
       element,
       latitude: 1.2834,
@@ -97,6 +148,7 @@ describe('provider building street view', () => {
         pano: 'nearby-pano-id',
         addressControl: false,
         fullscreenControl: true,
+        pov: { heading: 0, pitch: 5 },
       },
     }]);
   });

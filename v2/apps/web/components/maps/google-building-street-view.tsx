@@ -6,15 +6,17 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { buildGoogleMapsScriptUrl } from './google-place-map';
 import styles from './building-street-view.module.css';
+import { streetViewGeometry } from './street-view-geometry';
 
 export type GoogleBuildingStreetViewSdk = Readonly<{
   StreetViewService: new () => Readonly<{
     getPanorama: (request: Readonly<{
       location: Readonly<{ lat: number; lng: number }>;
       radius: number;
-      source: unknown;
+      sources: readonly unknown[];
+      preference: 'nearest';
     }>) => Promise<Readonly<{
-      data: Readonly<{ location?: Readonly<{ pano?: string }> }>;
+      data: Readonly<{ location?: Readonly<{ pano?: string; latLng?: Readonly<{ lat: () => number; lng: () => number }> }> }>;
     }>>;
   }>;
   StreetViewPanorama: new (
@@ -23,9 +25,10 @@ export type GoogleBuildingStreetViewSdk = Readonly<{
       pano: string;
       addressControl: boolean;
       fullscreenControl: boolean;
+      pov: Readonly<{ heading: number; pitch: number }>;
     }>,
   ) => unknown;
-  StreetViewSource: Readonly<{ OUTDOOR: unknown }>;
+  StreetViewSource: Readonly<{ OUTDOOR: unknown; GOOGLE: unknown }>;
 }>;
 
 export type GoogleBuildingMapSdk = Readonly<{
@@ -48,6 +51,7 @@ export type GoogleBuildingGeocoderSdk = Readonly<{
       componentRestrictions: Readonly<{ country: 'SG' }>;
       region: 'SG';
     }>) => Promise<Readonly<{ results: readonly Readonly<{
+      partial_match?: boolean;
       geometry: Readonly<{ location: Readonly<{ lat: () => number; lng: () => number }> }>;
     }>[] }>>;
   }>;
@@ -65,6 +69,7 @@ export async function resolveGoogleBuildingLocation({
     componentRestrictions: { country: 'SG' },
     region: 'SG',
   });
+  if (results.length !== 1 || results[0]?.partial_match) throw new Error('Ambiguous Singapore building address.');
   const location = results[0]?.geometry.location;
   if (location === undefined) throw new Error('Singapore building location unavailable.');
   const latitude = location.lat();
@@ -119,17 +124,24 @@ export async function mountGoogleBuildingStreetView({
   longitude: number;
 }>): Promise<'ready' | 'unavailable'> {
   try {
+    if (sdk.StreetViewSource.GOOGLE === undefined) return 'unavailable';
     const response = await new sdk.StreetViewService().getPanorama({
       location: { lat: latitude, lng: longitude },
       radius: 50,
-      source: sdk.StreetViewSource.OUTDOOR,
+      sources: [sdk.StreetViewSource.GOOGLE, sdk.StreetViewSource.OUTDOOR],
+      preference: 'nearest',
     });
+    const camera = response.data.location?.latLng;
+    if (!camera) return 'unavailable';
+    const geometry = streetViewGeometry({ latitude: camera.lat(), longitude: camera.lng() }, { latitude, longitude }, 50);
+    if (!geometry) return 'unavailable';
     const pano = response.data.location?.pano;
     if (pano === undefined || pano === '') return 'unavailable';
     new sdk.StreetViewPanorama(element, {
       pano,
       addressControl: false,
       fullscreenControl: true,
+      pov: { heading: geometry.heading, pitch: 5 },
     });
     return 'ready';
   } catch {
