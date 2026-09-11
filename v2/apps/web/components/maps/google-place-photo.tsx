@@ -1,4 +1,6 @@
 'use client';
+import { localizedMarketCopy } from '../../lib/locale/market-localization';
+
 
 import Script from 'next/script';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
@@ -128,7 +130,7 @@ export async function findGooglePlacePhoto(
 }
 
 type GooglePlacePhotoProps = Readonly<{
-  locale?: 'en' | 'ko';
+  locale?: 'en' | 'ko' | 'zh-CN';
   browserKey: string | null;
   buildingName: string;
   /** Presentation only; approval identity always uses buildingName. */
@@ -291,10 +293,10 @@ function GooglePlacePhotoForIdentity({
     <figure className={photoStyles.frame} data-building-media="google-place-photo" data-media-state={photo === 'loading' ? 'loading' : 'ready'}>
       <div className={photoStyles.stage}>
       {photo === 'loading' && verifiedPlaceId !== undefined
-        ? <p className={styles.photoLabel}>{locale === 'ko' ? '확인된 장소 사진' : 'Verified place photos'}</p>
+        ? <p className={styles.photoLabel}>{localizedMarketCopy(locale, "Verified place photos", "확인된 장소 사진")}</p>
         : null}
       {photo === 'loading' ? (
-        <div className={styles.loading} aria-live="polite"><span>{locale === 'ko' ? '확인된 장소 사진을 불러오는 중' : 'Loading verified place photo'}</span><strong>{displayBuildingName}</strong></div>
+        <div className={styles.loading} aria-live="polite"><span>{localizedMarketCopy(locale, "Loading verified place photo", "확인된 장소 사진을 불러오는 중")}</span><strong>{displayBuildingName}</strong></div>
       ) : current === null ? null : (
         // Google Place photo URIs are ephemeral and must not be cached or
         // transformed by Next Image according to the provider terms.
@@ -302,18 +304,18 @@ function GooglePlacePhotoForIdentity({
         <img
           className={styles.photo}
           src={current.src}
-          alt={locale === 'ko' ? `${displayBuildingName} 장소 사진 ${activePhoto + 1}` : `${displayBuildingName} place photo ${activePhoto + 1}`}
+          alt={locale === 'ko' ? `${displayBuildingName} 장소 사진 ${activePhoto + 1}` : locale === 'zh-CN' ? `${displayBuildingName} 场所照片 ${activePhoto + 1}` : `${displayBuildingName} place photo ${activePhoto + 1}`}
           decoding="async"
           onError={() => setPhoto('unavailable')}
         />
       )}
       {photo === 'loading' ? null : <>
-        {secondary.length === 0 ? null : <div className={styles.photoStrip} aria-label={locale === 'ko' ? '확인된 장소 사진 더 보기' : 'More verified place photos'}>
+        {secondary.length === 0 ? null : <div className={styles.photoStrip} aria-label={localizedMarketCopy(locale, "More verified place photos", "확인된 장소 사진 더 보기")}>
           {secondary.map(({ item, index }) => <button
             type="button"
             key={`${item.src}:${index}`}
             onClick={() => setActivePhoto(index)}
-            aria-label={locale === 'ko' ? `${index + 1}번 사진 보기` : `Show photo ${index + 1}`}
+            aria-label={locale === 'ko' ? `${index + 1}번 사진 보기` : locale === 'zh-CN' ? `查看第 ${index + 1} 张照片` : `Show photo ${index + 1}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={item.src} alt="" decoding="async" />
@@ -322,9 +324,9 @@ function GooglePlacePhotoForIdentity({
       </>}
       </div>
       {photo === 'loading' ? null : <figcaption className={photoStyles.caption}>
-        <span className={photoStyles.relationship}>{locale === 'ko' ? { 'Verified place photos': '확인된 장소 사진', 'Verified building photograph': '확인된 건물 사진', 'Verified project or estate photograph': '확인된 단지 사진' }[photo.label] : photo.label}</span>
+        <span className={photoStyles.relationship}>{locale === 'ko' ? { 'Verified place photos': '확인된 장소 사진', 'Verified building photograph': '확인된 건물 사진', 'Verified project or estate photograph': '확인된 단지 사진' }[photo.label] : locale === 'zh-CN' ? { 'Verified place photos': '经核实的场所照片', 'Verified building photograph': '经核实的楼宇照片', 'Verified project or estate photograph': '经核实的项目或社区照片' }[photo.label] : photo.label}</span>
         {current === null ? null : (
-          <span className={photoStyles.credit} aria-label={locale === 'ko' ? '사진 출처' : 'Photo credit'}>
+          <span className={photoStyles.credit} aria-label={localizedMarketCopy(locale, "Photo credit", "사진 출처")}>
             {current.attributions.map((attribution, index) => <span key={`${attribution.displayName}:${index}`}>
               {index === 0 ? null : ' · '}
               {attribution.uri === null || !linkAttribution
@@ -332,7 +334,7 @@ function GooglePlacePhotoForIdentity({
                 : <a href={attribution.uri}>{attribution.displayName}</a>}
             </span>)}
             {photo.sourcePageUrl && !current.attributions.some(a => a.uri === photo.sourcePageUrl)
-              ? <a href={photo.sourcePageUrl} rel="noreferrer">{locale === 'ko' ? '원본 사진' : 'Photo source'}</a> : null}
+              ? <a href={photo.sourcePageUrl} rel="noreferrer">{localizedMarketCopy(locale, "Photo source", "원본 사진")}</a> : null}
           </span>
         )}
       </figcaption>}

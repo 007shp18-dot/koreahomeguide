@@ -44,14 +44,27 @@ function withheldModel() {
 }
 
 describe('public district detail page', () => {
+  it('keeps the same district evidence and detail layout in Korean and Chinese', () => {
+    const model = publishedModel();
+    for (const locale of ['ko', 'zh-CN'] as const) {
+      const html = renderToStaticMarkup(createElement(DistrictDetailPage, { model, locale }));
+      expect(html).toContain('data-detail-layout="evidence-rail"');
+      expect(html).toContain(`lang="${locale}"`);
+      expect(html).toContain(model.display.medianLabel!);
+      expect(html).toContain(locale === 'ko' ? '지역 요약 통계' : '地区摘要指标');
+      expect(html).toContain(locale === 'ko' ? '중간 50% 구간은 무엇인가요?' : '中间50%区间是什么意思？');
+      expect(html).toContain(locale === 'ko' ? '/ko/kr/seoul/check' : '/zh-cn/kr/seoul/check');
+      expect(html).not.toContain('Official reported-contract evidence for the declared period.');
+      for (const text of ['Community responses are not open yet', 'Quote position', 'Refundable deposit', 'KRW million', 'Source &amp; method', 'Read all Seoul News']) expect(html).not.toContain(text);
+    }
+  });
   it('renders one published finding, distribution, local quote, FAQ, and safe JSON-LD', () => {
     const model = publishedModel();
     const html = renderToStaticMarkup(createElement(DistrictDetailPage, { model }));
 
     expect(html).toContain('data-district-detail="published"');
     expect(html).toContain('aria-label="Breadcrumb"');
-    expect(html).toMatch(/href="\/ko\/kr\/seoul\/explore\/?\?district=gangnam-gu"/);
-    expect(html).not.toContain('href="/ko/kr/seoul/explore/gangnam-gu/"');
+    expect(html).toMatch(/href="\/ko\/kr\/seoul\/explore\/gangnam-gu\/?"/);
     expect(html).toContain('Explore');
     expect(html).toContain(model.identity.nameEn);
     expect(html).toContain(model.identity.nameKo);

@@ -12,7 +12,7 @@ export type NavigationMarketId = (typeof marketNavigation)[number]['id'];
 /** Switch the city, not the task. Never carry a building/filter into another market. */
 export function marketDestination(marketId: NavigationMarketId, currentHref = '/', locale: SiteLocale = 'en'): string {
   const path = (currentHref.split('?')[0] ?? '/').replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
-  const prefix = locale === 'ko' ? '/ko' : '';
+  const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const tokyoPrefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const city = { 'kr-seoul': 'seoul', 'sg-singapore': 'singapore', 'ae-dubai': 'dubai', 'jp-tokyo': 'tokyo' }[marketId];
   if (/\/(?:seoul-apartment|singapore-condo|dubai-ready-apartment)-buying-budget-guide\//.test(path)) return `${prefix}/news/?market=${city}`;
@@ -31,6 +31,8 @@ export function marketDestination(marketId: NavigationMarketId, currentHref = '/
     if (section === 'check') return `${tokyoPrefix}/tools/property-scenario/?market=jp-tokyo&currency=JPY`;
     return section || path === '/prices/' ? `${tokyoPrefix}${base}/explore/` : `${tokyoPrefix}${base}/`;
   }
+  if (locale === 'zh-CN' && marketId === 'kr-seoul' && section === 'rankings') return '/zh-cn/rankings/?market=seoul';
+  if (locale === 'zh-CN' && marketId === 'kr-seoul' && section === 'shortlist') return '/zh-cn/saved/';
   if (section === 'rankings' && marketId === 'ae-dubai') return `${prefix}${base}/explore/`;
   if (section) return `${prefix}${base}/${section}/`;
   if (path === '/prices/') return `${prefix}${base}/explore/`;
@@ -48,7 +50,7 @@ export function globalNavigation(locale: SiteLocale = 'en') {
     { label: '가이드', href: '/ko/guides/' },
   ];
   return [
-    { label: zh ? '探索' : 'Explore', href: '/prices/' },
+    { label: zh ? '探索' : 'Explore', href: zh ? '/zh-cn/prices/' : '/prices/' },
     { label: zh ? '洞察' : 'Insights', href: zh ? '/zh-cn/news/' : '/news/' },
     { label: zh ? '新闻' : 'News', href: zh ? '/zh-cn/news/?type=news' : '/news/?type=news' },
     { label: zh ? '工具' : 'Tools', href: zh ? '/zh-cn/tools/' : '/tools/' },
@@ -56,16 +58,20 @@ export function globalNavigation(locale: SiteLocale = 'en') {
   ] as const;
 }
 
-/** Only actual translations qualify. Chinese Explore/Check are English redirects. */
+/** Locale switches retain the current page and query on published translations. */
 export function languageDestinations(pathname: string, search = ''): Record<SiteLocale, string | null> {
   const path = pathname.replace(/\/+$/, '') || '/';
   const english = path === '/ko' || path === '/zh-cn' ? '/' : path.replace(/^\/ko(?=\/)/, '').replace(/^\/zh-cn(?=\/)/, '');
   const destinations: Record<SiteLocale, string | null> = { en: null, ko: null, 'zh-CN': null };
   const withQuery = (value: string) => `${value === '/' ? '/' : `${value}/`}${search}`;
-  if (/^\/kr\/seoul(?:\/(?:explore(?:\/[^/]+(?:\/[^/]+)?)?|check(?:\/compare)?|rankings|shortlist))?$/.test(english)) {
+  if (english === '/kr/seoul/corrections') {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
-    if (english === '/kr/seoul') destinations['zh-CN'] = '/zh-cn/kr/seoul/';
+    destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
+  } else if (/^\/kr\/seoul(?:\/(?:explore(?:\/[^/]+(?:\/[^/]+)?)?|check(?:\/compare)?|rankings|shortlist))?$/.test(english)) {
+    destinations.en = withQuery(english);
+    destinations.ko = withQuery(`/ko${english}`);
+    if (english === '/kr/seoul' || english.includes('/explore') || english.includes('/check')) destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
   } else if (/^\/jp\/tokyo(?:\/(?:explore|shortlist))?$/.test(english)) {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
@@ -82,7 +88,7 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
   } else if (english === '/prices' || english === '/tools' || english === '/tools/property-scenario' || english === '/passport' || english === '/saved') {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
-    if (english !== '/prices') destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
+    destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
   } else if (/^\/news\/city-stories\/(?:seoul|singapore|dubai|tokyo)$/.test(english)) {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
@@ -93,10 +99,12 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
   } else if (/^\/sg\/singapore\/(?:explore(?:\/[^/]+(?:\/[^/]+)?)?|hdb\/[^/]+(?:\/[^/]+)?|check|rankings|shortlist|corrections)$/.test(english) || /^\/ae\/dubai\/(?:explore(?:\/[^/]+)?|check|shortlist|guide)$/.test(english)) {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
+    destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
   } else if (['/sg', '/sg/singapore', '/ae/dubai', '/contact'].includes(english)) {
     const canonical = english === '/sg/singapore' ? '/sg' : english;
     destinations.en = withQuery(canonical);
     destinations.ko = withQuery(`/ko${canonical}`);
+    if (english !== '/contact') destinations['zh-CN'] = withQuery(`/zh-cn${canonical}`);
   } else if (english === '/') {
     destinations.en = '/';
     destinations.ko = '/ko/';

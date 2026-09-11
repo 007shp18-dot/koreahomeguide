@@ -81,6 +81,7 @@ describe('SignedPrice cohort zero SEO', () => {
     const languages = {
       en: 'https://www.signedprice.com/kr/seoul/check/compare/',
       ko: 'https://www.signedprice.com/ko/kr/seoul/check/compare/',
+        'zh-Hans': 'https://www.signedprice.com/zh-cn/kr/seoul/check/compare/',
       'x-default': 'https://www.signedprice.com/kr/seoul/check/compare/',
     };
 

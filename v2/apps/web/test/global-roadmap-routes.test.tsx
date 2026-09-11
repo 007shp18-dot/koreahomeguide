@@ -47,7 +47,7 @@ describe('global roadmap routes', () => {
     );
     expect(communityMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/community/' });
     expect(news).toContain('<h1>Insights</h1>');
-    expect(news).toContain('Places, prices and the changes that matter to your next home.');
+    expect(news).toContain('Property markets, investment decisions and life across four cities.');
     expect(news).toContain('data-public-editorial-frame="content"');
     expect(news).toContain('Singapore condo prices: CCR vs RCR vs OCR compared');
     expect(news).toContain('aria-label="Insight cities"');

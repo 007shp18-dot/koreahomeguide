@@ -1,3 +1,4 @@
+import { localizedMarketCopy } from '../../lib/locale/market-localization';
 
 import { sgText } from '../../lib/locale/singapore-copy';
 import { marketHref, type MarketLocale } from '../../lib/locale/market-localization';
@@ -50,21 +51,21 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
       <MarketDetailShell locale={locale}
         breadcrumb={<Link href={marketHref(locale, '/sg/singapore/explore/')}>{sgText(locale, 'Explore')}</Link>}
         sections={[
-          { id: 'detail-overview', label: locale === 'ko' ? '개요' : 'Overview' },
-          { id: 'detail-evidence', label: locale === 'ko' ? '자료 현황' : 'Evidence status' },
-          { id: 'detail-source', label: locale === 'ko' ? '출처' : 'Sources' },
+          { id: 'detail-overview', label: localizedMarketCopy(locale, "Overview", "개요") },
+          { id: 'detail-evidence', label: localizedMarketCopy(locale, "Evidence status", "자료 현황") },
+          { id: 'detail-source', label: localizedMarketCopy(locale, "Sources", "출처") },
         ]}
         summary={<div data-singapore-project="insufficient"><MarketSummary locale={locale} kind="project" title={displayName}
           location={model.identity.street} context={`Singapore · ${model.identity.marketSegment}`}
-          metric={{label:locale === 'ko' ? '매매가격 중앙값' : 'Median sale price',value:sgText(locale, 'Not published')}}
+          metric={{label:localizedMarketCopy(locale, "Median sale price", "매매가격 중앙값"),value:sgText(locale, 'Not published')}}
           facts={[{label:sgText(locale, 'Sample'),value:String(model.count)}]} /></div>}
         media={<ProjectedEntityMedia locale={locale} media={media} fallbackMarket="singapore"
           browserKey={googleMapsBrowserKey} buildingName={model.identity.project} displayBuildingName={displayName}
           buildingKey={`singapore:project:${model.identity.id}`} address={`${model.identity.street}, Singapore`}
           registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
           locationHref={marketHref(locale, `/sg/singapore/explore/?region=${model.identity.marketSegment.toLowerCase()}&q=${encodeURIComponent(displayName)}&project=${encodeURIComponent(model.identity.id)}`)} />}
-        evidence={<section className={detailStyles.section}><h2>{locale === 'ko' ? '가격 게시에 필요한 거래가 부족합니다' : 'Not enough transactions to publish a price'}</h2>
-          <p>{locale === 'ko' ? `신고 거래 ${model.count}건입니다. 중앙값은 ${model.threshold}건 이상일 때 공개합니다.` : `${model.count} reported transactions. A median requires at least ${model.threshold}.`}</p>
+        evidence={<section className={detailStyles.section}><h2>{localizedMarketCopy(locale, "Not enough transactions to publish a price", "가격 게시에 필요한 거래가 부족합니다")}</h2>
+          <p>{locale === 'ko' ? `신고 거래 ${model.count}건입니다. 중앙값은 ${model.threshold}건 이상일 때 공개합니다.` : locale === 'zh-CN' ? `${model.count} 笔申报交易，至少 ${model.threshold} 笔才公布中位数。` : `${model.count} reported transactions. A median requires at least ${model.threshold}.`}</p>
           <SingaporeNearbyPlaces locale={locale} proximity={proximity} />
         </section>}
         rail={<SingaporeEvidence locale={locale} model={model.evidence} />} />
@@ -81,11 +82,11 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
     <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed>
       <MarketDetailShell locale={locale}
         sections={[
-          { id: 'detail-overview', label: locale === 'ko' ? '개요' : 'Overview' },
-          { id: 'detail-evidence', label: locale === 'ko' ? '가격·실거래' : 'Prices & transactions' },
-          { id: 'project-profile', label: locale === 'ko' ? '건물·주변 정보' : 'Property & location' },
-          { id: 'detail-tools', label: locale === 'ko' ? '내 조건 비교' : 'Compare' },
-          { id: 'detail-source', label: locale === 'ko' ? '출처' : 'Sources' },
+          { id: 'detail-overview', label: localizedMarketCopy(locale, "Overview", "개요") },
+          { id: 'detail-evidence', label: localizedMarketCopy(locale, "Prices & transactions", "가격·실거래") },
+          { id: 'project-profile', label: localizedMarketCopy(locale, "Property & location", "건물·주변 정보") },
+          { id: 'detail-tools', label: localizedMarketCopy(locale, "Compare", "내 조건 비교") },
+          { id: 'detail-source', label: localizedMarketCopy(locale, "Sources", "출처") },
         ]}
         breadcrumb={<nav className={styles.breadcrumbs} aria-label={sgText(locale, "Breadcrumb")}>
         <Link href={marketHref(locale, "/sg/singapore/explore/")}>{sgText(locale, "Explore")}</Link>
@@ -98,7 +99,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
           location={model.identity.street}
           context={`${sgText(locale, 'Singapore')} · ${model.identity.marketSegment} · ${sgText(locale, 'District')} ${model.identity.district}`}
           metric={{
-            label: locale === 'ko' ? '집계 기간 매매가격 중앙값' : 'Median sale price for this period',
+            label: localizedMarketCopy(locale, "Median sale price for this period", "집계 기간 매매가격 중앙값"),
             value: sgText(locale, model.display.medianPriceLabel),
             secondary: sgText(locale, model.display.medianPsfLabel),
             note: `${sgText(locale, 'Reporting period')} · ${model.evidence.period}`,
@@ -122,22 +123,22 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
           evidenceHref="#project-summary-heading"
         />}
         evidence={<><section className={styles.section} aria-labelledby="project-summary-heading">
-        <h2 id="project-summary-heading">{locale === 'ko' ? '가격 분포' : 'Price distribution'}</h2>
+        <h2 id="project-summary-heading">{localizedMarketCopy(locale, "Price distribution", "가격 분포")}</h2>
         <dl className={styles.stats}>
           <div className={styles.stat}><dt>{sgText(locale, "Middle half")}</dt><dd><PriceRange locale={locale} value={model.display.middlePriceLabel} /></dd></div>
         </dl>
       </section>
       <MonthlyTransactionResearch locale={locale} months={months} />
       <section className={styles.section} aria-labelledby="transaction-heading">
-        <h2 id="transaction-heading">{locale === 'ko' ? '신고 실거래' : 'Reported transactions'}</h2>
+        <h2 id="transaction-heading">{localizedMarketCopy(locale, "Reported transactions", "신고 실거래")}</h2>
         <SingaporeTransactionsTable key={model.identity.id} locale={locale} rows={model.transactions.map(({ source, ...row }) => { void source; return row; })} />
       </section>
       <section className={styles.section} aria-labelledby="project-size-heading"><h2 id="project-size-heading">{sgText(locale, "Compare prices by home size")}</h2><p>{sgText(locale, "Same project and reporting period. Property type, sale type, area basis and tenure stay separate. A cohort needs at least five transactions to publish its median.")}</p><SizeCohortResearch locale={locale} rows={sizes} currency="SGD" /></section>
       <section id="project-profile" className={detailStyles.section} aria-labelledby="project-profile-heading">
-        <h2 id="project-profile-heading">{locale === 'ko' ? '건물·주변 정보' : 'Property and location'}</h2>
+        <h2 id="project-profile-heading">{localizedMarketCopy(locale, "Property and location", "건물·주변 정보")}</h2>
         <dl className={detailStyles.facts}>
           <div><dt>{sgText(locale, 'Property types')}</dt><dd>{sgText(locale, [...new Set(model.transactions.map(row => row.propertyTypeLabel))].join(' · '))}</dd></div>
-          <div><dt>{locale === 'ko' ? '거래 유형' : 'Sale types in these records'}</dt><dd>{sgText(locale, [...new Set(model.transactions.map(row => row.saleTypeLabel))].join(' · '))}</dd></div>
+          <div><dt>{localizedMarketCopy(locale, "Sale types in these records", "거래 유형")}</dt><dd>{sgText(locale, [...new Set(model.transactions.map(row => row.saleTypeLabel))].join(' · '))}</dd></div>
         </dl>
         <Link href={marketHref(locale, `/sg/singapore/explore/?region=${model.identity.marketSegment.toLowerCase()}&q=${encodeURIComponent(displayName)}&project=${encodeURIComponent(model.identity.id)}`)}>{sgText(locale, 'View this project on the map')}</Link>
         <SingaporeNearbyPlaces locale={locale} proximity={proximity} />

@@ -1,4 +1,5 @@
-export type MarketLocale = 'en' | 'ko';
+import { chineseMarketCopy } from './market-chinese';
+export type MarketLocale = 'en' | 'ko' | 'zh-CN';
 const korean: Readonly<Record<string,string>> = {
   "Area details unavailable": "지역 상세 자료 없음",
   "Compare an asking price": "매물 가격 비교",
@@ -285,7 +286,12 @@ const korean: Readonly<Record<string,string>> = {
 };
 
 export function marketText<T>(locale: MarketLocale, value: T): T {
-  if (locale !== 'ko' || typeof value !== 'string') return value;
+  if (locale === 'en' || typeof value !== 'string') return value;
+  if (locale === 'zh-CN') {
+    const key = value.trim();
+    if (chineseMarketCopy[key] !== undefined) return value.replace(key, chineseMarketCopy[key]) as T;
+    return value.replace(/([\d,]+–[\d,]+) shown/g, '显示 $1').replace(/\/year/g, '/年').replace(/m² strata/g, 'm² 分层面积').replace(/\bresale\b/g, '转售') as T;
+  }
   const text = value.trim();
   if (/^[\d,]+–[\d,]+ shown$/.test(text)) return value.replace(' shown', '건 표시') as T;
   if (text.endsWith('/year')) return value.replace('/year', '/년') as T;
@@ -294,8 +300,16 @@ export function marketText<T>(locale: MarketLocale, value: T): T {
   return (korean[text] === undefined ? value : value.replace(text, korean[text])) as T;
 }
 export function marketHref(locale: MarketLocale, href: string): string {
-  if (locale !== 'ko' || !href.startsWith('/') || href.startsWith('/ko/')) return href;
+  if (locale === 'en' || !href.startsWith('/') || /^\/(?:ko|zh-cn)\//.test(href)) return href;
+  if (locale === 'zh-CN') {
+    if (/^\/sg(?:[/?#]|$)/.test(href) || /^\/ae\/dubai(?:[/?#]|$)/.test(href) || /^\/(?:jp\/tokyo|kr\/seoul|guides|news|tools|passport)(?:[/?#]|$)/.test(href)) return '/zh-cn' + href;
+    return href;
+  }
   if (/^\/sg(?:\/)?(?:[?#].*)?$/.test(href)) return href.replace(/^\/sg/, '/ko/sg');
   if (/^\/(?:sg\/singapore(?:\/(?:explore|check|hdb|rankings|shortlist|corrections))?|ae\/dubai(?:\/(?:explore|check|shortlist|guide))?|jp\/tokyo(?:\/(?:explore|shortlist))?|kr\/seoul(?:\/(?:explore|check|rankings|shortlist))?|guides|news|tools|passport|contact)(?:[/?#]|$)/.test(href)) return '/ko' + href.replace(/^\/news\/policy\//, '/news/');
   return href;
+}
+
+export function localizedMarketCopy(locale: MarketLocale, english: string, korean: string): string {
+  return locale === 'ko' ? korean : marketText(locale, english);
 }

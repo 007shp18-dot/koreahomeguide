@@ -8,7 +8,7 @@ import styles from './public-market.module.css';
 function monthLabel(month: string, fallback: string, locale: ProductLocale): string {
   if (locale === 'en') return fallback;
   const [year, monthNumber] = month.split('-');
-  return `${year}년 ${Number(monthNumber)}월`;
+  return locale === 'zh-CN' ? `${year}年${Number(monthNumber)}月` : `${year}년 ${Number(monthNumber)}월`;
 }
 
 export function EvidencePeriodStrip({
@@ -46,7 +46,7 @@ export function EvidencePeriodStrip({
       </div>
       {model.caveat === null ? null : (
         <p className={styles.periodCaveat}>
-          {locale === 'ko' ? copy.filingCaveat : model.caveat}
+          {locale !== 'en' ? copy.filingCaveat : model.caveat}
         </p>
       )}
     </section>

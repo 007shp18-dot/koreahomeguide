@@ -21,12 +21,19 @@ const copy = Object.freeze({
     locale: 'ko_KR' as const,
     imagePath: '/og/ko/' as const,
   }),
+  'zh-CN': Object.freeze({
+    path: '/zh-cn/kr/seoul/check/' as const,
+    title: '首尔房屋报价比较 | signedprice',
+    description: '将首尔买卖报价、全租保证金或月租与条件相近的申报成交比较。',
+    locale: 'zh_CN' as const,
+    imagePath: '/og/zh/' as const,
+  }),
 });
 
 export function buildSingleQuoteCheckMetadata(locale: ProductLocale): Metadata {
   const metadata = indexableMetadata({
     ...copy[locale],
-    languageAlternates: { en: '/kr/seoul/check/', ko: '/ko/kr/seoul/check/' },
+    languageAlternates: { en: '/kr/seoul/check/', 'zh-Hans': '/zh-cn/kr/seoul/check/', ko: '/ko/kr/seoul/check/' },
   });
   const repositories = contractCheckEvidenceRepositoriesFromEnvironment();
   if (

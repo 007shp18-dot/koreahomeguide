@@ -12,10 +12,12 @@ type SitemapEntry = MetadataRoute.Sitemap[number];
 function localizedEntries(enPath: `/${string}`, koPath: `/${string}`, lastModified?: Date): readonly SitemapEntry[] {
   const en = publicCanonical(enPath);
   const ko = publicCanonical(koPath);
-  const alternates = { languages: { en, ko, 'x-default': en } };
+  const zh = publicCanonical(`/zh-cn${enPath}`);
+  const alternates = { languages: { en, ko, 'zh-Hans': zh, 'x-default': en } };
   return [
     { url: en, ...(lastModified === undefined ? {} : { lastModified }), alternates },
     { url: ko, ...(lastModified === undefined ? {} : { lastModified }), alternates },
+    { url: zh, ...(lastModified === undefined ? {} : { lastModified }), alternates },
   ];
 }
 

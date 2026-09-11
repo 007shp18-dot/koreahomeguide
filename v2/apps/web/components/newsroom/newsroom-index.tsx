@@ -26,6 +26,7 @@ export type NewsroomFilters = Readonly<{
   type: NewsroomTypeFilter;
   market: NewsroomMarketFilter;
   canonicalHref: string;
+  topic?: 'investment';
 }>;
 
 type SearchParams = Readonly<Record<string, string | readonly string[] | undefined>>;
@@ -44,9 +45,12 @@ export function resolveNewsroomFilters(input: SearchParams): NewsroomFilters {
   const query = new URLSearchParams();
   if (type !== 'insights') query.set('type', type);
   if (market !== 'all') query.set('market', market);
+  const topic = type === 'insights' && input.topic === 'investment' ? 'investment' : undefined;
+  if (topic) query.set('topic', topic);
   return Object.freeze({
     type,
     market,
+    ...(topic ? { topic } : {}),
     canonicalHref: query.size === 0 ? '/news/' : `/news/?${query.toString()}`,
   });
 }
@@ -63,12 +67,12 @@ export function NewsroomIndex({ articles, policies, filters, headlines, locale =
   articles: readonly PublishedContentArticle[]; policies: readonly PolicyRecord[];
   filters: NewsroomFilters; headlines?: ReactNode; locale?: StoryLocale;
 }>) {
-  if (locale === 'en' && filters.type === 'insights') return <InsightsIndex articles={articles} market={filters.market} />;
+  if (filters.type === 'insights') return <InsightsIndex articles={articles} market={filters.market} locale={locale} topic={filters.topic} />;
   const ko = locale === 'ko';
   const base = ko ? '/ko/news/' : '/news/';
   const href = (type: NewsroomTypeFilter, market = filters.market) => `${ko ? '/ko' : ''}${resolveNewsroomFilters({ type, market }).canonicalHref}`;
   const analysis = ['insights', 'market', 'data-stories'].includes(filters.type);
-  const fullJourney = filters.type === 'insights';
+  const fullJourney = ['insights'].includes(filters.type);
   const story = CITY_STORIES.find(item => item.city === filters.market) ?? CITY_STORIES[0];
   const featured = getJourneyArticle(story.city, 'discover')!;
   const journeyStages = STORY_STEPS.map(({ id }) => {
@@ -97,7 +101,7 @@ export function NewsroomIndex({ articles, policies, filters, headlines, locale =
   const notebookItems: StoryItem[] = ko ? [] : listNeighbourhoodStories(filters.market).map(item => ({ id: `notebook-${item.slug}`, title: item.title, deck: item.deck, href: neighbourhoodHref(item.slug), date: item.publishedAt, type: 'neighborhood' }));
   const promoted = new Set(fullJourney ? [...notebookItems, ...comparisons, ...updates, ...pilotItems].map(item => item.href).concat(journeyArticleHref(story.city, 'discover', locale), ...(filters.market === 'all' ? [] : ['why-buy','can-i-buy'].map(id => journeyArticleHref(story.city,id,locale)))) : []);
   const seen = new Set<string>();
-  const filtered = [...(filters.type === 'insights' ? notebookItems : []), ...(filters.type === 'insights' ? standaloneItems : []), ...items, ...(['insights', 'data-stories'].includes(filters.type) ? budgetComparisons : [])].filter(item => { if (promoted.has(item.href) || seen.has(item.href)) return false; seen.add(item.href); return true; }).filter(item => filters.type === 'insights' ? true : filters.type === 'news' ? item.type === 'news-brief' : filters.type === 'policy' ? item.type === 'policy-update' : filters.type === 'market' ? item.type === 'market-brief' : item.type === 'data-story' || item.type === 'guide').sort((a, b) => b.date.localeCompare(a.date));
+  const filtered = [...(fullJourney ? notebookItems : []), ...(fullJourney ? standaloneItems : []), ...items, ...(['insights', 'data-stories'].includes(filters.type) ? budgetComparisons : [])].filter(item => { if (promoted.has(item.href) || seen.has(item.href)) return false; seen.add(item.href); return true; }).filter(item => fullJourney ? true : filters.type === 'news' ? item.type === 'news-brief' : filters.type === 'policy' ? item.type === 'policy-update' : filters.type === 'market' ? item.type === 'market-brief' : item.type === 'data-story' || item.type === 'guide').sort((a, b) => b.date.localeCompare(a.date));
   const conversations = filters.market === 'all' ? CITY_STORIES.map(city => LOCAL_CONVERSATIONS.find(item => item.city === city.city)!) : LOCAL_CONVERSATIONS.filter(item => item.city === filters.market);
   if (!ko && filters.type === 'news') return <main className={insightStyles.index} data-newsroom-layout="news" lang="en">
     <header className={insightStyles.header}><h1>News</h1><p>What happened. Where it matters. What to read next.</p></header>

@@ -1,5 +1,27 @@
-import { redirect } from 'next/navigation';
+import {Suspense} from 'react';
+import {SeoulCheckClient} from '@/components/contract-check/seoul-check-client';
+import { resolveSeoulEntityCheckContext } from '@/lib/contract-check/entity-context.server';
+import { SingleQuoteCheckWorkspace } from '@/components/contract-check/single-quote-check';
+import { contractCheckEvidenceRepositoriesFromEnvironment } from '@/lib/contract-check/evidence-repositories.server';
+import { contractCheckCurvesFromEnvironment } from '@/lib/contract-check/route-model.server';
+import { buildSingleQuoteCheckMetadata } from '@/lib/single-quote-check/metadata.server';
+import { buildSingleQuoteCheckRouteModel } from '@/lib/single-quote-check/route-model.server';
 
-export default function ChineseCheckBridge() {
-  redirect('/kr/seoul/check/');
+export const dynamic = 'force-static';
+
+export function generateMetadata() {
+  return buildSingleQuoteCheckMetadata('zh-CN');
+}
+
+export default async function ChineseContractCheckPage({
+  searchParams = Promise.resolve({}),
+}: Readonly<{ searchParams?: Promise<Record<string, string | string[] | undefined>> }>) {
+  const query = await searchParams;
+  const model = buildSingleQuoteCheckRouteModel(
+    contractCheckEvidenceRepositoriesFromEnvironment(),
+    query,
+    contractCheckCurvesFromEnvironment(),
+  );
+  const entityContext = resolveSeoulEntityCheckContext(query, {locale:'zh-CN',districtSlug:model.selection.districtSlug,buildingId:model.selection.buildingId,buildingName:model.buildingName});
+  return <Suspense fallback={<SingleQuoteCheckWorkspace locale="zh-CN" model={model} entityContext={entityContext} />}><SeoulCheckClient initialModel={model} initialContext={entityContext} locale="zh-CN" /></Suspense>;
 }

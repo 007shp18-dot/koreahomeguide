@@ -27,7 +27,7 @@ export function ContactPageContent({ locale = 'en', privacyContact }: { locale?:
         <h2>{ko ? '거래 정보 오류 신고' : 'Correct a data issue'}</h2>
         <div>
           <p>{ko ? '서울 거래 정보의 오류는 정정 페이지에서 알려주세요. 검토 결과와 변경 내용을 확인할 수 있습니다. 다른 도시의 오류는 위 이메일로 관련 링크를 보내주세요.' : 'Use the correction page for Seoul records so the report and review result can be followed. For another city, send the relevant page link to the email above.'}</p>
-          <div className={styles.links}><Link href="/kr/seoul/corrections/">{ko ? '서울 데이터 정정 (영문)' : 'Seoul corrections'}</Link><Link href="/trust/">{ko ? '데이터와 출처 (영문)' : 'Data & sources'}</Link></div>
+          <div className={styles.links}><Link href={ko ? "/ko/kr/seoul/corrections/" : "/kr/seoul/corrections/"}>{ko ? '서울 데이터 정정 이력' : 'Seoul data corrections'}</Link><Link href="/trust/">{ko ? '데이터와 출처 (영문)' : 'Data & sources'}</Link></div>
         </div>
       </article>
       <article>

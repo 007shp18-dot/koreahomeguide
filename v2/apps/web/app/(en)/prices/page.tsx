@@ -1,28 +1,8 @@
-import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
-
-import { GlobalProductHub } from '@/components/global-product-hub';
+import { PricesPage } from '@/components/prices-page';
 import { indexableMetadata } from '@/lib/public-metadata';
 
-export const metadata: Metadata = indexableMetadata({
-  path: '/prices/',
-  title: 'Explore property prices by city | SignedPrice',
-  description: 'Search released property contract evidence and compare local prices with their source context.',
-});
+export const metadata = indexableMetadata({ path: '/prices/', title: 'Explore property prices by city | SignedPrice', description: 'Search recorded property prices and rents by city.', locale: 'en_US', languageAlternates: { en: '/prices/', ko: '/ko/prices/', 'zh-Hans': '/zh-cn/prices/' } });
 
-export default async function PricesPage({ searchParams }: Readonly<{
-  searchParams: Promise<Readonly<Record<string, string | string[] | undefined>>>;
-}>) {
-  const query = await searchParams;
-  const q = typeof query.q === 'string' ? query.q.trim() : '';
-  const market = typeof query.market === 'string' ? query.market : 'seoul';
-  if (q !== '') {
-    const target = market === 'singapore'
-      ? '/sg/singapore/explore/'
-      : market === 'dubai'
-        ? '/ae/dubai/explore/'
-        : market === 'tokyo' ? '/jp/tokyo/explore/' : '/kr/seoul/explore/';
-    redirect(`${target}?q=${encodeURIComponent(q)}`);
-  }
-  return <GlobalProductHub kind="prices" />;
+export default function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <PricesPage locale="en" searchParams={searchParams} />;
 }

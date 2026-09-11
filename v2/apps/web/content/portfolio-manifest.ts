@@ -6,6 +6,8 @@ import { validateInfographicSpec } from '../lib/infographics/infographic-validat
 import { ENGLISH_PORTFOLIO } from './en/portfolio';
 import type { EditorialPortfolioRecord } from './portfolio-types';
 import { CHINESE_PORTFOLIO } from './zh-CN/portfolio';
+import { CHINESE_MONTHLY_REPORTS } from './zh-CN/monthly-reports';
+import { CHINESE_DUBAI_RENTAL_YIELD } from './zh-CN/dubai-rental-yield';
 
 const identifier = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const route = /^\/(?:news|guides|zh-cn|ko)\//u;
@@ -93,6 +95,8 @@ export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Obje
   ...KOREAN_BUYING_GUIDES,
   ...KOREAN_EDITORIAL_PORTFOLIO,
   ...CHINESE_PORTFOLIO,
+  ...CHINESE_MONTHLY_REPORTS,
+  CHINESE_DUBAI_RENTAL_YIELD,
 ].filter(article => article.slug !== 'compare-seoul-district-prices'))));
 
 export function listPortfolioRecords(locale?: EditorialPortfolioRecord['locale']): readonly EditorialPortfolioRecord[] {

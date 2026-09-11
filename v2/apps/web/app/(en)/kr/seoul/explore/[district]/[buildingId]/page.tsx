@@ -132,7 +132,7 @@ function projectedBuildingMediaFor(
   projection: PublicEntityProjection | null | undefined,
   photoApproval: StoredPublicPhotoApproval | null | undefined,
   registryKey?: string,
-  locale: 'en' | 'ko' = 'en',
+  locale: 'en' | 'ko' | 'zh-CN' = 'en',
   locationHref?: string,
 ) {
   const media = selectPublishedBuildingPhoto(projection?.media ?? [], photoApproval);
@@ -312,7 +312,13 @@ function indexableKoreaBuildingMetadata(
   const published = canonical.model.evidence.state === 'published';
   const englishPath = `/kr/seoul/explore/${canonical.model.district.slug}/${canonical.model.building.buildingId}/` as const;
   const koreanPath = `/ko${englishPath}` as const;
-  const languageAlternates = Object.freeze({ en: englishPath, ko: koreanPath });
+  const languageAlternates = Object.freeze({ en: englishPath, ko: koreanPath, 'zh-Hans': `/zh-cn${englishPath}` as const });
+  if (locale === 'zh-CN') return indexableMetadata({
+    path: `/zh-cn${englishPath}`,
+    title: `${identity.officialName} 成交记录 | 首尔 ${canonical.model.district.nameEn} | signedprice`,
+    description: `${identity.officialName} 在 ${canonical.model.period} 的 ${contracts} 份申报合同，按交易类型、面积和合同类型展示，并注明国土交通部来源与覆盖范围。`,
+    languageAlternates, locale: 'zh_CN', imagePath: '/og/zh/',
+  });
   if (locale === 'ko') {
     const koreanEvidenceLabel = selection.transaction === 'sale'
       ? '매매 신고 거래'
@@ -344,7 +350,13 @@ export async function generateMetadata({
     const buildingCount = propertyTypeModel.coverage.contributingBuildings;
     const englishPath = `/kr/seoul/explore/${propertyTypeModel.district.slug}/${propertyTypeModel.propertyType.slug}/` as const;
     const koreanPath = `/ko${englishPath}` as const;
-    const languageAlternates = Object.freeze({ en: englishPath, ko: koreanPath });
+    const languageAlternates = Object.freeze({ en: englishPath, ko: koreanPath, 'zh-Hans': `/zh-cn${englishPath}` as const });
+    if (locale === 'zh-CN') return indexableMetadata({
+      path: `/zh-cn${englishPath}`,
+      title: `${propertyTypeModel.district.nameEn} ${propertyTypeLabel(propertyTypeModel.propertyType, 'zh-CN')} 全租成交数据 | signedprice`,
+      description: `根据 ${buildingCount} 栋已发布楼宇的 ${propertyTypeModel.coverage.retainedContracts} 份近期全租合同，了解保证金分布及国土交通部数据覆盖范围。`,
+      languageAlternates, locale: 'zh_CN', imagePath: '/og/zh/',
+    });
     if (locale === 'ko') return indexableMetadata({
       path: koreanPath,
       title: `${propertyTypeModel.district.nameKo} ${propertyTypeLabel(propertyTypeModel.propertyType, 'ko')} 전세 실거래가 | signedprice`,

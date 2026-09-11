@@ -33,7 +33,7 @@ export type EntityCheckContext = Readonly<{
 
 export type EntityCheckContextInput = EntityCheckContext & Readonly<{
   selection: ExplorerSelection;
-  locale?: 'en' | 'ko';
+  locale?: 'en' | 'ko' | 'zh-CN';
 }>;
 
 export type ExplorerSelectionDefaults = Readonly<{
@@ -329,10 +329,10 @@ export function createExplorerJourneyState(
   });
 }
 
-function safeInternalReturnTo(value: unknown, market: EntityCheckContext['market'], locale: 'en' | 'ko' = 'en'): string | null {
+function safeInternalReturnTo(value: unknown, market: EntityCheckContext['market'], locale: 'en' | 'ko' | 'zh-CN' = 'en'): string | null {
   if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) return null;
   if (/[\u0000-\u001f\u007f]/u.test(value)) return null;
-  const allowedPrefix = market === 'kr-seoul' ? `${locale === 'ko' ? '/ko' : ''}/kr/seoul/` : '/sg/singapore/';
+  const allowedPrefix = market === 'kr-seoul' ? `${locale === 'zh-CN' ? '/zh-cn' : locale === 'ko' ? '/ko' : ''}/kr/seoul/` : '/sg/singapore/';
   try {
     const target = new URL(value, 'https://signedprice.invalid');
     if (target.origin !== 'https://signedprice.invalid' || !target.pathname.startsWith(allowedPrefix)) {
@@ -348,7 +348,7 @@ export function createEntityCheckHref(
   path: string,
   input: EntityCheckContextInput,
 ): string {
-  const returnTo = safeInternalReturnTo(input.returnTo, input.market, input.locale ?? (path.startsWith('/ko/') ? 'ko' : 'en'));
+  const returnTo = safeInternalReturnTo(input.returnTo, input.market, input.locale ?? (path.startsWith('/zh-cn/') ? 'zh-CN' : path.startsWith('/ko/') ? 'ko' : 'en'));
   if (!identifierPattern.test(input.entity) || returnTo === null) return path;
   const query = new URLSearchParams();
   query.set('market', input.market);
@@ -366,7 +366,7 @@ export function parseEntityCheckContext(
   allow: Readonly<{
     market: EntityCheckContext['market'];
     entityIds: readonly string[];
-    locale?: 'en' | 'ko';
+    locale?: 'en' | 'ko' | 'zh-CN';
   }>,
 ): EntityCheckContext | null {
   const market = scalarSearchParam(input, 'market');

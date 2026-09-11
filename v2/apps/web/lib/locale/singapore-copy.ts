@@ -1,3 +1,4 @@
+import { chineseSingaporeCopy } from './market-chinese';
 import { marketText, type MarketLocale } from './market-localization';
 
 const copy: Readonly<Record<string, string>> = {
@@ -268,7 +269,33 @@ const copy: Readonly<Record<string, string>> = {
 
 /** Translate presentation strings only; numeric values, record IDs and source data stay intact. */
 export function sgText<T>(locale: MarketLocale, value: T): T {
-  if (locale !== 'ko' || typeof value !== 'string') return value;
+  if (locale === 'en' || typeof value !== 'string') return value;
+  if (locale === 'zh-CN') {
+    const key = value.trim();
+    if (chineseSingaporeCopy[key] !== undefined) return value.replace(key, chineseSingaporeCopy[key]) as T;
+    const translated = value
+      .replace(/Market intelligence in (.+)\./g, '$1 市场信息')
+      .replace(/Official private residential sale evidence, separated by native market segment\. /g, '按本地市场分区统计的官方私人住宅成交数据。')
+      .replace(/Private residential sales · /g, '私人住宅交易 · ')
+      .replace(/([\d,]+) private residential sale transactions across ([\d,]+) projects\./g, '$2 个项目的 $1 笔私人住宅交易。')
+      .replace(/([\d,]+) private residential sale transactions/g, '$1 笔私人住宅交易')
+      .replace(/([\d,]+) reported sale transactions/g, '$1 笔已申报交易')
+      .replace(/([\d,]+) reported sales/g, '$1 笔已申报交易')
+      .replace(/([\d,]+) projects/g, '$1 个项目')
+      .replace(/District (\d+)/g, '第 $1 邮区')
+      .replace(/([\d,]+) filings/g, '$1 笔申报')
+      .replace(/approximate area, not project locations/g, '大致区域，并非项目位置')
+      .replace(/Area only/g, '仅区域位置')
+      .replace(/([\d,]+–[\d,]+) shown/g, '显示 $1')
+      .replace(/Open (.+) evidence/g, '查看 $1 数据')
+      .replace(/Offer ([AB]) market/g, '报价 $1 市场')
+      .replace(/Most-observed towns · full reported period (.+)/g, '交易较多的市镇 · 完整申报期间 $1')
+      .replace(/The exact selection was below five records; (\w+) evidence is shown without widening the time window\./g, (_, level: string) => `精确条件下少于 5 笔记录；保持时间范围不变，显示${({project:'项目',district:'邮区',segment:'区域',block:'楼栋',town:'市镇',national:'全国'} as Record<string,string>)[level] ?? level}范围的数据。`)
+      .replace(/(\d+)(?: yrs| years| Yrs| Years)(?: lease)?(?: (?:commencing )?from (\d{4}))?/g, (_, years: string, from?: string) => `${years} 年产权${from ? `（${from} 年起）` : ''}`);
+    if (translated !== value) return translated as T;
+    if (value.includes(' · ')) return value.split(' · ').map(part => sgText(locale, part)).join(' · ') as T;
+    return marketText(locale, value);
+  }
   const key = value.trim();
   if (copy[key]) return value.replace(key, copy[key]) as T;
   const monthNames: Record<string, number> = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Sept: 9, Oct: 10, Nov: 11, Dec: 12 };
@@ -302,6 +329,7 @@ export function singaporeMetadata(metadata: import('next').Metadata): import('ne
   const canonical = metadata.alternates?.canonical?.toString();
   const ko = canonical?.replace(/(?<!\/ko)\/sg\/singapore\//, '/ko/sg/singapore/');
   const en = ko?.replace('/ko/sg/', '/sg/');
+  const zh = en?.replace('/sg/', '/zh-cn/sg/');
   const image = 'https://www.signedprice.com/og/ko/';
   const title = typeof metadata.title === 'string' ? sgText('ko', metadata.title) : metadata.title;
   const description = sgText('ko', metadata.description);
@@ -322,8 +350,8 @@ export function singaporeMetadata(metadata: import('next').Metadata): import('ne
     metadata.twitter?.description ?? fallbackDescription,
   );
   return { ...metadata, title, description,
-    alternates: ko ? { ...metadata.alternates, canonical: ko, languages: { en, ko, 'x-default': en } } : metadata.alternates,
-    openGraph: { ...metadata.openGraph, title: openGraphTitle, description: openGraphDescription, url: ko, locale: 'ko_KR', alternateLocale: ['en_US'], images: [image] },
+    alternates: ko ? { ...metadata.alternates, canonical: ko, languages: { en, ko, 'zh-Hans': zh, 'x-default': en } } : metadata.alternates,
+    openGraph: { ...metadata.openGraph, title: openGraphTitle, description: openGraphDescription, url: ko, locale: 'ko_KR', alternateLocale: ['en_US', 'zh_CN'], images: [image] },
     twitter: { ...metadata.twitter, card: 'summary_large_image', title: twitterTitle, description: twitterDescription, images: [image] },
   };
 }

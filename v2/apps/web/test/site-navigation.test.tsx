@@ -66,16 +66,16 @@ describe('shared navigation destinations', () => {
     const query = '?transaction=sale&area=all&buildingId=example';
     expect(languageDestinations(path, query).ko).toBe(`/ko${path}${query}`);
     expect(languageDestinations(`/ko${path}`, query).en).toBe(`${path}${query}`);
-    expect(languageDestinations(path)['zh-CN']).toBeNull();
+    expect(languageDestinations(path, query)['zh-CN']).toBe(`/zh-cn${path}${query}`);
   });
-  it('offers published Korean tools while keeping Chinese Explore unavailable', () => {
+  it('offers the same Explore routes in all three languages', () => {
     for (const path of ['/sg/singapore/explore/', '/ae/dubai/explore/', '/kr/seoul/explore/']) {
       const html = renderToStaticMarkup(<LanguageLinks pathname={path} />);
       expect(html).toContain('>EN<');
       expect(html).toContain('>KO<');
-      expect(html).not.toContain('>中文<');
+      expect(html).toContain('>中文<');
       expect(html).not.toContain('aria-disabled');
-      expect(html).not.toContain('href="/zh-cn/kr/seoul/explore/"');
+      expect(languageDestinations(path)['zh-CN']).toBe(`/zh-cn${path}`);
     }
     expect(languageDestinations('/sg/singapore/explore/').ko).toBe('/ko/sg/singapore/explore/');
   });
@@ -86,7 +86,7 @@ describe('shared navigation destinations', () => {
     const html = renderToStaticMarkup(<LanguageLinks pathname={`/ko${path}`} />);
     expect(html).toContain('>EN<');
     expect(html).toContain('>KO<');
-    expect(html).not.toContain('>中文<');
+    expect(html).toContain('>中文<');
   });
   it('keeps the current news filter on the Chinese index', () => {
     expect(languageDestinations('/news/', '?market=singapore')['zh-CN']).toBe('/zh-cn/news/?market=singapore');

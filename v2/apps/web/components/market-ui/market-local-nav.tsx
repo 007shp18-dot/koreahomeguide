@@ -17,7 +17,7 @@ const localFeatures = [
 
 export function getMarketLocalNavigation(
   marketId: MarketId,
-  locale: 'en' | 'ko' = 'en',
+  locale: 'en' | 'ko' | 'zh-CN' = 'en',
 ): readonly MarketLocalNavItem[] {
   const capabilities = listMarketCapabilities(marketId);
 
@@ -30,9 +30,9 @@ export function getMarketLocalNavigation(
 
     const href = locale === 'ko'
       ? marketId === 'sg-singapore' && feature === 'market_overview' ? '/ko/sg/' : `/ko${capability.publicHref}`
-      : capability.publicHref;
+      : locale === 'zh-CN' ? marketId === 'kr-seoul' && feature === 'rankings' ? '/zh-cn/rankings/?market=seoul' : marketId === 'sg-singapore' && feature === 'market_overview' ? '/zh-cn/sg/' : `/zh-cn${capability.publicHref}` : capability.publicHref;
     return [{
-      label: locale === 'ko' ? { Overview: '개요', Explore: '실거래가 탐색', Check: '가격 확인', Rankings: '지역 비교', Corrections: '정보 수정 요청' }[label] : label,
+      label: locale === 'ko' ? { Overview: '개요', Explore: '실거래가 탐색', Check: '가격 확인', Rankings: '지역 비교', Corrections: '데이터 정정 이력' }[label] : locale === 'zh-CN' ? { Overview: '概览', Explore: '探索', Check: '价格评估', Rankings: '排名', Corrections: '数据更正记录' }[label] : label,
       href,
       state: capability.state,
     } satisfies MarketLocalNavItem];
@@ -58,14 +58,14 @@ export function MarketLocalNav({
   marketId: MarketId;
   marketLabel: string;
   currentHref?: string;
-  locale?: 'en' | 'ko';
+  locale?: 'en' | 'ko' | 'zh-CN';
 }>) {
   const items = getMarketLocalNavigation(marketId, locale);
 
   return (
     <nav
       className="market-local-nav"
-      aria-label={locale === 'ko' ? `${marketLabel} 시장 메뉴` : `${marketLabel} market navigation`}
+      aria-label={locale === 'ko' ? `${marketLabel} 시장 메뉴` : locale === 'zh-CN' ? `${marketLabel}市场导航` : `${marketLabel} market navigation`}
       data-navigation-tier="market-local"
     >
       <div className="market-local-nav__inner">

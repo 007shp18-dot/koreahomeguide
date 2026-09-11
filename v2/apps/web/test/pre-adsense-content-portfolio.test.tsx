@@ -29,7 +29,7 @@ function sectionCount(body: string): number {
 describe('pre-AdSense reviewed launch portfolio', () => {
   it('keeps the active portfolio and public English parameters after guide consolidation', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(80);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(84);
     expect(english).toHaveLength(36);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'news-brief' || type === 'market-brief' || type === 'data-story')
@@ -54,13 +54,13 @@ describe('pre-AdSense reviewed launch portfolio', () => {
     }
   });
 
-  it('publishes eight independently reviewed Simplified Chinese records', () => {
+  it('publishes twelve reviewed Simplified Chinese records including investment translations', () => {
     const chinese = listPortfolioRecords('zh-CN');
-    expect(chinese).toHaveLength(8);
-    expect(new Set(chinese.map(({ slug }) => slug)).size).toBe(8);
+    expect(chinese).toHaveLength(12);
+    expect(new Set(chinese.map(({ slug }) => slug)).size).toBe(12);
     expect(chinese.every(({ reviewedBy, reviewedAt }) => reviewedBy !== null && reviewedAt !== null)).toBe(true);
     expect(chinese.filter(({ type }) => type === 'policy-update')).toHaveLength(2);
-    expect(chinese.filter(({ type }) => type === 'market-brief')).toHaveLength(1);
+    expect(chinese.filter(({ type }) => type === 'market-brief')).toHaveLength(5);
     expect(chinese.filter(({ type }) => type === 'data-story')).toHaveLength(2);
     expect(chinese.filter(({ type }) => type === 'guide')).toHaveLength(3);
   });
@@ -78,7 +78,7 @@ describe('pre-AdSense reviewed launch portfolio', () => {
     const params = Promise.resolve({ slug: article.slug });
     const detail = renderToStaticMarkup(await ChineseArticlePage({ params }));
     const metadata = await generateChineseArticleMetadata({ params });
-    expect(detail).toContain('Sources');
+    expect(detail).toContain('<h2 id="article-sources-title">来源</h2>');
     expect(detail).not.toContain(article.reviewedBy);
     expect(detail).toContain(article.relatedHref?.replace(/\/$/u, ''));
     expect(metadata.alternates?.canonical).toBe(`https://www.signedprice.com${article.canonicalHref}`);

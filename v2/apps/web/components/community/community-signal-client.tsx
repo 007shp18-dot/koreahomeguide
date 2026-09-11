@@ -1,4 +1,7 @@
 'use client';
+import { widgetText } from '../../lib/locale/public-widget-copy';
+import type { ProductLocale } from '../../lib/locale/product-copy';
+
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -168,23 +171,24 @@ function initialEnvelope(model: InteractiveModel): SafeEnvelope | null {
   });
 }
 
-function Aggregate({ aggregate }: Readonly<{ aggregate: CommunityAggregateModel | null }>) {
-  if (aggregate === null) return <p className={styles.status}>Checking response availability…</p>;
+function Aggregate({ locale = 'en', aggregate }: Readonly<{ locale?: ProductLocale; aggregate: CommunityAggregateModel | null }>) {
+  const t = (text: string) => widgetText(locale, text);
+  if (aggregate === null) return <p className={styles.status}>{t("Checking response availability\u2026")}</p>;
   if (aggregate.status === 'collecting') {
     return (
       <div className={styles.collecting} data-community-state="collecting">
-        <h3>Responses are being collected</h3>
-        <p>Counts and direction breakdowns appear only after the privacy threshold is reached.</p>
+        <h3>{t("Responses are being collected")}</h3>
+        <p>{t("Counts and direction breakdowns appear only after the privacy threshold is reached.")}</p>
       </div>
     );
   }
   return (
     <div className={styles.published} data-community-state="published">
-      <h3>{aggregate.total} community responses</h3>
+      <h3>{aggregate.total} {t("community responses")}</h3>
       <dl className={styles.directionResults}>
         {aggregate.directions.map((item) => (
           <div key={item.direction}>
-            <dt>{DIRECTION_LABELS[item.direction]}</dt>
+            <dt>{t(DIRECTION_LABELS[item.direction])}</dt>
             <dd><strong>{item.percent}%</strong><span>{item.count}</span></dd>
           </div>
         ))}
@@ -192,18 +196,19 @@ function Aggregate({ aggregate }: Readonly<{ aggregate: CommunityAggregateModel 
       <dl className={styles.reasonResults}>
         {aggregate.reasons.map((item) => (
           <div key={item.reason}>
-            <dt>{REASON_LABELS[item.reason]}</dt><dd>{item.count}</dd>
+            <dt>{t(REASON_LABELS[item.reason])}</dt><dd>{item.count}</dd>
           </div>
         ))}
         {aggregate.otherResponses === 0 ? null : (
-          <div><dt>Other responses</dt><dd>{aggregate.otherResponses}</dd></div>
+          <div><dt>{t("Other responses")}</dt><dd>{aggregate.otherResponses}</dd></div>
         )}
       </dl>
     </div>
   );
 }
 
-export function CommunitySignalClient({ model }: Readonly<{ model: InteractiveModel }>) {
+export function CommunitySignalClient({ locale = 'en', model }: Readonly<{ locale?: ProductLocale; model: InteractiveModel }>) {
+  const t = (text: string) => widgetText(locale, text);
   const initial = initialEnvelope(model);
   const [envelope, setEnvelope] = useState<SafeEnvelope | null>(initial);
   const [direction, setDirection] = useState<CommunityDirection | null>(
@@ -279,10 +284,10 @@ export function CommunitySignalClient({ model }: Readonly<{ model: InteractiveMo
   const disabled = requestState === 'loading' || requestState === 'submitting';
   return (
     <div className={styles.interactive}>
-      <Aggregate aggregate={envelope?.aggregate ?? null} />
+      <Aggregate locale={locale} aggregate={envelope?.aggregate ?? null} />
       <form onSubmit={(event) => { event.preventDefault(); void send('POST'); }}>
         <fieldset disabled={disabled}>
-          <legend>Your bounded response</legend>
+          <legend>{t("Your bounded response")}</legend>
           <div className={styles.directionButtons}>
             {COMMUNITY_DIRECTIONS.map((item) => (
               <button
@@ -292,43 +297,41 @@ export function CommunitySignalClient({ model }: Readonly<{ model: InteractiveMo
                 onClick={() => setDirection(item)}
                 key={item}
               >
-                {DIRECTION_LABELS[item]}
+                {t(DIRECTION_LABELS[item])}
               </button>
             ))}
           </div>
           <label className={styles.reasonField}>
-            <span>Optional reason</span>
+            <span>{t("Optional reason")}</span>
             <select
               value={reason ?? ''}
               onChange={(event) => setReason(
                 event.target.value === '' ? null : event.target.value as CommunityReason,
               )}
             >
-              <option value="">No reason selected</option>
+              <option value="">{t("No reason selected")}</option>
               {COMMUNITY_REASONS.map((item) => (
-                <option value={item} key={item}>{REASON_LABELS[item]}</option>
+                <option value={item} key={item}>{t(REASON_LABELS[item])}</option>
               ))}
             </select>
           </label>
           <div className={styles.formActions}>
             <button className={styles.submitButton} type="submit" disabled={direction === null}>
-              {envelope?.selection === null || envelope === null ? 'Submit response' : 'Replace response'}
+              {envelope?.selection === null || envelope === null ? t("Submit response") : t("Replace response")}
             </button>
             {envelope?.selection === null || envelope === null ? null : (
               <button
                 className={styles.deleteButton}
                 type="button"
                 onClick={() => { void send('DELETE'); }}
-              >
-                Delete my response
-              </button>
+              >{t("Delete my response")}</button>
             )}
           </div>
         </fieldset>
         <p className={styles.requestStatus} aria-live="polite">
-          {requestState === 'saved' ? 'Response saved.' : null}
-          {requestState === 'limited' ? 'Too many changes. Try again later.' : null}
-          {requestState === 'error' ? 'Response was not saved. Try again later.' : null}
+          {requestState === 'saved' ? t("Response saved.") : null}
+          {requestState === 'limited' ? t("Too many changes. Try again later.") : null}
+          {requestState === 'error' ? t("Response was not saved. Try again later.") : null}
         </p>
       </form>
     </div>

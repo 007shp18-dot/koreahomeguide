@@ -31,6 +31,18 @@ function renderSummary(overrides: Partial<KoreaExplorerBuildingDetailModel> = {}
 }
 
 describe('building summary card', () => {
+  it('renders the same building summary and transaction evidence in Chinese', () => {
+    const html = renderToStaticMarkup(<KoreaEvidenceBuildingDetail model={model} backHref="/zh-cn/kr/seoul/explore/?district=mapo-gu" locale="zh-CN" />);
+    expect(html).toContain('期间成交价中位数');
+    expect(html).toContain('最新合同月份');
+    expect(html).toContain('15笔合同');
+    expect(html).toContain('data-building-summary="true"');
+    expect(html).toContain('data-building-summary-chart="reported-contracts"');
+    expect(html).toContain('2026-06–2026-08');
+    expect(html).not.toContain('Period sale price median');
+    expect(html).not.toContain('Latest contract month');
+  });
+
   it('leads with the published period median and keeps month precision without claiming a latest sale or record', () => {
     const html = renderSummary();
     expect(html).toContain('기간 매매가격 중앙값');

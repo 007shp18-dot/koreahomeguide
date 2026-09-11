@@ -1,4 +1,6 @@
 'use client';
+import { localizedMarketCopy } from '../lib/locale/market-localization';
+
 
 import Image from 'next/image';
 import { useState } from 'react';
@@ -13,11 +15,11 @@ export default function MarketRepresentativePhotoFrame({ photo, eager = false, c
   if (photo == null || photo.src === failedSrc) return <figure className={photoStyles.frame} data-building-media="market-context-fallback">
     <div className={photoStyles.stage}>
     <div className={styles.fallback}>
-      <strong>{ko ? (cityLabel === undefined ? '주택 시장 정보' : `${cityLabel} 주택 시장`) : (cityLabel === undefined ? 'Property market context' : `${cityLabel} market context`)}</strong>
-      <span>{ko ? '사용할 수 있는 도시 사진이 없습니다.' : 'No approved market photograph is available.'}</span>
+      <strong>{ko ? (cityLabel === undefined ? '주택 시장 정보' : `${cityLabel} 주택 시장`) : locale === 'zh-CN' ? (cityLabel === undefined ? '房地产市场信息' : `${cityLabel} 市场信息`) : (cityLabel === undefined ? 'Property market context' : `${cityLabel} market context`)}</strong>
+      <span>{localizedMarketCopy(locale, "No approved market photograph is available.", "사용할 수 있는 도시 사진이 없습니다.")}</span>
     </div>
     </div>
-    <figcaption className={photoStyles.caption}>{cityLabel === undefined ? null : `${cityLabel} · `}{ko ? '지역 정보' : 'Location context'}</figcaption>
+    <figcaption className={photoStyles.caption}>{cityLabel === undefined ? null : `${cityLabel} · `}{localizedMarketCopy(locale, "Location context", "지역 정보")}</figcaption>
   </figure>;
 
   return <figure className={photoStyles.frame} data-building-media="curated-market-photo">
@@ -36,8 +38,8 @@ export default function MarketRepresentativePhotoFrame({ photo, eager = false, c
     <figcaption className={photoStyles.caption}>
       {cityLabel === undefined ? null : `${cityLabel} · `}
       {context === 'city'
-        ? (ko ? '도시 전경' : 'City view')
-        : (ko ? '도시 참고 사진 · 해당 매물의 사진이 아닙니다' : 'Editorial city photograph · not this exact property')}
+        ? (localizedMarketCopy(locale, "City view", "도시 전경"))
+        : (localizedMarketCopy(locale, "Editorial city photograph · not this exact property", "도시 참고 사진 · 해당 매물의 사진이 아닙니다"))}
     </figcaption>
   </figure>;
 }

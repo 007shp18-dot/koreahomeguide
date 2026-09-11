@@ -1,3 +1,4 @@
+import { localizedMarketCopy } from '../../lib/locale/market-localization';
 import toolSurface from '../tools/tool-surface.module.css';
 import Form from 'next/form';
 import { Fragment } from 'react';
@@ -58,7 +59,7 @@ function OfferFields({ locale = 'en', prefix, draft, catalog }: Readonly<{ local
       {field('Flat type', <select name={`${prefix}-flat-type`} defaultValue={draft['flat-type']}>{options(locale, catalog.flatTypes)}</select>)}
     </>}
     <details data-comparison-options="true" className={`${styles.offerAdvanced} ${styles.offerFullWidth}`} open={advancedActive}>
-      <summary>{locale === 'ko' ? '세부 비교 조건' : 'More comparison options'}</summary>
+      <summary>{localizedMarketCopy(locale, "More comparison options", "세부 비교 조건")}</summary>
       <div className={styles.offerAdvancedGrid}>
         {isPrivate ? <>
           {field('Floor range', <select name={`${prefix}-floor-range`} defaultValue={draft['floor-range']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.floorRanges)}</select>)}
@@ -80,7 +81,7 @@ function MarketTabs({ locale = 'en', prefix, model }: Readonly<{ locale?: Market
       const nextB = prefix === 'b' ? typed : model.drafts.b.market;
       const query = new URLSearchParams({ mode: model.mode, 'a-market': nextA });
       if (model.mode === 'compare') query.set('b-market', nextB);
-      return <Link prefetch={false} key={market} href={marketHref(locale, `/sg/singapore/check/?${query}`)} aria-current={draft.market === market ? 'page' : undefined} data-evidence={available ? 'ready' : loaded ? 'unavailable' : 'on-demand'}><strong>{sgText(locale, label)}</strong><span>{sgText(locale, available ? 'Data available' : loaded ? 'Evidence unavailable' : locale === 'ko' ? '선택하여 조회' : 'Load this market')}</span></Link>;
+      return <Link prefetch={false} key={market} href={marketHref(locale, `/sg/singapore/check/?${query}`)} aria-current={draft.market === market ? 'page' : undefined} data-evidence={available ? 'ready' : loaded ? 'unavailable' : 'on-demand'}><strong>{sgText(locale, label)}</strong><span>{sgText(locale, available ? 'Data available' : loaded ? 'Evidence unavailable' : localizedMarketCopy(locale, "Load this market", "선택하여 조회"))}</span></Link>;
     }))}
   </nav>;
 }
@@ -90,7 +91,7 @@ function ReadyResult({ locale = 'en', result, label = 'Offer' }: Readonly<{ loca
 }
 function OfferResult({ locale = 'en', result, label }: Readonly<{ locale?: MarketLocale; result: SingaporeCheckResult; label?: string }>) {
   if (result.status === 'ready') return <ReadyResult locale={locale} result={result} label={sgText(locale, label)} />;
-  if (result.status === 'insufficient') return <article className={styles.resultCard}><p className={styles.sectionLabel}>{sgText(locale, label)}</p><h3>{sgText(locale, "Insufficient recent evidence")}</h3><p>{locale === 'ko' ? `비교 거래 ${result.sampleCount}건 · 최소 ${result.minimumSample}건 필요` : `${result.sampleCount} comparable records · minimum ${result.minimumSample}`}</p><p>{sgText(locale, result.window.from)}{sgText(locale, "–")}{sgText(locale, result.window.to)}{sgText(locale, "; the time window was not widened.")}</p></article>;
+  if (result.status === 'insufficient') return <article className={styles.resultCard}><p className={styles.sectionLabel}>{sgText(locale, label)}</p><h3>{sgText(locale, "Insufficient recent evidence")}</h3><p>{locale === 'ko' ? `비교 거래 ${result.sampleCount}건 · 최소 ${result.minimumSample}건 필요` : locale === 'zh-CN' ? `${result.sampleCount} 笔可比记录 · 至少需要 ${result.minimumSample} 笔` : `${result.sampleCount} comparable records · minimum ${result.minimumSample}`}</p><p>{sgText(locale, result.window.from)}{sgText(locale, "–")}{sgText(locale, result.window.to)}{sgText(locale, "; the time window was not widened.")}</p></article>;
   return <article className={styles.resultCard}><p className={styles.sectionLabel}>{sgText(locale, label)}</p><h3>{sgText(locale, "Evidence unavailable")}</h3><p>{sgText(locale, result.message)}</p></article>;
 }
 function ResearchOffer({ locale, draft, result, label }: Readonly<{

@@ -107,6 +107,7 @@ describe('/kr/seoul/explore/ route contract', () => {
       languages: {
         en: 'https://www.signedprice.com/kr/seoul/explore/',
         ko: 'https://www.signedprice.com/ko/kr/seoul/explore/',
+        'zh-Hans': 'https://www.signedprice.com/zh-cn/kr/seoul/explore/',
         'x-default': 'https://www.signedprice.com/kr/seoul/explore/',
       },
     });

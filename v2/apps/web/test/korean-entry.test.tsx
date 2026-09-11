@@ -22,7 +22,7 @@ describe('Korean entry routes', () => {
     for (const city of ['seoul', 'singapore', 'dubai']) expect(html).toContain(`id="research-${city}"`);
     expect(html.match(/href="mailto:contact@signedprice.com"/g)).toHaveLength(1);
     expect(html).toContain('href="mailto:privacy@signedprice.com"');
-    expect(html).toMatch(/href="\/kr\/seoul\/corrections\/?"/);
+    expect(html).toMatch(/href="\/ko\/kr\/seoul\/corrections\/?"/);
     expect(html).toMatch(/href="\/privacy\/?"/);
     expect(html).not.toContain('<form');
     expect(html).toContain('신분증, 계좌 정보, 비공개 계약서는 보내지 마세요.');

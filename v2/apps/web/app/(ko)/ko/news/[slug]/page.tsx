@@ -1,11 +1,10 @@
 import { getNewsroomArticle } from '@/lib/content/newsroom-content.server';
 import { notFound } from 'next/navigation';
-import { KoreanSiteFrame } from '@/components/korean-site-frame';
+import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
 import { NewsroomArticle } from '@/components/newsroom/newsroom-article';
 import { PublicEditorialJsonLd } from '@/components/public-json-ld';
 import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '@/content/portfolio-manifest';
 import { editorialLanguageAlternates, indexableMetadata } from '@/lib/public-metadata';
-import styles from '@/components/design-review/editorial-growth-review.module.css';
 type Props = {params:Promise<{slug:string}>};
 export const dynamicParams = true;
 export const revalidate = 900;
@@ -16,5 +15,5 @@ export async function generateMetadata({params}:Props) {
 }
 export default async function Page({params}:Props) {
   const article=await getNewsroomArticle((await params).slug,'ko'); if(!article || article.type==='guide') notFound();
-  return <KoreanSiteFrame href={article.canonicalHref}><div className={styles.reviewRoot}><NewsroomArticle article={article}/><PublicEditorialJsonLd article={article}/></div></KoreanSiteFrame>;
+  return <EditorialGrowthPublicFrame locale="ko" surface="content" currentHref={article.canonicalHref}><NewsroomArticle article={article}/><PublicEditorialJsonLd article={article}/></EditorialGrowthPublicFrame>;
 }

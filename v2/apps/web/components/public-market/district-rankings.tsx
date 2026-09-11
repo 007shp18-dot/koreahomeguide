@@ -23,9 +23,9 @@ type ReadyModel = Extract<PublicAreaRankingsModel, { status: 'ready' }>;
 type RankingView = 'median' | 'spread' | 'sample';
 
 const rankingViews = Object.freeze([
-  { id: 'median', label: { en: 'Median price', ko: '중앙값' } },
-  { id: 'spread', label: { en: 'Price spread', ko: '가격 분포 폭' } },
-  { id: 'sample', label: { en: 'Filing volume', ko: '신고 거래량' } },
+  { id: 'median', label: { en: 'Median price', ko: '중앙값', 'zh-CN': '价格中位数' } },
+  { id: 'spread', label: { en: 'Price spread', ko: '가격 분포 폭', 'zh-CN': '价格分布宽度' } },
+  { id: 'sample', label: { en: 'Filing volume', ko: '신고 거래량', 'zh-CN': '申报成交量' } },
 ] as const satisfies readonly {
   id: RankingView;
   label: Readonly<Record<ProductLocale, string>>;
@@ -208,7 +208,7 @@ function buildingRankingPageHref(model: ReadyModel, page: number, locale: Produc
 function BuildingRankings({ model, locale }: Readonly<{ model: ReadyModel; locale: ProductLocale }>) {
   const ranking = model.buildingRankings;
   const metric = ranking.status === 'ready' ? ranking.metric ?? 'median' : 'median';
-  const measures = [{ id: 'median', en: 'Median price', ko: '중앙값' }, { id: 'volume', en: 'Most transactions', ko: '거래량' }, ...(model.evidenceSelection.transaction === 'sale' ? [{ id: 'recent-high', en: 'Recent high sales', ko: '최근 고가 실거래' }, { id: 'recent-psm', en: 'Recent high sales /㎡', ko: '최근 ㎡당 고가 실거래' }] : [])];
+  const measures = [{ id: 'median', en: 'Median price', ko: '중앙값', 'zh-CN': '价格中位数' }, { id: 'volume', en: 'Most transactions', ko: '거래량', 'zh-CN': '成交量' }, ...(model.evidenceSelection.transaction === 'sale' ? [{ id: 'recent-high', en: 'Recent high sales', ko: '최근 고가 실거래', 'zh-CN': '近期高价成交' }, { id: 'recent-psm', en: 'Recent high sales /㎡', ko: '최근 ㎡당 고가 실거래', 'zh-CN': '近期每平方米高价成交' }] : [])];
   const metricHref = (id: string) => { const target = new URL(buildingRankingPageHref(model, 1, locale), 'https://signedprice.invalid'); target.searchParams.set('metric', id); return `${target.pathname}${target.search}`; };
   const transactionLabel = locale === 'ko' ? {
     sale: '신고 매매', jeonse: '신고 전세', monthly: '신고 월세',

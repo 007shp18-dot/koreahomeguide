@@ -16,6 +16,17 @@ const scope = {
 } as const;
 
 describe('Community signal UI', () => {
+  it('localizes the interactive form without changing collection safeguards', () => {
+    const model: CommunitySignalModel = { state: 'collecting', scope, selection: null, aggregate: { status: 'collecting' } };
+    for (const locale of ['ko', 'zh-CN'] as const) {
+      const html = renderToStaticMarkup(<CommunitySignal model={model} locale={locale} />);
+      expect(html).toContain(locale === 'ko' ? '의견 제출' : '提交反馈');
+      expect(html).toContain(locale === 'ko' ? '더 높음' : '更高');
+      expect(html).not.toContain('Optional reason');
+      expect(html).not.toContain('Submit response');
+      expect(html).not.toContain('community responses</h3>');
+    }
+  });
   it('keeps an honest visible module with no enabled form when storage is absent', () => {
     const model: CommunitySignalModel = {
       state: 'unavailable',

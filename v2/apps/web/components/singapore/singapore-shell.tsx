@@ -1,3 +1,4 @@
+import { localizedMarketCopy } from '../../lib/locale/market-localization';
 
 import { sgText } from '../../lib/locale/singapore-copy';
 import { marketHref, type MarketLocale } from '../../lib/locale/market-localization';
@@ -42,17 +43,17 @@ export function SingaporePage({ locale = 'en', children, currentHref, unframed =
         : 'home';
   const navigation = resolveMarketNavigation({ market: 'singapore', locale, surface });
   const header = { ...singaporeHeader,
-    homeHref: locale === 'ko' ? '/ko/' : '/',
-    homeLabel: locale === 'ko' ? 'signedprice 홈' : singaporeHeader.homeLabel,
-    navigationLabel: locale === 'ko' ? '싱가포르 자료 탐색' : singaporeHeader.navigationLabel,
-    marketLabel: locale === 'ko' ? '싱가포르' : 'Singapore',
-    languageLabel: locale === 'ko' ? 'KO' : 'EN',
-    links: currentHref === undefined ? navigation.links : [...navigation.links.map(link => ({ ...link, isCurrent: false })), { label: 'Current page', href: currentHref, isCurrent: true }],
+    homeHref: locale === 'ko' ? '/ko/' : locale === 'zh-CN' ? '/zh-cn/' : '/',
+    homeLabel: locale === 'ko' ? 'signedprice 홈' : locale === 'zh-CN' ? 'signedprice 首页' : singaporeHeader.homeLabel,
+    navigationLabel: locale === 'ko' ? '싱가포르 자료 탐색' : locale === 'zh-CN' ? '新加坡市场导航' : singaporeHeader.navigationLabel,
+    marketLabel: localizedMarketCopy(locale, "Singapore", "싱가포르"),
+    languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN',
+    links: currentHref === undefined ? navigation.links : [...navigation.links.map(link => ({ ...link, isCurrent: false })), { label: locale === 'ko' ? '현재 페이지' : locale === 'zh-CN' ? '当前页面' : 'Current page', href: currentHref, isCurrent: true }],
   };
   const footer = { ...singaporeFooter, links: navigation.links,
-    descriptor: locale === 'ko' ? '싱가포르 민간주택과 HDB 자료의 출처 기간 및 범위를 확인하세요.' : singaporeFooter.descriptor,
-    navigationLabel: locale === 'ko' ? '싱가포르 하단 탐색' : singaporeFooter.navigationLabel,
-    status: locale === 'ko' ? '신고 매매, 등록 임대 및 주택 정보는 출처와 보고 기간이 서로 다릅니다.' : singaporeFooter.status,
+    descriptor: locale === 'ko' ? '싱가포르 민간주택과 HDB 자료의 출처 기간 및 범위를 확인하세요.' : locale === 'zh-CN' ? '新加坡私人住宅和组屋数据，注明来源期间及覆盖范围。' : singaporeFooter.descriptor,
+    navigationLabel: locale === 'ko' ? '싱가포르 하단 탐색' : locale === 'zh-CN' ? '新加坡页脚导航' : singaporeFooter.navigationLabel,
+    status: locale === 'ko' ? '신고 매매, 등록 임대 및 주택 정보는 출처와 보고 기간이 서로 다릅니다.' : locale === 'zh-CN' ? '申报买卖、登记租赁及房产资料分别采用不同来源与统计期间。' : singaporeFooter.status,
   };
   return (
     <div id="top" className={styles.page}>
@@ -89,14 +90,14 @@ export function SingaporeEvidence({ locale = 'en',
     <ul className={styles.limitations}>
       {model.limitations.map((limitation) => <li key={limitation}>{sgText(locale, limitation)}</li>)}
     </ul>
-    <nav className={styles.evidenceLinks} aria-label={locale === 'ko' ? '출처 안내' : 'Evidence guidance'}>
+    <nav className={styles.evidenceLinks} aria-label={localizedMarketCopy(locale, "Evidence guidance", "출처 안내")}>
       <Link href={marketHref(locale, "/trust/")}>{sgText(locale, "Review Global Trust")}</Link>
       <Link href={marketHref(locale, model.correctionHref)}>{sgText(locale, "Review Singapore corrections")}</Link>
     </nav>
   </>;
   return (
     <section id="singapore-source" className={`${styles.section} ${styles.evidenceSection} ${compact ? styles.compactEvidence : ''}`} aria-labelledby="singapore-source-heading">
-      {compact ? <><div className={styles.sourceSummary}><strong>{model.descriptor.provider}</strong><span>{locale === 'ko' ? '민간주택 실거래' : 'Private residential sales'}</span><time>{model.period}</time></div><details><summary>{sgText(locale, "Sources & limits")}</summary><div>{sgText(locale, content)}</div></details></> : content}
+      {compact ? <><div className={styles.sourceSummary}><strong>{model.descriptor.provider}</strong><span>{localizedMarketCopy(locale, "Private residential sales", "민간주택 실거래")}</span><time>{model.period}</time></div><details><summary>{sgText(locale, "Sources & limits")}</summary><div>{sgText(locale, content)}</div></details></> : content}
     </section>
   );
 }

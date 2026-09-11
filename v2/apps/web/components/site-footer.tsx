@@ -24,10 +24,10 @@ export function SiteFooter({ copy, locale = 'en' }: Readonly<{ copy: SiteFooterM
         : market.label,
     href: market.id === 'jp-tokyo' ? `${ko ? '/ko' : zh ? '/zh-cn' : ''}/jp/tokyo/` : ko
       ? ({ 'kr-seoul': '/ko/kr/seoul/', 'sg-singapore': '/ko/sg/', 'ae-dubai': '/ko/ae/dubai/' } as const)[market.id]
-      : market.href,
+      : zh ? `/zh-cn${market.href}` : market.href,
   }));
   const groups = [
-    { label: ko ? '서비스' : zh ? '探索' : 'Explore', links: [...globalNavigation(locale), { label: ko ? '지역 비교' : zh ? '地区排名' : 'Rankings', href: ko ? '/ko/rankings/' : '/rankings/' }] },
+    { label: ko ? '서비스' : zh ? '平台' : 'Platform', links: [...globalNavigation(locale), { label: ko ? '지역 비교' : zh ? '地区排名' : 'Rankings', href: ko ? '/ko/rankings/' : zh ? '/zh-cn/rankings/' : '/rankings/' }] },
     { label: ko ? '도시' : zh ? '城市' : 'Cities', links: marketLinks },
     { label: ko ? '도움말' : zh ? '帮助' : 'Help', links: [{ label: ko ? '데이터와 출처 (영문)' : zh ? '数据与来源（英文）' : 'Data & sources', href: '/trust/' }, { label: ko ? '문의' : zh ? '联系我们（英文）' : 'Contact', href: ko ? '/ko/contact/' : '/contact/' }, { label: ko ? '개인정보 처리방침 (영문)' : zh ? '隐私（英文）' : 'Privacy', href: '/privacy/' }] },
   ];

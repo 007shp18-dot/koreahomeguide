@@ -7,11 +7,11 @@ import {
 } from '../lib/editorial-growth/public-editorial-routes';
 
 describe('public editorial routes', () => {
-  it('keeps unsupported Chinese tools on their live English canonical URLs', () => {
+  it('links supported Chinese tools to their localized public URLs', () => {
     expect(publicEditorialHref('home', 'en')).toBe('/');
     expect(publicEditorialHref('content', 'en')).toBe('/news/');
-    expect(publicEditorialHref('check', 'zh-CN')).toBe('/kr/seoul/check/');
-    expect(publicEditorialHref('explore', 'zh-CN')).toBe('/kr/seoul/explore/');
+    expect(publicEditorialHref('check', 'zh-CN')).toBe('/zh-cn/kr/seoul/check/');
+    expect(publicEditorialHref('explore', 'zh-CN')).toBe('/zh-cn/kr/seoul/explore/');
     expect(JSON.stringify(PUBLIC_EDITORIAL_SURFACES)).not.toContain('/design-review/');
   });
 

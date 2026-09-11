@@ -1,3 +1,4 @@
+import { localizedMarketCopy } from '../lib/locale/market-localization';
 import { marketHref } from '../lib/locale/market-localization';
 import Link from 'next/link';
 import styles from './buyer-next-steps.module.css';
@@ -8,16 +9,16 @@ const markets = {
   dubai: { explore: '/ae/dubai/explore/', guide: '/ae/dubai/guide/', scope: 'This is an area comparison, not a valuation of your unit. Keep Ready and Off-Plan separate and request property-specific costs and condition details.' },
 } as const;
 
-export function BuyerNextSteps({ market, locale = 'en' }: Readonly<{ market: keyof typeof markets; locale?: 'en' | 'ko' }>) {
+export function BuyerNextSteps({ market, locale = 'en' }: Readonly<{ market: keyof typeof markets; locale?: 'en' | 'ko' | 'zh-CN' }>) {
   const model = markets[market];
   const ko = locale === 'ko';
-  return <aside className={styles.next} aria-label={ko ? '비교 후 확인할 사항' : 'After comparing a price'}>
-    <h2>{ko ? '구입 전 확인사항' : 'What to check next'}</h2>
-    <p>{ko ? market === 'singapore' ? '민간주택과 HDB는 나눠 비교하세요. 같은 단지나 동에서 소유권 조건, 면적, 거래 시기가 비슷한 계약인지 확인하세요.' : market === 'dubai' ? '지역 통계만으로 개별 주택의 가치를 판단하기는 어렵습니다. 준공 주택과 분양 주택을 구분하고, 매물별 비용과 상태를 확인하세요.' : '같은 건물에서 면적과 거래 시기가 비슷한 계약인지 확인하세요. 매매와 임대는 나눠 보고, 임대는 보증금과 월세를 함께 비교하세요.' : model.scope}</p>
-    <nav aria-label={ko ? '다음 단계' : 'Next research steps'}>
-      <Link href={marketHref(locale, model.explore)}>{ko ? '다른 지역·단지 보기' : 'Find another candidate'}</Link>
-      <Link href={marketHref(locale, model.guide)}>{ko ? '가격 비교 방법' : 'Read the comparison guide'}</Link>
-      <Link href={`${ko ? '/ko' : ''}/contact/#research-${market}`}>{ko ? '문의하기' : 'Ask a research question'}</Link>
+  return <aside className={styles.next} aria-label={localizedMarketCopy(locale, "After comparing a price", "비교 후 확인할 사항")}>
+    <h2>{localizedMarketCopy(locale, "What to check next", "구입 전 확인사항")}</h2>
+    <p>{ko ? market === 'singapore' ? '민간주택과 HDB는 나눠 비교하세요. 같은 단지나 동에서 소유권 조건, 면적, 거래 시기가 비슷한 계약인지 확인하세요.' : market === 'dubai' ? '지역 통계만으로 개별 주택의 가치를 판단하기는 어렵습니다. 준공 주택과 분양 주택을 구분하고, 매물별 비용과 상태를 확인하세요.' : '같은 건물에서 면적과 거래 시기가 비슷한 계약인지 확인하세요. 매매와 임대는 나눠 보고, 임대는 보증금과 월세를 함께 비교하세요.' : locale === 'zh-CN' ? ({seoul: '匹配楼宇、交易类型、面积和合同期间。比较租赁时，应同时考虑押金和月租。', singapore: '私人住宅和组屋应分别比较。匹配项目或楼栋、产权期限、面积及成交期间。', dubai: '这是区域比较，并非对具体单元的估值。现房与期房应分开比较，并核实房产本身的费用和状况。'}[market]) : model.scope}</p>
+    <nav aria-label={localizedMarketCopy(locale, "Next research steps", "다음 단계")}>
+      <Link href={marketHref(locale, model.explore)}>{localizedMarketCopy(locale, "Find another candidate", "다른 지역·단지 보기")}</Link>
+      <Link href={marketHref(locale, model.guide)}>{localizedMarketCopy(locale, "Read the comparison guide", "가격 비교 방법")}</Link>
+      <Link href={`${ko ? '/ko' : ''}/contact/#research-${market}`}>{localizedMarketCopy(locale, "Ask a research question", "문의하기")}</Link>
     </nav>
   </aside>;
 }

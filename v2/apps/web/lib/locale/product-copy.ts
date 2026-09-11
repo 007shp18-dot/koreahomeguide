@@ -1,4 +1,5 @@
-export type ProductLocale = 'en' | 'ko';
+import { chineseContractCheckCopy, chinesePublicMarketCopy } from './product-copy-zh';
+export type ProductLocale = 'en' | 'ko' | 'zh-CN';
 
 export type ContractCheckCopy = Readonly<{
   primaryNavigation: string;
@@ -281,6 +282,7 @@ export const CONTRACT_CHECK_COPY: Readonly<Record<ProductLocale, ContractCheckCo
   Object.freeze({
     en: englishContractCheckCopy,
     ko: koreanContractCheckCopy,
+    'zh-CN': chineseContractCheckCopy,
   });
 
 const KOREAN_LOCAL_ROUTES = new Set([
@@ -295,7 +297,7 @@ export function localizedSeoulHref(href: string, locale: ProductLocale): string 
   const [path, query] = href.split('?', 2);
   const isKoreanExploreDetail = path?.startsWith('/kr/seoul/explore/') === true;
   if (!KOREAN_LOCAL_ROUTES.has(path ?? '') && !isKoreanExploreDetail) return href;
-  return `/ko${path}${query === undefined ? '' : `?${query}`}`;
+  return `${locale === 'zh-CN' ? '/zh-cn' : '/ko'}${path}${query === undefined ? '' : `?${query}`}`;
 }
 
 export function contractNavigationLabel(
@@ -323,8 +325,32 @@ const koreanContractErrors: Readonly<Record<string, string>> = Object.freeze({
   'Deposit falls outside the measured range. No comparison is produced.': '보증금이 실측 구간을 벗어나 비교 결과를 만들지 않습니다.',
 });
 
+const chineseContractErrors: Readonly<Record<string, string>> = {
+  'Verified transaction evidence is unavailable.': '经验证的成交数据不可用。',
+  'The verified transaction evidence period is unavailable.': '经验证成交数据的期间不可用。',
+  'Complete every required field for the selected transaction.': '请填写所选交易类型的全部必填项。',
+  'Verified conversion evidence is unavailable for this property type.': '该住宅类型暂无经验证折算数据。',
+  'The filed deposit is outside the verified conversion range.': '申报保证金超出经验证折算范围。',
+  'Both offers need supported market evidence before they can be compared.': '两组报价都需要可用的市场数据才能比较。',
+  'Verified conversion evidence is required for this comparison.': '此比较需要经验证折算数据。',
+  'One or both deposits are outside the verified conversion range.': '一组或两组保证金超出经验证折算范围。',
+  'Same-building evidence was below five records; same-neighborhood evidence is shown.': '同楼宇记录少于五份，改为展示同街区数据。',
+  'Same-building and same-neighborhood evidence were below five records; district evidence is shown.': '同楼宇和同街区记录均少于五份，改为展示行政区数据。',
+
+  'Enter a deposit.': '请输入保证金。',
+  'Enter monthly rent.': '请输入月租。',
+  'Deposit must be a positive whole-won amount.': '保证金必须为正整数韩元。',
+  'Monthly rent must be a positive whole-won amount.': '月租必须为正整数韩元。',
+  'Monthly rent must be a non-negative whole-won amount.': '月租必须为非负整数韩元。',
+  'Deposit must be ₩20,000,000,000 or less.': '保证金不能超过 200 亿韩元。',
+  'Monthly rent must be ₩100,000,000 or less.': '月租不能超过 1 亿韩元。',
+  'Verified evidence for the selected housing type is unavailable.': '所选住宅类型暂无经验证数据。',
+  'These offers could not be compared with verified evidence.': '无法使用经验证数据比较这些报价。',
+  'Deposit falls outside the measured range. No comparison is produced.': '保证金超出实测范围，不生成比较结果。',
+};
+
 export function localizeContractText(value: string, locale: ProductLocale): string {
-  return locale === 'ko' ? koreanContractErrors[value] ?? value : value;
+  return locale === 'zh-CN' ? chineseContractErrors[value] ?? value : locale === 'ko' ? koreanContractErrors[value] ?? value : value;
 }
 
 export type PublicMarketCopy = Readonly<{
@@ -862,7 +888,7 @@ const koreanPublicMarketCopy = Object.freeze({
 } as const satisfies PublicMarketCopy);
 
 export const PUBLIC_MARKET_COPY: Readonly<Record<ProductLocale, PublicMarketCopy>> =
-  Object.freeze({ en: englishPublicMarketCopy, ko: koreanPublicMarketCopy });
+  Object.freeze({ en: englishPublicMarketCopy, ko: koreanPublicMarketCopy, 'zh-CN': chinesePublicMarketCopy });
 
 export function localizedGroupLabel(
   group: 'all' | 'new' | 'renewal',
@@ -874,11 +900,23 @@ export function localizedGroupLabel(
 export function localizeSampleLabel(value: string, locale: ProductLocale): string {
   if (locale === 'en') return value;
   const match = /^(\d[\d,]*) reported contracts?$/.exec(value);
-  return match === null ? value : `${match[1]}건의 신고 계약`;
+  return match === null ? value : locale === 'zh-CN' ? `${match[1]}份申报合同` : `${match[1]}건의 신고 계약`;
 }
 
 export function localizeEvidenceMessage(value: string, locale: ProductLocale): string {
   if (locale === 'en') return value;
+  if (locale === 'zh-CN') return ({
+    'Verified district summary unavailable': '经验证行政区汇总不可用',
+    'New/renewal split not available in this snapshot': '本数据未区分新签与续签合同',
+    '3-month change not assessable': '无法评估三个月变化',
+    'Prior/latest sample counts were not retained in this snapshot.': '本数据未保留前期与近期样本数。',
+    'A three-month change was not retained in this snapshot.': '本数据未保留三个月变化。',
+    'Retained prior/latest sample counts were invalid.': '保留的前期与近期样本数无效。',
+    'The absolute change is at least 10%.': '变化幅度的绝对值至少为 10%。',
+    'The prior three-month sample is below 30.': '前三个月的样本少于 30 份。',
+    'The latest three-month sample is below 30.': '最近三个月的样本少于 30 份。',
+    'The sample size changed by at least 25%.': '样本数量变化至少 25%。',
+  } as Readonly<Record<string, string>>)[value] ?? value;
   const translations: Readonly<Record<string, string>> = {
     'Verified district summary unavailable': '검증된 구별 자료를 확인할 수 없습니다.',
     'New/renewal split not available in this snapshot': '이 자료에는 신규·갱신 구분이 없습니다.',

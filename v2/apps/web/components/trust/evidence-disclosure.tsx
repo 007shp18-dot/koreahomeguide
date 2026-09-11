@@ -22,17 +22,17 @@ export function EvidenceDisclosure({
     = copy.disclosureLabels;
   const datasetValue = locale === 'ko' && model.dataset === 'reported rent contracts'
     ? '신고 임대차 계약'
-    : model.dataset;
+    : locale === 'zh-CN' && model.dataset === 'reported rent contracts' ? '申报租赁合同' : locale === 'zh-CN' && model.dataset === 'reported sale contracts' ? '申报买卖合同' : model.dataset;
   const localizedAttribution = attribution.map((value) => (
     locale === 'ko' && value === 'Ministry of Land, Infrastructure and Transport (MOLIT)'
       ? '국토교통부(MOLIT)'
-      : value
+      : locale === 'zh-CN' && value === 'Ministry of Land, Infrastructure and Transport (MOLIT)' ? '韩国国土交通部(MOLIT)' : value
   ));
   return (
     <details className={styles.disclosure} aria-label={copy.disclosureAria}>
       <summary className={styles.disclosureSummary}>
         <span><strong>{model.provider}</strong><small>{datasetValue}</small></span>
-        <span><strong>{model.period || (locale === 'ko' ? '기간 미수집' : 'Period unavailable')}</strong><small>{locale === 'ko' ? '출처·방법 보기' : 'Source & method'}</small></span>
+        <span><strong>{model.period || (locale === 'ko' ? '기간 미수집' : locale === 'zh-CN' ? '暂无期间' : 'Period unavailable')}</strong><small>{locale === 'ko' ? '출처·방법 보기' : locale === 'zh-CN' ? '来源与方法' : 'Source & method'}</small></span>
       </summary>
       <div className={styles.disclosureBody}>
         <dl className={styles.disclosureGrid}>
@@ -47,7 +47,7 @@ export function EvidenceDisclosure({
         <div><dt>{rights}</dt><dd>{model.rightsPolicyId}</dd></div>
         <div>
           <dt>{publicationMinimum}</dt>
-          <dd>{model.publicationMinimum ?? (locale === 'ko' ? '설정되지 않음' : 'Not configured')}</dd>
+          <dd>{model.publicationMinimum ?? (locale === 'ko' ? '설정되지 않음' : locale === 'zh-CN' ? '尚未配置' : 'Not configured')}</dd>
         </div>
         <div><dt>{boundaryLabel}</dt><dd>{boundary}</dd></div>
         </dl>

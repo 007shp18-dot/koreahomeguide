@@ -68,7 +68,7 @@ export function AreaBuildingDialog({
     };
   }, [building.id]);
 
-  const closeLabel = locale === 'ko' ? '건물 상세 닫기' : 'Close building details';
+  const closeLabel = locale === 'ko' ? '건물 상세 닫기' : locale === 'zh-CN' ? '关闭楼盘详情': 'Close building details';
 
   return (
     <aside
@@ -81,7 +81,7 @@ export function AreaBuildingDialog({
     >
       <header className={styles.buildingDialogHeader}>
         <div>
-          <p>{locale === 'ko' ? '선택한 건물' : 'Selected building'}</p>
+          <p>{locale === 'ko' ? '선택한 건물' : locale === 'zh-CN' ? '所选楼盘': 'Selected building'}</p>
           <h2 id={titleId} title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).title}</h2>
           <span title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).location}</span>
         </div>
@@ -91,15 +91,15 @@ export function AreaBuildingDialog({
           aria-label={closeLabel}
           onClick={onClose}
         >
-          {locale === 'ko' ? '닫기' : 'Close'} ×
+          {locale === 'ko' ? '닫기' : locale === 'zh-CN' ? '关闭': 'Close'} ×
         </button>
       </header>
       <div className={styles.buildingDialogBody}>{children}</div>
       <footer className={styles.buildingDialogFooter}>
         <Link href={detailHref} onClick={onOpenDetail}>
-          {locale === 'ko' ? '건물 전체 거래 내역 보기' : 'Open full building evidence'}
+          {locale === 'ko' ? '건물 전체 거래 내역 보기' : locale === 'zh-CN' ? '查看完整楼盘交易': 'Open full building evidence'}
         </Link>
-        <button type="button" onClick={onClose}>{locale === 'ko' ? '지도로 돌아가기' : 'Return to map'}</button>
+        <button type="button" onClick={onClose}>{locale === 'ko' ? '지도로 돌아가기' : locale === 'zh-CN' ? '返回地图': 'Return to map'}</button>
       </footer>
     </aside>
   );

@@ -7,6 +7,8 @@ import { generateMetadata as generateEnglishCheckMetadata } from '../app/(en)/sg
 import { generateMetadata as generateKoreanCheckMetadata } from '../app/(ko)/ko/sg/singapore/check/page';
 import EnglishTownPage, { generateMetadata as generateEnglishTownMetadata } from '../app/(en)/sg/singapore/hdb/[town]/page';
 import { generateMetadata as generateKoreanTownMetadata } from '../app/(ko)/ko/sg/singapore/hdb/[town]/page';
+import { generateMetadata as generateChineseTownMetadata } from '../app/(zh-cn)/zh-cn/sg/singapore/hdb/[town]/page';
+import { generateMetadata as generateChineseBlockMetadata } from '../app/(zh-cn)/zh-cn/sg/singapore/hdb/[town]/[blockId]/page';
 import EnglishBlockPage, { generateMetadata as generateEnglishBlockMetadata } from '../app/(en)/sg/singapore/hdb/[town]/[blockId]/page';
 import { generateMetadata as generateKoreanBlockMetadata } from '../app/(ko)/ko/sg/singapore/hdb/[town]/[blockId]/page';
 import { hdbSnapshotRepositoryFromEnvironment, type HdbSnapshotRepository } from '../lib/singapore/hdb-snapshot-repository.server';
@@ -43,22 +45,27 @@ describe('Singapore HDB public SEO', () => {
     const town = published.towns[0]!;
     const block = published.blocks.find((candidate) => candidate.town === town.town)!;
 
-    const [enTown, koTown, enBlock, koBlock] = await Promise.all([
+    const [enTown, koTown, enBlock, koBlock, zhTown, zhBlock] = await Promise.all([
       generateEnglishTownMetadata({ params: Promise.resolve(town) }),
       generateKoreanTownMetadata({ params: Promise.resolve(town) }),
       generateEnglishBlockMetadata({ params: Promise.resolve(block) }),
       generateKoreanBlockMetadata({ params: Promise.resolve(block) }),
+      generateChineseTownMetadata({ params: Promise.resolve(town) }),
+      generateChineseBlockMetadata({ params: Promise.resolve(block) }),
     ]);
     const pairs = [
-      [enTown, koTown, `https://www.signedprice.com/sg/singapore/hdb/${town.town}/`, `https://www.signedprice.com/ko/sg/singapore/hdb/${town.town}/`],
-      [enBlock, koBlock, `https://www.signedprice.com/sg/singapore/hdb/${block.town}/${block.blockId}/`, `https://www.signedprice.com/ko/sg/singapore/hdb/${block.town}/${block.blockId}/`],
+      [enTown, koTown, zhTown, `https://www.signedprice.com/sg/singapore/hdb/${town.town}/`, `https://www.signedprice.com/ko/sg/singapore/hdb/${town.town}/`],
+      [enBlock, koBlock, zhBlock, `https://www.signedprice.com/sg/singapore/hdb/${block.town}/${block.blockId}/`, `https://www.signedprice.com/ko/sg/singapore/hdb/${block.town}/${block.blockId}/`],
     ] as const;
-    for (const [en, ko, enUrl, koUrl] of pairs) {
+    for (const [en, ko, zh, enUrl, koUrl] of pairs) {
       expect(en.robots).toEqual({ index: true, follow: true });
       expect(ko.robots).toEqual({ index: true, follow: true });
-      expect(en.alternates).toEqual({ canonical: enUrl, languages: { en: enUrl, ko: koUrl, 'x-default': enUrl } });
-      expect(ko.alternates).toEqual({ canonical: koUrl, languages: { en: enUrl, ko: koUrl, 'x-default': enUrl } });
+      expect(en.alternates).toEqual({ canonical: enUrl, languages: { en: enUrl, ko: koUrl, 'zh-Hans': enUrl.replace('/sg/', '/zh-cn/sg/'), 'x-default': enUrl } });
+      expect(ko.alternates).toEqual({ canonical: koUrl, languages: { en: enUrl, ko: koUrl, 'zh-Hans': enUrl.replace('/sg/', '/zh-cn/sg/'), 'x-default': enUrl } });
+      expect(zh.robots).toEqual({ index: true, follow: true });
+      expect(zh.alternates).toEqual({ canonical: enUrl.replace('/sg/', '/zh-cn/sg/'), languages: { en: enUrl, ko: koUrl, 'zh-Hans': enUrl.replace('/sg/', '/zh-cn/sg/'), 'x-default': enUrl } });
       expect(en.title).not.toBe(ko.title);
+      expect(zh.title).not.toBe(en.title);
     }
     expect(enTown.title).not.toBe(enBlock.title);
   });
@@ -90,16 +97,17 @@ describe('Singapore HDB public SEO', () => {
     expect(published.blocks).toHaveLength(9_485);
 
     const entries = buildSingaporeSitemap({ privateRepository: null, hdbRepository: repository!, checkRepositories: null });
-    expect(entries).toHaveLength((28 + 9_485) * 2);
+    expect(entries).toHaveLength((28 + 9_485) * 3);
     const urls = new Set(entries.map(({ url }) => url));
     const town = published.towns[0]!;
     expect(urls).toContain(`https://www.signedprice.com/sg/singapore/hdb/${town.town}/`);
     expect(urls).toContain(`https://www.signedprice.com/ko/sg/singapore/hdb/${town.town}/`);
+    expect(urls).toContain(`https://www.signedprice.com/zh-cn/sg/singapore/hdb/${town.town}/`);
 
     const privateRepository = await singaporeSnapshotRepositoryFromEnvironment();
     expect(privateRepository).not.toBeNull();
     const privateOnly = buildSingaporeSitemap({ privateRepository, hdbRepository: null, checkRepositories: null });
-    expect(privateOnly).toHaveLength(privateRepository!.listProjectRouteParams().length * 2);
+    expect(privateOnly).toHaveLength(privateRepository!.listProjectRouteParams().length * 3);
   }, 20_000);
 
   it('loads the complete Singapore sitemap with Check and without duplicate URLs', async () => {
@@ -109,6 +117,7 @@ describe('Singapore HDB public SEO', () => {
     expect(new Set(urls).size).toBe(urls.length);
     expect(urls).toContain('https://www.signedprice.com/sg/singapore/check/');
     expect(urls).toContain('https://www.signedprice.com/ko/sg/singapore/check/');
+    expect(urls).toContain('https://www.signedprice.com/zh-cn/sg/singapore/check/');
   }, 20_000);
 });
 
@@ -123,11 +132,11 @@ describe('Singapore Check metadata', () => {
     expect(ko.robots).toEqual({ index: true, follow: true });
     expect(en.alternates).toEqual({
       canonical: 'https://www.signedprice.com/sg/singapore/check/',
-      languages: { en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/', 'x-default': 'https://www.signedprice.com/sg/singapore/check/' },
+      languages: { en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/', 'zh-Hans': 'https://www.signedprice.com/zh-cn/sg/singapore/check/', 'x-default': 'https://www.signedprice.com/sg/singapore/check/' },
     });
     expect(ko.alternates).toEqual({
       canonical: 'https://www.signedprice.com/ko/sg/singapore/check/',
-      languages: { en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/', 'x-default': 'https://www.signedprice.com/sg/singapore/check/' },
+      languages: { en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/', 'zh-Hans': 'https://www.signedprice.com/zh-cn/sg/singapore/check/', 'x-default': 'https://www.signedprice.com/sg/singapore/check/' },
     });
   });
 

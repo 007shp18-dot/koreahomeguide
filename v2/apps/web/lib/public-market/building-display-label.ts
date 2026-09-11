@@ -6,7 +6,7 @@ import { seoulNeighborhoodLabel } from './seoul-neighborhood-label';
 /** Display-only labels: preserve the source identity and never infer a building name. */
 export function buildingDisplayLabel(input: Readonly<{
   name: string; neighborhoodName: string; districtSlug: string;
-}>, locale: 'en' | 'ko') {
+}>, locale: 'en' | 'ko' | 'zh-CN') {
   const district = getSeoulDistrictBySlug(input.districtSlug);
   const lot = /^\((산?\d+(?:-\d+)?)\)$/.exec(input.name.trim())?.[1];
   const address = lot ? `${input.neighborhoodName} ${lot}` : input.neighborhoodName;

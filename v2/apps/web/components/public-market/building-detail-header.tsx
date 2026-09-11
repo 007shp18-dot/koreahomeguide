@@ -17,6 +17,7 @@ const headerCopy: SiteHeaderModel = {
   ],
 };
 
-export function BuildingDetailHeader({locale='en'}:Readonly<{locale?:'en'|'ko'}>) {
-  return <SiteHeader copy={locale === 'en' ? headerCopy : {...headerCopy, languageLabel:'KO',languageSwitch:{label:'EN',href:'/kr/seoul/explore/',hrefLang:'en'},links:[{label:'탐색',href:'/ko/kr/seoul/explore/',isCurrent:true}]}} />;
+export function BuildingDetailHeader({locale='en'}:Readonly<{locale?:'en'|'ko'|'zh-CN'}>) {
+  const copy: SiteHeaderModel = locale === 'en' ? headerCopy : {...headerCopy, languageLabel: locale === 'ko' ? 'KO' : '中文', languageSwitch:{label:'EN',href:'/kr/seoul/explore/',hrefLang:'en'}, links:[{label:locale === 'ko' ? '탐색' : '探索',href:locale === 'ko' ? '/ko/kr/seoul/explore/' : '/zh-cn/kr/seoul/explore/',isCurrent:true}]};
+  return <SiteHeader copy={copy} />;
 }

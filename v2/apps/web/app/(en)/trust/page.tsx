@@ -49,7 +49,7 @@ export default function TrustPage() {
       <section className={styles.policyGrid} aria-label="How to use SignedPrice data">
         {policies.map(policy => <article key={policy.title}><h2>{policy.title}</h2><p>{policy.copy}</p></article>)}
       </section>
-      <nav className={styles.policyLinks} aria-label="Data corrections and contact"><Link href="/kr/seoul/corrections/">Seoul corrections</Link><Link href="/contact/">Contact SignedPrice</Link></nav>
+      <nav className={styles.policyLinks} aria-label="Data corrections and contact"><Link href="/kr/seoul/corrections/">Seoul data corrections</Link><Link href="/contact/">Contact SignedPrice</Link></nav>
     </main>
     <SiteFooter copy={homepageCopy.footer} />
   </div>;
