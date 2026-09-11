@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
@@ -44,6 +46,10 @@ describe('consistent insight articles and curation', () => {
     vi.setSystemTime(new Date('2026-09-10T12:00:00Z'));
     const items = buildInsightItems([], 'all');
     expect(items.every(item => item.photo?.source && item.photo.licenseUrl)).toBe(true);
+    for (const item of items) {
+      expect(item.photo?.src.startsWith('/')).toBe(true);
+      expect(existsSync(fileURLToPath(new URL(`../public${item.photo?.src}`, import.meta.url)))).toBe(true);
+    }
     expect(new Set(items.map(item => item.photo?.src)).size).toBeGreaterThanOrEqual(24);
     expect(items.find(item => item.href.endsWith('/wangsimni/'))?.photo?.src).toContain('wangsimni-station');
     expect(items.find(item => item.href.endsWith('/mangwon/'))?.photo?.src).toContain('mangwon-river');
