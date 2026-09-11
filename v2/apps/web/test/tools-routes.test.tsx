@@ -50,3 +50,9 @@ it('gives Chinese calculator metadata its own canonical and reciprocal language 
   'zh-Hans':'https://www.signedprice.com/zh-cn/tools/property-scenario/','x-default':'https://www.signedprice.com/tools/property-scenario/',
  });
 });
+
+it('keeps market tools in the agreed country order: Korea, Singapore, Dubai, Japan',()=>{
+ const html=renderToStaticMarkup(<ToolsHub locale="en"/>);
+ const order=['single-quote','singapore-check','dubai-check','tokyo-budget'].map(tool=>html.indexOf(`data-tool-id="${tool}"`));
+ expect(order).toEqual([...order].sort((left,right)=>left-right));
+});
