@@ -22,7 +22,7 @@ export function NewsFeedIndex({ articles, market, locale = 'en', headlines }: Re
   const t = copy[locale];
   const prefix = locale === 'en' ? '' : locale === 'ko' ? '/ko' : '/zh-cn';
   const rows = articles.filter(article => article.type === 'news-brief' && article.status === 'published'
-    && article.evidenceState !== 'withdrawn' && Date.parse(article.publishedAt) <= Date.now()
+    && article.evidenceState !== 'withdrawn' && Number.isFinite(Date.parse(article.publishedAt))
     && (market === 'all' || article.marketId === markets[market]))
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)).slice(0, 6);
   return <main className={styles.index} data-newsroom-layout="news" lang={locale}>
