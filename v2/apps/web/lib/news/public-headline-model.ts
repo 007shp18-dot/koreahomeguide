@@ -1,7 +1,7 @@
 import type { PublishedContentArticle } from '../content/content-types';
 import type { NewsWorkspaceItem } from './news-workspace-model';
 
-const marketNames = { 'kr-seoul': ['seoul', 'Seoul'], 'sg-singapore': ['singapore', 'Singapore'], 'ae-dubai': ['dubai', 'Dubai'] } as const;
+const marketNames = { 'kr-seoul': ['seoul', 'Seoul'], 'sg-singapore': ['singapore', 'Singapore'], 'ae-dubai': ['dubai', 'Dubai'], 'jp-tokyo': ['tokyo', 'Tokyo'] } as const;
 const notFuture = (date: string | null | undefined, now: number) => typeof date === 'string' && Number.isFinite(Date.parse(date)) && Date.parse(date) <= now;
 
 /** Reference portals have no publication date and must never become fresh news. */

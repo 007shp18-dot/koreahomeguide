@@ -2,7 +2,7 @@ export type ContentType = 'news-brief' | 'policy-update' | 'market-brief' | 'dat
 export type EditorialStatus = 'draft' | 'fact-check' | 'review' | 'scheduled' | 'published' | 'archived';
 export type EvidenceState = 'verified' | 'partial' | 'not-applicable' | 'withdrawn';
 export type ContentLocale = 'en' | 'ko' | 'zh-CN';
-export type ContentMarketId = 'kr-seoul' | 'sg-singapore' | 'ae-dubai';
+export type ContentMarketId = 'kr-seoul' | 'sg-singapore' | 'ae-dubai' | 'jp-tokyo';
 
 export type ContentSource = Readonly<{
   id: string;

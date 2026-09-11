@@ -122,7 +122,7 @@ export function articleFromRow(row: Readonly<Record<string, unknown>>): Publishe
     || typeof row.body_markdown !== 'string'
     || !locales.includes(row.locale as ContentLocale)
     || !contentTypes.includes(row.content_type as ContentType)
-    || !(row.market_id === null || row.market_id === 'kr-seoul' || row.market_id === 'sg-singapore' || row.market_id === 'ae-dubai')
+    || !(row.market_id === null || row.market_id === 'kr-seoul' || row.market_id === 'sg-singapore' || row.market_id === 'ae-dubai' || row.market_id === 'jp-tokyo')
     || !validIsoDate(row.published_at)
     || !validIsoDate(row.updated_at)
   ) return null;

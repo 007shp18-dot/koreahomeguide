@@ -7,6 +7,7 @@ vi.mock('../lib/db/postgres.server', () => ({
 import { parseEditorialArticleInput } from '../app/api/internal/content-articles/route';
 import { saveEditorialArticle } from '../lib/insights/content-article-store.server';
 import { TOKYO_RENEWAL_ARTICLES } from '../content/tokyo-renewal-2026-09-11';
+import { articleFromRow } from '../lib/content/content-repository.server';
 import { buildInsightItems } from '../components/newsroom/insights-index';
 
 beforeEach(() => { vi.clearAllMocks(); mocks.sql.mockReturnValue(Promise.resolve([])); mocks.transaction.mockResolvedValue([]); });
@@ -24,6 +25,7 @@ describe('Tokyo editorial publication', () => {
     expect(calls.find(([parts]) => parts.join('').includes('INSERT INTO markets'))?.slice(1)).toEqual(['tokyo', 'Tokyo', 'JP']);
     expect(calls.find(([parts]) => parts.join('').includes('INSERT INTO content_articles'))?.slice(1)).toContain('jp-tokyo');
     expect(mocks.transaction).toHaveBeenCalledTimes(1);
+    expect(articleFromRow({ slug: a.slug, locale: a.locale, market_id: 'jp-tokyo', content_type: a.type, title: a.title, summary: a.deck, body_markdown: a.bodyMarkdown, evidence_state: a.evidenceState, reviewed_at: a.reviewedAt, reviewed_by: a.reviewedBy, published_at: a.publishedAt, updated_at: a.updatedAt, sources: a.sources })).toMatchObject({ marketId: 'jp-tokyo', title: a.title });
     expect(parseEditorialArticleInput({ ...payload, sources: [] })).toBeNull();
     expect(parseEditorialArticleInput({ ...payload, marketKey: 'unsupported' })).toBeNull();
   });
