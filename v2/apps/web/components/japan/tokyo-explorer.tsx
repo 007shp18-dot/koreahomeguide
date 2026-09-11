@@ -65,6 +65,21 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
   return <>
     <SiteHeader copy={{ ...homepageCopy.header, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', homeHref: locale === 'en' ? '/' : locale === 'ko' ? '/ko/' : '/zh-cn/', marketLabel: t('Tokyo'), links: [{ label: t('Explore'), href: href('/jp/tokyo/explore/'), isCurrent: true }] }} />
     <main className={styles.page}>
+      <div className={styles.exploreFrame}>
+        <aside className={styles.regionRail} data-tokyo-region-rail="true" aria-label="Tokyo ward navigation">
+          <p className={styles.regionRailEyebrow}>{t('Tokyo')}</p>
+          <h2>{t('Explore Tokyo by area')}</h2>
+          <p>{t('Choose a ward, then a neighbourhood to compare recorded home prices.')}</p>
+          <nav aria-label="Tokyo wards">
+            {TOKYO_WARDS.map(([city, name]) => {
+              const available = coverage?.find(item => item.city === city);
+              return <Link key={city} data-ward={city} aria-current={scope.city === city ? 'location' : undefined} href={scopeLink(available ?? { city, year: scope.year, quarter: scope.quarter, sourceCount: 0 })} prefetch={false}>
+                <span>{name}</span><small>{available ? `${available.year} Q${available.quarter}` : t('View coverage')}</small>
+              </Link>;
+            })}
+          </nav>
+        </aside>
+        <div className={styles.exploreContent}>
       <MarketExploreShell eyebrow={t("Tokyo")} title={t("Explore")} period={`${TOKYO_WARDS.find(([code]) => code === scope.city)?.[1] ?? 'Ward'} · ${scope.year} Q${scope.quarter} · JPY`}
         layers={<div>
           <p className={styles.intro}>{t('Choose a ward, then a neighbourhood to compare recorded home prices.')}</p>
@@ -128,6 +143,8 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
             filters={{ q: filters.q, neighbourhood: filters.neighbourhood, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />
         </Suspense>}
       />
+        </div>
+      </div>
       <div className={styles.sourcePanel}>
       <details className={styles.method}><summary>{t('About these recorded prices')}</summary>
         <p>These are completed transactions reported by area, not homes currently for sale. The source does not disclose building names, exact addresses or unit identities.</p>

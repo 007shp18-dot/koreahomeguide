@@ -15,7 +15,7 @@ it.each(['en','ko','zh-CN'] as const)('publishes a translated tools directory wi
  const html=renderToStaticMarkup(<ToolsHub locale={locale}/>);
  expect(html.match(/<h1\b/g)).toHaveLength(1);expect(html).not.toContain('Preparing');
  expect(globalNavigation(locale)).toHaveLength(5);
- expect(html).toContain('/jp/tokyo/shortlist');expect(html).toContain('/ae/dubai/check');expect(html).toContain('/sg/singapore/check');expect(html).toContain('/tools/property-scenario');
+ expect(html).toContain('/jp/tokyo/tools');expect(html).toContain('/ae/dubai/check');expect(html).toContain('/sg/singapore/check');expect(html).toContain('/tools/property-scenario');
 });
 it('groups every existing tool once by decision',()=>{
  const html=renderToStaticMarkup(<ToolsHub locale="en"/>);
@@ -49,4 +49,10 @@ it('gives Chinese calculator metadata its own canonical and reciprocal language 
   en:'https://www.signedprice.com/tools/property-scenario/',ko:'https://www.signedprice.com/ko/tools/property-scenario/',
   'zh-Hans':'https://www.signedprice.com/zh-cn/tools/property-scenario/','x-default':'https://www.signedprice.com/tools/property-scenario/',
  });
+});
+
+it('keeps market tools in the agreed country order: Korea, Singapore, Dubai, Japan',()=>{
+ const html=renderToStaticMarkup(<ToolsHub locale="en"/>);
+ const order=['single-quote','singapore-check','dubai-check','tokyo-budget'].map(tool=>html.indexOf(`data-tool-id="${tool}"`));
+ expect(order).toEqual([...order].sort((left,right)=>left-right));
 });
