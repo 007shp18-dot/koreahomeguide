@@ -1,11 +1,10 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
-import { ResearchPageHeading } from '../market-ui/research-page-heading';
 import { homepageCopy } from '../../lib/site-copy';
-import styles from '../global-product-hub.module.css';
+import frame from '../global-product-hub.module.css';
+import styles from './contract-rankings.module.css';
 
 type Locale = 'en' | 'ko' | 'zh-CN';
 
@@ -13,8 +12,7 @@ export function RankingMarketsHub({ locale = 'en', children }: Readonly<{ locale
   const ko = locale === 'ko';
   const zh = locale === 'zh-CN';
   const prefix = ko ? '/ko' : zh ? '/zh-cn' : '';
-  const rankingPrefix = ko ? '/ko' : ''; // Chinese uses the same English market ranking screens.
-  const currentHref = `${prefix}/rankings/`;
+  const rankingPrefix = ko ? '/ko' : '';
   const header = {
     ...homepageCopy.header,
     homeHref: `${prefix}/`,
@@ -22,32 +20,23 @@ export function RankingMarketsHub({ locale = 'en', children }: Readonly<{ locale
     languageSwitch: ko || zh
       ? { label: 'EN', href: '/rankings/', hrefLang: 'en' as const }
       : { label: 'KO', href: '/ko/rankings/', hrefLang: 'ko' as const },
-    links: [{ label: ko ? '순위' : zh ? '排行榜' : 'Rankings', href: currentHref, isCurrent: true }],
+    links: [{ label: ko ? '순위' : zh ? '排行榜' : 'Rankings', href: `${prefix}/rankings/`, isCurrent: true }],
   };
+  const cities = { seoul: ko ? '서울' : zh ? '首尔' : 'Seoul', singapore: ko ? '싱가포르' : zh ? '新加坡' : 'Singapore', tokyo: ko ? '도쿄' : zh ? '东京' : 'Tokyo' };
   return <div id="top" lang={locale}>
     <SiteHeader copy={header} />
-    <main className={styles.main}>
-      <ResearchPageHeading
-        title={ko ? '가격 순위' : zh ? '房产成交排行榜' : 'Property price rankings'}
-        description={ko
-          ? '서울 건물과 싱가포르 단지의 신고 가격을 자료 기간별로 높은 순서부터 비교해 보세요.'
-          : zh ? '按公开数据期间，比较首尔楼宇和新加坡项目的申报成交价格。' : 'Compare individual sale prices and district rental medians, with clear conditions and source dates.'}
-        actions={<Link href={`${prefix}/guides/`}>{ko ? '지역 비교 가이드' : zh ? '如何阅读排行榜' : 'How to read rankings'}</Link>}
-      />
-      {children}
-      {!children && <section className={styles.section} aria-labelledby="latest-rankings-title">
-        <div className={styles.sectionHeading}><h2 id="latest-rankings-title">{ko ? '최신 실거래 TOP 50 · 지역별 임대 순위' : '最新成交 TOP 50 · 区域租金排行'}</h2><p>{ko ? '개별 매매 거래금액과 같은 조건의 지역별 월세 중앙값을 비교합니다. 상세 표는 영어로 제공됩니다.' : '比较单笔成交总价及相同条件下的区域月租中位数。详细表格以英文提供。'}</p></div>
-        <div className={styles.productGrid}>{(['seoul', 'singapore'] as const).flatMap(city => (['sale', 'rent'] as const).map(kind => <Link key={`${city}-${kind}`} href={`/rankings/?city=${city}&kind=${kind}`}><h3>{city === 'seoul' ? (ko ? '서울' : '首尔') : (ko ? '싱가포르' : '新加坡')} · {kind === 'sale' ? (ko ? '매매 TOP 50' : '成交 TOP 50') : (ko ? '지역별 월세' : '区域月租')}</h3><strong>{ko ? '최고·최저 순위 보기 (영어) →' : '查看最高及最低排行（英文）→'}</strong></Link>))}</div>
+    <main className={frame.main}>
+      <header className={styles.pageHeading}><h1>{ko ? '가격 순위' : zh ? '房产价格排行' : 'Property rankings'}</h1><Link href={`${prefix}/guides/`}>{ko ? '읽는 방법' : zh ? '阅读指南' : 'How to read'}</Link></header>
+      {children || <section aria-label={ko ? '시장별 순위' : zh ? '各市场排行' : 'Market rankings'} className={styles.directory}>
+        {(['seoul', 'singapore'] as const).flatMap(city => (['sale', 'rent'] as const).map(kind => <Link key={city + kind} href={`/rankings/?city=${city}&kind=${kind}`}><span>{cities[city]} · {kind === 'sale' ? (ko ? '매매 TOP 50' : zh ? '成交 TOP 50' : 'Sales TOP 50') : (ko ? '지역별 월세' : zh ? '区域租金' : 'District rents')}</span><small>{ko ? '상세 보기 (영어) →' : zh ? '查看详情（英文）→' : 'View rankings →'}</small></Link>))}
+        <Link href="/rankings/?city=tokyo"><span>{cities.tokyo} · {ko ? '중고 맨션 TOP 50' : zh ? '二手公寓 TOP 50' : 'Resale condos TOP 50'}</span><small>2026 Q1 →</small></Link>
       </section>}
-      <section className={styles.section} aria-labelledby="ranking-markets-title">
-        <div className={styles.sectionHeading}><p>{ko ? '시장별 순위' : zh ? '各市场排行' : 'Market rankings'}</p><h2 id="ranking-markets-title">{ko ? '시장별 실거래를 비교하세요.' : zh ? '按市场比较实际成交。' : 'Compare reported sales by market.'}</h2></div>
-        <div className={styles.productGrid}>
-          <Link href={`${rankingPrefix}/kr/seoul/rankings/`}><span>{ko ? '서울 · 건물' : zh ? '首尔 · 楼宇' : 'Seoul · buildings'}</span><h3>{ko ? '건물별 매매·전세·월세 중앙값' : zh ? '楼宇买卖、全租与月租' : 'Sale, jeonse and rent by building'}</h3><p>{ko ? '각 순위에 표시된 기간의 국토교통부 신고 자료로 건물별 가격을 비교하고 자치구별 집계도 확인합니다.' : zh ? '根据韩国国土交通部申报记录比较楼宇价格，同时查看区域背景及数据期间。' : 'Compare building prices from MOLIT filings, with district context and the source period shown.'}</p><strong>{ko ? '서울 순위 보기 →' : zh ? '查看首尔排行 →' : 'Open Seoul rankings →'}</strong></Link>
-          <Link href={`${rankingPrefix}/sg/singapore/rankings/`}><span>{ko ? '싱가포르 · 단지' : zh ? '新加坡 · 项目' : 'Singapore · projects'}</span><h3>{ko ? '민간주택 단지별 매매 가격' : zh ? '私人住宅项目成交价格' : 'Private home prices by project'}</h3><p>{ko ? '각 순위에 표시된 기간의 URA 신고 자료로 단지 가격과 제곱피트당 가격을 비교합니다.' : zh ? '根据市区重建局申报资料，比较项目成交价格及每平方英尺价格，并显示数据期间。' : 'Compare project prices and prices per square foot from URA filings for the source period shown.'}</p><strong>{ko ? '싱가포르 순위 보기 →' : zh ? '查看新加坡排行 →' : 'Open Singapore rankings →'}</strong></Link>
-          <Link href="/rankings/?city=tokyo"><span>{ko ? '도쿄 · 구와 동네' : zh ? '东京 · 区与街区' : 'Tokyo · wards and neighbourhoods'}</span><h3>{ko ? '중고 맨션 신고 거래 TOP 50' : zh ? '二手公寓申报成交 TOP 50' : 'Highest reported resale-condo prices · TOP 50'}</h3><p>{ko ? '2026년 1분기 국토교통성 공개 거래금액·면적을 확인하세요. 익명 거래이며 상세 목록은 영어입니다.' : zh ? '查看 2026 年第一季度国土交通省匿名成交总价与面积。详细列表为英文。' : '2026 Q1 · Compare reported total prices and areas from MLIT. Anonymous district records; no building identities are inferred.'}</p><strong>{ko ? '도쿄 TOP 50 보기 →' : zh ? '查看东京 TOP 50 →' : 'Open Tokyo TOP 50 →'}</strong></Link>
-        </div>
-      </section>
+      <details className={styles.method}><summary>{ko ? '건물·단지별 비교 더 보기' : zh ? '更多楼宇与项目比较' : 'More building and project comparisons'}</summary><nav className={styles.moreLinks} aria-label="Additional ranking comparisons">
+        <Link href={`${rankingPrefix}/kr/seoul/rankings/`}>{ko ? '서울 · 건물별 매매·전세·월세' : zh ? '首尔 · 楼宇买卖与租金' : 'Seoul · buildings — Sale, jeonse and rent by building'}</Link>
+        <Link href={`${rankingPrefix}/sg/singapore/rankings/`}>{ko ? '싱가포르 · 단지별 가격' : zh ? '新加坡 · 项目价格' : 'Singapore · project prices'}</Link>
+        <Link href={`${prefix}/jp/tokyo/explore/`}>{ko ? '도쿄 · 지역별 거래' : zh ? '东京 · 区域成交' : 'Tokyo · area transactions'}</Link>
+      </nav></details>
     </main>
-    <SiteFooter copy={{ ...homepageCopy.footer, descriptor: ko ? '신고 가격 순위와 자료 기간, 집계 범위를 함께 확인할 수 있습니다.' : zh ? '申报成交排行榜，附数据期间和覆盖范围说明。' : 'Reported price rankings with source periods and coverage notes.' }} locale={locale} />
+    <SiteFooter copy={homepageCopy.footer} locale={locale} />
   </div>;
 }

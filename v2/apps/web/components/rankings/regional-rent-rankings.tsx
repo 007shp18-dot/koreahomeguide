@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { rankRegions, regionName, RENT_AREAS, rentCohortLabel, type RentCohort, type RegionalRentRow } from '../../lib/rankings/regional-rent-query';
 import { formatRankingDate, type RankingOrder } from '../../lib/rankings/contract-ranking-query';
 import styles from './contract-rankings.module.css';
+import { RankingFields } from './ranking-controls';
 
 export function RegionalRentRankings({ rows, cohort, order, checkedAt }: {
  rows: RegionalRentRow[] | null; cohort: RentCohort; order: RankingOrder; checkedAt?: string;
@@ -10,14 +11,14 @@ export function RegionalRentRankings({ rows, cohort, order, checkedAt }: {
  const kr=cohort.city==='seoul';
  const money=(value:number)=>`${kr?'₩':'S$'}${Number(value).toLocaleString('en-US',{maximumFractionDigits:2})}`;
  return <section className={styles.section} aria-labelledby="regional-rent-title">
-  <nav className={styles.tabs} aria-label="Transaction rankings">{(['seoul','singapore'] as const).flatMap(city=>(['sale','rent'] as const).map(kind=><Link key={city+kind} href={`/rankings/?city=${city}&kind=${kind}&order=${order}`} aria-current={city===cohort.city&&kind==='rent'?'page':undefined}>{city==='seoul'?'Seoul':'Singapore'} {kind==='sale'?'sales':'rents'}</Link>))}</nav>
-  <div className={styles.heading}><div><p>COMPARABLE RENTAL CONTRACTS</p><h2 id="regional-rent-title">{kr?'Seoul':'Singapore'} · district rent rankings</h2></div></div>
-  <form className={styles.filters} action="/rankings/" method="get">
-   <input type="hidden" name="city" value={cohort.city}/><input type="hidden" name="kind" value="rent"/>
+  <form key={JSON.stringify(cohort) + order} className={styles.filters} action="/rankings/" method="get">
+   <RankingFields city={cohort.city} kind="rent" order={order} />
    <label>Floor area<select name="area" defaultValue={cohort.area}>{Object.entries(RENT_AREAS[cohort.city]).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
    {kr?<label>Deposit<select name="deposit" defaultValue={cohort.deposit}><option value="under-100m">Below ₩100 million</option><option value="100-300m">₩100 to below ₩300 million</option><option value="300m-plus">₩300 million or more</option></select></label>:<label>Bedrooms<select name="beds" defaultValue={cohort.beds}>{['1','2','3'].map(value=><option key={value} value={value}>{value}</option>)}</select></label>}
-   <label>Order<select name="order" defaultValue={order}><option value="lowest">Lowest median rent</option><option value="highest">Highest median rent</option></select></label><button type="submit">Compare districts</button>
+   <button type="submit">Compare districts</button>
   </form>
+  <div className={styles.heading}><div><h2 id="regional-rent-title">{kr?'Seoul':'Singapore'} · district rent rankings</h2></div></div>
+
   <p className={styles.note}>{rentCohortLabel(cohort)}. {kr?'Apartments · Seoul administrative districts':'Private condos · Singapore postal districts'}. At least 10 matched contracts per district.</p>
   {ranked.length>0?<>
    <p className={styles.meta}>Contract month: <strong>{ranked[0]!.month}</strong> · {ranked.length} qualifying districts · Checked {checkedAt?.slice(0,10)} (UTC)</p>
