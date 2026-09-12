@@ -41,6 +41,13 @@ const neighborhoods: Readonly<Record<string, string>> = {
   '불광동': 'Bulgwang-dong', '녹번동': 'Nokbeon-dong', '수유동': 'Suyu-dong',
 };
 const buildings: Readonly<Record<string, string>> = {
+  '한남더힐': 'Hannam The Hill', '나인원한남': 'Nine One Hannam', '타워팰리스2': 'Tower Palace 2',
+  '서초그랑자이': 'Seocho Gran Xi', '용산푸르지오써밋(420)': 'Yongsan Prugio Summit',
+  '반포자이': 'Banpo Xi', '래미안원펜타스': 'Raemian One Pentas', '용산시티파크(1단지)': 'Yongsan City Park 1',
+  '브라이튼여의도': 'Brighten Yeouido', '센트레빌아스테리움서울': 'Centreville Asterium Seoul',
+  '갤러리아포레': 'Galleria Foret', '래미안퍼스티지': 'Raemian Firstige', '한양4': 'Hanyang 4',
+  '래미안원베일리': 'Raemian One Bailey', '아크로리버파크': 'Acro River Park', '한양3': 'Hanyang 3',
+  '신현대9차': 'Shin Hyundai 9', '현대13차(208~211동)': 'Hyundai 13 (208–211)',
   '헬리오시티': 'Helio City', '파크리오': 'Parkrio', '리센츠': 'Ricenz',
   '잠실엘스': 'Jamsil Els', '은마': 'Eunma', '트리지움': 'Trizium',
   '도곡렉슬': 'Dogok Rexle', '남산타운': 'Namsan Town',

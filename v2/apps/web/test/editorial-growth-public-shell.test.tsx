@@ -58,7 +58,7 @@ describe('public editorial shell', () => {
     expect(markup).not.toContain('href="/kr/seoul/check"');
     expect(markup).not.toContain('href="/kr/seoul/explore"');
     expect(markup).toContain('>探索<');
-    expect(markup).toMatch(/href="\/zh-cn\/rankings\/?"[^>]*>地区排名<\/a>/);
+    expect(markup).toMatch(/href="\/zh-cn\/rankings\/?"[^>]*>排行榜<\/a>/);
     expect(markup).not.toContain('aria-label="探索菜单"');
     expect(markup).not.toContain('>价格<');
     expect(markup).not.toContain('/design-review/');

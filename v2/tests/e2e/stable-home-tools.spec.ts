@@ -60,9 +60,9 @@ test('tool languages retain their published primary navigation and Corrections h
   await page.goto(path);
   const navigation = await visibleProductNavigation(page);
   await expect(navigation).toBeVisible();
-  await expect(navigation.locator('.site-header__product-link')).toHaveCount(5);
-  const rankings = navigation.getByRole('link', { name: /^(?:Rankings|지역 비교|地区排名)$/ });
-  await expect(rankings).toHaveCount(0);
+  await expect(navigation.locator('.site-header__product-link')).toHaveCount(6);
+  const rankings = navigation.getByRole('link', { name: /^(?:Rankings|랭킹|排行榜)$/ });
+  await expect(rankings).toHaveCount(1);
   await expect((await visibleLanguageNavigation(page)).getByRole('link')).toHaveText(['EN','KO','中文']);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  }

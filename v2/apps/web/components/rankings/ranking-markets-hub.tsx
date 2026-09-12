@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
@@ -8,7 +9,7 @@ import styles from '../global-product-hub.module.css';
 
 type Locale = 'en' | 'ko' | 'zh-CN';
 
-export function RankingMarketsHub({ locale = 'en' }: Readonly<{ locale?: Locale }>) {
+export function RankingMarketsHub({ locale = 'en', children }: Readonly<{ locale?: Locale; children?: ReactNode }>) {
   const ko = locale === 'ko';
   const zh = locale === 'zh-CN';
   const prefix = ko ? '/ko' : zh ? '/zh-cn' : '';
@@ -30,9 +31,14 @@ export function RankingMarketsHub({ locale = 'en' }: Readonly<{ locale?: Locale 
         title={ko ? '가격 순위' : zh ? '房产成交排行榜' : 'Property price rankings'}
         description={ko
           ? '서울 건물과 싱가포르 단지의 신고 가격을 자료 기간별로 높은 순서부터 비교해 보세요.'
-          : zh ? '按公开数据期间，比较首尔楼宇和新加坡项目的申报成交价格。' : 'Compare reported prices across Seoul buildings and Singapore projects, ranked from highest to lowest for each source period.'}
+          : zh ? '按公开数据期间，比较首尔楼宇和新加坡项目的申报成交价格。' : 'Compare individual sale prices and district rental medians, with clear conditions and source dates.'}
         actions={<Link href={`${prefix}/guides/`}>{ko ? '지역 비교 가이드' : zh ? '如何阅读排行榜' : 'How to read rankings'}</Link>}
       />
+      {children}
+      {!children && <section className={styles.section} aria-labelledby="latest-rankings-title">
+        <div className={styles.sectionHeading}><h2 id="latest-rankings-title">{ko ? '최신 실거래 TOP 50 · 지역별 임대 순위' : '最新成交 TOP 50 · 区域租金排行'}</h2><p>{ko ? '개별 매매 거래금액과 같은 조건의 지역별 월세 중앙값을 비교합니다. 상세 표는 영어로 제공됩니다.' : '比较单笔成交总价及相同条件下的区域月租中位数。详细表格以英文提供。'}</p></div>
+        <div className={styles.productGrid}>{(['seoul', 'singapore'] as const).flatMap(city => (['sale', 'rent'] as const).map(kind => <Link key={`${city}-${kind}`} href={`/rankings/?city=${city}&kind=${kind}`}><h3>{city === 'seoul' ? (ko ? '서울' : '首尔') : (ko ? '싱가포르' : '新加坡')} · {kind === 'sale' ? (ko ? '매매 TOP 50' : '成交 TOP 50') : (ko ? '지역별 월세' : '区域月租')}</h3><strong>{ko ? '최고·최저 순위 보기 (영어) →' : '查看最高及最低排行（英文）→'}</strong></Link>))}</div>
+      </section>}
       <section className={styles.section} aria-labelledby="ranking-markets-title">
         <div className={styles.sectionHeading}><p>{ko ? '시장별 순위' : zh ? '各市场排行' : 'Market rankings'}</p><h2 id="ranking-markets-title">{ko ? '시장별 실거래를 비교하세요.' : zh ? '按市场比较实际成交。' : 'Compare reported sales by market.'}</h2></div>
         <div className={styles.productGrid}>

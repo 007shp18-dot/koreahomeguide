@@ -10,9 +10,16 @@ import { SiteFooter } from '../components/site-footer';
 import { homepageCopy } from '../lib/site-copy';
 
 describe('shared navigation destinations', () => {
+  it('renders exactly one ranking link in each localized footer', () => {
+    for (const locale of ['en', 'ko', 'zh-CN'] as const) {
+      const html = renderToStaticMarkup(<SiteFooter copy={homepageCopy.footer} locale={locale} />);
+      expect(html.match(/href="\/(?:ko\/|zh-cn\/)?rankings\/?"/g)).toHaveLength(1);
+    }
+  });
   it('separates English News from Insights and preserves translated sections', () => {
     expect(globalNavigation('en')).toEqual([
       { label: 'Explore', href: '/prices/' },
+      { label: 'Rankings', href: '/rankings/' },
       { label: 'Insights', href: '/news/' },
       { label: 'News', href: '/news/?type=news' },
       { label: 'Tools', href: '/tools/' },
@@ -20,9 +27,9 @@ describe('shared navigation destinations', () => {
     ]);
 
     for (const locale of ['ko', 'zh-CN'] as const) {
-      expect(globalNavigation(locale)).toHaveLength(5);
+      expect(globalNavigation(locale)).toHaveLength(6);
       expect(globalNavigation(locale).map(({ href }) => href.replace(/^\/(?:zh-cn|ko)(?=\/)/, '')))
-        .toEqual(['/prices/', '/news/', '/news/?type=news', '/tools/', '/guides/']);
+        .toEqual(['/prices/', '/rankings/', '/news/', '/news/?type=news', '/tools/', '/guides/']);
     }
   });
   it('keeps the news view while changing city and advertises only supported Tokyo guides', () => {
