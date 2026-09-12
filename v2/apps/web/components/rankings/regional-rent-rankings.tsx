@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { rankRegions, regionName, RENT_AREAS, rentCohortLabel, type RentCohort, type RegionalRentRow } from '../../lib/rankings/regional-rent-query';
-import type { RankingOrder } from '../../lib/rankings/contract-ranking-query';
+import { formatRankingDate, type RankingOrder } from '../../lib/rankings/contract-ranking-query';
 import styles from './contract-rankings.module.css';
 
 export function RegionalRentRankings({ rows, cohort, order, checkedAt }: {
@@ -36,7 +36,7 @@ export function RegionalRentRankings({ rows, cohort, order, checkedAt }: {
    <details className={styles.method}><summary>Sources and calculation</summary><div>
     <p>{kr?<a href="https://rt.molit.go.kr/">MOLIT</a>:<a href="https://www.ura.gov.sg/">URA</a>} · Active/corrected records, latest source-key version. Latest completed calendar month with data for this source is selected before cohort filtering; sparse cohorts do not silently switch to an older month. Districts with fewer than 10 matching contracts are omitted. Equal medians share a rank.</p>
     <p>{kr?'Exclusive floor area uses an open lower and closed upper limit: 40 < area ≤ 60 m² or 60 < area ≤ 85 m². Deposit intervals are [0,100 million), [100 million,300 million), and [300 million,+∞) KRW. Zero-monthly-rent jeonse is excluded.':'Only original URA area bands wholly within the selected interval are included; no midpoint estimates are used. Bedrooms must match exactly. Non-landed rentals are matched to condominium-classified sale evidence; unmatched projects, URA apartments, EC, landed homes and HDB are excluded.'}</p>
-    <p>Middle 50% is the 25th–75th percentile. Coverage is limited to eligible records held by SignedPrice; late filings and corrections can change rankings. Source collected: {[...new Set(ranked.map(row=>row.source_as_of.slice(0,10)))].join(', ')} (UTC).</p>
+    <p>Middle 50% is the 25th–75th percentile. Coverage is limited to eligible records held by SignedPrice; late filings and corrections can change rankings. Source collected: {[...new Set(ranked.map(row=>formatRankingDate(row.source_as_of)))].join(', ')} (UTC).</p>
    </div></details>
   </>:<p className={styles.empty}>{rows===null?'Verified rental rankings are temporarily unavailable. Please try again shortly.':'No district has 10 matching contracts in the latest source month. Adjust the area or other conditions.'}</p>}
  </section>;
