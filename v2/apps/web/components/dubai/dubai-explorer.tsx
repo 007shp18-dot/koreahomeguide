@@ -34,6 +34,9 @@ import { DubaiExploreSelection } from './dubai-explore-selection';
 import { useDubaiComparison } from './use-dubai-comparison';
 import { comparisonCopy } from '../../lib/dubai/comparison-copy';
 import comparisonStyles from './dubai-comparison.module.css';
+import layout from './dubai-explore-layout.module.css';
+import { DubaiAreaPhoto } from './dubai-area-photo';
+import { dubaiAreaPhoto } from '../../lib/dubai/area-photos';
 const DubaiComparisonDialog = lazy(() => import('./dubai-comparison'));
 
 
@@ -252,7 +255,7 @@ export function DubaiExplorer({ locale = 'en',
   const hasFilters = query.trim() !== '' || housing !== 'apartment' || stage !== 'ready'
     || budgetMaximumAed !== null || yieldMinimumPct !== null;
 
-  return <div className={styles.explorer} data-dubai-evidence="ready" data-dubai-explore-workspace="true">
+  return <div className={`${styles.explorer} ${layout.workspace}`} data-dubai-evidence="ready" data-dubai-explore-workspace="true">
     <MarketExploreShell locale={locale}
       eyebrow={t("Dubai")}
       title={t("Explore")}
@@ -288,7 +291,7 @@ export function DubaiExplorer({ locale = 'en',
           }}><option value="">{t("Any ratio")}</option><option value="5">{t("5%+")}</option><option value="6">{t("6%+")}</option><option value="7">{t("7%+")}</option><option value="8">{t("8%+")}</option></select></label> : null}
           {hasFilters ? <button type="button" className={styles.clearFilters} onClick={clearFilters}>{t("Clear filters")}</button> : null}
         </form>
-        <div className={styles.stageTabs} role="tablist" aria-label={t("Dubai sale stage")}>
+        <div className={layout.toolbarFooter}><div className={styles.stageTabs} role="tablist" aria-label={t("Dubai sale stage")}>
           <button type="button" role="tab" aria-selected={stage === 'ready'} onClick={() => switchStage('ready')}>{t("Ready")}</button>
           <button type="button" role="tab" aria-selected={stage === 'off-plan'} onClick={() => switchStage('off-plan')}>{t("Off-Plan")}</button>
         </div>
@@ -296,7 +299,7 @@ export function DubaiExplorer({ locale = 'en',
           <Link href={marketHref(locale, "/ae/dubai/")}>{t("Market overview")}</Link>
           <Link href={marketHref(locale, "/ae/dubai/guide/")}>{t("Buying research guide")}</Link>
           <Link href={marketHref(locale, "/news/?type=news&market=dubai")}>{t("News")}</Link>
-        </nav>
+        </nav></div>
       </div>}
       discovery={<section className={styles.evidenceDirectory} aria-labelledby="dubai-area-results">
         {selected ? <DubaiExploreSelection locale={locale} selected={selected} stage={stage}
@@ -305,12 +308,12 @@ export function DubaiExplorer({ locale = 'en',
           onSelectProject={setSelectedProjectId} onClose={() => selectArea(null)} panelRef={selectionRef}
           returnTo={buildDubaiExploreHref({ query, housing, stage, budgetMaximumAed, yieldMinimumPct,
             page: activePage, selectedArea: selected.area.slug, selectedProject: selectedProject?.id ?? null })}
-        /> : <p className={styles.selectionPrompt}>{localizedMarketCopy(locale, "Select an area to see prices, rent and project sales summaries here.", "지역을 선택하면 가격·임대료와 프로젝트별 거래 요약이 여기에 표시됩니다.")}</p>}
+        /> : null}
         <header className={styles.resultHeader}>
           <div><h2 id="dubai-area-results">{t("Area prices")}</h2><p>{t(results.length.toLocaleString('en'))}{t(" matching areas · ")}{t(housing)}{t(" · ")}{t(stage)}</p></div>
           <small>{t(results.length === 0 ? 'No matches' : `${(activePage - 1) * DUBAI_EXPLORE_PAGE_SIZE + 1}–${Math.min(activePage * DUBAI_EXPLORE_PAGE_SIZE, results.length)} shown`)}</small>
         </header>
-        <div className={comparisonStyles.tray} aria-label={compareCopy.title}>
+        {comparison.ids.length > 0 ? <div className={comparisonStyles.tray} aria-label={compareCopy.title}>
           <p>{compareCopy.hint}</p>
           <button type="button" className={comparisonStyles.primaryButton} disabled={comparison.ids.length < 2}
             onClick={() => comparison.open({ areas: comparison.ids, housing, stage, ...model.context.comparisonPeriod })}>
@@ -320,8 +323,8 @@ export function DubaiExplorer({ locale = 'en',
           {comparison.ids.map(slug => <button key={slug} type="button" onClick={() => comparison.toggle(slug)} aria-label={`${compareCopy.remove}: ${model.areas.find(area => area.slug === slug)?.name ?? slug}`}>
             {model.areas.find(area => area.slug === slug)?.name ?? slug} ×
           </button>)}
-        </div>
-        <details className={comparisonStyles.saved}>
+        </div> : null}
+        {comparison.saved.length > 0 || comparison.storageError ? <details className={comparisonStyles.saved}>
           <summary>{compareCopy.saved} ({comparison.saved.length})</summary>
           <p>{compareCopy.local}</p>
           {comparison.saved.length === 0 ? <p>{compareCopy.empty}</p> : <ul>{comparison.saved.map((preset, index) => <li key={index}>
@@ -329,14 +332,16 @@ export function DubaiExplorer({ locale = 'en',
             <button type="button" onClick={() => comparison.remove(preset)} aria-label={`${compareCopy.delete}: ${preset.areas.join(', ')}`}>{compareCopy.delete}</button>
           </li>)}</ul>}
           {comparison.storageError ? <p role="status">{compareCopy.failure}</p> : null}
-        </details>
-        <div className={styles.areaResults} aria-live="polite" aria-busy={query !== deferredQuery}>
-          {visible.map(({ area, segment, sale }) => <article key={area.id} data-selected={area.slug === selectedArea}>
+        </details> : null}
+        <div className={layout.results} aria-live="polite" aria-busy={query !== deferredQuery}>
+          {visible.map(({ area, segment, sale }) => <article key={area.id} data-selected={area.slug === selectedArea} data-has-photo={Boolean(dubaiAreaPhoto(area.slug))}>
+            <DubaiAreaPhoto slug={area.slug} locale={locale} variant="thumbnail" />
+            <div className={layout.rowContent}>
             <button type="button" aria-pressed={area.slug === selectedArea} aria-controls="dubai-selected-area" onClick={() => selectArea(selectedArea === area.slug ? null : area.slug)}>
               <span><strong title={t(area.name)}>{t(area.name)}</strong><small>{t(housing === 'apartment' ? 'Apartment' : 'Villa')}{t(" · ")}{t(stage === 'ready' ? 'Ready' : 'Off-Plan')}</small></span>
             </button>
-            <p className={styles.resultPrice}><strong>{t(money(sale.medianPriceAed))}</strong><span>{t(sale.n.toLocaleString('en'))} {localizedMarketCopy(locale, "sales", "건 거래")} · {t(moneyPerSqm(sale.medianPricePerSqmAed))}</span></p>
-            <div className={comparisonStyles.rowAction}><button type="button" aria-pressed={comparison.ids.includes(area.slug)}
+            <p className={layout.price}><strong>{t(money(sale.medianPriceAed))}</strong><span>{t(sale.n.toLocaleString('en'))} {localizedMarketCopy(locale, "sales", "건 거래")} · {t(moneyPerSqm(sale.medianPricePerSqmAed))}</span></p>
+            <div className={layout.rowActions}><div className={comparisonStyles.rowAction}><button type="button" aria-pressed={comparison.ids.includes(area.slug)}
               disabled={comparison.ids.length >= 3 && !comparison.ids.includes(area.slug)}
               aria-label={`${comparison.ids.includes(area.slug) ? compareCopy.remove : compareCopy.add}: ${area.name}`}
               onClick={() => comparison.toggle(area.slug)}>{comparison.ids.includes(area.slug) ? compareCopy.remove : compareCopy.add}</button></div>
@@ -349,10 +354,11 @@ export function DubaiExplorer({ locale = 'en',
               <div><dt>{t("Median annual rent")}</dt><dd>{t(moneyPerYear(segment.rent.medianAnnualRentAed))}</dd></div>
               <div><dt>{t("Estimated gross rent-to-price ratio")}</dt><dd>{t(stage === 'ready' && segment.readyGrossYieldPct !== null ? `${segment.readyGrossYieldPct.toFixed(1)}%` : stage === 'off-plan' ? 'Not shown for Off-Plan' : 'Not published')}</dd></div>
             </dl>
-            </details>
             {area.href === null
               ? <span className={styles.unavailableLink}>{t("Area details unavailable")}</span>
               : <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>{localizedMarketCopy(locale, "Full area analysis", "지역 분석 전체 보기")}</Link>}
+            <DubaiAreaPhoto slug={area.slug} locale={locale} variant="credit" />
+            </details></div></div>
           </article>)}
           {results.length === 0 ? <p className={styles.emptyState}>{t("No areas match these filters. Increase the budget or lower the ratio threshold.")}</p> : null}
         </div>

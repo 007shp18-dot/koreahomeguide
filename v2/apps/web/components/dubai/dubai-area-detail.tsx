@@ -1,4 +1,6 @@
 import { localizedMarketCopy } from '../../lib/locale/market-localization';
+import { dubaiAreaPhoto } from '../../lib/dubai/area-photos';
+import { DubaiAreaPhoto } from './dubai-area-photo';
 import { DubaiAreaSummary } from './dubai-area-selection';
 import { PassportLink as Link } from '../passport/passport-journey';
 
@@ -90,6 +92,7 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
         <Link href={marketHref(locale, "/ae/dubai/explore/")}>{t("Explore")}</Link><span>{t("/")}</span>
         <span>{t(model.identity.name)}</span>
       </nav>}
+      media={dubaiAreaPhoto(model.identity.slug) ? <DubaiAreaPhoto slug={model.identity.slug} locale={locale} variant="detail" /> : undefined}
       summary={<DubaiAreaSummary locale={locale} model={model} />}
       evidence={<>
         {model.segments.map((segment) => <SegmentSales locale={locale} key={segment.housing} segment={segment} />)}

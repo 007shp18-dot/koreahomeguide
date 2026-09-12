@@ -1,0 +1,48 @@
+/* Scoped to the published Dubai directory; no homepage or shared-map changes. */
+.workspace :global(.explore-page-heading) { padding-block: 24px 12px; }
+.workspace [data-explore-price-guide="dubai"] { margin-block: 0 12px; }
+.workspace [data-explore-price-guide="dubai"] strong { background: transparent; border-color: transparent; padding-inline: 0; color: var(--ink); }
+.toolbarFooter { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 20px; }
+.workspace .toolbarFooter [role="tablist"] { width: auto; min-width: 280px; background: var(--surface-strong); }
+.workspace .toolbarFooter nav { gap: 16px; }
+.workspace .toolbarFooter nav a { color: var(--muted); font-size: 13px; font-weight: 500; text-decoration: none; }
+.workspace .toolbarFooter nav a:hover { color: var(--ink); text-decoration: underline; }
+.workspace [data-map-provider="google"] { min-height: 0; display: block; }
+.workspace [data-map-provider="google"] [role="region"] { min-height: 360px; height: 58svh; max-height: 620px; }
+.workspace [data-market-shell-region="discovery"] { max-height: min(780px, 82svh); }
+.results { min-width: 0; }
+.results article { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 20px 4px; border-bottom: 1px solid var(--line); }
+.results article[data-has-photo="true"] { grid-template-columns: auto minmax(0, 1fr); }
+.results article[data-has-photo="true"]:not(:has([data-dubai-area-photo])) { grid-template-columns: minmax(0, 1fr); }
+.results article[data-selected="true"] { background: var(--accent-soft); border-radius: var(--radius-control); box-shadow: inset 3px 0 var(--accent); padding-inline: 12px; }
+.rowContent { min-width: 0; }
+.rowContent > button { display: block; width: 100%; min-height: var(--control-min); padding: 0; border: 0; background: transparent; color: var(--ink); text-align: start; cursor: pointer; }
+.rowContent > button span { display: grid; gap: 4px; }
+.rowContent > button strong { font-size: 17px; line-height: 1.4; font-weight: 650; overflow-wrap: anywhere; }
+.rowContent > button small { color: var(--muted); font-size: 12px; line-height: 1.5; }
+.price { display: grid; gap: 4px; margin: 8px 0 0; }
+.price strong { font-size: 20px; line-height: 1.4; font-weight: 650; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.price > span { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.rowActions { display: flex; flex-wrap: wrap; align-items: start; gap: 0 16px; margin-top: 6px; }
+.rowActions > div { margin-top: 0; }
+.rowActions > div button { padding: 8px 0; border-color: transparent; background: transparent; color: var(--muted); font-size: 12px; }
+.rowActions > div button[aria-pressed="true"] { padding-inline: 8px; }
+.rowActions > details { margin: 0; flex: 1 1 auto; min-width: 0; }
+.rowActions > details > summary { display: list-item; min-height: var(--control-min); padding-block: 12px; color: var(--muted); font-size: 12px; line-height: 20px; cursor: pointer; }
+.rowActions > details[open] { flex-basis: 100%; }
+.rowActions > details > a { display: inline-flex; align-items: center; min-height: var(--control-min); color: var(--accent); font-size: 13px; }
+.results :is(button, a, summary):focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+@media (max-width: 1050px) {
+  .workspace [data-market-shell-region="discovery"] { max-height: none; }
+  .workspace [data-map-provider="google"] [role="region"] { min-height: 260px; height: 34svh; max-height: 360px; }
+}
+@media (max-width: 640px) {
+  .workspace :global(.explore-page-heading) { padding-block: 20px 10px; }
+  .toolbarFooter { gap: 4px; }
+  .workspace .toolbarFooter [role="tablist"] { width: 100%; min-width: 0; }
+  .workspace .toolbarFooter nav { gap: 20px; }
+  .results article { gap: 12px; padding-block: 16px; }
+  .rowContent > button strong { font-size: 16px; }
+  .price strong { font-size: 18px; }
+  .rowActions { gap: 0 12px; }
+}
