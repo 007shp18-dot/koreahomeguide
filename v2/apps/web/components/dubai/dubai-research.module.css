@@ -43,7 +43,7 @@
 .stageTabs { display: grid; grid-template-columns: repeat(2, minmax(120px, 1fr)); width: min(100%, 420px); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .stageTabs button { min-height: 44px; border: 0; border-right: 1px solid var(--line); background: var(--surface-strong); color: var(--muted); font-weight: 650; cursor: pointer; }
 .stageTabs button:last-child { border-right: 0; }
-.stageTabs button[aria-selected='true'] { background: var(--ink); color: var(--surface-strong); }
+.stageTabs button[aria-selected='true'] { background: var(--accent-soft); color: var(--accent); box-shadow: inset 0 -2px var(--accent); }
 .evidenceDirectory { min-width: 0; padding: 0; }
 .resultHeader { display: flex; justify-content: space-between; gap: 16px; align-items: end; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
 .resultHeader h2, .resultHeader p { margin: 0; }
@@ -194,7 +194,7 @@
 .explorer [data-map-provider="google"] [role="region"] { min-height: 320px; height: 44svh; max-height: 460px; }
 .explorer .searchField { min-width: 0; }
 .explorer .evidenceToolbar input, .explorer .evidenceToolbar select { font-size: 16px; line-height: 1.5; }
-.selectionPrompt { margin: 0 0 16px; padding: 16px; background: var(--surface); color: var(--muted); font-size: 14px; line-height: 1.6; }
+.selectionPrompt { margin: 0 0 12px; padding: 12px 14px; border-radius: var(--radius-control); background: var(--surface); color: var(--muted); font-size: 14px; line-height: 1.6; }
 .selectedArea { min-width: 0; padding: 20px; margin: 0 0 24px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-strong); scroll-margin-top: 20px; }
 .selectionHeader { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
 .selectionHeader > div { min-width: 0; }
@@ -237,3 +237,14 @@
 
 /* The shared result panel owns the frame; avoid a second nested card. */
 .checkResultPanel[data-tool-result] > :is(.checkResultCard, .checkEmpty) { padding: 0; border: 0; border-radius: 0; background: transparent; }
+
+/* Shared Explore rhythm: clear controls, quieter rows, one selection colour. */
+.explorer .evidenceToolbar label, .explorer .toolbar label { color: var(--ink); font-size: 14px; font-weight: 600; }
+.explorer .evidenceToolbar input, .explorer .evidenceToolbar select, .explorer .toolbar input { min-height: var(--control-height); border-radius: var(--radius-control); }
+.explorer .areaResults article { padding: 12px 14px; border-radius: var(--radius-control); }
+.explorer .areaResults article > a { margin-top: 4px; min-height: var(--control-min); font-size: 13px; }
+.explorer .areaResults article:hover { background: var(--surface); }
+.explorer .areaResults article[data-selected="true"] { background: var(--accent-soft); }
+.explorer .resultPrice { margin-top: 4px; }
+.explorer .evidenceMap { border: 1px solid var(--line); border-radius: var(--radius-panel); overflow: hidden; }
+.explorer .evidenceToolbar :is(input, select, button):focus-visible, .stageTabs button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }

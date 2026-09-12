@@ -28,7 +28,7 @@ export function MarketLayerControl({ locale = 'en',  label, items }: Readonly<{
   </nav>;
 }
 
-export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, layers, discovery, spatial, discoveryPanel }: Readonly<{
+export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, layers, discovery, spatial, discoveryPanel, priceGuide }: Readonly<{
   eyebrow: string;
   title: string;
   period: React.ReactNode;
@@ -36,6 +36,7 @@ export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, lay
   discovery: React.ReactNode;
   spatial?: React.ReactNode;
   discoveryPanel?: ResultsPanelLabels;
+  priceGuide?: React.ReactNode;
 }> & { locale?: MarketLocale }) {
   const t = <T,>(value: T): T => marketText(locale, value);
 
@@ -44,6 +45,7 @@ export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, lay
       <h1>{t(title)}</h1>
       <p>{t(eyebrow)}{t(" · ")}{t(period)}</p>
     </header>
+    {priceGuide}
     {t(layers)}
     <div className={styles.exploreGrid} data-layout={spatial == null ? 'list' : 'split'}>
       <section className={styles.discovery} data-market-shell-region="discovery">{discoveryPanel

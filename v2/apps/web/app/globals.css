@@ -83,6 +83,7 @@ body:has(dialog[data-explore-results-panel]:modal) { overflow: hidden; }
   --radius-control: 8px;
   --radius-panel: 16px;
   --control-selected-border: #bfd3f5;
+  --control-hover: #f1f5f9;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -135,6 +136,14 @@ textarea {
   font: inherit;
   letter-spacing: inherit;
 }
+
+/* A shared keyboard and selection baseline for Explore, articles and tools. */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+:where(input[type="checkbox"], input[type="radio"]) { accent-color: var(--accent); }
+:where(button):disabled { cursor: not-allowed; }
 
 button,
 input:not([type="hidden"]),

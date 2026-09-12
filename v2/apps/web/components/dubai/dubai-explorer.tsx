@@ -23,6 +23,7 @@ import { DUBAI_AREAS, DUBAI_SOURCES, filterDubaiAreas } from '../../lib/dubai/re
 import type { DubaiExploreModel } from '../../lib/dubai/route-types';
 import { GooglePlaceMap, type GoogleMarketMapPoint } from '../maps/google-place-map';
 import { MarketExploreShell } from '../market-ui/market-shell';
+import { ExplorePriceGuide } from '../market-ui/explore-price-guide';
 import styles from './dubai-research.module.css';
 import type { DubaiProjectEvidence } from '../../lib/dubai/project-evidence';
 import { selectedResultPage } from '../../lib/navigation/selected-result-page';
@@ -248,6 +249,7 @@ export function DubaiExplorer({ locale = 'en',
       eyebrow={t("Dubai")}
       title={t("Explore")}
       period={t(`${model.context.comparisonPeriod.from}–${model.context.comparisonPeriod.to}`)}
+      priceGuide={<ExplorePriceGuide locale={locale} market="dubai" />}
       layers={<div className={styles.evidenceToolbar}>
         <form role="search" onSubmit={(event) => event.preventDefault()}>
           <label className={styles.searchField}>{t("Find an area")}<input

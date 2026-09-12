@@ -962,17 +962,17 @@
 }
 
 /* Region navigation: full names, readable counts, one shared locale layout. */
-.segmentTabs { gap: 0; margin: 16px 0 0; border-bottom: 1px solid var(--line); }
-.segmentTabs button { gap: 5px; min-height: 112px; padding: 14px 8px; border-bottom-width: 3px; }
+.segmentTabs { gap: 4px; margin: 16px 8px 0; padding: 4px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.segmentTabs button { gap: 4px; min-height: 96px; padding: 10px 6px; border: 1px solid transparent; border-radius: var(--radius-control); }
 .segmentTabs button:hover { background: var(--surface); }
-.segmentTabs button[aria-selected='true'] { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.segmentTabs button[aria-selected='true'] { background: var(--surface-strong); border-color: var(--control-selected-border); box-shadow: var(--shadow-sm); }
 .segmentTabs strong { font-size: 16px; }
 .segmentTabs small { min-height: 32px; font-size: 12px; line-height: 16px; color: var(--muted); font-weight: 500; white-space: normal; }
 .segmentTabs span { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; }
 .segmentTabs button:focus-visible, .regionDirectory summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.exploreStart { margin: 0; padding: 32px 14px 28px; border: 0; background: transparent; }
+.exploreStart { margin: 0; padding: 20px 14px; border: 0; background: transparent; }
 .exploreStartKicker { color: var(--accent); font-size: 12px; font-weight: 650; }
-.exploreStart h3 { margin: 10px 0 12px; font-size: clamp(22px, 2vw, 28px); line-height: 1.2; letter-spacing: -.04em; }
+.exploreStart h3 { margin: 10px 0 12px; font-size: 22px; line-height: 1.35; letter-spacing: -.025em; }
 .exploreStart p { max-width: 34ch; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
 .exploreSteps { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 24px 0 0; padding: 16px 0 0; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
 .exploreSteps li + li::before { content: '→'; margin-right: 8px; color: var(--accent); }
@@ -1010,3 +1010,12 @@
   .segmentProject > a, .segmentProject > .evidenceUnavailableLink { justify-self: start; }
   .sourceSummary time { flex-basis: 100%; margin-left: 0; }
 }
+
+/* Explore uses the same compact control and selection treatment in each city. */
+.exploreFilters { padding: 16px 0; }
+.exploreFilters label { font-size: 14px; color: var(--ink); }
+.projectList > div { border-radius: var(--radius-control); }
+.projectList > div:hover { background: var(--surface); }
+.projectList > div[data-selected="true"] { background: var(--accent-soft); box-shadow: inset 3px 0 var(--accent); }
+.projectList > div > button { padding-block: 12px; }
+.exploreMap { border: 1px solid var(--line); border-radius: var(--radius-panel); overflow: hidden; }

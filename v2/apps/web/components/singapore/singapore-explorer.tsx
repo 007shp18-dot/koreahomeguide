@@ -20,6 +20,8 @@ import { GooglePlaceMap, type GoogleMarketMapPoint } from '../maps/google-place-
 import { buildSingaporeAreaMapCoverage, buildSingaporeMapCoverage } from '../../lib/singapore/map-coverage';
 import { HdbMarketPanel } from './hdb-market-panel';
 import { MarketExploreShell, MarketLayerControl } from '../market-ui/market-shell';
+import { ExplorePriceGuide } from '../market-ui/explore-price-guide';
+import { ExploreResultsLoading } from '../market-ui/explore-results-loading';
 import { SingaporeEvidence, SingaporePage, singaporeStyles as styles } from './singapore-shell';
 import searchStyles from '../price-market-search.module.css';
 
@@ -259,6 +261,7 @@ export function SingaporeExplorer({ locale = 'en',
   return <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed>
     <div data-singapore-explore-workspace="true" data-singapore-evidence="ready" data-navigation-state={pendingHref === null ? 'idle' : 'pending'}>
       <MarketExploreShell locale={locale} eyebrow={sgText(locale, "Singapore")} title={sgText(locale, "Explore")} period={<>{sgText(locale, model.periodLabel)}</>} layers={layers}
+        priceGuide={<ExplorePriceGuide locale={locale} market="singapore" />}
         discovery={<section className={styles.segmentPanel} id="ura-private" aria-labelledby="segment-heading">
           <h2 id="segment-heading">{sgText(locale, "Private residential projects")}</h2>
           <p className={styles.marketScopeLine}>{sgText(locale, "URA private sales · New sale, Subsale and Resale")}<br />{sgText(locale, model.transactionLabel)}</p>
@@ -273,7 +276,7 @@ export function SingaporeExplorer({ locale = 'en',
           {selected ? <div className={styles.segmentList}><article className={styles.segmentRow}><RegionContextPhoto region={selected.code} locale={locale} /><h3>{sgText(locale, selected.code)}</h3><div><strong>{sgText(locale, selected.medianPriceLabel ?? 'Not published')}</strong><span>{sgText(locale, selected.n.toLocaleString('en'))}{sgText(locale, " transactions · ")}{sgText(locale, selected.projectCount.toLocaleString('en'))}{sgText(locale, " projects")}</span></div>{selected.state === 'published' ? <Link href={marketHref(locale, selected.href)} aria-busy={pendingHref === selected.href} data-navigation-state={pendingHref === selected.href ? 'pending' : 'idle'} onClick={() => setPendingHref(selected.href)}>{sgText(locale, "Open ")}{sgText(locale, selected.code)}{sgText(locale, " evidence")}</Link> : <span data-evidence-link="unavailable">{sgText(locale, "At least 5 transactions are required")}</span>}</article></div> : null}
           <div className={styles.projectList} aria-live="polite" aria-busy={loadingProjects || query !== deferredQuery}>
             {!loadingProjects && !loadError && (!progressive || loadedModel !== null) ? (<header><span>{sgText(locale, projects.length.toLocaleString('en'))}{sgText(locale, " matching projects")}</span><small>{sgText(locale, projects.length === 0 ? 'No matches' : `${(activePage - 1) * PAGE_SIZE + 1}–${Math.min(activePage * PAGE_SIZE, projects.length)} shown`)}</small></header>) : null}
-            {loadingProjects ? <p role="status">{localizedMarketCopy(locale, "Loading selected area…", "선택한 지역을 불러오는 중…")}</p> : loadError ? <p role="alert">{localizedMarketCopy(locale, "Could not load projects.", "불러오지 못했습니다.")} <button type="button" onClick={() => setRetry(value => value + 1)}>{localizedMarketCopy(locale, "Retry", "다시 시도")}</button></p> : progressive && loadedModel === null ? <section className={styles.exploreStart} aria-label={localizedMarketCopy(locale, "Start exploring", "탐색 시작")}>
+            {loadingProjects ? <ExploreResultsLoading label={localizedMarketCopy(locale, "Loading selected area…", "선택한 지역을 불러오는 중…")} /> : loadError ? <p role="alert">{localizedMarketCopy(locale, "Could not load projects.", "불러오지 못했습니다.")} <button type="button" onClick={() => setRetry(value => value + 1)}>{localizedMarketCopy(locale, "Retry", "다시 시도")}</button></p> : progressive && loadedModel === null ? <section className={styles.exploreStart} aria-label={localizedMarketCopy(locale, "Start exploring", "탐색 시작")}>
               <span className={styles.exploreStartKicker}>{localizedMarketCopy(locale, "Find your neighbourhood", "단지 찾기")}</span>
               <h3>{localizedMarketCopy(locale, "Where would you like to look?", "어느 지역을 살펴볼까요?")}</h3>
               <p>{localizedMarketCopy(locale, "Start with a region above or on the map. Already have a project in mind? Search by name.", "위 권역이나 지도에서 시작하세요. 단지 이름으로 바로 검색할 수도 있어요.")}</p>
