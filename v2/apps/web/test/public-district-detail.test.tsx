@@ -276,6 +276,18 @@ describe('public district detail page', () => {
     expect(html).toContain('\\u003c/script>\\u003cscript>alert(1)\\u003c/script>');
   });
 
+  it('centres regional hero copy and keeps district tabs scrollable on mobile', () => {
+    const css = readFileSync(
+      new URL('../components/public-market/district-page.module.css', import.meta.url),
+      'utf8',
+    );
+
+    expect(css).toMatch(/\.heroCopy\s*\{[\\s\\S]*justify-content:\s*center/);
+    expect(css).toMatch(/\.tabs\s*\{[\\s\\S]*scroll-snap-type:\s*x\s+proximity/);
+    expect(css).toMatch(/\.tabs a\s*\{[\\s\\S]*white-space:\s*nowrap/);
+    expect(css).toMatch(/@media \(max-width:\s*480px\)[\\s\\S]*\.tabs a\s*\{[\\s\\S]*flex:\s*0\s+0\s+auto/);
+  });
+
   it('keeps navigation touch-sized, visibly focused, and single-column on mobile', () => {
     const css = readFileSync(
       new URL('../components/public-market/district-detail.module.css', import.meta.url),
