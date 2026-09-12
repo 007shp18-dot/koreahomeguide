@@ -80,7 +80,7 @@ export type GoogleNewsRssResult = Readonly<{
   failedFeeds: number;
 }>;
 
-export async function fetchGoogleNewsRssItems(): Promise<GoogleNewsRssResult> {
+export async function fetchGoogleNewsRssItems({ fresh = false }: { fresh?: boolean } = {}): Promise<GoogleNewsRssResult> {
   const results = await Promise.allSettled(feeds.map(async (feed) => {
     const url = new URL('https://news.google.com/rss/search');
     url.searchParams.set('q', feed.query);
@@ -90,7 +90,7 @@ export async function fetchGoogleNewsRssItems(): Promise<GoogleNewsRssResult> {
     const response = await fetch(url, {
       signal: AbortSignal.timeout(10_000),
       headers: { 'User-Agent': 'SignedPrice/1.0 (+https://www.signedprice.com)' },
-      next: { revalidate: 1800 },
+      ...(fresh ? { cache: 'no-store' as const } : { next: { revalidate: 1800 } }),
     });
     if (!response.ok) throw new Error(`google-news-rss-status:${response.status}`);
     return parseGoogleNewsRss(await response.text(), feed);

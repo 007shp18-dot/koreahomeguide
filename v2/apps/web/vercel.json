@@ -26,7 +26,7 @@
     },
     {
       "path": "/api/internal/news-ingest/",
-      "schedule": "17 0 * * *"
+      "schedule": "17 */6 * * *"
     },
     {
       "path": "/api/internal/building-enrichment/?source=wikimedia&limit=60",
