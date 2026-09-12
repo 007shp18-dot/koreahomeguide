@@ -7,10 +7,10 @@ import type { NewsWorkspaceItem } from './news-workspace-model';
 const markets = {
   'kr-seoul': ['seoul', 'Seoul', /seoul|서울/i],
   'sg-singapore': ['singapore', 'Singapore', /singapore|싱가포르|hdb|ura/i],
-  'ae-dubai': ['dubai', 'Dubai', /dubai|두바이/i],
+  'ae-dubai': ['dubai', 'Dubai', /dubai|두바이|دب[يى]/i],
   'jp-tokyo': ['tokyo', 'Tokyo', /tokyo|도쿄|東京/i],
 } as const;
-const housing = /property|properties|housing|real estate|residential|condo|apartment|home prices|hdb|rental|mortgage|부동산|주택|아파트|전세|월세|재건축|不動産|住宅|マンション/i;
+const housing = /property|properties|housing|real estate|residential|condo|apartment|home prices|hdb|rental|mortgage|부동산|주택|아파트|전세|월세|재건축|不動産|住宅|マンション|家賃|賃貸|分譲|عقار|شقق|شقة|سكن|إيجار|ايجار/i;
 
 /** Feed metadata is an external reading link, never a reviewed SignedPrice claim. */
 export function automaticHeadline(row: Readonly<Record<string, unknown>>, now = Date.now()): NewsWorkspaceItem | null {

@@ -63,7 +63,7 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
       </figure>}
       <div className={styles.leadCopy}>
         <span className={styles.topic}>{lead.marketLabel} · {lead.category}</span>
-        <h2 id="lead-news-title"><a href={lead.url} target="_blank" rel="noreferrer">{ko ? lead.titleKo ?? lead.title : lead.title}</a></h2>
+        <h2 id="lead-news-title"><a dir="auto" href={lead.url} target="_blank" rel="noreferrer">{ko ? lead.titleKo ?? lead.title : lead.title}</a></h2>
         {lead.summary && <p className={styles.leadSummary}>{ko ? lead.summaryKo ?? lead.summary : lead.summary}</p>}
         <p className={styles.source}>{lead.publisher} · <time dateTime={lead.publishedAt}>{dates[lead.market]!.format(new Date(lead.publishedAt))}</time></p>
         <a className={styles.original} href={lead.url} target="_blank" rel="noreferrer">{ko ? '원문 읽기' : zh ? '阅读原文' : 'Read original'} <UiIcon name="arrow-up-right" /></a>
@@ -73,7 +73,7 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
     <ol className={preview ? styles.preview : editorial ? styles.updates : undefined}>
       {(editorial ? visible.slice(1) : visible).map(item => <li key={item.id}>
         <div><span>{item.marketLabel} · {editorial ? item.category : item.publisher}</span><time dateTime={item.publishedAt}>{dates[item.market]!.format(new Date(item.publishedAt))}</time></div>
-        <h3><a href={item.url} target="_blank" rel="noreferrer">{ko ? item.titleKo ?? item.title : item.title}</a></h3>
+        <h3><a dir="auto" href={item.url} target="_blank" rel="noreferrer">{ko ? item.titleKo ?? item.title : item.title}</a></h3>
         {item.summary ? <p className={styles.summary}>{ko ? item.summaryKo ?? item.summary : item.summary}</p> : null}
         {item.buyerNote && !editorial ? <p className={styles.meaning}><strong>{ko ? '집을 찾는다면' : zh ? '购房视角' : 'For your search'}</strong> {ko ? item.buyerNoteKo ?? item.buyerNote : item.buyerNote}</p> : null}
         {editorial && <p className={styles.source}>{item.publisher}</p>}
