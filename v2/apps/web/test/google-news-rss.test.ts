@@ -30,3 +30,12 @@ it('collects Tokyo alongside the other three cities', async () => {
   try { await fetchGoogleNewsRssItems(); expect(requested.some(query => /Tokyo/.test(query))).toBe(true); }
   finally { vi.unstubAllGlobals(); }
 });
+
+it('bypasses prior feed responses during scheduled collection', async () => {
+  const fetcher = vi.fn(async () => new Response('<rss><channel></channel></rss>'));
+  vi.stubGlobal('fetch', fetcher);
+  try {
+    await fetchGoogleNewsRssItems({ fresh: true });
+    expect(fetcher).toHaveBeenCalledWith(expect.any(URL), expect.objectContaining({ cache: 'no-store' }));
+  } finally { vi.unstubAllGlobals(); }
+});

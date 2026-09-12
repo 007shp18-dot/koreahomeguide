@@ -23,7 +23,7 @@ export async function GET(request: Request) {
   let runId: string | null = null;
   try {
     runId = await startNewsIngestionRun();
-    const [result, global] = await Promise.all([fetchNaverNewsItems(), fetchGoogleNewsRssItems()]);
+    const [result, global] = await Promise.all([fetchNaverNewsItems({ fresh: true }), fetchGoogleNewsRssItems({ fresh: true })]);
     const items = [...result.items, ...global.items];
     const storedCount = items.length > 0 ? await storeNewsItems(items) : 0;
     const status = result.state !== 'ready' && global.state !== 'ready'

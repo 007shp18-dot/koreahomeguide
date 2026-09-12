@@ -60,7 +60,7 @@ function categoryFor(text: string): string {
   return 'Market news';
 }
 
-async function fetchMarketNews(search: (typeof searches)[number], clientId: string, clientSecret: string): Promise<readonly NewsWorkspaceItem[]> {
+async function fetchMarketNews(search: (typeof searches)[number], clientId: string, clientSecret: string, fresh: boolean): Promise<readonly NewsWorkspaceItem[]> {
   const url = new URL(NAVER_NEWS_API_URL);
   url.searchParams.set('query', search.query);
   url.searchParams.set('display', '50');
@@ -73,7 +73,7 @@ async function fetchMarketNews(search: (typeof searches)[number], clientId: stri
       [NAVER_NEWS_API_HEADER_NAMES.clientId]: clientId,
       [NAVER_NEWS_API_HEADER_NAMES.clientSecret]: clientSecret,
     },
-    next: { revalidate: 900 },
+    ...(fresh ? { cache: 'no-store' as const } : { next: { revalidate: 900 } }),
   });
   if (!response.ok) throw new Error(`naver-status:${response.status}`);
   const body = await response.json() as NaverNewsResponse;
@@ -111,13 +111,13 @@ export type NaverNewsFetchResult = Readonly<{
   failedSearches: number;
 }>;
 
-export async function fetchNaverNewsItems(): Promise<NaverNewsFetchResult> {
+export async function fetchNaverNewsItems({ fresh = false }: { fresh?: boolean } = {}): Promise<NaverNewsFetchResult> {
   const clientId = process.env.NAVER_NEWS_CLIENT_ID?.trim();
   const clientSecret = process.env.NAVER_NEWS_CLIENT_SECRET?.trim();
   if (!clientId || !clientSecret) {
     return Object.freeze({ items: Object.freeze([]), state: 'not-configured', failedSearches: searches.length });
   }
-  const results = await Promise.allSettled(searches.map((search) => fetchMarketNews(search, clientId, clientSecret)));
+  const results = await Promise.allSettled(searches.map((search) => fetchMarketNews(search, clientId, clientSecret, fresh)));
   const external = results.flatMap((result) => result.status === 'fulfilled' ? result.value : []);
   const unique = new Map<string, NewsWorkspaceItem>();
   for (const item of external) if (!unique.has(item.url)) unique.set(item.url, item);

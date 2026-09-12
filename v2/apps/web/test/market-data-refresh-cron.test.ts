@@ -51,7 +51,7 @@ describe('market data refresh production schedules', () => {
     });
     expect(crons).toContainEqual({
       path: '/api/internal/news-ingest/',
-      schedule: '17 0 * * *',
+      schedule: '17 */6 * * *',
     });
   });
 });
