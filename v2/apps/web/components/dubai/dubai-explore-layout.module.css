@@ -38,6 +38,8 @@
 }
 @media (max-width: 640px) {
   .workspace :global(.explore-page-heading) { padding-block: 20px 10px; }
+  .workspace [data-market-explore-shell] form[role="search"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .workspace [data-market-explore-shell] form[role="search"] > label:first-child { grid-column: auto; }
   .toolbarFooter { gap: 4px; }
   .workspace .toolbarFooter [role="tablist"] { width: 100%; min-width: 0; }
   .workspace .toolbarFooter nav { gap: 20px; }
