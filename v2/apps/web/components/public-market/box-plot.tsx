@@ -45,6 +45,31 @@ function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
+/**
+ * A market quote axis is useful for comparing input values, but it can be
+ * narrower than an observed sale cohort. Expand it for the plot so published
+ * evidence is never clipped at 0% or 100%.
+ */
+export function axisForSummary(
+  summary: PublicMarketSummary,
+  fallback: QuotePositionAxis,
+): QuotePositionAxis {
+  if (!summary.published) return fallback;
+  const values = [summary.min, summary.p25, summary.med, summary.p75, summary.max];
+  if (values.some((value) => !Number.isFinite(value))) return fallback;
+
+  const min = Math.min(fallback.min, summary.min);
+  const max = Math.max(fallback.max, summary.max);
+  if (
+    !Number.isFinite(min) ||
+    !Number.isFinite(max) ||
+    max <= min
+  ) {
+    return fallback;
+  }
+  return { min, max };
+}
+
 function point(value: number, axis: QuotePositionAxis): number {
   if (
     !Number.isFinite(value) ||
@@ -104,19 +129,25 @@ export function BoxPlot({
     );
   }
 
-  const plotStyle: PlotStyle = {
-    '--min-pct': pct(point(summary.min, axis)),
-    '--p25-pct': pct(point(summary.p25, axis)),
-    '--med-pct': pct(point(summary.med, axis)),
-    '--p75-pct': pct(point(summary.p75, axis)),
-    '--max-pct': pct(point(summary.max, axis)),
-  };
+  const plotAxis = axisForSummary(summary, axis);
   const showMarker = markerPct !== undefined && Number.isFinite(markerPct) && markerLabel;
-  if (showMarker) plotStyle['--marker-pct'] = pct(clamp(markerPct, 0, 100));
+  const plotStyle: PlotStyle = {
+    '--min-pct': pct(point(summary.min, plotAxis)),
+    '--p25-pct': pct(point(summary.p25, plotAxis)),
+    '--med-pct': pct(point(summary.med, plotAxis)),
+    '--p75-pct': pct(point(summary.p75, plotAxis)),
+    '--max-pct': pct(point(summary.max, plotAxis)),
+  };
+  if (showMarker) {
+    const quoteValue = Number.isFinite(axis.min) && Number.isFinite(axis.max) && axis.max > axis.min
+      ? axis.min + (clamp(markerPct!, 0, 100) / 100) * (axis.max - axis.min)
+      : Number.NaN;
+    plotStyle['--marker-pct'] = pct(point(quoteValue, plotAxis));
+  }
   const positions = Object.freeze({
-    p25: point(summary.p25, axis),
-    median: point(summary.med, axis),
-    p75: point(summary.p75, axis),
+    p25: point(summary.p25, plotAxis),
+    median: point(summary.med, plotAxis),
+    p75: point(summary.p75, plotAxis),
   });
   const lanes = assignPlotLanes([
     { key: 'p25', pct: positions.p25 },
