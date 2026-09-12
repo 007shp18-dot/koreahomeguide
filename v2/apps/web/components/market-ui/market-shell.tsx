@@ -28,7 +28,7 @@ export function MarketLayerControl({ locale = 'en',  label, items }: Readonly<{
   </nav>;
 }
 
-export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, layers, discovery, spatial, discoveryPanel, priceGuide }: Readonly<{
+export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, layers, discovery, spatial, discoveryPanel, priceGuide, history, related }: Readonly<{
   eyebrow: string;
   title: string;
   period: React.ReactNode;
@@ -37,6 +37,8 @@ export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, lay
   spatial?: React.ReactNode;
   discoveryPanel?: ResultsPanelLabels;
   priceGuide?: React.ReactNode;
+  history?: React.ReactNode;
+  related?: React.ReactNode;
 }> & { locale?: MarketLocale }) {
   const t = <T,>(value: T): T => marketText(locale, value);
 
@@ -47,16 +49,18 @@ export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, lay
     </header>
     {priceGuide}
     {t(layers)}
+    {history}
     <div className={styles.exploreGrid} data-layout={spatial == null ? 'list' : 'split'}>
       <section className={styles.discovery} data-market-shell-region="discovery">{discoveryPanel
         ? <ResponsiveResultsPanel labels={discoveryPanel}>{t(discovery)}</ResponsiveResultsPanel>
         : t(discovery)}</section>
       {spatial == null ? null : <section className={styles.spatial} data-market-shell-region="spatial">{t(spatial)}</section>}
     </div>
+    {related}
   </div>;
 }
 
-export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric, evidence, rail, media, summary, sections }: Readonly<{
+export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric, evidence, rail, media, summary, sections, related }: Readonly<{
   breadcrumb: React.ReactNode;
   sections?: readonly Readonly<{ id: string; label: string }>[];
   identity?: React.ReactNode;
@@ -65,6 +69,7 @@ export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric
   evidence: React.ReactNode;
   rail: React.ReactNode;
   media?: React.ReactNode;
+  related?: React.ReactNode;
 }> & { locale?: MarketLocale }) {
   const t = <T,>(value: T): T => marketText(locale, value);
 
@@ -86,5 +91,6 @@ export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric
       </div>
       <aside className={styles.detailRail} id="detail-source">{t(rail)}</aside>
     </div>
+    {related}
   </article>;
 }

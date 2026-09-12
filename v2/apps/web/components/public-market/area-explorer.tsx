@@ -1,4 +1,7 @@
 'use client';
+
+import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
+import { DiscoveryReading } from '../discovery/discovery-reading';
 import { ExplorePriceGuide } from '../market-ui/explore-price-guide';
 
 import { retainPassportContext } from '../../lib/passport/journey';
@@ -879,6 +882,7 @@ function ReadyAreaExplorer({
       data-explore-view={currentView}
       data-explorer-version="guide-v2"
     >
+      <RecordPlaceVisit place={selectedBuilding && selectedBuildingReturnHref ? { market: 'seoul', key: `${selected.slug}/${selectedBuilding.id}`, name: buildingDisplayLabel(selectedBuilding, locale).title, href: selectedBuildingReturnHref } : null} />
       <header className="explore-page-heading"><h1 id="area-explorer-heading">{locale === 'ko' ? `${model.districts.find(d => d.slug === model.selectedSlug)?.nameKo ?? '서울'} 실거래가` : locale === 'zh-CN' ? '首尔成交价探索' : 'Explore'}</h1><p>{locale === 'ko' ? '서울' : locale === 'zh-CN' ? '首尔' : 'Seoul'} · {model.source.period}</p></header>
       <div className={styles.priceGuide}><ExplorePriceGuide locale={locale} market="seoul" transaction={model.evidenceSelection.transaction} /></div>
       <div className={styles.exploreToolbar} data-explorer-region="filters">
@@ -966,6 +970,7 @@ function ReadyAreaExplorer({
         <span className={styles.visuallyHidden} data-building-inventory={model.coverage.buildings.status === 'ready' ? 'observed' : 'unavailable'}>{model.coverage.buildings.status === 'ready' ? model.coverage.buildings.observed : '—'}</span>
       </div>
 
+      <RecentPlaces market="seoul" locale={locale} excludeKey={selectedBuilding ? `${selected.slug}/${selectedBuilding.id}` : undefined} />
       <header className={styles.resultBar} data-explorer-region="summary">
 
         <strong className={styles.resultCount}>{mapDrilledToDistrict
@@ -1343,6 +1348,7 @@ function ReadyAreaExplorer({
       ) : null}
 
     <p className={styles.buyingGuide}><Link href="/guides/seoul-apartment-buying-budget-guide/">{locale === 'ko' ? '서울 예산별 매수 가이드 (영문)' : locale === 'zh-CN' ? '公寓购买指南：预算、费用与产权核查（英文）' : 'Apartment buying guide: budgets, costs and ownership checks'}</Link></p>
+      <DiscoveryReading market="seoul" locale={locale} />
       <PublicSourceBoundary
         model={model.source}
         locale={locale}

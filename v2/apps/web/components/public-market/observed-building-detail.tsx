@@ -22,6 +22,8 @@ import { BuildingDetailHeader } from './building-detail-header';
 import { ProjectedEntityMedia } from './projected-entity-media';
 import styles from './building-detail.module.css';
 import { BuildingSummaryCard } from './building-summary-card';
+import { RecordPlaceVisit } from '../discovery/recent-places';
+import { DiscoveryReading } from '../discovery/discovery-reading';
 
 const footer: SiteFooterModel = {
   brand: 'signedprice',
@@ -293,10 +295,18 @@ export function KoreaEvidenceBuildingDetail({
   const monthlyUnit = model.evidence.primaryMetric === 'monthly-rent' ? (locale === 'ko' ? ' /월' : locale === 'zh-CN' ? ' /月' : ' /month') : '';
   const money = (value: number) => locale === 'ko' ? (value >= 100_000_000 ? `${(value / 100_000_000).toLocaleString('ko-KR', { maximumFractionDigits: 2 })}억 원` : value >= 10_000 ? `${(value / 10_000).toLocaleString('ko-KR', { maximumFractionDigits: 0 })}만 원` : `${Math.round(value).toLocaleString('ko-KR')}원`) : `₩${new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 2 }).format(value)}`;
   const sourceLine = `${locale === 'ko' ? '출처: 국토교통부' : locale === 'zh-CN' ? '来源：韩国国土交通部' : 'Source: MOLIT'} · ${model.period} · ${locale === 'ko' ? '갱신' : locale === 'zh-CN' ? '更新' : 'Updated'} ${model.generatedAt.slice(0,10)}`;
+  const recentTarget = new URL(backHref, 'https://signedprice.invalid');
+  recentTarget.pathname = `/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/`;
+  recentTarget.searchParams.set('transaction', model.selection.transaction);
+  recentTarget.searchParams.set('area', model.selection.areaBand);
+  recentTarget.searchParams.set('propertyType', model.building.housingType);
+  if (model.selection.contractGroup === 'not-applicable') recentTarget.searchParams.delete('contractType');
+  else recentTarget.searchParams.set('contractType', model.selection.contractGroup);
   return (
     <div id="top" className={styles.page}>
       <BuildingDetailHeader locale={locale} />
       <main className={`${styles.main} ${detailStyles.root}`} data-detail-layout="unified" data-building-detail="exact-evidence" data-detail-locale={locale}>
+        <RecordPlaceVisit place={{ market: 'seoul', key: `${model.district.slug}/${model.building.buildingId}`, name: buildingDisplayName(model.building.officialName, locale), href: `${recentTarget.pathname}${recentTarget.search}` }} />
         <BuildingSummaryCard model={model} backHref={backHref} locale={locale} />
         <div className={styles.summaryMedia} data-detail-order="media">{visual ?? <SeoulBuildingContext locale={locale} name={model.building.officialName} href={backHref} />}</div>
 
@@ -390,6 +400,7 @@ export function KoreaEvidenceBuildingDetail({
 
           {!!model.nearbyBuildings?.length && <><h3>{locale === 'ko' ? '같은 동 · 같은 검색 조건' : locale === 'zh-CN' ? '相同街区与筛选条件' : 'Same neighbourhood and filters'}</h3><ul>{model.nearbyBuildings.map(b => <li key={b.id}><Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${b.id}/?transaction=${model.selection.transaction}&area=${model.selection.areaBand}`,locale)}>{buildingDisplayName(b.name,locale)} · {money(b.median)} · {b.count}{locale === 'ko' ? '건' : locale === 'zh-CN' ? '笔合同' : ' contracts'}</Link></li>)}</ul></>}
         </section>}
+        <DiscoveryReading market="seoul" locale={locale} />
       </main>
       <SiteFooter locale={locale} copy={locale === 'ko' ? { ...exactEvidenceFooter, descriptor: '서울 실거래가와 집계 기간·거래 건수·출처를 확인하세요.' } : locale === 'zh-CN' ? { ...exactEvidenceFooter, descriptor: '首尔申报交易价格、统计期间、交易笔数与来源。' } : exactEvidenceFooter} />
     </div>

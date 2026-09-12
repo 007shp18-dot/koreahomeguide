@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('budget shortlist saves conditions and tracks newly observed records across reloads', async ({ page }) => {
+test('budget shortlist saves conditions and tracks newly observed records across reloads', async ({ page }, testInfo) => {
   let updated = false;
   const item = {
     key: 'jongno-gu/jongno-test', buildingId: 'jongno-test', district: 'jongno-gu',
@@ -31,6 +31,26 @@ test('budget shortlist saves conditions and tracks newly observed records across
   await expect(page.getByText('새로 확인된 기록 1건', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: '확인 완료', exact: true }).click();
   await expect(page.getByText('새로 확인된 기록 1건', { exact: true })).toHaveCount(0);
+  const savedNote = page.locator('section[aria-labelledby="saved-title"] [data-research-note]');
+  await savedNote.locator('summary').click();
+  await page.waitForLoadState('networkidle');
+  const noteRequests: string[] = [];
+  page.on('request', request => { if (new URL(request.url()).pathname.startsWith('/api/')) noteRequests.push(request.url()); });
+  await savedNote.getByRole('textbox').fill('출퇴근 시간에 소음 확인\n주차 공간 문의');
+  await savedNote.getByRole('button', { name: '메모 저장', exact: true }).click();
+  await expect(savedNote.getByRole('status')).toHaveText('메모를 저장했어요.');
+  expect(noteRequests).toEqual([]);
+  await page.goto('/ko/saved/');
+  const savedPageNote = page.locator('[data-research-note]');
+  await savedPageNote.locator('summary').click();
+  await expect(savedPageNote.getByRole('textbox')).toHaveValue('출퇴근 시간에 소음 확인\n주차 공간 문의');
+  await testInfo.attach('discovery-saved-note', { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
+  await page.reload();
+  await savedPageNote.locator('summary').click();
+  await expect(savedPageNote.getByRole('textbox')).toHaveValue('출퇴근 시간에 소음 확인\n주차 공간 문의');
+  await savedPageNote.getByRole('button', { name: '메모 삭제', exact: true }).click();
+  await expect(savedPageNote.getByRole('textbox')).toHaveValue('');
+  await expect(page.getByRole('link', { name: /테스트 아파트/ })).toBeVisible();
   await expect(page.locator('main')).toBeVisible();
   const width = await page.evaluate(() => ({ client: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }));
   expect(width.scroll).toBeLessThanOrEqual(width.client);

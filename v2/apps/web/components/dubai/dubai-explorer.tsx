@@ -37,6 +37,8 @@ import comparisonStyles from './dubai-comparison.module.css';
 import layout from './dubai-explore-layout.module.css';
 import { DubaiAreaPhoto } from './dubai-area-photo';
 import { dubaiAreaPhoto } from '../../lib/dubai/area-photos';
+import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
+import { DiscoveryReading } from '../discovery/discovery-reading';
 const DubaiComparisonDialog = lazy(() => import('./dubai-comparison'));
 
 
@@ -256,7 +258,10 @@ export function DubaiExplorer({ locale = 'en',
     || budgetMaximumAed !== null || yieldMinimumPct !== null;
 
   return <div className={`${styles.explorer} ${layout.workspace}`} data-dubai-evidence="ready" data-dubai-explore-workspace="true">
+    <RecordPlaceVisit place={selected ? { market: 'dubai', key: selected.area.slug, name: t(selected.area.name), href: buildDubaiExploreHref({ query, housing, stage, budgetMaximumAed, yieldMinimumPct, page: activePage, selectedArea: selected.area.slug, selectedProject: selectedProject?.id ?? null }) } : null} />
     <MarketExploreShell locale={locale}
+      history={<RecentPlaces market="dubai" locale={locale} excludeKey={selected?.area.slug} />}
+      related={<DiscoveryReading market="dubai" locale={locale} />}
       eyebrow={t("Dubai")}
       title={t("Explore")}
       period={t(`${model.context.comparisonPeriod.from}–${model.context.comparisonPeriod.to}`)}

@@ -7,9 +7,10 @@ import { EditorialArticleHeader } from './editorial-article-header';
 import { ArticleContents } from './article-contents';
 import layout from './journey-article.module.css';
 import styles from './neighbourhood-story.module.css';
+import { storyExploreLink } from '../../lib/discovery/reading';
+import type { DiscoveryMarket } from '../../lib/discovery/journal';
 
 const markets = {seoul:'kr-seoul',singapore:'sg-singapore',dubai:'ae-dubai',tokyo:'jp-tokyo'} as const;
-const explores = {seoul:'/kr/seoul/explore/',singapore:'/sg/singapore/explore/',dubai:'/ae/dubai/explore/',tokyo:'/jp/tokyo/explore/'} as const;
 
 function Photo({ photo, hero = false, locale = 'en' }: { photo: NeighbourhoodPhoto; hero?: boolean; locale?: 'en' | 'ko' }) {
   return <figure className={`${layout.scenePhoto} ${hero ? styles.hero : styles.photo}`}>
@@ -35,6 +36,7 @@ export function NeighbourhoodStoryCards({ city = 'all', exclude, locale = 'en' }
 export function NeighbourhoodArticle({ story, locale = 'en' }: { story: NeighbourhoodStory; locale?: 'en' | 'ko' }) {
   const ko = locale === 'ko';
   const prefix = ko ? '/ko' : '';
+  const explore = storyExploreLink(story.slug, story.city as DiscoveryMarket, locale);
   const livingTitle = ko ? '이곳에서 보내는 평일을 떠올려 보세요' : 'Picture an ordinary weekday';
   const jsonLd = { '@context': 'https://schema.org', '@type': 'Article', headline: story.title,
     description: story.deck, datePublished: story.publishedAt, dateModified: story.publishedAt,
@@ -54,7 +56,7 @@ export function NeighbourhoodArticle({ story, locale = 'en' }: { story: Neighbou
       <div className={layout.body}><p className={styles.intro}>{story.intro}</p><p className={styles.walk}><strong>{ko ? '가볍게 잡아보는 동선' : 'Your loose plan'}</strong><br />{story.route}</p>
         {story.sections.map((section, index) => <section key={section.title} id={`section-${index + 1}`}><h2>{section.title}</h2>{section.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}{!story.photosWithheld && <Photo photo={section.photo} locale={locale} />}</section>)}
         <section className={styles.living} id="living-here"><p className={styles.eyebrow}>{ko ? '이 동네에 산다면' : 'IF THIS WERE YOUR NEIGHBOURHOOD'}</p><h2>{livingTitle}</h2><p>{story.living}</p></section>
-        <nav className={layout.nextAction} aria-label={ko ? '이 도시 더 살펴보기' : 'Continue in this city'} data-editorial-event="article_complete"><h2>{ko ? `${story.cityName}의 주거 지역 살펴보기` : `Explore homes in ${story.cityName}`}</h2><p><Link href={`${prefix}${explores[story.city as keyof typeof explores] ?? '/prices/'}`} data-editorial-event="article_to_explore">{ko ? '신고된 거래 살펴보기' : 'Explore recorded transactions'}</Link> · <Link href={journeyArticleHref(story.city as keyof typeof markets, 'where', locale)} data-editorial-event="article_open">{ko ? '동네 비교하기' : 'Compare neighbourhoods'}</Link></p></nav>
+        <nav className={layout.nextAction} aria-label={ko ? '이 도시 더 살펴보기' : 'Continue in this city'} data-editorial-event="article_complete"><h2>{ko ? `${story.cityName}의 주거 지역 살펴보기` : `Explore homes in ${story.cityName}`}</h2><p><Link href={explore.href} prefetch={false} data-editorial-event="article_to_explore">{explore.label}</Link> · <Link href={journeyArticleHref(story.city as keyof typeof markets, 'where', locale)} data-editorial-event="article_open">{ko ? '동네 비교하기' : 'Compare neighbourhoods'}</Link></p></nav>
         <section className={layout.sources} id="article-sources"><h2>{ko ? '출처와 참고 자료' : 'Sources and further reading'}</h2><ol>{story.sources.map(source => <li key={source.href}><a href={source.href}>{source.label}</a></li>)}</ol></section>
       </div>
     </article>
