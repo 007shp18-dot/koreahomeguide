@@ -1,6 +1,6 @@
-import { CONTRACT_RANKING_SQL, type RankingOrder } from './contract-ranking-query';
+import { CONTRACT_RANKING_SQL, formatRankingDate, type RankingOrder } from './contract-ranking-query';
 
-export type RentCohort = { city: 'seoul' | 'singapore'; area: string; deposit: string; beds: string };
+export type RentCohort = { city: 'seoul'; area: string; deposit: string; beds: string } | { city: 'singapore'; area: string; deposit: string; beds: string };
 export const RENT_AREAS = {
  seoul: { '40-60': '40–60 m²', '60-85': '60–85 m²' },
  singapore: { '40-60': '40–60 m²', '60-90': '60–90 m²', '90-120': '90–120 m²' },
@@ -9,7 +9,7 @@ export function resolveRentCohort(city: 'seoul' | 'singapore', query: Record<str
  const area = typeof query.area === 'string' && Object.hasOwn(RENT_AREAS[city], query.area) ? query.area : city === 'seoul' ? '40-60' : '60-90';
  const deposit = typeof query.deposit === 'string' && ['under-100m','100-300m','300m-plus'].includes(query.deposit) ? query.deposit : '100-300m';
  const beds = typeof query.beds === 'string' && ['1','2','3'].includes(query.beds) ? query.beds : '2';
- return { city, area, deposit, beds };
+ return { city, area, deposit, beds } as RentCohort;
 }
 export function rentCohortLabel(c: RentCohort) {
  const deposit = c.deposit === 'under-100m' ? 'deposit below ₩100 million' : c.deposit === '300m-plus' ? 'deposit ₩300 million or more' : 'deposit ₩100–300 million (upper limit excluded)';
@@ -36,7 +36,7 @@ export function regionalRentSql(input: RentCohort) {
  GROUP BY city,m.month,region HAVING count(*)>=10
  ) SELECT * FROM grouped WHERE region IS NOT NULL ORDER BY amount DESC,region`;
 }
-export type RegionalRentRow = { city: 'seoul' | 'singapore'; month: string; region: string; n: number; amount: number; p25: number; p75: number; median_deposit: number | null; source_as_of: string };
+export type RegionalRentRow = { city: 'seoul' | 'singapore'; month: string; region: string; n: number; amount: number; p25: number; p75: number; median_deposit: number | null; source_as_of: string | Date | number | null };
 export function rankRegions(rows: RegionalRentRow[], order: RankingOrder) {
  const sorted=[...rows].sort((a,b)=>(order==='lowest'?a.amount-b.amount:b.amount-a.amount)||a.region.localeCompare(b.region));
  let rank=1;
