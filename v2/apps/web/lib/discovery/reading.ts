@@ -32,7 +32,8 @@ export function storyExploreLink(slug: string, market: DiscoveryMarket, locale: 
     'joo-chiat-katong': { market: 'singapore', query: 'q=Joo+Chiat', en: 'Find projects matching Joo Chiat', ko: '주치앗 이름으로 단지 찾아보기' },
     'al-satwa': { market: 'dubai', query: 'q=Al+Satwa', en: 'Search released Al Satwa area evidence', ko: '알 사트와 공개 지역 자료 찾아보기' },
     'alserkal-al-quoz': { market: 'dubai', query: 'q=Al+Quoz', en: 'Search released Al Quoz area evidence', ko: '알 쿠오즈 공개 지역 자료 찾아보기' },
-    yanaka: { market: 'tokyo', query: 'city=13106&neighbourhood=%E8%B0%B7%E4%B8%AD', en: 'Explore disclosed Yanaka transactions', ko: '야나카 공개 실거래 살펴보기' },
+    // Current publications use source-language district names and do not always include Yanaka.
+    yanaka: { market: 'tokyo', query: 'city=13106', en: 'Explore disclosed prices in Taito ward', ko: '다이토구 공개 실거래 살펴보기' },
   };
   const match = scoped[slug];
   if (match?.market === market) return { href: marketHref(locale, `${EXPLORE_PATHS[market]}?${match.query}`), label: match[ko ? 'ko' : 'en'] };

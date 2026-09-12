@@ -17,7 +17,8 @@ it('keeps Chinese navigation on existing Chinese pages, not untranslated article
 });
 it('uses explicit article scopes and labels the broader coverage where no exact publication exists', () => {
   expect(storyExploreLink('seochon', 'seoul', 'ko')).toEqual({ href: '/ko/kr/seoul/explore/?district=jongno-gu', label: '종로구 실거래 살펴보기' });
-  expect(storyExploreLink('yanaka', 'tokyo', 'en').href).toContain('city=13106&neighbourhood=%E8%B0%B7%E4%B8%AD');
+  expect(storyExploreLink('yanaka', 'tokyo', 'en')).toEqual({ href: '/jp/tokyo/explore/?city=13106', label: 'Explore disclosed prices in Taito ward' });
+  expect(storyExploreLink('yanaka', 'tokyo', 'ko')).toEqual({ href: '/ko/jp/tokyo/explore/?city=13106', label: '다이토구 공개 실거래 살펴보기' });
   expect(storyExploreLink('kichijoji', 'tokyo', 'ko')).toEqual({ href: '/ko/jp/tokyo/explore/', label: '도쿄 23구의 공개 실거래 살펴보기' });
   expect(storyExploreLink('unknown', 'dubai', 'ko').href).toBe('/ko/ae/dubai/explore/');
 });
