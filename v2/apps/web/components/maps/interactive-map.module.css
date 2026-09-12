@@ -101,44 +101,40 @@
 :global(.spMapNeighborhoodBubbleSelected),
 :global(.spMapBuildingBubbleSelected) { color: #fff; background: #243b64; border-color: #243b64; box-shadow: 0 0 0 3px rgb(36 59 100 / 18%); }
 
+/* Compact neutral labels, with blue reserved for the selected location. */
 :global(.spGoogleMarketMarker) {
-  padding: 7px 10px !important;
-  border: 2px solid rgb(255 255 255 / 96%) !important;
-  border-radius: 12px !important;
-  color: #174985 !important;
-  background: rgb(255 255 255 / 97%) !important;
-  box-shadow: 0 8px 22px rgb(17 24 39 / 24%), 0 0 0 1px rgb(23 73 133 / 22%) !important;
-  font: 600 12px/1.25 "Inter", "Pretendard", sans-serif !important;
+  padding: 5px 8px !important;
+  min-width: 28px;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 999px !important;
+  color: #334155 !important;
+  background: #fff !important;
+  box-shadow: 0 1px 3px rgb(15 30 56 / 12%) !important;
+  font: 600 12px/1.3 "Inter", "Pretendard", sans-serif !important;
   white-space: nowrap !important;
+  text-align: center;
 }
+:global(.spGoogleAreaPrice) {
+  max-width: 180px;
+  border-radius: 8px !important;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:global(.spGooglePropertyLabel) {
+  max-width: 190px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-:global(.spMapAreaGroup) { border: 1px solid #c6d4cb; border-radius: 999px; max-width: 160px; white-space: nowrap; }
-:global(.spMapAreaGroup small) { display: none; }
-:global(.spGoogleAreaGroup) { border: 1px solid #c6d4cb !important; }
-:global(.spGoogleRegionGroup) {
-  padding: 10px 14px !important;
-  border: 2px solid #fff !important;
-  border-radius: 999px !important;
-  color: #fff !important;
-  background: #243b64 !important;
-  box-shadow: 0 10px 28px rgb(36 59 100 / 34%), 0 0 0 2px rgb(36 59 100 / 28%) !important;
-  font-size: 13px !important;
 }
-:global(.spGoogleDistrictGroup) {
-  padding: 8px 11px !important;
-  border-color: #4a5cf5 !important;
-  border-radius: 999px !important;
-  color: #243b64 !important;
-  background: rgb(255 255 255 / 96%) !important;
-}
-:global(.spGoogleCluster) { border-radius: 999px !important; }
-
 :global(.spGoogleMarketMarkerSelected) {
-  border-color: #4a5cf5 !important;
+  border-color: var(--accent) !important;
   color: #fff !important;
-  background: #4a5cf5 !important;
-  box-shadow: 0 9px 22px rgb(74 92 245 / 34%) !important;
+  background: var(--accent) !important;
+  box-shadow: 0 2px 5px rgb(37 99 216 / 20%) !important;
 }
+:global(.spMapAreaGroup) { border: 1px solid var(--divider); border-radius: 999px; max-width: 160px; white-space: nowrap; }
+:global(.spMapAreaGroup small) { display: none; }
 
 .placeWorkspace {
   position: relative;
@@ -315,26 +311,19 @@
 :global(.spMapBuildingBubbleSelected) { background: transparent; border: 0; box-shadow: none; }
 :global(.spMapBuildingBubbleSelected span) { width: 20px; height: 20px; background: #1557d5; box-shadow: 0 0 0 5px rgb(21 87 213 / 18%); }
 
-:global(.spGoogleMarketMarkerSelected) { max-width: 190px; overflow: hidden; text-overflow: ellipsis; transform: translateY(-24px); box-shadow: 0 2px 6px rgb(17 24 39 / 14%) !important; }
-:global(.spGoogleCluster) { padding: 4px 7px !important; min-width: 22px; text-align: center; box-shadow: 0 1px 4px rgb(17 24 39 / 15%) !important; }
-
 .coordinateSource { display: block; margin-top: 3px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* One compact number per group. Location precision remains in the map legend. */
-:global(.spGoogleMarketMarker), :global(.spGoogleRegionGroup), :global(.spGoogleDistrictGroup), :global(.spGoogleCluster) {
-  padding: 6px 9px !important; min-width: 28px; border: 1px solid #c6d4cb !important;
-  border-radius: 999px !important; color: var(--accent) !important; background: #fff !important;
-  box-shadow: 0 1px 4px rgb(23 35 55 / 14%) !important;
-  font: 600 13px/1.25 "Inter", "Pretendard", sans-serif !important; text-align: center;
+/* Match the Seoul provider to the same neutral / selected marker language. */
+:global(.spMapDistrictBubble), :global(.spMapNeighborhoodBubble) {
+  min-height: 28px; padding: 4px 8px; border-color: var(--divider); color: #334155;
+  box-shadow: 0 1px 3px rgb(15 30 56 / 12%);
 }
-:global(.spGoogleMarketMarkerSelected), :global(.spMapNeighborhoodBubbleSelected), :global(.spMapDistrictBubbleSelected) {
-  color: white !important; background: var(--accent) !important; border-color: var(--accent) !important;
-  box-shadow: 0 1px 5px rgb(23 35 55 / 20%) !important;
+:global(.spMapNeighborhoodBubbleSelected), :global(.spMapDistrictBubbleSelected) {
+  color: white; background: var(--accent); border-color: var(--accent);
+  box-shadow: 0 2px 5px rgb(37 99 216 / 20%);
 }
-:global(.spMapBuildingBubble span) { background: var(--accent); }
-:global(.spMapBuildingBubbleSelected span) { background: var(--accent); box-shadow: 0 0 0 4px rgb(37 99 216 / 15%); }
-
-:global(.spGoogleAreaPrice) { max-width: 240px; padding: 7px 10px !important; border-radius: 8px !important; font-size: 12px !important; white-space: normal !important; line-height: 1.4 !important; text-align: center; transform: translateY(-20px); }
+:global(.spMapBuildingBubble span) { width: 10px; height: 10px; background: #64748b; }
+:global(.spMapBuildingBubbleSelected span) { width: 14px; height: 14px; background: var(--accent); box-shadow: 0 0 0 3px rgb(37 99 216 / 15%); }
 
 /* Keep a slow or failed SDK visible without covering the usable area directory. */
 .mapViewport { position: relative; min-width: 0; }

@@ -1,4 +1,5 @@
 'use client';
+import { ExplorePriceGuide } from '../market-ui/explore-price-guide';
 
 import { retainPassportContext } from '../../lib/passport/journey';
 import { PassportLink as Link } from '../passport/passport-journey';
@@ -879,6 +880,7 @@ function ReadyAreaExplorer({
       data-explorer-version="guide-v2"
     >
       <header className="explore-page-heading"><h1 id="area-explorer-heading">{locale === 'ko' ? `${model.districts.find(d => d.slug === model.selectedSlug)?.nameKo ?? '서울'} 실거래가` : locale === 'zh-CN' ? '首尔成交价探索' : 'Explore'}</h1><p>{locale === 'ko' ? '서울' : locale === 'zh-CN' ? '首尔' : 'Seoul'} · {model.source.period}</p></header>
+      <div className={styles.priceGuide}><ExplorePriceGuide locale={locale} market="seoul" transaction={model.evidenceSelection.transaction} /></div>
       <div className={styles.exploreToolbar} data-explorer-region="filters">
         <div
           className={styles.transactionFilter}

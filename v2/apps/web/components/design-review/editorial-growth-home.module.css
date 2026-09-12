@@ -1,19 +1,19 @@
 .homePage {
-  --home-ink: #242720;
-  --home-muted: #686b63;
-  --home-line: #d6d7cd;
+  --home-ink: var(--ink);
+  --home-muted: var(--muted);
+  --home-line: var(--line);
   color: var(--home-ink);
   background: #fff;
   padding-bottom: 24px;
 }
 .section { width: min(1296px, calc(100% - 96px)); margin-inline: auto; }
-.hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 48px; padding-block: 62px 44px; }
+.hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 48px; padding-block: 48px 32px; }
 .kicker { margin: 0; font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; line-height: 1.6; }
 .hero h1 { margin: 20px 0 0; font-family: inherit; font-size: clamp(38px, 4.2vw, 56px); font-weight: 600; letter-spacing: -.035em; line-height: 1.15; }
 .hero h1 span { display: block; }
 .lead { max-width: 25ch; margin: 0 0 3px; color: var(--home-muted); font-size: 16px; line-height: 1.65; }
-.cityIndex { display: flex; gap: 36px; border-block: 1px solid var(--home-line); margin-bottom: 32px; }
-.cityIndex a { display: inline-flex; align-items: center; gap: 14px; min-height: 54px; color: inherit; text-decoration: none; font-size: 14px; }
+.cityIndex { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 8px; border: 1px solid var(--home-line); border-radius: var(--radius-panel); margin-bottom: 32px; background: var(--canvas); }
+.cityIndex a { display: inline-flex; align-items: center; gap: 14px; min-height: var(--control-height); padding: 10px 14px; border-radius: var(--radius-control); color: inherit; text-decoration: none; font-size: 14px; }
 .cityIndex a span { color: var(--home-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
 .marketGrid { display: grid; grid-template-columns: minmax(0, 1.78fr) minmax(0, 1fr); gap: 78px 60px; list-style: none; margin: 0; padding: 0; }
 .marketCard { min-width: 0; scroll-margin-top: 100px; }
@@ -21,7 +21,7 @@
 .marketCard:nth-child(3) { padding: 72px 0 0 80px; }
 .marketCard:nth-child(4) { padding-right: 38px; }
 .cityLink { display: block; color: inherit; text-decoration: none; }
-.photo { position: relative; aspect-ratio: 1.48; overflow: hidden; background: #d6d7cd; }
+.photo { position: relative; aspect-ratio: 1.48; overflow: hidden; background: var(--surface); border-radius: var(--radius-panel); }
 .photo img { object-fit: cover; transition: transform 400ms ease; }
 .marketCard:nth-child(2) .photo { aspect-ratio: .84; }
 .marketCard:nth-child(3) .photo { aspect-ratio: 1.48; }
@@ -94,3 +94,12 @@
 .search button { display: grid; place-items: center; width: 54px; height: 54px; padding: 0; border: 0; border-radius: 8px; background: var(--accent); color: white; cursor: pointer; }
 @media (max-width: 700px) { .search { width: 100%; margin-top: 22px; grid-template-columns: 124px minmax(0, 1fr) 48px; padding: 6px; } .search button { width: 48px; height: 48px; } .search label { padding-inline: 8px; } }
 @media (max-width: 380px) { .search { grid-template-columns: 1fr 48px; row-gap: 10px; } .cityField { grid-column: 1 / -1; border-bottom: 1px solid var(--line); padding-bottom: 8px !important; } .searchField { border-left: 0; } }
+
+.cityIndex a { background: var(--surface-strong); border: 1px solid var(--line); font-weight: 600; }
+.cityIndex a svg { margin-left: auto; color: var(--accent); }
+.cityIndex a:hover { border-color: var(--control-selected-border); background: var(--accent-soft); }
+.place { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+.place > span { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); font-weight: 600; }
+@media (max-width: 700px) { .cityIndex { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } .cityIndex a { padding: 10px; } }
+
+.cityIndex a svg, .place > span svg { width: 14px; height: 14px; }

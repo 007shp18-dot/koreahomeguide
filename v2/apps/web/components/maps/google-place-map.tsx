@@ -69,9 +69,12 @@ export type GoogleMapsSdk = Readonly<{
     position: Readonly<{ lat: number; lng: number }>;
     title: string;
     label?: Readonly<{ text: string; className: string }>;
-    icon?: Readonly<{ path: number; scale: number; fillColor: string; fillOpacity: number; strokeColor: string; strokeWeight: number }>;
+    icon?: Readonly<{ path: number; scale: number; fillColor: string; fillOpacity: number; strokeColor: string; strokeWeight: number }> | Readonly<{ url: string; anchor: Readonly<{ x: number; y: number }>; labelOrigin: Readonly<{ x: number; y: number }> }>;
+    shape?: Readonly<{ type: 'rect'; coords: number[] }>;
+    optimized?: boolean;
     zIndex?: number;
   }>) => GoogleMarkerInstance;
+  Point?: new (x: number, y: number) => Readonly<{ x: number; y: number }>;
   Geocoder: new () => GoogleGeocoderInstance;
   LatLngBounds?: new () => Readonly<{
     extend: (location: GoogleLocation | Readonly<{ lat: number; lng: number }>) => void;
@@ -206,19 +209,32 @@ export function clusterGoogleMarketPoints(points: readonly GoogleMarketMapPoint[
   return result;
 }
 
-/** Named areas stay legible; dense property maps label only the selected property. */
-export function googleMarketMarkerAppearance(point: GoogleMarketMapPoint) {
+/** Keep the visible glyph small while the SDK hit area includes the whole label. */
+export function googleMarketMarkerAppearance(point: GoogleMarketMapPoint, sdk?: Pick<GoogleMapsSdk, 'Point'>) {
   const group = point.kind === 'area' || point.kind === 'cluster';
   const label = point.showFullLabel ? point.label : group ? (point.count === undefined ? point.label : point.count.toLocaleString('en-US')) : point.selected ? point.title : undefined;
+  const color = point.selected ? '#2563d8' : '#64748b';
+  const radius = point.selected ? 6 : 4;
+  const zIndex = point.selected ? 1000 : group ? 10 : 1;
+  if (label === undefined) return {
+    icon: { path: 0, scale: radius, fillColor: color, fillOpacity: 1, strokeColor: '#ffffff', strokeWeight: 1.5 },
+    zIndex,
+  };
+  // A conservative text budget covers Latin and CJK names without a large visible
+  // badge. The 44px transparent image is explicitly clickable, including padding.
+  const width = Math.max(44, Math.min(196, Array.from(label).reduce((sum, char) => sum + (char.codePointAt(0)! > 127 ? 13 : /[MW@]/.test(char) ? 11 : 8), 24)));
+  const countOnly = group && !point.showFullLabel;
+  const dotY = countOnly ? 22 : 37;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="44" viewBox="0 0 ${width} 44">${countOnly ? '' : `<circle cx="${width / 2}" cy="${dotY}" r="${radius}" fill="${color}" stroke="white" stroke-width="1.5"/>`}</svg>`;
+  const coordinate = (x: number, y: number) => sdk?.Point ? new sdk.Point(x, y) : { x, y };
   return {
-    icon: { path: 0, scale: group ? 15 : point.selected ? 8 : 5,
-      fillColor: '#245746', fillOpacity: 1,
-      strokeColor: '#ffffff', strokeWeight: 2 },
-    zIndex: point.selected ? 1000 : group ? 10 : 1,
-    ...(label === undefined ? {} : { label: { text: label,
-      className: point.showFullLabel ? `spGoogleMarketMarker spGoogleAreaPrice${point.selected ? ' spGoogleMarketMarkerSelected' : ''}` : point.kind === 'area' ? `spGoogleMarketMarker spGoogleAreaGroup${point.level === 'region' ? ' spGoogleRegionGroup' : point.level === 'district' ? ' spGoogleDistrictGroup' : ''}`
-        : point.kind === 'cluster' ? 'spGoogleMarketMarker spGoogleCluster'
-          : 'spGoogleMarketMarker spGoogleMarketMarkerSelected' } }),
+    icon: { url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
+      anchor: coordinate(width / 2, dotY), labelOrigin: coordinate(width / 2, countOnly ? 22 : 14) },
+    shape: { type: 'rect' as const, coords: [0, 0, width, 44] },
+    optimized: false,
+    zIndex,
+    label: { text: label,
+      className: `spGoogleMarketMarker${point.showFullLabel ? ' spGoogleAreaPrice' : point.kind === 'area' ? ` spGoogleAreaGroup${point.level === 'region' ? ' spGoogleRegionGroup' : point.level === 'district' ? ' spGoogleDistrictGroup' : ''}` : point.kind === 'cluster' ? ' spGoogleCluster' : ' spGooglePropertyLabel'}${point.selected ? ' spGoogleMarketMarkerSelected' : ''}` },
   };
 }
 
@@ -249,7 +265,7 @@ export function mountGoogleMarketPoints(
       map,
       position: { lat: point.latitude!, lng: point.longitude! },
       title: point.title,
-      ...googleMarketMarkerAppearance(point),
+      ...googleMarketMarkerAppearance(point, sdk),
     });
     marker.addListener?.('click', () => {
       if (point.kind === 'cluster' && point.bounds !== undefined) map.fitBounds(point.bounds);
@@ -305,7 +321,7 @@ export async function geocodeGoogleMarketPoints(
         map: runtime.map,
         position: { lat: position.lat(), lng: position.lng() },
         title: point.title,
-        ...googleMarketMarkerAppearance(point),
+        ...googleMarketMarkerAppearance(point, sdk),
       });
       marker.addListener?.('click', () => onSelectPoint?.(point.id));
       markers.push(marker);

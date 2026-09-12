@@ -14,10 +14,12 @@ These rules extend SignedPrice's existing white/grey surfaces, dark typography a
 
 - City order: Seoul, Singapore, Dubai, Tokyo, including navigation and tool selectors.
 - Use one page title. Avoid repeating the same heading above both columns.
+- Place the transaction type, currency and price basis next to the Explore controls with `ExplorePriceGuide`. Keep sale totals, deposits, monthly rents and annual rents explicit; area medians are not individual asking prices.
 - Desktop: discovery on the left and map on the right. Keep the map available while browsing results.
 - Tokyo is the first consumer of `ResponsiveResultsPanel`: at 760px and below, its results open in a native modal sheet with a visible close button and Escape dismissal. Without JavaScript, results remain readable inline.
 - Preserve the active ward, publication period, property type and area conditions through navigation. Keep exact neighbourhood selection distinct from free-text search.
 - Only display the geographical precision supplied by the source. Tokyo transactions do not identify individual buildings or available listings.
+- Map glyphs stay small and neutral; the selected place is blue. A small visible glyph must retain a usable hit area. Keep named labels inside the SDK's clickable image bounds instead of positioning them with CSS transforms.
 
 ## Localisation and verification
 

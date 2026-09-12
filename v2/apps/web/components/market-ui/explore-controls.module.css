@@ -14,3 +14,10 @@
 .panelHeader h2 { margin: 0; font-size: 1.125rem; line-height: 1.5; }
 .panelHeader button { flex-shrink: 0; width: var(--control-min); min-height: var(--control-min); border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font-size: 1.5rem; cursor: pointer; }
 .panelBody { min-height: 0; padding: 0 var(--space-4) max(var(--space-5), env(safe-area-inset-bottom)); overflow-y: auto; overscroll-behavior: contain; }
+.priceGuide { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin: 0 0 var(--space-4); color: var(--muted); font-size: 13px; line-height: 1.6; }
+.priceGuide strong { flex-shrink: 0; padding: 4px 9px; border: 1px solid var(--control-selected-border); border-radius: var(--radius-control); background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 600; }
+.loading { padding: var(--space-4); color: var(--muted); font-size: 14px; }
+.loading > p { margin: 0 0 var(--space-2); }
+.loadingRow { display: grid; gap: 10px; padding-block: 16px; border-bottom: 1px solid var(--line); }
+.loadingRow span { width: 62%; height: 14px; border-radius: var(--radius-control); background: var(--line); }
+.loadingRow span + span { width: 40%; height: 12px; background: var(--surface); }

@@ -20,6 +20,23 @@ import {
 } from '../components/maps/google-place-map';
 
 describe('Google place map', () => {
+  it('keeps named area dots small and makes every selected marker blue', () => {
+    const area = { id: 'area', title: 'Chiyoda', label: 'Chiyoda', kind: 'area' as const, showFullLabel: true };
+    const normal = googleMarketMarkerAppearance(area);
+    const selected = googleMarketMarkerAppearance({ ...area, selected: true });
+    expect(decodeURIComponent(normal.icon.url ?? '')).toContain('r="4"');
+    expect(normal.shape?.coords[3]).toBeGreaterThanOrEqual(44);
+    expect(normal.shape?.coords[2]).toBeGreaterThanOrEqual(44);
+    expect(normal.icon).toHaveProperty('labelOrigin.y', 14);
+    expect(normal.label?.text).toBe('Chiyoda');
+    expect(decodeURIComponent(selected.icon.url ?? '')).toContain('#2563d8');
+    expect(selected.label?.className).toContain('spGoogleMarketMarkerSelected');
+    const count = googleMarketMarkerAppearance({ ...area, showFullLabel: false, count: 773, selected: true });
+    expect(decodeURIComponent(count.icon.url ?? '')).not.toContain('<circle');
+    expect(count.shape?.coords[3]).toBe(44);
+    expect(count.label?.text).toBe('773');
+    expect(count.label?.className).toContain('spGoogleMarketMarkerSelected');
+  });
   it('clusters real locations with preserved membership and keeps area-only groups separate', () => {
     const points = [
       { id: 'a', title: 'A', label: 'A', latitude: 1.28001, longitude: 103.85001 },
@@ -179,7 +196,7 @@ describe('Google place map', () => {
       map,
       position: { lat: 1.2897, lng: 103.8501 },
       title: 'CCR · 120 transactions',
-      icon: expect.objectContaining({ path: 0, scale: 5 }),
+      icon: expect.objectContaining({ path: 0, scale: 4 }),
       zIndex: 1,
     }]);
   });
@@ -250,7 +267,7 @@ describe('Google place map', () => {
       map,
       position: { lat: 1.3039, lng: 103.8322 },
       title: 'SKYE AT HOLLAND',
-      icon: expect.objectContaining({ path: 0, scale: 5 }),
+      icon: expect.objectContaining({ path: 0, scale: 4 }),
       zIndex: 1,
     }]);
     expect(mapCalls).toEqual([viewport]);

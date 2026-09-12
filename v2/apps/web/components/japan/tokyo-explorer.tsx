@@ -9,6 +9,8 @@ import type { JapanFilters, JapanPublished, JapanPublishedScope } from '@/lib/ja
 import { readCachedJapanCoverage, readCachedJapanPublication } from '@/lib/japan/publication-cache.server';
 import { SiteFooter } from '@/components/site-footer';
 import { MarketExploreShell } from '../market-ui/market-shell';
+import { ExplorePriceGuide } from '../market-ui/explore-price-guide';
+import { ExploreResultsLoading } from '../market-ui/explore-results-loading';
 import { AppliedFilters, type AppliedFilter } from '../market-ui/applied-filters';
 import { TokyoPeriodFields } from './tokyo-period-fields';
 import { TokyoMapPanel } from './tokyo-map-panel';
@@ -89,6 +91,7 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
     <SiteHeader copy={{ ...homepageCopy.header, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', homeHref: locale === 'en' ? '/' : locale === 'ko' ? '/ko/' : '/zh-cn/', marketLabel: t('Tokyo'), links: [{ label: t('Explore'), href: href('/jp/tokyo/explore/'), isCurrent: true }] }} />
     <main className={styles.page}>
       <MarketExploreShell eyebrow={t("Tokyo")} title={t("Explore")} period={`${wardName(scope.city)} · ${scope.year} Q${scope.quarter} · JPY`}
+        priceGuide={<ExplorePriceGuide locale={locale} market="tokyo" />}
         discoveryPanel={{ title: t('Neighbourhoods & prices'), open: t('View neighbourhoods & prices'), close: t('Close results'), anchorId: 'tokyo-transactions' }}
         layers={<div>
       <form key={JSON.stringify([scope, filters.q, filters.type, filters.minArea, filters.maxArea, useLatestPeriod])} className={styles.filters} action={href("/jp/tokyo/explore/")} method="get" aria-label="Tokyo transaction filters">
@@ -122,7 +125,7 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
       </div>}
         </div>}
         discovery={<>
-      <div data-tokyo-area-directory="true"><Suspense fallback={<p role="status">{t('Loading area transactions…')}</p>}>
+      <div data-tokyo-area-directory="true"><Suspense fallback={<ExploreResultsLoading label={t('Loading area transactions…')} />}>
         <TokyoMapPanel view="directory" locale={locale} city={scope.city} year={scope.year} quarter={scope.quarter}
           filters={{ q: filters.q, neighbourhood: filters.neighbourhood, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />
       </Suspense></div>
