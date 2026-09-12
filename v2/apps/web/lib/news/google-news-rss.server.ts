@@ -13,6 +13,8 @@ type GoogleNewsFeed = Readonly<{
   market: 'seoul' | 'singapore' | 'dubai' | 'tokyo';
   marketLabel: string;
   query: string;
+  language?: 'en' | 'ja' | 'ar';
+  country?: 'US' | 'JP' | 'AE';
 }>;
 
 const feeds: readonly GoogleNewsFeed[] = Object.freeze([
@@ -20,6 +22,8 @@ const feeds: readonly GoogleNewsFeed[] = Object.freeze([
   { market: 'seoul', marketLabel: 'Seoul', query: 'Seoul real estate OR South Korea housing' },
   { market: 'singapore', marketLabel: 'Singapore', query: 'Singapore property OR HDB OR condominium' },
   { market: 'dubai', marketLabel: 'Dubai', query: 'Dubai property OR real estate OR off-plan' },
+  { market: 'tokyo', marketLabel: 'Tokyo', query: '東京 (住宅 OR マンション OR 家賃 OR 賃貸) -site:rakumachi.jp', language: 'ja', country: 'JP' },
+  { market: 'dubai', marketLabel: 'Dubai', query: 'دبي (عقارات OR شقق OR سكن OR إيجارات)', language: 'ar', country: 'AE' },
 ] as const);
 
 function tag(block: string, name: string): string | null {
@@ -84,9 +88,11 @@ export async function fetchGoogleNewsRssItems({ fresh = false }: { fresh?: boole
   const results = await Promise.allSettled(feeds.map(async (feed) => {
     const url = new URL('https://news.google.com/rss/search');
     url.searchParams.set('q', feed.query);
-    url.searchParams.set('hl', 'en');
-    url.searchParams.set('gl', 'US');
-    url.searchParams.set('ceid', 'US:en');
+    const language = feed.language ?? 'en';
+    const country = feed.country ?? 'US';
+    url.searchParams.set('hl', language);
+    url.searchParams.set('gl', country);
+    url.searchParams.set('ceid', `${country}:${language}`);
     const response = await fetch(url, {
       signal: AbortSignal.timeout(10_000),
       headers: { 'User-Agent': 'SignedPrice/1.0 (+https://www.signedprice.com)' },

@@ -39,3 +39,21 @@ it('bypasses prior feed responses during scheduled collection', async () => {
     expect(fetcher).toHaveBeenCalledWith(expect.any(URL), expect.objectContaining({ cache: 'no-store' }));
   } finally { vi.unstubAllGlobals(); }
 });
+
+it('requests Japanese and Arabic editions alongside English feeds', async () => {
+  const requested: URL[] = [];
+  vi.stubGlobal('fetch', async (url: URL) => {
+    requested.push(new URL(String(url)));
+    return new Response('<rss><channel></channel></rss>');
+  });
+  try {
+    await fetchGoogleNewsRssItems({ fresh: true });
+    expect(requested).toHaveLength(6);
+    const japanese = requested.find(url => url.searchParams.get('hl') === 'ja');
+    expect(japanese?.searchParams.get('q')).toContain('東京');
+    expect(japanese?.searchParams.get('ceid')).toBe('JP:ja');
+    const arabic = requested.find(url => url.searchParams.get('hl') === 'ar');
+    expect(arabic?.searchParams.get('q')).toContain('دبي');
+    expect(arabic?.searchParams.get('ceid')).toBe('AE:ar');
+  } finally { vi.unstubAllGlobals(); }
+});
