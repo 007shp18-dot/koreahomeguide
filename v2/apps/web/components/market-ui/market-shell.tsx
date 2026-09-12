@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import styles from './market-shell.module.css';
 import detailStyles from './detail-layout.module.css';
+import { ResponsiveResultsPanel, type ResultsPanelLabels } from './responsive-results-panel';
 import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
 
 
@@ -27,13 +28,14 @@ export function MarketLayerControl({ locale = 'en',  label, items }: Readonly<{
   </nav>;
 }
 
-export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, layers, discovery, spatial }: Readonly<{
+export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, layers, discovery, spatial, discoveryPanel }: Readonly<{
   eyebrow: string;
   title: string;
   period: React.ReactNode;
   layers: React.ReactNode;
   discovery: React.ReactNode;
   spatial?: React.ReactNode;
+  discoveryPanel?: ResultsPanelLabels;
 }> & { locale?: MarketLocale }) {
   const t = <T,>(value: T): T => marketText(locale, value);
 
@@ -44,7 +46,9 @@ export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, lay
     </header>
     {t(layers)}
     <div className={styles.exploreGrid} data-layout={spatial == null ? 'list' : 'split'}>
-      <section className={styles.discovery} data-market-shell-region="discovery">{t(discovery)}</section>
+      <section className={styles.discovery} data-market-shell-region="discovery">{discoveryPanel
+        ? <ResponsiveResultsPanel labels={discoveryPanel}>{t(discovery)}</ResponsiveResultsPanel>
+        : t(discovery)}</section>
       {spatial == null ? null : <section className={styles.spatial} data-market-shell-region="spatial">{t(spatial)}</section>}
     </div>
   </div>;
