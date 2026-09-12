@@ -1,0 +1,53 @@
+.tray { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px; margin-block: 12px; background: var(--surface-strong); border: 1px solid var(--line); border-radius: var(--radius-control); }
+.tray p { flex: 1 1 100%; margin: 0; font-size: 14px; color: var(--muted); }
+.tray button, .rowAction button, .saved button, .dialog button { min-height: var(--control-min); padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface-strong); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; }
+.tray button:disabled, .rowAction button:disabled { opacity: .5; cursor: default; }
+.rowAction { margin-top: 8px; }
+.rowAction button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.tray .primaryButton, .dialog .primaryButton { background: var(--accent); border-color: var(--accent); color: white; }
+.saved { margin-block: 12px; font-size: 14px; }
+.saved summary { cursor: pointer; min-height: var(--control-min); display: list-item; padding-block: 12px; }
+.saved ul { list-style: none; padding: 0; display: grid; gap: 8px; }
+.saved li { display: flex; gap: 8px; align-items: center; }
+.saved li button:first-child { flex: 1; text-align: start; overflow-wrap: anywhere; }
+.saved p { color: var(--muted); }
+.dialog { margin: auto; width: min(1060px, calc(100% - 32px)); max-width: none; max-height: 90dvh; padding: 0; border: 1px solid var(--line); border-radius: var(--radius-panel, 16px); background: var(--surface-strong); color: var(--ink); box-shadow: 0 20px 80px #10182833; }
+.dialog[open] { display: flex; flex-direction: column; }
+.dialog::backdrop { background: #10182866; }
+:global(html:has([data-dubai-explore-workspace])) { scrollbar-gutter: stable; }
+:global(html:has(dialog[data-dubai-comparison]:modal)),
+:global(body:has(dialog[data-dubai-comparison]:modal)) { overflow: hidden; }
+.header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px; border-bottom: 1px solid var(--line); }
+.header h2 { margin: 6px 0 0; font-size: 26px; }
+.eyebrow { color: var(--muted); font-size: 12px; letter-spacing: .06em; }
+.body { padding: 20px 24px 0; overflow-y: auto; min-height: 0; }
+.body > p:first-child { margin-top: 0; }
+.period, .local, .source { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.notice { padding: 12px; background: var(--accent-soft); border-radius: var(--radius-control); }
+.tableScroll { overflow-x: auto; margin-top: 24px; }
+.table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 14px; }
+.table caption { caption-side: bottom; text-align: start; padding-top: 14px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.table th, .table td { padding: 20px 16px; text-align: start; vertical-align: top; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.table th:first-child { width: 160px; color: var(--muted); font-weight: 500; }
+.table thead th { background: var(--surface); font-size: 18px; font-weight: 650; }
+.table .primary td { font-size: 22px; font-weight: 700; }
+.table a, .source a { color: var(--accent); text-underline-offset: 3px; }
+.footer { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid var(--line); }
+.shareLink { display: grid; gap: 6px; font-size: 14px; }
+.shareLink input { width: 100%; min-width: 0; min-height: var(--control-height); font-size: 16px; border: 1px solid var(--line); border-radius: var(--radius-control); padding: 8px; }
+.status { min-height: 20px; font-size: 14px; color: var(--muted); }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 640px) {
+  .dialog { margin: auto; width: calc(100% - 16px); max-height: calc(100dvh - 16px); }
+  .header { padding: 16px; gap: 8px; }
+  .header h2 { font-size: 22px; }
+  .header button { max-width: 120px; }
+  .body { padding: 16px 12px 0; }
+  .table { min-width: 500px; }
+  .table th:first-child { width: 118px; }
+  .table th, .table td { padding: 16px 12px; }
+  .table thead th { font-size: 16px; }
+  .table .primary td { font-size: 18px; }
+  .footer { padding: 12px; }
+  .footer button { flex: 1; }
+}

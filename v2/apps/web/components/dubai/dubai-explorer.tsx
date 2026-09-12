@@ -6,6 +6,8 @@ import { retainPassportContext } from '../../lib/passport/journey';
 import { PassportLink as Link } from '../passport/passport-journey';
 import { UiIcon } from '../ui-icon';
 import {
+  lazy,
+  Suspense,
   useCallback,
   useDeferredValue,
   useEffect,
@@ -29,6 +31,10 @@ import type { DubaiProjectEvidence } from '../../lib/dubai/project-evidence';
 import { selectedResultPage } from '../../lib/navigation/selected-result-page';
 import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
 import { DubaiExploreSelection } from './dubai-explore-selection';
+import { useDubaiComparison } from './use-dubai-comparison';
+import { comparisonCopy } from '../../lib/dubai/comparison-copy';
+import comparisonStyles from './dubai-comparison.module.css';
+const DubaiComparisonDialog = lazy(() => import('./dubai-comparison'));
 
 
 const unavailableModel = Object.freeze({
@@ -161,6 +167,8 @@ export function DubaiExplorer({ locale = 'en',
   const [yieldMinimumPct, setYieldMinimumPct] = useState(initialYieldMinimumPct);
   const [page, setPage] = useState(initialPage);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
+  const comparison = useDubaiComparison();
+  const compareCopy = comparisonCopy(locale);
   const selectionRef = useRef<HTMLElement>(null);
   const revealSelection = useRef(false);
   const selectArea = useCallback((slug: string | null) => {
@@ -216,7 +224,7 @@ export function DubaiExplorer({ locale = 'en',
       selectedProject: selectedProject?.id ?? null,
     })), window.location.href);
     if (`${window.location.pathname}${window.location.search}` !== href) {
-      window.history.replaceState(null, '', href);
+      window.history.replaceState(window.history.state, '', `${href}${window.location.hash}`);
     }
   }, [locale, activePage, budgetMaximumAed, housing, model.status, query, selectedArea, selected, selectedProject, stage, yieldMinimumPct]);
 
@@ -302,12 +310,36 @@ export function DubaiExplorer({ locale = 'en',
           <div><h2 id="dubai-area-results">{t("Area prices")}</h2><p>{t(results.length.toLocaleString('en'))}{t(" matching areas · ")}{t(housing)}{t(" · ")}{t(stage)}</p></div>
           <small>{t(results.length === 0 ? 'No matches' : `${(activePage - 1) * DUBAI_EXPLORE_PAGE_SIZE + 1}–${Math.min(activePage * DUBAI_EXPLORE_PAGE_SIZE, results.length)} shown`)}</small>
         </header>
+        <div className={comparisonStyles.tray} aria-label={compareCopy.title}>
+          <p>{compareCopy.hint}</p>
+          <button type="button" className={comparisonStyles.primaryButton} disabled={comparison.ids.length < 2}
+            onClick={() => comparison.open({ areas: comparison.ids, housing, stage, ...model.context.comparisonPeriod })}>
+            {compareCopy.open} ({comparison.ids.length}/3)
+          </button>
+          {comparison.ids.length > 0 ? <button type="button" onClick={comparison.clear}>{compareCopy.clear}</button> : null}
+          {comparison.ids.map(slug => <button key={slug} type="button" onClick={() => comparison.toggle(slug)} aria-label={`${compareCopy.remove}: ${model.areas.find(area => area.slug === slug)?.name ?? slug}`}>
+            {model.areas.find(area => area.slug === slug)?.name ?? slug} ×
+          </button>)}
+        </div>
+        <details className={comparisonStyles.saved}>
+          <summary>{compareCopy.saved} ({comparison.saved.length})</summary>
+          <p>{compareCopy.local}</p>
+          {comparison.saved.length === 0 ? <p>{compareCopy.empty}</p> : <ul>{comparison.saved.map((preset, index) => <li key={index}>
+            <button type="button" onClick={() => comparison.open(preset)}>{preset.areas.map(slug => model.areas.find(area => area.slug === slug)?.name ?? compareCopy.gone).join(' · ')} — {compareCopy[preset.housing]} · {compareCopy[preset.stage]}</button>
+            <button type="button" onClick={() => comparison.remove(preset)} aria-label={`${compareCopy.delete}: ${preset.areas.join(', ')}`}>{compareCopy.delete}</button>
+          </li>)}</ul>}
+          {comparison.storageError ? <p role="status">{compareCopy.failure}</p> : null}
+        </details>
         <div className={styles.areaResults} aria-live="polite" aria-busy={query !== deferredQuery}>
           {visible.map(({ area, segment, sale }) => <article key={area.id} data-selected={area.slug === selectedArea}>
             <button type="button" aria-pressed={area.slug === selectedArea} aria-controls="dubai-selected-area" onClick={() => selectArea(selectedArea === area.slug ? null : area.slug)}>
               <span><strong title={t(area.name)}>{t(area.name)}</strong><small>{t(housing === 'apartment' ? 'Apartment' : 'Villa')}{t(" · ")}{t(stage === 'ready' ? 'Ready' : 'Off-Plan')}</small></span>
             </button>
             <p className={styles.resultPrice}><strong>{t(money(sale.medianPriceAed))}</strong><span>{t(sale.n.toLocaleString('en'))} {localizedMarketCopy(locale, "sales", "건 거래")} · {t(moneyPerSqm(sale.medianPricePerSqmAed))}</span></p>
+            <div className={comparisonStyles.rowAction}><button type="button" aria-pressed={comparison.ids.includes(area.slug)}
+              disabled={comparison.ids.length >= 3 && !comparison.ids.includes(area.slug)}
+              aria-label={`${comparison.ids.includes(area.slug) ? compareCopy.remove : compareCopy.add}: ${area.name}`}
+              onClick={() => comparison.toggle(area.slug)}>{comparison.ids.includes(area.slug) ? compareCopy.remove : compareCopy.add}</button></div>
             <details className={styles.resultEvidence} data-area-evidence="true">
               <summary>{localizedMarketCopy(locale, "Price and rent details", "가격·임대료 자세히 보기")}</summary>
             <dl className={styles.areaMetrics}>
@@ -337,6 +369,9 @@ export function DubaiExplorer({ locale = 'en',
         <p className={styles.mapDisclosure}>{t("Markers locate areas. They do not represent units or listings.")}</p>
       </section>}
     />
+    {comparison.preset ? <Suspense fallback={<p role="status">{compareCopy.loading}</p>}>
+      <DubaiComparisonDialog locale={locale} model={model} preset={comparison.preset} onClose={comparison.close} onSave={comparison.save} />
+    </Suspense> : null}
     <p className={styles.exploreSupport}><span>{localizedMarketCopy(locale, "Planning a purchase?", "구매를 준비하고 있나요?")}</span><Link href={marketHref(locale, "/guides/dubai-ready-apartment-buying-budget-guide/")}>{localizedMarketCopy(locale, "Read the budget & buying costs guide", "예산·구매 비용 가이드")}<UiIcon name="arrow-right" /></Link></p>
   </div>;
 }
