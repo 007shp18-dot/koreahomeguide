@@ -10,6 +10,12 @@ import { SiteFooter } from '../components/site-footer';
 import { homepageCopy } from '../lib/site-copy';
 
 describe('shared navigation destinations', () => {
+  it('renders exactly one ranking link in each localized footer', () => {
+    for (const locale of ['en', 'ko', 'zh-CN'] as const) {
+      const html = renderToStaticMarkup(<SiteFooter copy={homepageCopy.footer} locale={locale} />);
+      expect(html.match(/href="\/(?:ko\/|zh-cn\/)?rankings\/?"/g)).toHaveLength(1);
+    }
+  });
   it('separates English News from Insights and preserves translated sections', () => {
     expect(globalNavigation('en')).toEqual([
       { label: 'Explore', href: '/prices/' },
