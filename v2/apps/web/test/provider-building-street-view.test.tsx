@@ -19,8 +19,14 @@ import {
   mountNaverBuildingStreetView,
   resolveNaverBuildingLocation,
 } from '../components/maps/naver-building-street-view';
+import { seoulBuildingViewMode } from '../components/maps/building-nearby-view-policy';
 
 describe('provider building street view', () => {
+  it('uses a precise map instead of an unrelated nearby panorama for Nine One Hannam', () => {
+    expect(seoulBuildingViewMode('Nine One Hannam · 나인원한남')).toBe('map');
+    expect(seoulBuildingViewMode('Galleria Foret · 갤러리아포레')).toBe('panorama');
+  });
+
   it('does not construct Google panoramas with missing or distant camera coordinates', async () => {
     const construct = vi.fn();
     for (const location of [{ pano: 'missing-position' }, { pano: 'remote', latLng: { lat: () => 1.30, lng: () => 103.86 } }]) {
