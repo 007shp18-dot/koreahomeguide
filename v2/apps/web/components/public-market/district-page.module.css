@@ -120,7 +120,11 @@
   box-shadow: var(--shadow-md);
 }
 .heroCopy {
+  min-width: 0;
   padding: clamp(28px, 4vw, 46px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background: linear-gradient(145deg, #fff 28%, var(--soft-blue));
 }
 .heroCopy > p:first-child { color: var(--accent); font-size: .75rem; }
@@ -131,7 +135,12 @@
   line-height: 1.02;
 }
 .hero h1 span { display: inline-block; white-space: nowrap; }
-.heroCopy > p:last-child { color: var(--muted); font-size: .875rem; }
+.heroCopy > p:last-child {
+  max-width: 34ch;
+  color: var(--muted);
+  font-size: .875rem;
+  line-height: 1.55;
+}
 .heroMap { border: 0; border-left: 1px solid var(--line); background: var(--surface); }
 .heroMap > div { border-radius: 0; }
 .tabs {
@@ -139,18 +148,29 @@
   margin-bottom: 16px;
   padding: 6px;
   gap: 4px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
 .tabs a {
+  min-width: 0;
   min-height: 40px;
   padding: 9px 12px;
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
   border: 0;
   border-radius: 8px;
   color: var(--muted);
   font-size: .8125rem;
+  white-space: nowrap;
+  scroll-snap-align: start;
 }
 .tabs a:first-child {
   color: var(--accent);
@@ -256,7 +276,11 @@
 
 @media (max-width: 480px) {
   .metricGrid, .findingGrid, .propertyTypeList, .buildingList { grid-template-columns: 1fr; }
-  .tabs a { flex-basis: 122px; font-size: .8125rem; }
+  .tabs a {
+    min-width: 112px;
+    flex: 0 0 auto;
+    font-size: .8125rem;
+  }
   .metricGrid span, .metricGrid small, .findingGrid dt { font-size: .75rem; }
   .metricGrid strong { font-size: 1.35rem; }
 }
