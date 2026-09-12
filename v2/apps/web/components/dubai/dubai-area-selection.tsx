@@ -8,6 +8,7 @@ import type { DubaiAreaModel, DubaiAreaSegmentModel } from '../../lib/dubai/rout
 import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
 import { MarketSummary } from '../market-ui/market-summary';
 import styles from './dubai-research.module.css';
+import { RecordPlaceVisit } from '../discovery/recent-places';
 
 function selectedSale(segments: readonly DubaiAreaSegmentModel[], current: string) {
   const query = new URL(current || '/', 'https://signedprice.invalid').searchParams;
@@ -44,7 +45,7 @@ export function DubaiAreaSummary({ model, locale = 'en' }: Readonly<{ model: Dub
   const period = `${model.context.comparisonPeriod.from}–${model.context.comparisonPeriod.to}`;
   const housing = t(segment.housing === 'apartment' ? 'Apartment' : 'Villa');
   const stageLabel = t(stage === 'ready' ? 'Ready' : 'Off-Plan');
-  return <MarketSummary locale={locale} kind="area"
+  return <><RecordPlaceVisit place={{ market: 'dubai', key: model.identity.slug, name: t(model.identity.name), href: `/ae/dubai/explore/${model.identity.slug}/?housing=${segment.housing}&stage=${stage}` }} /><MarketSummary locale={locale} kind="area"
     title={t(model.identity.name)}
     location={localizedMarketCopy(locale, "Area-level statistics, not a price for a specific home.", "지역별 통계이며 개별 주택의 가격이 아닙니다.")}
     context={t('Dubai · Area evidence')}
@@ -61,5 +62,5 @@ export function DubaiAreaSummary({ model, locale = 'en' }: Readonly<{ model: Dub
       { label: localizedMarketCopy(locale, "As of", "자료 기준일"), value: model.context.asOfDate },
     ]}
     actions={<DubaiAreaSelection locale={locale} slug={model.identity.slug} segments={model.segments} variant="check" />}
-  />;
+  /></>;
 }

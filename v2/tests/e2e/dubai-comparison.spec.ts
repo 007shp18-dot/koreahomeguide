@@ -69,3 +69,34 @@ test('Dubai caps candidates at three and handles off-plan and old shared periods
   await dialog.getByRole('button', { name: 'Explore로 돌아가기', exact: true }).click();
   await expect(page.getByRole('tab', { name: '완공 주택', exact: true })).toHaveAttribute('aria-selected', 'true');
 });
+
+test('Dubai recent places follow real selections, reopen their filters and clear locally', async ({ page }, testInfo) => {
+  await page.goto('/ko/ae/dubai/explore/');
+  await expect(page.locator('[data-recent-places]')).toHaveCount(0);
+  const places = page.locator('button[aria-controls="dubai-selected-area"]');
+  await expect(places.first()).toBeVisible();
+  const firstName = (await places.nth(0).innerText()).trim();
+  await places.nth(0).click();
+  await expect.poll(() => new URL(page.url()).searchParams.get('area')).toBeTruthy();
+  const firstArea = new URL(page.url()).searchParams.get('area');
+  expect(firstArea).toBeTruthy();
+  await places.nth(1).click();
+  const recent = page.locator('[data-recent-places="dubai"]');
+  await expect(recent.getByRole('link', { name: firstName, exact: true })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath('discovery-recent-dubai.png'), fullPage: true });
+  await recent.getByRole('link', { name: firstName, exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`area=${firstArea}`));
+  await expect(page.locator('button[aria-controls="dubai-selected-area"][aria-pressed="true"]')).toHaveText(firstName);
+  await page.goto('/ko/saved/');
+  await page.locator('[data-recent-places="all"]').getByRole('link', { name: firstName, exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`area=${firstArea}`));
+  await expect(page.locator(`button[aria-controls="dubai-selected-area"][aria-pressed="true"]`)).toHaveText(firstName);
+  await page.waitForLoadState('networkidle');
+  const requests: string[] = [];
+  page.on('request', request => { if (new URL(request.url()).pathname.startsWith('/api/')) requests.push(request.url()); });
+  await recent.getByRole('button', { name: '기록 지우기', exact: true }).click();
+  await expect(recent).toHaveCount(0);
+  expect(requests).toEqual([]);
+  const journal = await page.evaluate(() => JSON.parse(localStorage.getItem('signedprice_discovery_journal_v1') ?? '{}'));
+  expect(journal.recent).toEqual([]);
+});

@@ -25,6 +25,8 @@ import { MarketDetailShell } from '../market-ui/market-shell';
 import { MarketSummary } from '../market-ui/market-summary';
 import { SingaporeNearbyPlaces } from './singapore-nearby-places';
 import { SingaporeTransactionsTable } from './singapore-transactions-table';
+import { RecordPlaceVisit } from '../discovery/recent-places';
+import { DiscoveryReading } from '../discovery/discovery-reading';
 
 function PriceRange({ locale = 'en', value }: Readonly<{ locale?: MarketLocale; value: string }>) {
   const separator = value.indexOf('–');
@@ -79,7 +81,9 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
   const sizes = summarizeSizeCohorts(records);
   return (
     <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed>
+      <RecordPlaceVisit place={{ market: 'singapore', key: model.identity.id, name: displayName, href: `/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${encodeURIComponent(model.identity.id)}/` }} />
       <MarketDetailShell locale={locale}
+        related={<DiscoveryReading market="singapore" locale={locale} />}
         sections={[
           { id: 'detail-overview', label: localizedMarketCopy(locale, "Overview", "개요") },
           { id: 'detail-evidence', label: localizedMarketCopy(locale, "Prices & transactions", "가격·실거래") },

@@ -11,6 +11,8 @@ import type {
 } from '../../lib/public-market/building-decision-state';
 import type { BuildingVisualModel } from '../../lib/public-market/building-visual-model';
 import type { PublicBuildingModel } from '../../lib/public-market/building-route-model.server';
+import { RecordPlaceVisit } from '../discovery/recent-places';
+import { DiscoveryReading } from '../discovery/discovery-reading';
 import {
   KOREA_PUBLIC_RELEASE_STATUS,
   type SiteFooterModel,
@@ -102,6 +104,7 @@ export function BuildingDetailPage({
     <div id="top" className={pageStyles.page}>
       <BuildingDetailHeader locale={locale} />
       <main className={`${pageStyles.main} ${detailStyles.root}`} data-building-detail="ready" data-detail-layout="unified">
+        <RecordPlaceVisit place={{ market: 'seoul', key: `${model.district.slug}/${model.building.buildingId}`, name: model.building.name, href: `${detailTarget.pathname}${detailTarget.search}` }} />
         <nav className={pageStyles.breadcrumb} aria-label={t('Breadcrumb')}><Link href={localizedSeoulHref('/kr/seoul/',locale)}>{t('Seoul')}</Link><Link href={exploreHref}>{locale === 'ko' ? `${districtName} 탐색으로` : `Back to ${districtName} Explore`}</Link><span aria-current="page">{model.building.name}</span></nav>
         <MarketSummary locale={locale} id="building-overview" title={model.building.name}
           location={`${model.building.neighborhoodName} · ${districtName}`}
@@ -130,6 +133,7 @@ export function BuildingDetailPage({
         </div>
         <DetailTools locale={locale} id="building-tools" checkHref={checkHref} />
         <div className={pageStyles.details} data-detail-order="sources"><BuildingSourceEvidence model={model} locale={locale} /></div>
+        <DiscoveryReading market="seoul" locale={locale} />
         <section className={pageStyles.contextGrid} data-detail-order="related-actions" aria-label={t('Building news and community')}>
           <DetailNewsList news={model.news} locale={locale} />
 

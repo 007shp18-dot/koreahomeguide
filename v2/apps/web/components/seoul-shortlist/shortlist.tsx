@@ -9,6 +9,7 @@ import { newlyObservedCount, validFilters, type ShortlistItem, type ShortlistRes
 import { initializeSavedBaselines, parseSavedSearch, readSavedSearch, subscribeSavedSearch, writeSavedSearch, type SavedSearch } from '@/lib/seoul-shortlist/storage';
 import styles from './shortlist.module.css';
 import { SavedCities, ShortlistCities } from '../global-shortlist/saved-cities';
+import { ResearchNote } from '../discovery/research-note';
 import { seoulShortlistChinese, seoulDistrictChinese } from './chinese-copy';
 const serverSnapshot = () => '';
 export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' | 'zh-CN' }) {
@@ -77,6 +78,7 @@ export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' | 'zh-C
         <button className={styles.saveAction} type="button" aria-pressed={Boolean(baseline)} onClick={() => baseline ? remove(item.key) : save(item)}><span aria-hidden="true">{baseline ? '♥' : '♡'}</span> {baseline ? t('Saved', '저장됨') : t('Save apartment', '관심 단지 저장')}</button>
         {savedCard && changed && <button type="button" onClick={() => markRead(item)}>{t('Mark as seen', '확인 완료')}</button>}</div>
       {savedCard && baseline && <p className={styles.meta}>{t('Last checked', '마지막 확인')} · {baseline.checkedAt.slice(0, 10)}</p>}
+      {savedCard && <ResearchNote market="seoul" placeKey={item.key} placeName={buildingDisplayName(item.name, locale)} locale={locale} />}
     </article>;
   }
   return <main className={styles.page}>
@@ -94,7 +96,7 @@ export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' | 'zh-C
     <SavedCities locale={locale} />
     <section aria-labelledby="saved-title"><div className={styles.sectionHeading}><h2 id="saved-title">{t('Saved apartments', '관심 단지')} <span>{stored.buildings.length}/30</span></h2><button type="button" onClick={() => setRefresh(n => n + 1)}>{t('Check for updates', '거래 변화 확인')}</button></div>
       <p className={styles.meta}>{t('Saved in this browser only. Checked when you open this page or refresh; no email or background notifications. Newly observed records can include corrections. Clearing browser data removes your list.', '이 브라우저에만 저장됩니다. 페이지를 열거나 확인 버튼을 누르면 갱신된 데이터를 조회합니다. 이메일·백그라운드 알림은 없으며, 새로 확인된 기록에는 정정도 포함될 수 있습니다. 브라우저 데이터를 지우면 목록도 삭제됩니다.')}</p>
-      {stored.buildings.length === 0 ? <p className={styles.empty}>{t('Save an apartment from the results below to start following its transactions.', '아래 검색 결과에서 관심 단지를 저장하면 거래 변화를 확인할 수 있어요.')}</p> : !current ? <p role="status">{t('Checking saved apartments…', '관심 단지 확인 중…')}</p> : current.error ? <p role="alert">{t('Updates could not be checked. Your saved list is still here.', '거래 변화를 확인하지 못했습니다. 저장한 목록은 유지됩니다.')}</p> : <div className={styles.grid}>{data?.saved.map(item => card(item, true))}{data?.missingSavedIds.map(key => <article className={styles.card} key={key}><h3>{stored.buildings.find(b => b.key === key)?.name}</h3><p>{t('No published record is available in this release. This does not mean there were no transactions.', '현재 공개 데이터에서 확인되지 않습니다. 거래가 없다는 의미는 아닙니다.')}</p><button type="button" onClick={() => remove(key)}>{t('Remove saved', '관심 해제')}</button></article>)}</div>}
+      {stored.buildings.length === 0 ? <p className={styles.empty}>{t('Save an apartment from the results below to start following its transactions.', '아래 검색 결과에서 관심 단지를 저장하면 거래 변화를 확인할 수 있어요.')}</p> : !current ? <p role="status">{t('Checking saved apartments…', '관심 단지 확인 중…')}</p> : current.error ? <p role="alert">{t('Updates could not be checked. Your saved list is still here.', '거래 변화를 확인하지 못했습니다. 저장한 목록은 유지됩니다.')}</p> : <div className={styles.grid}>{data?.saved.map(item => card(item, true))}{data?.missingSavedIds.map(key => <article className={styles.card} key={key}><h3>{stored.buildings.find(b => b.key === key)?.name}</h3><p>{t('No published record is available in this release. This does not mean there were no transactions.', '현재 공개 데이터에서 확인되지 않습니다. 거래가 없다는 의미는 아닙니다.')}</p><button type="button" onClick={() => remove(key)}>{t('Remove saved', '관심 해제')}</button><ResearchNote market="seoul" placeKey={key} placeName={stored.buildings.find(b => b.key === key)?.name ?? key} locale={locale} /></article>)}</div>}
     </section>
     <section aria-labelledby="results-title" aria-busy={!current}><div className={styles.sectionHeading}><h2 id="results-title">{t('Matching apartment groups', '조건에 맞는 단지')}{data && <span> {data.total.toLocaleString()}{t('', '개')}</span>}</h2></div>
       {!current ? <p role="status">{t('Finding recorded sales…', '실거래를 찾고 있습니다…')}</p> : current.error ? <div className={styles.empty} role="alert"><p>{t('Verified sale data is temporarily unavailable. Try again shortly.', '검증된 매매 데이터를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.')}</p><button type="button" onClick={() => setRefresh(n => n + 1)}>{t('Retry', '다시 시도')}</button></div> : data && <>

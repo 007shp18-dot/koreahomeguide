@@ -16,6 +16,8 @@ import { TokyoPeriodFields } from './tokyo-period-fields';
 import { TokyoMapPanel } from './tokyo-map-panel';
 import styles from './tokyo-explorer.module.css';
 import { tokyoText, tokyoHref, type TokyoLocale } from './tokyo-copy';
+import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
+import { DiscoveryReading } from '../discovery/discovery-reading';
 
 type Params = Record<string, string | string[] | undefined>;
 export default async function TokyoExplorer({ searchParams, locale = 'en' }: { searchParams: Promise<Params>; locale?: TokyoLocale }) {
@@ -90,7 +92,10 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
   return <>
     <SiteHeader copy={{ ...homepageCopy.header, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', homeHref: locale === 'en' ? '/' : locale === 'ko' ? '/ko/' : '/zh-cn/', marketLabel: t('Tokyo'), links: [{ label: t('Explore'), href: href('/jp/tokyo/explore/'), isCurrent: true }] }} />
     <main className={styles.page}>
+      {data && data.filteredCount > 0 && filters.neighbourhood && <RecordPlaceVisit place={{ market: 'tokyo', key: `${scope.city}/${filters.neighbourhood}`, name: `${filters.neighbourhood} · ${wardName(scope.city)}`, href: pageLink(filters.page) }} />}
       <MarketExploreShell eyebrow={t("Tokyo")} title={t("Explore")} period={`${wardName(scope.city)} · ${scope.year} Q${scope.quarter} · JPY`}
+        history={<RecentPlaces market="tokyo" locale={locale} excludeKey={filters.neighbourhood ? `${scope.city}/${filters.neighbourhood}` : undefined} />}
+        related={<DiscoveryReading market="tokyo" locale={locale} />}
         priceGuide={<ExplorePriceGuide locale={locale} market="tokyo" />}
         discoveryPanel={{ title: t('Neighbourhoods & prices'), open: t('View neighbourhoods & prices'), close: t('Close results'), anchorId: 'tokyo-transactions' }}
         layers={<div>

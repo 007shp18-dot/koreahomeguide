@@ -26,6 +26,8 @@ import { SingaporeEvidence, SingaporePage, singaporeStyles as styles } from './s
 import searchStyles from '../price-market-search.module.css';
 
 import { selectedResultPage } from '../../lib/navigation/selected-result-page';
+import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
+import { DiscoveryReading } from '../discovery/discovery-reading';
 
 const PAGE_SIZE = 24;
 const REGION_NAMES = {
@@ -260,7 +262,10 @@ export function SingaporeExplorer({ locale = 'en',
   if (model.status === 'unavailable') return <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed><div className={styles.exploreSupportingContent}><h1>{sgText(locale, "Explore")}</h1><p>{sgText(locale, model.message)}</p><HdbMarketPanel locale={locale} model={hdbModel} /></div></SingaporePage>;
   return <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed>
     <div data-singapore-explore-workspace="true" data-singapore-evidence="ready" data-navigation-state={pendingHref === null ? 'idle' : 'pending'}>
+      <RecordPlaceVisit place={selectedProject && !loadingProjects && !loadError ? { market: 'singapore', key: selectedProject.id, name: selectedProject.name, href: buildSingaporeExploreHref({ query, selectedSegment, district, sort, page: activePage, selectedProjectId: selectedProject.id }) } : null} />
       <MarketExploreShell locale={locale} eyebrow={sgText(locale, "Singapore")} title={sgText(locale, "Explore")} period={<>{sgText(locale, model.periodLabel)}</>} layers={layers}
+        history={<RecentPlaces market="singapore" locale={locale} excludeKey={selectedProject?.id} />}
+        related={<DiscoveryReading market="singapore" locale={locale} />}
         priceGuide={<ExplorePriceGuide locale={locale} market="singapore" />}
         discovery={<section className={styles.segmentPanel} id="ura-private" aria-labelledby="segment-heading">
           <h2 id="segment-heading">{sgText(locale, "Private residential projects")}</h2>

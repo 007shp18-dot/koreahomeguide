@@ -2,6 +2,7 @@ import { localizedMarketCopy } from '../../lib/locale/market-localization';
 import { dubaiAreaPhoto } from '../../lib/dubai/area-photos';
 import { DubaiAreaPhoto } from './dubai-area-photo';
 import { DubaiAreaSummary } from './dubai-area-selection';
+import { DiscoveryReading } from '../discovery/discovery-reading';
 import { PassportLink as Link } from '../passport/passport-journey';
 
 import type { DubaiSaleDistribution } from '../../lib/dubai/evidence-contract';
@@ -80,6 +81,7 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
   return <DubaiShell locale={locale} href={marketHref(locale, "/ae/dubai/explore/")}>
     <main data-dubai-area-evidence="ready">
       <MarketDetailShell locale={locale}
+      related={<DiscoveryReading market="dubai" locale={locale} />}
       sections={[
         { id: 'detail-overview', label: localizedMarketCopy(locale, "Area overview", "지역 개요") },
         { id: 'detail-evidence', label: localizedMarketCopy(locale, "Sales", "매매") },

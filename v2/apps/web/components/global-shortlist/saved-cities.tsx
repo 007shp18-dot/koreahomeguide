@@ -6,6 +6,8 @@ import { parseGlobalSaved, readGlobalSaved, subscribeGlobalSaved } from '@/lib/g
 import { parseSavedSearch, readSavedSearch, subscribeSavedSearch } from '@/lib/seoul-shortlist/storage';
 import { shortlistHref, type ShortlistLocale } from './copy';
 import styles from './saved-cities.module.css';
+import { ResearchNote } from '../discovery/research-note';
+import { RecentPlaces } from '../discovery/recent-places';
 
 const empty = () => '';
 type City = keyof typeof cityPaths;
@@ -28,7 +30,7 @@ export function SavedPlacesView({ locale, places, city, onCityChange }: { locale
     {visible.length ? <ul className={styles.list}>{visible.map(place => <li key={place.market+':'+place.key}><Link href={cityHref(place.market,locale) + '#saved-title'}>
       <span><small>{cityName(place.market,locale)} · {place.market === 'tokyo' || place.market === 'dubai' ? (ko ? '지역' : zh ? '地区' : 'Area') : (ko ? '주택' : zh ? '住宅' : 'Home')}</small><strong>{place.name}</strong></span>
       <span className={styles.open}>{ko ? '보기' : zh ? '查看' : 'Review'} <span aria-hidden="true">↗</span></span>
-    </Link></li>)}</ul> : <div className={styles.empty}>
+    </Link><ResearchNote market={place.market} placeKey={place.key} placeName={place.name} locale={locale} /></li>)}</ul> : <div className={styles.empty}>
       <span className={styles.bookmark} aria-hidden="true">♡</span>
       <h3>{ko ? '관심 있는 곳부터 모아보세요' : zh ? '尚未收藏，先找到感兴趣的地方' : 'Start with a place worth revisiting'}</h3>
       <p>{ko ? '예산으로 지역·단지를 찾아 저장하면 이곳에서 다시 볼 수 있어요.' : zh ? '按预算寻找地区或楼盘，收藏后即可在此继续查看。' : 'Find an area or project within your budget, save it, and pick up your research here.'}</p>
@@ -43,7 +45,7 @@ export function SavedCities({ locale = 'en', initiallyOpen = false }: { locale?:
   const seoulRaw = useSyncExternalStore(subscribeSavedSearch, readSavedSearch, empty);
   const places = useMemo(() => [...parseSavedSearch(seoulRaw).buildings.map(p => ({ ...p, market:'seoul' as const })), ...parseGlobalSaved(globalRaw).places], [globalRaw,seoulRaw]);
   const view = <SavedPlacesView locale={locale} places={places} city={city} onCityChange={setCity} />;
-  if (initiallyOpen) return <section className={styles.saved} aria-label={locale === 'ko' ? '관심 목록' : locale === 'zh-CN' ? '收藏' : 'Saved places'}>{view}</section>;
+  if (initiallyOpen) return <section className={styles.saved} aria-label={locale === 'ko' ? '관심 목록' : locale === 'zh-CN' ? '收藏' : 'Saved places'}><RecentPlaces locale={locale} market={city === 'all' ? undefined : city as City} />{view}</section>;
   return <details className={styles.saved}><summary>{locale === 'ko' ? '모든 도시 관심 목록' : locale === 'zh-CN' ? '所有城市的收藏' : 'Saved across cities'} · {places.length}</summary>{view}</details>;
 }
 
