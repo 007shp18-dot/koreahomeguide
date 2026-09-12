@@ -59,8 +59,8 @@ export function TokyoAreaMap({ rows, city, year, quarter, browserKey, filters, u
     startTransition(() => router.push(tokyoMapAreaHref(row, filters, locale), { scroll: false }));
   }, [wards, router, filters, locale]);
   return <section className={styles.areaMap} aria-label={view === 'directory' ? 'Tokyo area prices' : 'Tokyo area price map'} data-tokyo-google-map={view !== 'directory' ? 'true' : undefined} aria-busy={pending}>
-    <h2>{t('Explore Tokyo by area')}</h2>
-    <p>{t('Ward → neighbourhood → recorded home prices')}</p>
+    {view !== 'directory' && <h2>{t('Explore Tokyo by area')}</h2>}
+    {view === 'combined' && <p>{t('Ward → neighbourhood → recorded home prices')}</p>}
     {view !== 'map' && <details className={styles.wardDirectory}><summary><span>{wardName}</span><span>{t('Change ward · 23 wards')}</span></summary>
       <label className={styles.areaSearch}>{t('Find a ward')}<input type="search" value={wardSearch} onChange={event => setWardSearch(event.target.value)} placeholder="Shibuya, Minato…" /></label>
       <nav className={styles.mapAreaList} aria-label="Choose a Tokyo ward">{visibleWards.map(([code, name]) => {
@@ -80,7 +80,7 @@ export function TokyoAreaMap({ rows, city, year, quarter, browserKey, filters, u
     {pending ? <p role="status">{t('Loading area transactions…')}</p> : null}
     {view !== 'map' && <section className={styles.neighbourhoods} aria-label={`Neighbourhoods in ${wardName}`}>
       <div className={styles.neighbourhoodHeading}><h3>{locale === 'en' ? `Neighbourhoods in ${wardName}` : locale === 'ko' ? `${wardName} 동네` : `${wardName}街区`}</h3><span>{neighbourhoods.length} {locale === 'en' ? 'available' : locale === 'ko' ? '개 동네' : '个街区'}</span></div>
-      <p className={styles.neighbourhoodHelp}>{t('Choose an area to see its recorded home prices.')} {t('Names in transaction records follow the original source.')}</p>
+      <p className={styles.neighbourhoodHelp}>{t('Choose an area to see its recorded home prices.')}</p>
       {!neighbourhoods.length ? <p>{unavailable ? t('Neighbourhood summaries are temporarily unavailable. You can still search the transaction records.') : t('No neighbourhoods match this period and property filters. Try another quarter or a wider area range.')}</p> : <>
         <label className={styles.areaSearch}>{t('Find a neighbourhood')}<input type="search" value={neighbourhoodSearch} onChange={event => setSearch({ city, value: event.target.value })} placeholder={t('Find a neighbourhood')} /></label>
         <div className={styles.neighbourhoodColumns} aria-hidden="true"><span>{t('Neighbourhood · transactions')}</span><span>{t('Median price')}</span></div>

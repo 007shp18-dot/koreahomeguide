@@ -10,6 +10,32 @@ import TokyoExplorer from '../components/japan/tokyo-explorer';
 beforeEach(() => { read.mockReset(); coverage.mockReset().mockResolvedValue([]); });
 
 describe('Tokyo transaction exploration', () => {
+  it('removes one applied filter without losing the other conditions or keeping stale pagination', async () => {
+    read.mockResolvedValue(null);
+    const html = renderToStaticMarkup(await TokyoExplorer({ locale: 'ko', searchParams: Promise.resolve({
+      city: '13113', year: '2026', quarter: '1', q: '2LDK', neighbourhood: 'Ebisu',
+      minArea: '50', maxArea: '90', page: '2', release: 'jp-area-11111111-1111-4111-8111-111111111111',
+    }) }));
+    const nav = html.match(/<nav\b[^>]*aria-label="적용된 필터"[\s\S]*?<\/nav>/)?.[0];
+    expect(nav).toBeDefined();
+    const links = [...nav!.matchAll(/<a\b([^>]*)>/g)].map(([, attributes = '']) => ({
+      label: attributes.match(/aria-label="([^"]+)"/)?.[1],
+      url: new URL(attributes.match(/href="([^"]+)"/)![1]!.replaceAll('&amp;', '&'), 'https://www.signedprice.com'),
+    }));
+    const search = links.find(link => link.label === '필터 해제: 2LDK')!.url;
+    expect(search.pathname.replace(/\/$/, '')).toBe('/ko/jp/tokyo/explore');
+    expect(Object.fromEntries(search.searchParams)).toEqual({ city: '13113', year: '2026', quarter: '1', neighbourhood: 'Ebisu', minArea: '50', maxArea: '90', type: 'Pre-owned Condominiums, etc.' });
+    const area = links.find(link => link.label === '필터 해제: 50–90 m²')!.url;
+    expect(area.searchParams.get('q')).toBe('2LDK');
+    expect(area.searchParams.get('neighbourhood')).toBe('Ebisu');
+    expect(area.searchParams.has('minArea')).toBe(false);
+    expect(area.searchParams.has('maxArea')).toBe(false);
+    const period = links.find(link => link.label === '필터 해제: 2026 Q1')!.url;
+    expect(period.searchParams.get('city')).toBe('13113');
+    expect(period.searchParams.has('year')).toBe(false);
+    expect(period.searchParams.has('quarter')).toBe(false);
+  });
+
   it('keeps locale-specific header actions, form, and footer on the shared translated explorer', async () => {
     read.mockResolvedValue(null);
     for (const locale of ['ko', 'zh-CN'] as const) {
@@ -67,6 +93,7 @@ describe('Tokyo transaction exploration', () => {
     expect(html).toContain('data-market-shell-region="spatial"');
     expect(html).toContain('¥85,000,000');
     expect(html).toMatch(/q=Azabu&amp;city=13103&amp;year=2025&amp;quarter=4&amp;type=Pre-owned\+Condominiums%2C\+etc\.&amp;page=2&amp;release=release-one/);
+    expect(html).toContain('page=2&amp;release=release-one#tokyo-transactions');
     expect(read).toHaveBeenCalledWith({ city: '13103', year: '2025', quarter: '4' }, expect.objectContaining({ q: 'Azabu' }));
   });
 

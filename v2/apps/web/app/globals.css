@@ -27,6 +27,9 @@
 
 .ui-icon { display: inline-block; flex: 0 0 auto; vertical-align: middle; }
 
+html:has(dialog[data-explore-results-panel]:modal),
+body:has(dialog[data-explore-results-panel]:modal) { overflow: hidden; }
+
 :root {
   --canvas: #f7f8fa;
   --surface: #f0f2f5;
@@ -76,6 +79,10 @@
   --text-control: 0.875rem;
   --text-ui: 1rem;
   --control-min: 44px;
+  --control-height: 48px;
+  --radius-control: 8px;
+  --radius-panel: 16px;
+  --control-selected-border: #bfd3f5;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;

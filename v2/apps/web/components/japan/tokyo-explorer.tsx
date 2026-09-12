@@ -9,6 +9,7 @@ import type { JapanFilters, JapanPublished, JapanPublishedScope } from '@/lib/ja
 import { readCachedJapanCoverage, readCachedJapanPublication } from '@/lib/japan/publication-cache.server';
 import { SiteFooter } from '@/components/site-footer';
 import { MarketExploreShell } from '../market-ui/market-shell';
+import { AppliedFilters, type AppliedFilter } from '../market-ui/applied-filters';
 import { TokyoPeriodFields } from './tokyo-period-fields';
 import { TokyoMapPanel } from './tokyo-map-panel';
 import styles from './tokyo-explorer.module.css';
@@ -43,9 +44,10 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
     for (const [key, value] of Object.entries(scope)) next.set(key, value);
     next.set('page', String(page));
     if (data) next.set('release', data.releaseId);
-    return href(`/jp/tokyo/explore/?${next}`);
+    return href(`/jp/tokyo/explore/?${next}#tokyo-transactions`);
   };
-  const yen = new Intl.NumberFormat('en', { style: 'currency', currency: 'JPY', maximumFractionDigits: 0 });
+  const numberLocale = locale === 'ko' ? 'ko-KR' : locale === 'zh-CN' ? 'zh-CN' : 'en-GB';
+  const yen = new Intl.NumberFormat(numberLocale, { style: 'currency', currency: 'JPY', maximumFractionDigits: 0 });
   const wardName = (city: string) => TOKYO_WARDS.find(([code]) => code === city)?.[1] ? t(TOKYO_WARDS.find(([code]) => code === city)![1]) : t('Ward');
   const scopeLink = ({ city, year, quarter }: JapanPublishedScope) => {
     const next = new URLSearchParams({ city, year, quarter, type: filters.type });
@@ -60,15 +62,35 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
     return available ? [available] : [];
   });
   const years = Array.from({ length: new Date().getUTCFullYear() - 2023 }, (_, i) => String(2024 + i));
-  const advancedFiltersActive = Boolean(error) || (!useLatestPeriod && (scope.year !== '2025' || scope.quarter !== '4'))
+  const advancedFiltersActive = Boolean(error)
     || filters.type !== TOKYO_CONDOMINIUM_TYPE || filters.minArea !== null || filters.maxArea !== null;
+  const filterLink = (remove: string[], values: Record<string, string> = {}) => {
+    const next = new URLSearchParams(query);
+    next.set('city', scope.city);
+    if (!useLatestPeriod) { next.set('year', scope.year); next.set('quarter', scope.quarter); }
+    for (const key of [...remove, 'page', 'release']) next.delete(key);
+    for (const [key, value] of Object.entries(values)) next.set(key, value);
+    return href(`/jp/tokyo/explore/?${next}`);
+  };
+  const typeLabel = filters.type === TOKYO_CONDOMINIUM_TYPE ? t('Apartments & condominiums')
+    : filters.type === 'Residential Land(Land and Building)' ? t('Land with a building')
+    : filters.type === 'Residential Land(Land Only)' ? t('Land only') : filters.type || t('All property types');
+  const applied: AppliedFilter[] = error ? [] : [
+    ...(filters.type ? [{ id: 'type', label: typeLabel, href: filterLink([], { type: '' }) }] : []),
+    ...(!useLatestPeriod ? [{ id: 'period', label: `${scope.year} Q${scope.quarter}`, href: filterLink(['year', 'quarter']) }] : []),
+    ...(filters.q ? [{ id: 'q', label: filters.q, href: filterLink(['q']) }] : []),
+    ...(filters.neighbourhood ? [{ id: 'neighbourhood', label: filters.neighbourhood, href: filterLink(['neighbourhood']) }] : []),
+    ...(filters.minArea !== null || filters.maxArea !== null ? [{ id: 'area',
+      label: filters.minArea !== null && filters.maxArea !== null ? `${filters.minArea}–${filters.maxArea} m²`
+        : filters.minArea !== null ? `≥ ${filters.minArea} m²` : `≤ ${filters.maxArea} m²`,
+      href: filterLink(['minArea', 'maxArea']) }] : []),
+  ];
   return <>
     <SiteHeader copy={{ ...homepageCopy.header, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', homeHref: locale === 'en' ? '/' : locale === 'ko' ? '/ko/' : '/zh-cn/', marketLabel: t('Tokyo'), links: [{ label: t('Explore'), href: href('/jp/tokyo/explore/'), isCurrent: true }] }} />
     <main className={styles.page}>
       <MarketExploreShell eyebrow={t("Tokyo")} title={t("Explore")} period={`${wardName(scope.city)} · ${scope.year} Q${scope.quarter} · JPY`}
+        discoveryPanel={{ title: t('Neighbourhoods & prices'), open: t('View neighbourhoods & prices'), close: t('Close results'), anchorId: 'tokyo-transactions' }}
         layers={<div>
-          <p className={styles.intro}>{t('Choose a ward, then a neighbourhood to compare recorded home prices.')}</p>
-          <p className={styles.propertyScope}>{filters.type === TOKYO_CONDOMINIUM_TYPE ? t('Apartments & condominiums') : filters.type || t('All property types')} · {t('Change property type in More filters.')}</p>
       <form key={JSON.stringify([scope, filters.q, filters.type, filters.minArea, filters.maxArea, useLatestPeriod])} className={styles.filters} action={href("/jp/tokyo/explore/")} method="get" aria-label="Tokyo transaction filters">
         <div className={styles.primaryFilters}>
         <label className={styles.search}>{t('Neighbourhood, layout or built year')}<input name="q" placeholder="Azabu, 2LDK, 2010…" defaultValue={filters.q} maxLength={100} /></label>
@@ -85,6 +107,8 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
         </fieldset>
         </details>
       </form>
+      <AppliedFilters items={applied} label={t('Applied filters')} removeLabel={t('Remove filter')}
+        clearLabel={t('Reset filters')} clearHref={href(`/jp/tokyo/explore/?city=${scope.city}`)} />
       {coverage !== null && <div className={styles.coverage}>
         <p className={styles.source}>{scope.year} Q{scope.quarter} · {periodCoverage?.length ?? 0} {t('of 23 wards available')}</p>
         {publishedWards.length > 0 && <details>
@@ -110,7 +134,7 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
       </div> : <>
         <div id="tokyo-transactions" className={styles.results}><h2>{data.filteredCount.toLocaleString('en')} {t('recorded transactions')}</h2><p>{(filters.neighbourhood || filters.q) ? `${filters.neighbourhood || filters.q} · ` : ''}{wardName(scope.city)} · {scope.year} Q{scope.quarter}</p></div>
         {(filters.neighbourhood || filters.q) && <Link className={styles.clearSearch} href={scopeLink({ ...scope, sourceCount: data.sourceCount })} prefetch={false}>{locale === 'ko' ? `${wardName(scope.city)} 전체 동네 보기` : locale === 'zh-CN' ? `查看${wardName(scope.city)}所有街区` : `Show all neighbourhoods in ${wardName(scope.city)}`}</Link>}
-        <p className={styles.source}>{data.sourceCount.toLocaleString('en')} {locale === 'ko' ? '건 · 이 구·분기 전체 거래' : locale === 'zh-CN' ? '笔 · 本区本季度全部成交' : 'records in this ward and quarter'} · {t('Source retrieved')} {new Date(data.retrievedAt).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</p>
+        <p className={styles.source}>{data.sourceCount.toLocaleString(numberLocale)} {locale === 'ko' ? '건 · 이 구·분기 전체 거래' : locale === 'zh-CN' ? '笔 · 本区本季度全部成交' : 'records in this ward and quarter'} · {t('Source retrieved')} {new Intl.DateTimeFormat(numberLocale, { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(data.retrievedAt))}</p>
         <p className={styles.source}>{t('Price, high to low · Area-level records; building names are not disclosed.')}</p>
         <div className={styles.list}>
           {data.records.map(row => <article className={styles.row} key={row.recordReference}>

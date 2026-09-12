@@ -7,3 +7,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## SignedPrice interface rules
+
+For interface changes, follow `../../../docs/design/signedprice-interface-rules.md`.
+Reuse the existing semantic tokens and shared market controls. Keep the city order
+Seoul, Singapore, Dubai, Tokyo and preserve locale-specific links and source scope.

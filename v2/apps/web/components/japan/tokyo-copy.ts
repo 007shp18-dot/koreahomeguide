@@ -1,5 +1,10 @@
 export type TokyoLocale = 'en' | 'ko' | 'zh-CN';
 const copy: Record<string, [string, string]> = {
+  'Applied filters': ['적용된 필터', '已应用的筛选'], 'Remove filter': ['필터 해제', '移除筛选'],
+  'Reset filters': ['필터 초기화', '重置筛选'],
+  'Neighbourhoods & prices': ['동네·실거래가', '街区与成交价'],
+  'View neighbourhoods & prices': ['동네·실거래가 보기', '查看街区与成交价'],
+  'Close results': ['목록 닫기', '关闭结果'],
   'Chiyoda':['지요다구','千代田区'], 'Chuo':['주오구','中央区'], 'Minato':['미나토구','港区'],
   'Shinjuku':['신주쿠구','新宿区'], 'Bunkyo':['분쿄구','文京区'], 'Taito':['다이토구','台东区'],
   'Sumida':['스미다구','墨田区'], 'Koto':['고토구','江东区'], 'Shinagawa':['시나가와구','品川区'],
