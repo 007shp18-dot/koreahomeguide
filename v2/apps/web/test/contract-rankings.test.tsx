@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { ContractRankings } from '../components/rankings/contract-rankings';
 import { rankingMoney, type ContractRankingRow } from '../lib/rankings/contract-ranking-query';
@@ -6,6 +6,7 @@ import { rankRegions, resolveRentCohort, regionalRentSql, type RegionalRentRow }
 import data from '../../../../artifacts/rankings/2026-09-11-sales.json';
 import rentalData from '../../../../artifacts/rankings/2026-09-11-regional-rents.json';
 const rows = data.rows as unknown as (ContractRankingRow & {order:string})[];
+vi.mock('next/navigation', async importOriginal => ({ ...await importOriginal<typeof import('next/navigation')>(), useRouter: () => ({ push: vi.fn() }) }));
 describe('reviewed rankings', () => {
  it('keeps 50 distinct sales in correct order for each market and direction',()=>{
   for(const city of ['seoul','singapore'])for(const order of ['highest','lowest']){

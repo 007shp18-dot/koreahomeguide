@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 import { RankingMarketsHub } from '@/components/rankings/ranking-markets-hub';
 import { indexableMetadata } from '@/lib/public-metadata';
@@ -17,7 +18,10 @@ export const metadata: Metadata = indexableMetadata({
 
 export default async function RankingsHubPage({ searchParams }: { searchParams: Promise<Record<string,string | string[] | undefined>> }) {
  const query = await searchParams;
- if (query.city === 'tokyo') return <RankingMarketsHub><TokyoRankings /></RankingMarketsHub>;
+ if (query.city === 'tokyo') {
+  if (query.kind === 'rent' || query.order === 'lowest') redirect('/rankings/?city=tokyo&kind=sale&order=highest');
+  return <RankingMarketsHub><TokyoRankings /></RankingMarketsHub>;
+ }
  const city = query.city === 'singapore' ? 'singapore' : 'seoul';
  const kind = query.kind === 'rent' ? 'rent' : 'sale';
  const order = query.order === 'lowest' ? 'lowest' : 'highest';

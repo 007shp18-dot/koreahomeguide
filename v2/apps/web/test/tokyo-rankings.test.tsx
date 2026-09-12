@@ -4,6 +4,7 @@ import data from '../data/tokyo-ranking-2026-q1.json';
 import { TokyoRankings } from '../components/rankings/tokyo-rankings';
 
 vi.mock('../lib/rankings/contracts.server', () => ({ contractRankings: vi.fn(), regionalRentRankings: vi.fn() }));
+vi.mock('next/navigation', async importOriginal => ({ ...await importOriginal<typeof import('next/navigation')>(), useRouter: () => ({ push: vi.fn() }) }));
 
 describe('Tokyo published ranking snapshot', () => {
   it('keeps 50 distinct anonymous records in descending reported price order', () => {
@@ -21,6 +22,11 @@ describe('Tokyo published ranking snapshot', () => {
     expect(html).toContain('Equal prices');
     expect(html).toContain('https://www.reinfolib.mlit.go.jp/');
     expect(html).not.toMatch(/streetview|street-view|\/buildings\//i);
+    expect(html).toContain('<table>');
+    expect(html.match(/scope="row"/g)).toHaveLength(50);
+    expect(html).toContain('Sources, coverage and ranking rules');
+    expect(html).toContain('name="city"');
+    expect(html).toContain('Show rankings');
   });
   it('routes Tokyo without loading Seoul or Singapore rankings', async () => {
     const { default: Page } = await import('../app/(en)/rankings/page');
@@ -30,5 +36,9 @@ describe('Tokyo published ranking snapshot', () => {
     expect(html).toContain('JPY 1,200,000,000');
     expect(contractRankings).not.toHaveBeenCalled();
     expect(regionalRentRankings).not.toHaveBeenCalled();
+  });
+  it('normalizes unsupported filters when switching from another market to Tokyo', async () => {
+    const { default: Page } = await import('../app/(en)/rankings/page');
+    await expect(Page({ searchParams: Promise.resolve({ city: 'tokyo', kind: 'rent', order: 'lowest' }) })).rejects.toMatchObject({ digest: expect.stringContaining('/rankings/?city=tokyo&kind=sale&order=highest') });
   });
 });
