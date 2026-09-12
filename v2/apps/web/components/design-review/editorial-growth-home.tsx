@@ -11,7 +11,7 @@ import styles from './editorial-growth-home.module.css';
 const COPY = {
   en: {
     title: 'Four cities.', titleEnd: 'Many ways to live.',
-    lead: 'Choose a city. Explore recorded prices, neighbourhoods and buying costs.',
+    lead: 'Neighbourhoods, homes and the prices behind them.',
     markets: 'Choose a city', explore: 'Explore', index: 'The city index',
     next: 'Take a closer look', tools: 'Tools', toolsNote: 'Budgets & buying costs',
     insights: 'Insights', insightsNote: 'Stories behind the numbers',
@@ -22,7 +22,7 @@ const COPY = {
   },
   ko: {
     title: '네 개의 도시,', titleEnd: '저마다의 생활.',
-    lead: '도시를 고르고, 실제 거래 가격과 동네·구매 비용을 살펴보세요.',
+    lead: '동네의 풍경에서 실제 거래 가격까지.',
     markets: '도시 선택', explore: '탐색', index: '도시 둘러보기',
     next: '조금 더 자세히', tools: '도구', toolsNote: '예산 비교와 매입 비용',
     insights: '인사이트', insightsNote: '숫자로 읽는 시장 이야기',
@@ -33,7 +33,7 @@ const COPY = {
   },
   'zh-CN': {
     title: '四座城市，', titleEnd: '不同的生活。',
-    lead: '选择城市，了解真实成交价格、街区与购房成本。',
+    lead: '从街区风景，到住宅与成交价格。',
     markets: '选择城市', explore: '探索', index: '城市索引',
     next: '进一步了解', tools: '工具', toolsNote: '预算比较与购房成本',
     insights: '洞察', insightsNote: '数字背后的市场故事',
@@ -100,18 +100,18 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
 
     <section className={styles.section} data-home-region="markets" aria-label={copy.markets}>
       <nav className={styles.cityIndex} aria-label={copy.markets}>
-        {markets.map(market => <ExploreLink key={market.id} href={`${prefix}${market.primaryAction.href}`}>
+        {markets.map(market => <a key={market.id} href={`#city-${market.id}`}>
           <span>{market.position}</span>{copy.cities[market.id]}
-          <UiIcon name="arrow-right" />
-        </ExploreLink>)}
+        </a>)}
       </nav>
       <ol className={styles.marketGrid}>
         {markets.map((market, index) => {
           const city = copy.cities[market.id];
           const photo = CITY_PHOTOS[market.id];
-          const href = `${prefix}${market.primaryAction.href}`;
+          const href = `${locale === 'ko' && market.id !== 'jp-tokyo' ? '/ko' : ''}${market.primaryAction.href}`;
+          const englishDestination = locale !== 'en' && (locale === 'zh-CN' || market.id === 'jp-tokyo');
           return <li className={styles.marketCard} key={market.id} id={`city-${market.id}`} data-market-id={market.id} data-contextual-action={market.id}>
-            <ExploreLink href={href} className={styles.cityLink} data-primary-action="explore" aria-label={`${copy.explore} ${city}`}>
+            <ExploreLink href={href} className={styles.cityLink} data-primary-action="explore" aria-label={`${copy.explore} ${city}${englishDestination ? ' · English' : ''}`}>
               <div className={styles.photo}>
                 <Image src={photo.src} alt={photo.caption[locale === 'ko' ? 'ko' : 'en']} fill
                   loading={index === 0 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'}
@@ -122,7 +122,7 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
                 <div><p className={styles.country}>{market.position} / {photo.country}</p><h2>{city}</h2></div>
                 <span className={styles.cityArrow}><UiIcon name="arrow-right" /></span>
               </div>
-              <p className={styles.place}>{photo.place}<span>{copy.explore} <UiIcon name="arrow-right" /></span></p>
+              <p className={styles.place}>{photo.place}{englishDestination ? ' · English' : ''}</p>
             </ExploreLink>
           </li>;
         })}

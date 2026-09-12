@@ -4,7 +4,7 @@
 .tabs a[aria-current] { color:var(--ink); border-color:var(--accent); font-weight:650; }
 .heading { display:flex; justify-content:space-between; gap:20px; align-items:end; }
 .heading p { font-size:.875rem; letter-spacing:.08em; color:var(--muted); margin:0 0 10px; }
-.heading h2 { margin:0; font-size:clamp(1.35rem,2.5vw,2rem); font-weight:650; letter-spacing:-.025em; line-height:1.2; }
+.heading h2 { flex:1; min-width:0; margin:0; font-size:clamp(1.35rem,2.5vw,2rem); font-weight:650; letter-spacing:-.025em; line-height:1.2; }
 .heading > span { white-space:nowrap; font-size:1.25rem; font-weight:650; color:var(--accent); }
 .meta,.note { font-size:.875rem; color:var(--muted); line-height:1.65; margin:16px 0; }
 .note { margin-bottom:24px; }
