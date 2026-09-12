@@ -37,8 +37,8 @@ export function TopTenPreview({
         <h2 id="top-ten-title">{ko ? '두바이·도쿄 TOP 10' : 'Dubai + Tokyo TOP 10'}</h2>
       </div>
       <p id="top-ten-intro" className={styles.lede}>{ko
-        ? '공식 공개 자료에서 같은 의미의 숫자만 골라, 두 시장의 상위 10개 항목을 먼저 공개합니다.'
-        : 'A first look at the ten highest reported entries from official public data, with the unit of ranking made explicit.'}</p>
+        ? '공식 공개 자료에서 같은 의미의 숫자만 골라, 두 시장의 상위 10개 항목을 먼저 공개합니다. 아래에 순위 기준도 함께 적었습니다.'
+        : 'A first look at the ten highest reported entries from official public data. The unit of ranking is made explicit below.'}</p>
     </div>
 
     <div className={styles.grid}>
