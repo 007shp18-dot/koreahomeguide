@@ -8,7 +8,7 @@ describe('browser-only Dubai comparisons', () => {
     expect(comparisonHash(preset)).not.toMatch(/price|\?/);
   });
   it('rejects malformed, oversized, duplicate and unsupported inputs', () => {
-    for (const value of [null, {}, { ...preset, areas: ['a'] }, { ...preset, areas: ['a', 'b', 'c', 'd'] }, { ...preset, areas: ['a', 'a'] }, { ...preset, areas: ['a', '<script>'] }, { ...preset, stage: 'rent' }, { ...preset, from: '2026-02-30' }, { ...preset, to: '2025-01-01' }]) expect(parseDubaiComparison(value)).toBeNull();
+    for (const value of [null, {}, { ...preset, areas: ['a'] }, { ...preset, areas: ['a', 'b', 'c', 'd'] }, { ...preset, areas: ['a', 'a'] }, { ...preset, areas: ['a', '<script>'] }, { ...preset, stage: 'rent' }, { ...preset, housing: ['apartment'] }, { ...preset, stage: ['ready'] }, { ...preset, from: '2026-02-30' }, { ...preset, to: '2025-01-01' }]) expect(parseDubaiComparison(value)).toBeNull();
     for (const hash of ['#other', '#compare=%', '#compare=' + 'x'.repeat(2050)]) expect(comparisonFromHash(hash)).toBeNull();
     expect(savedComparisons('[')).toEqual([]);
     expect(savedComparisons(' '.repeat(16001))).toEqual([]);

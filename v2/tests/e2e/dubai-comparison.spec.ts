@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+test.skip(process.env.SIGNEDPRICE_TEST_DUBAI_COMPARISON !== 'true', 'Runs in the dedicated Dubai evidence job; the general release fixture withholds Dubai prices.');
+
 test('Dubai comparison saves and reopens without data or map requests', async ({ page }, testInfo) => {
   await page.goto('/ae/dubai/explore/');
   const add = page.getByRole('button', { name: /^Add to comparison:/ });
@@ -53,4 +55,6 @@ test('Dubai caps candidates at three and handles off-plan and old shared periods
   await expect(dialog.getByText('연간 임대료 중앙값')).toHaveCount(0);
   await expect(dialog.getByText('현재 미공개 지역')).toBeVisible();
   await expect(dialog.getByText('저장·공유 당시와 공개 기간이 달라졌습니다. 아래에는 현재 공개 자료를 표시합니다.')).toBeVisible();
+  await dialog.getByRole('button', { name: 'Explore로 돌아가기', exact: true }).click();
+  await expect(page.getByRole('tab', { name: '완공 주택', exact: true })).toHaveAttribute('aria-selected', 'true');
 });

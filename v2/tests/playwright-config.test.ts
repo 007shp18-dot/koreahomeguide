@@ -17,6 +17,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
+import { createDubaiEvidenceRepository } from '../apps/web/lib/dubai/evidence-repository.server';
 import { buildContractCheckRouteModel } from '../apps/web/lib/contract-check/route-model.server';
 import { buildPublicAreaExploreModel } from '../apps/web/lib/public-market/area-route-model.server';
 import { observedBuildingRepositoryFromEnvironment } from '../apps/web/lib/public-market/observed-building-repository.server';
@@ -42,6 +43,16 @@ function installLocalReleaseEnvironment() {
 }
 
 describe('Playwright release target configuration', () => {
+  it('installs valid four-area Dubai evidence only for the dedicated comparison run', async () => {
+    const general = createPlaywrightConfig({}).webServer;
+    const comparison = createPlaywrightConfig({ SIGNEDPRICE_TEST_DUBAI_COMPARISON: 'true' }).webServer;
+    if (!general || Array.isArray(general) || !comparison || Array.isArray(comparison)) throw new Error('Expected local servers');
+    expect(general.env).not.toHaveProperty('SIGNEDPRICE_DUBAI_AREA_EVIDENCE_ARTIFACT');
+    const env = comparison.env!;
+    const repository = await createDubaiEvidenceRepository({ serialized: env.SIGNEDPRICE_DUBAI_AREA_EVIDENCE_ARTIFACT!, expectedDigest: env.SIGNEDPRICE_DUBAI_AREA_EVIDENCE_SHA256! });
+    expect(repository.listAreas()).toHaveLength(4);
+    expect(repository.getArea('marsa-dubai')?.segments[0]?.sales.offPlan).not.toBeNull();
+  });
   it('keeps the config-loaded Check fixture independent of workspace TypeScript', () => {
     const source = readFileSync(
       new URL('./e2e/contract-check-evidence-fixture.ts', import.meta.url),

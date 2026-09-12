@@ -87,6 +87,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Install locked Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
+      - name: Verify Dubai comparisons with isolated public evidence
+        env:
+          SIGNEDPRICE_TEST_DUBAI_COMPARISON: 'true'
+        run: pnpm exec playwright test dubai-comparison.spec.ts --project=desktop-chromium --project=mobile-chromium --reporter=line --output=dubai-comparison-test-results
       - name: Run wide, desktop and mobile workbook release gate
         run: pnpm e2e --project=desktop-chromium --project=mobile-chromium --project=tablet-chromium --project=wide-chromium
       - name: Verify Seoul bubble interactions with isolated map SDK
@@ -103,6 +107,7 @@ jobs:
           path: |
             v2/test-results
             v2/map-test-results
+            v2/dubai-comparison-test-results
             v2/playwright-report
           if-no-files-found: ignore
           retention-days: 7
@@ -111,6 +116,8 @@ jobs:
         uses: actions/upload-artifact@v4.6.2
         with:
           name: signedprice-v2-tool-design-screenshots
-          path: v2/playwright-report/data/*.png
+          path: |
+            v2/playwright-report/data/*.png
+            v2/dubai-comparison-test-results
           if-no-files-found: ignore
           retention-days: 7
