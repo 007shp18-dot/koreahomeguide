@@ -5,10 +5,10 @@ import { rankDubaiProjects, rankTokyoTransactions } from '../lib/rankings/top-te
 describe('top ten insight ranking', () => {
   it('ranks eligible Dubai projects by median transaction value and excludes small samples', () => {
     const rows = [
-      { id: 'small', name: 'Small sample', areaSlug: 'x', housing: 'apartment', stage: 'ready', n: 29, medianPriceAed: 99_000_000, medianPricePerSqmAed: 1 },
-      { id: 'b', name: 'B Project', areaSlug: 'x', housing: 'apartment', stage: 'off-plan', n: 30, medianPriceAed: 2_000_000, medianPricePerSqmAed: 20_000 },
-      { id: 'a', name: 'A Project', areaSlug: 'x', housing: 'apartment', stage: 'ready', n: 31, medianPriceAed: 2_000_000, medianPricePerSqmAed: 19_000 },
-      { id: 'c', name: 'C Project', areaSlug: 'y', housing: 'villa', stage: 'off-plan', n: 50, medianPriceAed: 3_000_000, medianPricePerSqmAed: 15_000 },
+      { id: 'small', projectNumber: 'small', name: 'Small sample', areaSlug: 'x', housing: 'apartment', stage: 'ready', n: 29, medianPriceAed: 99_000_000, medianPricePerSqmAed: 1 },
+      { id: 'b', projectNumber: 'b', name: 'B Project', areaSlug: 'x', housing: 'apartment', stage: 'off-plan', n: 30, medianPriceAed: 2_000_000, medianPricePerSqmAed: 20_000 },
+      { id: 'a', projectNumber: 'a', name: 'A Project', areaSlug: 'x', housing: 'apartment', stage: 'ready', n: 31, medianPriceAed: 2_000_000, medianPricePerSqmAed: 19_000 },
+      { id: 'c', projectNumber: 'c', name: 'C Project', areaSlug: 'y', housing: 'villa', stage: 'off-plan', n: 50, medianPriceAed: 3_000_000, medianPricePerSqmAed: 15_000 },
     ];
 
     expect(rankDubaiProjects(rows).map(({ rank, name }) => ({ rank, name }))).toEqual([
