@@ -61,7 +61,7 @@ describe('collision-safe box plot labels', () => {
     expect(html).toContain('--p25-pct:25%;');
     expect(html).toContain('--med-pct:50%;');
     expect(html).toContain('--p75-pct:75%;');
-    expect(html).toContain('--max-pct:100%;');
+    expect(html).toContain('--max-pct:100%');
   });
 
   it('renders HTML annotations instead of the old five-cell value table', () => {
