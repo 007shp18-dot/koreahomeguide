@@ -40,8 +40,15 @@ test('Tokyo ward map changes the ward while retaining period and property filter
   expect(geometry.x).toBeGreaterThanOrEqual(0);
   expect(geometry.x + geometry.width).toBeLessThanOrEqual(viewport.width + 1);
   if (viewport.width <= 760) {
-    expect(geometry.listTop).not.toBeNull();
-    expect(geometry.bottom).toBeLessThanOrEqual(geometry.listTop! + 1);
+    // The mobile discovery action stays at the viewport bottom while the map
+    // scrolls. Its position is intentionally independent of the map's bottom.
+    const action = await directory.getByRole('button', { name: 'View neighbourhoods & prices', exact: true }).boundingBox();
+    expect(action).not.toBeNull();
+    expect(action!.height).toBeGreaterThanOrEqual(44);
+    expect(action!.x).toBeGreaterThanOrEqual(0);
+    expect(action!.x + action!.width).toBeLessThanOrEqual(viewport.width + 1);
+    expect(action!.y).toBeGreaterThanOrEqual(0);
+    expect(action!.y + action!.height).toBeLessThanOrEqual(viewport.height + 1);
   } else {
     expect(geometry.listRight).not.toBeNull();
     expect(geometry.listRight!).toBeLessThanOrEqual(geometry.x + 1);
