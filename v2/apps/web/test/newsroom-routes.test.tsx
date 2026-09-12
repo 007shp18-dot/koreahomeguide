@@ -100,7 +100,7 @@ describe('public Newsroom routes', () => {
     });
   });
 
-  it('keeps official news briefs and external headlines together without mixing in analysis', () => {
+  it('shows the external feed without the removed SignedPrice roundup', () => {
     const filters = resolveNewsroomFilters({ type: 'news', market: 'seoul' });
     const html = renderToStaticMarkup(<NewsroomIndex
       articles={[newsArticle, article]}
@@ -109,7 +109,8 @@ describe('public Newsroom routes', () => {
       headlines={<p>External feed</p>}
     />);
 
-    expect(html).toContain(newsArticle.title);
+    expect(html).not.toContain(newsArticle.title);
+    expect(html).not.toContain('From SignedPrice');
     expect(html).toContain('External feed');
     expect(html).not.toContain(article.title);
     expect(html).not.toContain(policy.title);
