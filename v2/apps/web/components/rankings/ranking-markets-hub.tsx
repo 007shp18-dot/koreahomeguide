@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
@@ -8,7 +9,7 @@ import styles from '../global-product-hub.module.css';
 
 type Locale = 'en' | 'ko' | 'zh-CN';
 
-export function RankingMarketsHub({ locale = 'en' }: Readonly<{ locale?: Locale }>) {
+export function RankingMarketsHub({ locale = 'en', children }: Readonly<{ locale?: Locale; children?: ReactNode }>) {
   const ko = locale === 'ko';
   const zh = locale === 'zh-CN';
   const prefix = ko ? '/ko' : zh ? '/zh-cn' : '';
@@ -30,9 +31,10 @@ export function RankingMarketsHub({ locale = 'en' }: Readonly<{ locale?: Locale 
         title={ko ? '가격 순위' : zh ? '房产成交排行榜' : 'Property price rankings'}
         description={ko
           ? '서울 건물과 싱가포르 단지의 신고 가격을 자료 기간별로 높은 순서부터 비교해 보세요.'
-          : zh ? '按公开数据期间，比较首尔楼宇和新加坡项目的申报成交价格。' : 'Compare reported prices across Seoul buildings and Singapore projects, ranked from highest to lowest for each source period.'}
+          : zh ? '按公开数据期间，比较首尔楼宇和新加坡项目的申报成交价格。' : 'Compare individual sale prices and district rental medians, with clear conditions and source dates.'}
         actions={<Link href={`${prefix}/guides/`}>{ko ? '지역 비교 가이드' : zh ? '如何阅读排行榜' : 'How to read rankings'}</Link>}
       />
+      {children}
       <section className={styles.section} aria-labelledby="ranking-markets-title">
         <div className={styles.sectionHeading}><p>{ko ? '시장별 순위' : zh ? '各市场排行' : 'Market rankings'}</p><h2 id="ranking-markets-title">{ko ? '시장별 실거래를 비교하세요.' : zh ? '按市场比较实际成交。' : 'Compare reported sales by market.'}</h2></div>
         <div className={styles.productGrid}>
