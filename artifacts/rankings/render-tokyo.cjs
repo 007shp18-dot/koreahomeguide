@@ -1,0 +1,46 @@
+// Exact data graphic: the website and export consume the same dated snapshot.
+const fs = require('node:fs');
+const path = require('node:path');
+const { createRequire } = require('node:module');
+const nextRequire = createRequire(require.resolve('../../v2/apps/web/node_modules/next/package.json'));
+const sharp = nextRequire('sharp');
+const data = require('../../v2/apps/web/data/tokyo-ranking-2026-q1.json');
+const out = process.argv[2];
+if (!out) throw new Error('Pass an output directory');
+const esc = s => String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;');
+const text = (x,y,s,size=24,color='#172030',weight=400,anchor='start') => `<text x="${x}" y="${y}" font-family="Inter, DejaVu Sans, sans-serif" font-size="${size}" fill="${color}" font-weight="${weight}" text-anchor="${anchor}">${esc(s)}</text>`;
+const badge = (n,x,y,big=false) => {
+  const w=big?88:60,h=big?106:52;
+  const fill=n===1?'#f2c65d':n===2?'#dbe3ed':'#e5bc98';
+  return `<path d="M${x} ${y}h${w}v${h}l-${w/2} -8l-${w/2} 8Z" fill="${fill}"/>`+text(x+w/2,y+(big?28:16),'TOP',big?18:11,'#172030',700,'middle')+text(x+w/2,y+(big?79:39),n,big?46:25,'#172030',700,'middle');
+};
+let svg='<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350"><rect width="1080" height="1350" fill="white"/>';
+svg+=text(56,60,'signedprice',29,'#172030',700)+text(1024,60,'THE SALE LIST',18,'#687385',600,'end');
+svg+='<path d="M56 86H1024" stroke="#172030" stroke-width="2"/>';
+svg+=text(56,159,'TOKYO',70,'#172030',700)+text(1024,154,'TOP 10',38,'#2457b8',700,'end');
+svg+=text(56,211,'Highest reported resale-condo prices',37,'#172030',600);
+svg+=text(56,250,'JAN–MAR 2026  /  23 WARDS  /  ANONYMISED RECORDS',22,'#536073',500);
+svg+='<path d="M56 277H1024" stroke="#172030" stroke-width="3"/>';
+const lead=data.rows[0];
+svg+=badge(1,56,306,true)+text(168,334,lead.district,35,'#172030',700)+text(168,372,`${lead.municipality} · ${lead.areaSqm} m²`,23,'#536073');
+svg+=text(168,436,`JPY ${(lead.price/1e6).toLocaleString('en-US')} million`,62,'#2457b8',700)+text(168,474,'Total reported price · Japanese yen',21,'#536073');
+svg+='<path d="M56 498H1024" stroke="#172030" stroke-width="2"/>';
+svg+=text(56,531,'RANK',16,'#536073',700)+text(146,531,'DISTRICT / WARD · AREA',16,'#536073',700)+text(1024,531,'TOTAL PRICE · JPY MILLION',16,'#536073',700,'end');
+data.rows.slice(1,10).forEach((r,i)=>{
+  const y=545+i*62;
+  if(i%2===0) svg+=`<rect x="56" y="${y}" width="968" height="62" fill="#f4f6f8"/>`;
+  svg+=r.order<=3?badge(r.order,58,y+4):text(88,y+38,String(r.order).padStart(2,'0'),25,'#536073',600,'middle');
+  svg+=text(146,y+27,r.district,24,'#172030',600)+text(146,y+51,`${r.municipality} · ${r.areaSqm} m²`,17,'#536073');
+  svg+=text(1008,y+37,`${r.price/1e6} million`,30,'#2457b8',700,'end');
+});
+svg+='<path d="M56 1118H1024" stroke="#172030" stroke-width="2"/>';
+svg+=text(56,1151,'Reported records, not building identities. Checked 12 Sep 2026.',19,'#536073');
+svg+=text(56,1180,'Equal prices: larger area first. Another JPY 450m record sits at #11.',18,'#536073');
+svg+=text(56,1209,'Source: MLIT, Japan · Real Estate Information Library',18,'#536073');
+svg+=text(56,1238,'Edited by SignedPrice · Questionnaire data; may be revised.',18,'#536073');
+svg+='<rect x="56" y="1261" width="968" height="60" rx="7" fill="#172030"/>';
+svg+=text(78,1300,'See all 50 prices & areas',24,'white',600)+text(1002,1298,'signedprice.com/rankings?city=tokyo',20,'white',500,'end');
+svg+='</svg>';
+fs.mkdirSync(out,{recursive:true});
+fs.writeFileSync(path.join(out,'SignedPrice_Tokyo_TOP10_2026-Q1.svg'),svg);
+sharp(Buffer.from(svg)).png().toFile(path.join(out,'SignedPrice_Tokyo_TOP10_2026-Q1.png')).catch(e=>{console.error(e);process.exitCode=1;});

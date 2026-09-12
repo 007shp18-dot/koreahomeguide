@@ -6,6 +6,7 @@ import { ContractRankings } from '@/components/rankings/contract-rankings';
 import { contractRankings, regionalRentRankings } from '@/lib/rankings/contracts.server';
 import { resolveRentCohort } from '@/lib/rankings/regional-rent-query';
 import { RegionalRentRankings } from '@/components/rankings/regional-rent-rankings';
+import { TokyoRankings } from '@/components/rankings/tokyo-rankings';
 
 export const metadata: Metadata = indexableMetadata({
   path: '/rankings/',
@@ -16,6 +17,7 @@ export const metadata: Metadata = indexableMetadata({
 
 export default async function RankingsHubPage({ searchParams }: { searchParams: Promise<Record<string,string | string[] | undefined>> }) {
  const query = await searchParams;
+ if (query.city === 'tokyo') return <RankingMarketsHub><TokyoRankings /></RankingMarketsHub>;
  const city = query.city === 'singapore' ? 'singapore' : 'seoul';
  const kind = query.kind === 'rent' ? 'rent' : 'sale';
  const order = query.order === 'lowest' ? 'lowest' : 'highest';
