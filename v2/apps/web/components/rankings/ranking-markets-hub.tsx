@@ -15,6 +15,7 @@ export function RankingMarketsHub({ locale = 'en', children }: Readonly<{ locale
   const prefix = ko ? '/ko' : zh ? '/zh-cn' : '';
   const rankingPrefix = ko ? '/ko' : ''; // Chinese uses the same English market ranking screens.
   const currentHref = `${prefix}/rankings/`;
+  const topTenHref = zh ? '/rankings/top-10/' : `${prefix}/rankings/top-10/`;
   const header = {
     ...homepageCopy.header,
     homeHref: `${prefix}/`,
@@ -30,9 +31,9 @@ export function RankingMarketsHub({ locale = 'en', children }: Readonly<{ locale
       <ResearchPageHeading
         title={ko ? '가격 순위' : zh ? '房产成交排行榜' : 'Property price rankings'}
         description={ko
-          ? '서울 건물과 싱가포르 단지의 신고 가격을 자료 기간별로 높은 순서부터 비교해 보세요.'
-          : zh ? '按公开数据期间，比较首尔楼宇和新加坡项目的申报成交价格。' : 'Compare individual sale prices and district rental medians, with clear conditions and source dates.'}
-        actions={<Link href={`${prefix}/guides/`}>{ko ? '지역 비교 가이드' : zh ? '如何阅读排行榜' : 'How to read rankings'}</Link>}
+          ? '서울·싱가포르·두바이·도쿄의 공개 가격을 집계 조건과 자료 기간별로 비교해 보세요.'
+          : zh ? '按公开数据期间，比较首尔、新加坡、迪拜和东京的申报价格。' : 'Compare reported prices across Seoul, Singapore, Dubai and Tokyo, with clear conditions and source dates.'}
+        actions={<><Link href={topTenHref}>{ko ? '두바이·도쿄 TOP 10 보기' : zh ? '查看迪拜·东京 TOP 10' : 'Open Dubai + Tokyo TOP 10'}</Link><Link href={`${prefix}/guides/`}>{ko ? '지역 비교 가이드' : zh ? '如何阅读排行榜' : 'How to read rankings'}</Link></>}
       />
       {children}
       {!children && <section className={styles.section} aria-labelledby="latest-rankings-title">
