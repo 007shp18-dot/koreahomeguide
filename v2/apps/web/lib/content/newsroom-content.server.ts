@@ -15,6 +15,15 @@ export const listNewsroomArticles=cache(async(locale:ContentLocale='en'):Promise
  const slugs=new Set(stored.map(a=>a.slug));
  return [...stored,...listPortfolioRecords(locale).filter(a=>!slugs.has(a.slug))].sort((a,b)=>b.publishedAt.localeCompare(a.publishedAt));
 });
+
+// Localized Insights already labels English originals. Include stored articles
+// as well as the static portfolio, preferring an available local translation.
+export const listInsightArticles=cache(async(locale:ContentLocale='en'):Promise<readonly EditorialPortfolioRecord[]>=>{
+ if(locale==='en')return listNewsroomArticles('en');
+ const [local,english]=await Promise.all([listNewsroomArticles(locale),listNewsroomArticles('en')]);
+ const translated=new Set(local.flatMap(article=>[article.slug,article.translationGroupId??article.slug]));
+ return [...local,...english.filter(article=>article.type!=='news-brief'&&!translated.has(article.slug)&&!translated.has(article.translationGroupId??article.slug))];
+});
 export const getNewsroomArticle=cache(async(slug:string,locale:ContentLocale='en'):Promise<EditorialPortfolioRecord|null>=>{
  const stored=await getPublishedContent(locale,slug);
  if(stored && isNews(stored))return storedEditorialRecord(stored);
