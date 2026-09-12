@@ -14,7 +14,7 @@ it('uses Korean social images for the Korean directory and calculator',()=>{
 it.each(['en','ko','zh-CN'] as const)('publishes a translated tools directory with all four market tools: %s',locale=>{
  const html=renderToStaticMarkup(<ToolsHub locale={locale}/>);
  expect(html.match(/<h1\b/g)).toHaveLength(1);expect(html).not.toContain('Preparing');
- expect(globalNavigation(locale)).toHaveLength(5);
+ expect(globalNavigation(locale)).toHaveLength(6);
  expect(html).toContain('/jp/tokyo/tools');expect(html).toContain('/ae/dubai/check');expect(html).toContain('/sg/singapore/check');expect(html).toContain('/tools/property-scenario');
 });
 it('groups every existing tool once by decision',()=>{
@@ -33,7 +33,7 @@ it.each(['en','ko','zh-CN'] as const)('keeps calculator parameters out of indexa
  expect(languageDestinations('/tools/property-scenario/').ko).toBe('/ko/tools/property-scenario/');
 });
 it('selects only Tools for Check and Explore for search or ranking pages',()=>{
- for(const [href,label] of [['/kr/seoul/check/','Tools'],['/ko/tools/property-scenario/','Tools'],['/kr/seoul/explore/','Explore'],['/kr/seoul/rankings/','Explore']]) {
+ for(const [href,label] of [['/kr/seoul/check/','Tools'],['/ko/tools/property-scenario/','Tools'],['/kr/seoul/explore/','Explore'],['/kr/seoul/rankings/','Rankings']]) {
   const html=renderToStaticMarkup(<SiteHeader copy={{brand:'signedprice',homeLabel:'home',navigationLabel:'Local',links:[{label:'Current',href:href!,isCurrent:true}]}}/>);
   const nav=html.match(/<nav[^>]*aria-label="Primary navigation"[\s\S]*?<\/nav>/)?.[0] ?? '';
   expect(nav.match(/aria-current="page"/g)).toHaveLength(1);expect(nav).toMatch(new RegExp(`aria-current="page"[^>]*>${label}</a>`));

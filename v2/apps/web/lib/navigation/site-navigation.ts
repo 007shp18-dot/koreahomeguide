@@ -45,6 +45,7 @@ export function globalNavigation(locale: SiteLocale = 'en') {
   const zh = locale === 'zh-CN';
   if (locale === 'ko') return [
     { label: '둘러보기', href: '/ko/prices/' },
+    { label: '랭킹', href: '/ko/rankings/' },
     { label: '인사이트', href: '/ko/news/' },
     { label: '뉴스', href: '/ko/news/?type=news' },
     { label: '도구', href: '/ko/tools/' },
@@ -52,6 +53,7 @@ export function globalNavigation(locale: SiteLocale = 'en') {
   ];
   return [
     { label: zh ? '探索' : 'Explore', href: zh ? '/zh-cn/prices/' : '/prices/' },
+    { label: zh ? '排行榜' : 'Rankings', href: zh ? '/zh-cn/rankings/' : '/rankings/' },
     { label: zh ? '洞察' : 'Insights', href: zh ? '/zh-cn/news/' : '/news/' },
     { label: zh ? '新闻' : 'News', href: zh ? '/zh-cn/news/?type=news' : '/news/?type=news' },
     { label: zh ? '工具' : 'Tools', href: zh ? '/zh-cn/tools/' : '/tools/' },

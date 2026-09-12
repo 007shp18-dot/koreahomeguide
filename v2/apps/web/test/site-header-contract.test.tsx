@@ -18,7 +18,7 @@ const header: SiteHeaderModel = {
   links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
 };
 
-const globalLabels = ['Explore', 'Insights', 'News', 'Tools', 'Guides'] as const;
+const globalLabels = ['Explore', 'Rankings', 'Insights', 'News', 'Tools', 'Guides'] as const;
 
 describe('signedprice public navigation', () => {
   it('keeps global navigation free of duplicate market-specific actions and uses decorative vector disclosure icons', () => {
@@ -29,7 +29,7 @@ describe('signedprice public navigation', () => {
     expect(html).toContain('aria-label="Choose language"');
     expect(html).toContain('aria-label="Choose a city"');
   });
-  it('renders the same five global destinations in the same order', () => {
+  it('renders the same six global destinations in the same order', () => {
     for (const copy of [homepageCopy.header, header]) {
       const html = renderToStaticMarkup(<SiteHeader copy={copy} />);
       const positions = globalLabels.map((label) => html.indexOf(`>${label.replace('&', '&amp;')}</`));
@@ -43,7 +43,7 @@ describe('signedprice public navigation', () => {
   it('keeps Explore as a direct destination without a lone Rankings submenu', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={{ ...header, links: [{ label: 'Rankings', href: '/rankings/', isCurrent: true }] }} />);
     expect(html).not.toContain('aria-label="Explore options"');
-    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/prices\/?"[^>]*>Explore<\/a>/);
+    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/rankings\/?"[^>]*>Rankings<\/a>/);
     expect(html).not.toContain('site-header__mobile-sub-link');
   });
 

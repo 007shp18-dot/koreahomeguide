@@ -65,7 +65,7 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
   if (href === '/tools/' || href === '/ko/tools/') return currentHref.includes('/tools/') || currentHref.includes('/check/') || currentHref.includes('/passport/') || currentHref.includes('/shortlist/') || currentHref.includes('/saved/');
   if (href.includes('/rankings/')) return currentHref.includes('/rankings/');
   if (href === '/prices/') {
-    return currentHref.includes('/explore/') || currentHref.includes('/rankings/') || currentHref === '/prices/';
+    return currentHref.includes('/explore/') || currentHref === '/prices/';
   }
   return currentHref === '/markets/'
     || /^\/(?:kr\/seoul|sg|ae\/dubai|jp\/tokyo)\/?$/.test(currentHref);
@@ -188,4 +188,3 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
     </header><PassportBudgetContext /></>
   );
 }
-

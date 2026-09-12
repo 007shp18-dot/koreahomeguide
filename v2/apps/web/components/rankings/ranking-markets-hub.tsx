@@ -35,6 +35,10 @@ export function RankingMarketsHub({ locale = 'en', children }: Readonly<{ locale
         actions={<Link href={`${prefix}/guides/`}>{ko ? '지역 비교 가이드' : zh ? '如何阅读排行榜' : 'How to read rankings'}</Link>}
       />
       {children}
+      {!children && <section className={styles.section} aria-labelledby="latest-rankings-title">
+        <div className={styles.sectionHeading}><h2 id="latest-rankings-title">{ko ? '최신 실거래 TOP 50 · 지역별 임대 순위' : '最新成交 TOP 50 · 区域租金排行'}</h2><p>{ko ? '개별 매매 거래금액과 같은 조건의 지역별 월세 중앙값을 비교합니다. 상세 표는 영어로 제공됩니다.' : '比较单笔成交总价及相同条件下的区域月租中位数。详细表格以英文提供。'}</p></div>
+        <div className={styles.productGrid}>{(['seoul', 'singapore'] as const).flatMap(city => (['sale', 'rent'] as const).map(kind => <Link key={`${city}-${kind}`} href={`/rankings/?city=${city}&kind=${kind}`}><h3>{city === 'seoul' ? (ko ? '서울' : '首尔') : (ko ? '싱가포르' : '新加坡')} · {kind === 'sale' ? (ko ? '매매 TOP 50' : '成交 TOP 50') : (ko ? '지역별 월세' : '区域月租')}</h3><strong>{ko ? '최고·최저 순위 보기 (영어) →' : '查看最高及最低排行（英文）→'}</strong></Link>))}</div>
+      </section>}
       <section className={styles.section} aria-labelledby="ranking-markets-title">
         <div className={styles.sectionHeading}><p>{ko ? '시장별 순위' : zh ? '各市场排行' : 'Market rankings'}</p><h2 id="ranking-markets-title">{ko ? '시장별 실거래를 비교하세요.' : zh ? '按市场比较实际成交。' : 'Compare reported sales by market.'}</h2></div>
         <div className={styles.productGrid}>
