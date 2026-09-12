@@ -8,7 +8,7 @@ import { resolveNewsroomFilters } from '@/components/newsroom/newsroom-index';
 
 import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
 import { EditorialPortfolioIndex } from '@/components/newsroom/editorial-portfolio-index';
-import { listNewsroomArticles } from '@/lib/content/newsroom-content.server';
+import { listInsightArticles, listNewsroomArticles } from '@/lib/content/newsroom-content.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 import styles from '@/components/tools/tools.module.css';
 
@@ -23,7 +23,7 @@ export default async function ChineseNewsPage({ searchParams }: Readonly<{ searc
   const params = await searchParams ?? {};
   const requested = params.type;
   const filters = resolveNewsroomFilters(params);
-  if (filters.type === 'insights') return <EditorialGrowthPublicFrame locale="zh-CN" surface="content" currentHref={`/zh-cn${filters.canonicalHref}`}><InsightsIndex articles={await listNewsroomArticles('zh-CN')} market={filters.market} topic={filters.topic} locale="zh-CN" /></EditorialGrowthPublicFrame>;
+  if (filters.type === 'insights') return <EditorialGrowthPublicFrame locale="zh-CN" surface="content" currentHref={`/zh-cn${filters.canonicalHref}`}><InsightsIndex articles={await listInsightArticles('zh-CN')} market={filters.market} topic={filters.topic} locale="zh-CN" /></EditorialGrowthPublicFrame>;
   if (filters.type === 'news') return <EditorialGrowthPublicFrame locale="zh-CN" surface="content" currentHref={`/zh-cn${filters.canonicalHref}`}><NewsFeedIndex articles={await listNewsroomArticles('zh-CN')} market={filters.market} locale="zh-CN" headlines={<Suspense fallback={<p role="status">正在加载新闻…</p>}><StoredExternalHeadlines market={filters.market} preview={false} locale="zh-CN" /></Suspense>} /></EditorialGrowthPublicFrame>;
   const type = typeof requested === 'string' && [...tabs, ...insightTabs].some(([id]) => id === requested) ? requested : 'insights';
   const records = (await listNewsroomArticles('zh-CN')).filter(article => article.type !== 'guide'
@@ -40,4 +40,3 @@ export default async function ChineseNewsPage({ searchParams }: Readonly<{ searc
     <EditorialPortfolioIndex locale="zh-CN" records={records} section="news" />
   </div></EditorialGrowthPublicFrame>;
 }
-

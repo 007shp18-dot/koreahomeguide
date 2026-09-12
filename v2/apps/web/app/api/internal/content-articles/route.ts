@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 import {
   saveEditorialArticle,
@@ -88,9 +89,19 @@ export async function POST(request: Request) {
   if (input === null) return NextResponse.json({ error: 'invalid_request' }, { status: 400 });
   try {
     await saveEditorialArticle(input);
-    const href = input.contentType === 'policy-update'
+    const prefix = input.locale === 'en' ? '' : input.locale === 'ko' ? '/ko' : '/zh-cn';
+    const articlePath = input.contentType === 'policy-update'
       ? `/news/policy/${input.slug}/`
       : input.contentType === 'guide' ? `/guides/${input.slug}/` : `/news/${input.slug}/`;
+    const href = `${prefix}${articlePath}`;
+    revalidateTag(`newsroom:${input.locale}`, { expire: 0 });
+    // English originals can also appear in the localized Insights lists.
+    for (const listPrefix of input.locale === 'en' ? ['', '/ko', '/zh-cn'] : [prefix]) {
+      revalidatePath(`${listPrefix}/news/`);
+    }
+    revalidatePath(href);
+    if (input.contentType === 'guide') revalidatePath(`${prefix}/guides/`);
+    revalidatePath('/editorial-sitemap.xml');
     return NextResponse.json({ state: input.status, slug: input.slug, href });
   } catch (error) {
     if (error instanceof Error && error.message === 'database_not_configured') {

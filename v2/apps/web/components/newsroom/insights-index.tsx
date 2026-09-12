@@ -5,7 +5,7 @@ import { listNeighbourhoodStories, neighbourhoodHref, type NeighbourhoodPhoto } 
 import { CITY_JOURNEY_ARTICLES } from '../../content/city-journey-articles';
 import { journeyArticlePhoto } from '../../content/journey-article-photos';
 import { insightPhoto } from '../../content/insight-photos';
-import { isInsightReference } from '../../content/insight-curation';
+import { isInsightReference, isNeighborhoodEditorial } from '../../content/insight-curation';
 import { journeyArticleHref } from '../../content/city-journey-routes';
 import { BUDGET_GUIDE_SLUGS } from '../../content/guide-directory';
 import { listPortfolioRecords } from '../../content/portfolio-manifest';
@@ -41,7 +41,14 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
   const translatedGroups = new Set(translated.map(item => item.translationGroupId ?? item.slug));
   const fallback = locale === 'en' ? [] : english.filter(item => !translatedGroups.has(item.translationGroupId ?? item.slug) && !translated.some(local => local.slug === item.slug));
   const records = [...articles, ...fallback, ...translated.filter(item => item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))].filter(item => !isInsightReference(item.slug));
-  const analysis: Insight[] = records.filter(item => item.status === 'published' && item.evidenceState !== 'withdrawn' && item.type !== 'news-brief' && (item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))).map(item => ({ investment: ['market-brief', 'data-story', 'policy-update'].includes(item.type) || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug), language: item.locale, id: item.id, title: item.title, deck: item.deck, href: 'canonicalHref' in item ? String(item.canonicalHref) : `${item.locale === 'ko' ? '/ko' : item.locale === 'zh-CN' ? '/zh-cn' : ''}/news/${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`, date: item.publishedAt, city: cities.find(city => marketIds[city] === item.marketId) ?? null, topic: topicFor(englishTitles.get(item.slug) ?? ('translationGroupId' in item && typeof item.translationGroupId === 'string' ? englishTitles.get(item.translationGroupId) : undefined) ?? item.title, item.type), type: item.type, photo: insightPhoto(item.slug), uploadedPhoto: editorialImages(item.bodyMarkdown)[0] }));
+  const analysis: Insight[] = records.filter(item => item.status === 'published' && item.evidenceState !== 'withdrawn' && item.type !== 'news-brief' && (item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))).map(item => ({
+    investment: !isNeighborhoodEditorial(item.slug) && (['market-brief', 'data-story', 'policy-update'].includes(item.type) || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug)),
+    language: item.locale, id: item.id, title: item.title, deck: item.deck,
+    href: 'canonicalHref' in item ? String(item.canonicalHref) : `${item.locale === 'ko' ? '/ko' : item.locale === 'zh-CN' ? '/zh-cn' : ''}/news/${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`,
+    date: item.publishedAt, city: cities.find(city => marketIds[city] === item.marketId) ?? null,
+    topic: isNeighborhoodEditorial(item.slug) ? 'Neighborhood living' : topicFor(englishTitles.get(item.slug) ?? ('translationGroupId' in item && typeof item.translationGroupId === 'string' ? englishTitles.get(item.translationGroupId) : undefined) ?? item.title, item.type),
+    type: item.type, photo: insightPhoto(item.slug), uploadedPhoto: editorialImages(item.bodyMarkdown)[0],
+  }));
   const seen = new Set<string>();
   const now = Date.now();
   return [...notebook, ...local, ...analysis].filter(item => {
