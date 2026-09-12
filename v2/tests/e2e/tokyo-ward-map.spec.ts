@@ -8,6 +8,11 @@ test('Tokyo ward map changes the ward while retaining period and property filter
   await expect(map).toBeVisible();
   await expect(map.getByRole('heading', { name: 'Explore Tokyo by area' })).toBeVisible();
   await expect(map.getByRole('button', { name: 'Open ward and neighbourhood price map' })).toHaveCount(0);
+  const mobile = page.viewportSize()!.width <= 760;
+  if (mobile) {
+    await directory.getByRole('button', { name: 'View neighbourhoods & prices', exact: true }).click();
+    await expect(page.getByRole('dialog', { name: 'Neighbourhoods & prices', exact: true })).toBeVisible();
+  }
   await directory.getByText('Change ward · 23 wards', { exact: true }).click();
   await expect(directory.locator('a[data-ward]')).toHaveCount(23);
   const shibuya = directory.locator('a[data-ward="13113"]');
@@ -19,6 +24,11 @@ test('Tokyo ward map changes the ward while retaining period and property filter
   await expect(page.locator('select[name="city"]')).toHaveValue('13113');
   await expect(page.locator('input[name="minArea"]')).toHaveValue('50');
   await expect(directory.getByRole('heading', { name: 'Neighbourhoods in Shibuya' })).toBeVisible();
+  if (mobile) {
+    await page.getByRole('button', { name: 'Close results', exact: true }).click();
+    await expect(page.getByRole('dialog', { name: 'Neighbourhoods & prices', exact: true })).not.toBeVisible();
+    await expect(directory.getByRole('button', { name: 'View neighbourhoods & prices', exact: true })).toBeVisible();
+  }
   // Keyboard navigation can still be smoothly scrolling the page. Measure both
   // regions in one frame so viewport-relative coordinates remain comparable.
   const geometry = await map.evaluate(element => {
