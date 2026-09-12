@@ -44,6 +44,7 @@ describe('global property database migration', () => {
       '0028_tool_usage_daily.sql',
       '0029_japan_backfill.sql',
       '0030_tokyo_editorial_market.sql',
+      '0031_editorial_image_uploads.sql',
     ]);
     expect(bundles.find(({ name }) => name === '0003_global_property_core.sql')?.statements.length)
       .toBeGreaterThan(10);

@@ -38,8 +38,8 @@
 .empty { padding:32px 0; font-size:1rem; }
 .filters { display:flex; flex-wrap:wrap; gap:16px; align-items:end; margin:28px 0; }
 .filters label { display:grid; gap:8px; font-size:.875rem; }
-.filters select { max-width:100%; min-height:44px; padding:8px 12px; background:var(--surface,#fff); color:var(--ink); border:1px solid var(--line); border-radius:4px; font:inherit; font-size:1rem; }
-.filters button { min-height:44px; padding:10px 20px; background:var(--ink); color:white; border:0; border-radius:4px; font:inherit; cursor:pointer; }
+.filters select { max-width:100%; min-height:44px; padding:8px 12px; background:var(--surface,#fff); color:var(--ink); border:1px solid var(--line); border-radius:8px; font:inherit; font-size:1rem; }
+.filters button { min-height:44px; padding:10px 20px; background:var(--ink); color:white; border:0; border-radius:8px; font:inherit; cursor:pointer; }
 @media(max-width:640px) { .heading { align-items:start; }.heading > span { font-size:1rem; }.tabs { gap:4px 20px; }.tableWrap th,.tableWrap td { padding:15px 10px; }.tableWrap tbody th { min-width:190px; } }
 @media(max-width:640px) {
  .tableWrap { overflow:visible; }
