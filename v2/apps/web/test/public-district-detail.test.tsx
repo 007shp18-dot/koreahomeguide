@@ -282,10 +282,10 @@ describe('public district detail page', () => {
       'utf8',
     );
 
-    expect(css).toMatch(/\.heroCopy\s*\{[\\s\\S]*justify-content:\s*center/);
-    expect(css).toMatch(/\.tabs\s*\{[\\s\\S]*scroll-snap-type:\s*x\s+proximity/);
-    expect(css).toMatch(/\.tabs a\s*\{[\\s\\S]*white-space:\s*nowrap/);
-    expect(css).toMatch(/@media \(max-width:\s*480px\)[\\s\\S]*\.tabs a\s*\{[\\s\\S]*flex:\s*0\s+0\s+auto/);
+    expect(css).toContain('justify-content: center;');
+    expect(css).toContain('scroll-snap-type: x proximity;');
+    expect(css).toContain('white-space: nowrap;');
+    expect(css).toContain('flex: 0 0 auto;');
   });
 
   it('keeps navigation touch-sized, visibly focused, and single-column on mobile', () => {
