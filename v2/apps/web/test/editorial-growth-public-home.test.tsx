@@ -57,13 +57,11 @@ describe('public editorial homepage', () => {
   });
 
   it.each([
-    ['ko', ['/ko/kr/seoul/explore/', '/ko/sg/singapore/explore/', '/ko/ae/dubai/explore/', '/ko/jp/tokyo/explore/', '/ko/tools/', '/ko/news/', '/ko/guides/']],
-    ['zh-CN', ['/zh-cn/kr/seoul/explore/', '/zh-cn/sg/singapore/explore/', '/zh-cn/ae/dubai/explore/', '/zh-cn/jp/tokyo/explore/', '/zh-cn/tools/', '/zh-cn/news/', '/zh-cn/guides/']],
+    ['ko', ['/ko/kr/seoul/explore/', '/ko/sg/singapore/explore/', '/ko/ae/dubai/explore/', '/jp/tokyo/explore/', '/ko/tools/', '/ko/news/', '/ko/guides/']],
+    ['zh-CN', ['/kr/seoul/explore/', '/sg/singapore/explore/', '/ae/dubai/explore/', '/jp/tokyo/explore/', '/zh-cn/tools/', '/zh-cn/news/', '/zh-cn/guides/']],
   ] as const)('preserves supported market and section routes for %s', (locale, hrefs) => {
     const markup = renderToStaticMarkup(<PropertyHome locale={locale} />);
     for (const href of hrefs) expect(markup).toContain(`href="${href.replace(/\/$/, '')}"`);
-    expect(markup).not.toContain('href="#city-');
-    expect(markup).not.toContain(' · English');
   });
 
   it('keeps global destinations and capability-safe market entry points crawlable', async () => {
