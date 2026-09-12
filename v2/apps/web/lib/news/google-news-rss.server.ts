@@ -22,7 +22,7 @@ const feeds: readonly GoogleNewsFeed[] = Object.freeze([
   { market: 'seoul', marketLabel: 'Seoul', query: 'Seoul real estate OR South Korea housing' },
   { market: 'singapore', marketLabel: 'Singapore', query: 'Singapore property OR HDB OR condominium' },
   { market: 'dubai', marketLabel: 'Dubai', query: 'Dubai property OR real estate OR off-plan' },
-  { market: 'tokyo', marketLabel: 'Tokyo', query: '東京 (住宅 OR マンション OR 家賃 OR 賃貸)', language: 'ja', country: 'JP' },
+  { market: 'tokyo', marketLabel: 'Tokyo', query: '東京 (住宅 OR マンション OR 家賃 OR 賃貸) -site:rakumachi.jp', language: 'ja', country: 'JP' },
   { market: 'dubai', marketLabel: 'Dubai', query: 'دبي (عقارات OR شقق OR سكن OR إيجارات)', language: 'ar', country: 'AE' },
 ] as const);
 
