@@ -1,7 +1,6 @@
 
 import type { Metadata } from 'next';
 
-import { RankingMarketsHub } from '@/components/rankings/top-ten';
 import { TopTenPreview } from '@/components/rankings/top-ten';
 import { RankingMarketsHub as RankingsLayout } from '@/components/rankings/ranking-markets-hub';
 import { indexableMetadata } from '@/lib/public-metadata';
