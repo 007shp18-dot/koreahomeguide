@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { rankingHref, rankingMoney, type RankingOrder, type ContractRankingRow } from '../../lib/rankings/contract-ranking-query';
+import { rankingHref, rankingMoney, formatRankingDate, type RankingOrder, type ContractRankingRow } from '../../lib/rankings/contract-ranking-query';
 import { buildingDisplayName } from '../../lib/public-market/seoul-display-names';
 import styles from './contract-rankings.module.css';
 
@@ -19,7 +19,7 @@ export function ContractRankings({ rows, checkedAt, city, kind, order = 'highest
   <nav className={styles.orderTabs} aria-label="Price order">{(['highest','lowest'] as const).map(value => <Link key={value} href={`/rankings/?city=${city}&kind=${kind}&order=${value}`} aria-current={value === order ? 'page' : undefined}>{value === 'highest' ? 'Highest prices' : 'Lowest prices'}</Link>)}</nav>
   <div className={styles.heading}><div><p>INDIVIDUAL CONTRACTS</p><h2 id="contract-ranking-title">{title}</h2></div><span>TOP 50</span></div>
   {first ? <>
-   <p className={styles.meta}>Contract month: <strong>{first.month}</strong> · {first.sample.toLocaleString('en-US')} eligible records · Source collected: {first.source_as_of.slice(0,10)} · Checked: {checkedAt?.slice(0,10)} (UTC)</p>
+   <p className={styles.meta}>Contract month: <strong>{first.month}</strong> · {first.sample.toLocaleString('en-US')} eligible records · Source collected: {formatRankingDate(first.source_as_of)} · Checked: {formatRankingDate(checkedAt)} (UTC)</p>
    <p className={styles.note}>Ranked by {kind === 'sale' ? 'total sale price, not price per m²' : 'monthly rent, not total housing cost'}. {city === 'seoul' && kind === 'rent' ? 'Refundable deposits are shown separately.' : ''} Latest available completed calendar month; late filings and corrections may change this list.</p>
    {order === 'lowest' && <p className={styles.caution}>Lowest reported amounts are not available offers or affordability recommendations. Compare floor area{kind === 'rent' ? ', deposits and eligibility requirements' : ', tenure and transaction conditions'}. Special terms may apply; the source does not establish open-market availability.</p>}
    <div className={styles.tableWrap} role="region" aria-label={title} tabIndex={0}><table>
