@@ -42,6 +42,28 @@ describe('collision-safe box plot labels', () => {
     expect(html.indexOf('data-plot-layout="legend"')).toBeGreaterThan(html.indexOf('plotCanvas'));
   });
 
+  it('keeps an out-of-range published summary visible instead of clipping it to the quote axis', () => {
+    const html = renderToStaticMarkup(
+      <BoxPlot
+        summary={{
+          ...summary,
+          min: 100,
+          p25: 300,
+          med: 500,
+          p75: 700,
+          max: 900,
+        }}
+        axis={{ min: 200, max: 400 }}
+        formatValue={(value) => `${value}`}
+      />,
+    );
+
+    expect(html).toContain('--p25-pct:25%;');
+    expect(html).toContain('--med-pct:50%;');
+    expect(html).toContain('--p75-pct:75%;');
+    expect(html).toContain('--max-pct:100%;');
+  });
+
   it('renders HTML annotations instead of the old five-cell value table', () => {
     const html = renderToStaticMarkup(
       <BoxPlot
