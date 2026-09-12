@@ -69,12 +69,18 @@ export function contractRankingSql(order: RankingOrder = 'highest') {
 
 export type ContractRankingRow = {
  dataset_id: string; city: 'seoul' | 'singapore'; kind: 'sale' | 'rent'; id: string;
- rank: number; position: number; sample: number; name: string; month: string; source_as_of: string;
+ rank: number; position: number; sample: number; name: string; month: string; source_as_of: string | Date | number | null;
  contract_date: string; amount: string | number; deposit: string | number | null;
  area: string | number | null; area_range: string | null; floor_value: number | null;
  floor_range: string | null; bedrooms: number | null; district_slug: string | null;
  district: string | null; segment: string | null; entity_id: string;
 };
+
+export function formatRankingDate(value: unknown) {
+ if (value instanceof Date) return value.toISOString().slice(0, 10);
+ if (typeof value === 'string' || typeof value === 'number') return String(value).slice(0, 10);
+ return '';
+}
 
 export function rankingHref(row: ContractRankingRow) {
  return row.city === 'seoul'
