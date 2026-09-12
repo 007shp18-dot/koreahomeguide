@@ -44,7 +44,7 @@ test('budget shortlist saves conditions and tracks newly observed records across
   const savedPageNote = page.locator('[data-research-note]');
   await savedPageNote.locator('summary').click();
   await expect(savedPageNote.getByRole('textbox')).toHaveValue('출퇴근 시간에 소음 확인\n주차 공간 문의');
-  await page.screenshot({ path: testInfo.outputPath('discovery-saved-note.png'), fullPage: true });
+  await testInfo.attach('discovery-saved-note', { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
   await page.reload();
   await savedPageNote.locator('summary').click();
   await expect(savedPageNote.getByRole('textbox')).toHaveValue('출퇴근 시간에 소음 확인\n주차 공간 문의');

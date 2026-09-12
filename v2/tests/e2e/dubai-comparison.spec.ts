@@ -75,7 +75,7 @@ test('Dubai recent places follow real selections, reopen their filters and clear
   await expect(page.locator('[data-recent-places]')).toHaveCount(0);
   const places = page.locator('button[aria-controls="dubai-selected-area"]');
   await expect(places.first()).toBeVisible();
-  const firstName = (await places.nth(0).innerText()).trim();
+  const firstName = (await places.nth(0).locator('strong').innerText()).trim();
   await places.nth(0).click();
   await expect.poll(() => new URL(page.url()).searchParams.get('area')).toBeTruthy();
   const firstArea = new URL(page.url()).searchParams.get('area');
@@ -86,11 +86,11 @@ test('Dubai recent places follow real selections, reopen their filters and clear
   await page.screenshot({ path: testInfo.outputPath('discovery-recent-dubai.png'), fullPage: true });
   await recent.getByRole('link', { name: firstName, exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`area=${firstArea}`));
-  await expect(page.locator('button[aria-controls="dubai-selected-area"][aria-pressed="true"]')).toHaveText(firstName);
+  await expect(page.locator('button[aria-controls="dubai-selected-area"][aria-pressed="true"] strong')).toHaveText(firstName);
   await page.goto('/ko/saved/');
   await page.locator('[data-recent-places="all"]').getByRole('link', { name: firstName, exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`area=${firstArea}`));
-  await expect(page.locator(`button[aria-controls="dubai-selected-area"][aria-pressed="true"]`)).toHaveText(firstName);
+  await expect(page.locator('button[aria-controls="dubai-selected-area"][aria-pressed="true"] strong')).toHaveText(firstName);
   await page.waitForLoadState('networkidle');
   const requests: string[] = [];
   page.on('request', request => { if (new URL(request.url()).pathname.startsWith('/api/')) requests.push(request.url()); });
