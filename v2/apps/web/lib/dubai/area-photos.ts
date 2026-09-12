@@ -28,11 +28,11 @@ export const DUBAI_AREA_PHOTOS: readonly DubaiAreaPhotoRecord[] = [
     license: 'CC BY 4.0', licenseUrl: 'https://creativecommons.org/licenses/by/4.0/',
   },
   {
-    slug: 'burj-khalifa', name: 'Downtown Dubai', date: '2013-09-19',
-    thumbnail: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Downtown_Dubai.Burj_Khalifa.jpg/330px-Downtown_Dubai.Burj_Khalifa.jpg',
-    detail: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Downtown_Dubai.Burj_Khalifa.jpg/960px-Downtown_Dubai.Burj_Khalifa.jpg',
-    author: 'Andrew Moore', source: 'https://commons.wikimedia.org/wiki/File:Downtown_Dubai.Burj_Khalifa.jpg',
-    license: 'CC BY-SA 2.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0/',
+    slug: 'burj-khalifa', name: 'Downtown Dubai', date: '2018-01-25',
+    thumbnail: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Downtown_Dubai_2018.jpg/330px-Downtown_Dubai_2018.jpg',
+    detail: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Downtown_Dubai_2018.jpg/960px-Downtown_Dubai_2018.jpg',
+    author: 'Iwona Rege', source: 'https://commons.wikimedia.org/wiki/File:Downtown_Dubai_2018.jpg',
+    license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
   },
   {
     slug: 'palm-jumeirah', name: 'Palm Jumeirah', date: '2022-11-13',
