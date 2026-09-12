@@ -9,7 +9,9 @@ test('Dubai comparison saves and reopens without data or map requests', async ({
   await expect(page.getByRole('button', { name: 'Compare (0/3)', exact: true })).toHaveCount(0);
   const photo = page.locator('[data-dubai-area-photo="marsa-dubai"] img');
   await expect(photo).toHaveAttribute('loading', 'lazy');
-  await expect(photo).toHaveAttribute('src', '/assets/dubai-areas/marsa-dubai-thumb.webp');
+  const photoUrl = new URL((await photo.getAttribute('src'))!, page.url());
+  expect(photoUrl.origin).toBe(new URL(page.url()).origin);
+  expect(photoUrl.pathname).toBe('/assets/dubai-areas/marsa-dubai-thumb.webp');
   await expect(photo).toBeVisible();
   await expect.poll(() => photo.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
