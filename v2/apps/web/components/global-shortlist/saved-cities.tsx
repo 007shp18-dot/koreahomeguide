@@ -8,6 +8,7 @@ import { parseSavedSearch, readSavedSearch, subscribeSavedSearch } from '@/lib/s
 import { shortlistHref, type ShortlistLocale } from './copy';
 import styles from './saved-cities.module.css';
 import { ResearchNote } from '../discovery/research-note';
+import { SavedPropertyReviews } from '../market-ui/living-context';
 import { RecentPlaces } from '../discovery/recent-places';
 
 const empty = () => '';
@@ -46,7 +47,7 @@ export function SavedCities({ locale = 'en', initiallyOpen = false }: { locale?:
   const seoulRaw = useSyncExternalStore(subscribeSavedSearch, readSavedSearch, empty);
   const places = useMemo(() => [...parseSavedSearch(seoulRaw).buildings.map(p => ({ ...p, market:'seoul' as const })), ...parseGlobalSaved(globalRaw).places], [globalRaw,seoulRaw]);
   const view = <SavedPlacesView locale={locale} places={places} city={city} onCityChange={setCity} />;
-  if (initiallyOpen) return <section className={styles.saved} aria-label={locale === 'ko' ? '관심 목록' : locale === 'zh-CN' ? '收藏' : 'Saved places'}><RecentPlaces locale={locale} market={city === 'all' ? undefined : city as City} />{view}<InstallAppCard locale={locale} /></section>;
+  if (initiallyOpen) return <section className={styles.saved} aria-label={locale === 'ko' ? '관심 목록' : locale === 'zh-CN' ? '收藏' : 'Saved places'}><SavedPropertyReviews locale={locale} /><RecentPlaces locale={locale} market={city === 'all' ? undefined : city as City} />{view}<InstallAppCard locale={locale} /></section>;
   return <details className={styles.saved}><summary>{locale === 'ko' ? '모든 도시 관심 목록' : locale === 'zh-CN' ? '所有城市的收藏' : 'Saved across cities'} · {places.length}</summary>{view}</details>;
 }
 

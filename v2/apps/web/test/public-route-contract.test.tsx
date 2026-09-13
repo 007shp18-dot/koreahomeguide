@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { existsSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { resolveSitemap } from 'next/dist/build/webpack/loaders/metadata/resolve-route-data';
 
 vi.mock('server-only', () => ({}));
 
@@ -31,6 +32,7 @@ import {
 } from '../lib/public-market/route-model.server';
 import { buildPublicDistrictModel } from '../lib/public-market/area-route-model.server';
 import { indexableMetadata } from '../lib/public-metadata';
+import { propertyReviewMetadata } from '../lib/research/property-review-metadata';
 import { buildMarketPageModel } from '../lib/route-model';
 import { dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-repository.server';
 
@@ -58,6 +60,27 @@ const rankingCanonicalUrls = [
   '/zh-cn/sg/singapore/rankings/',
 ].map(path => `https://www.signedprice.com${path}`);
 const tokyoCanonicalUrls = ['', '/ko', '/zh-cn'].flatMap(locale => ['/jp/tokyo/', '/jp/tokyo/explore/'].map(path => `https://www.signedprice.com${locale}${path}`));
+
+// This approved editorial cohort is independent of the Seoul transaction release.
+// Keep the identities explicit so an accidental addition or omission fails the contract.
+const propertyReviewCanonicalPaths = [
+  '/living/',
+  '/living/?profile=kr-acro-river-park',
+  '/living/?profile=kr-acro-seoul-forest',
+  '/living/?profile=kr-mapo-raemian-prugio',
+  '/living/?profile=sg-marina-one-residences',
+  '/living/?profile=sg-park-place-plq',
+  '/living/?profile=sg-wallich-residence',
+  '/living/?profile=ae-skyflame-1',
+  '/living/?profile=ae-skyterraces',
+  '/living/?profile=ae-valia',
+  '/living/?profile=jp-park-city-toyosu',
+  '/living/?profile=jp-brillia-towers-meguro',
+  '/living/?profile=jp-park-court-shibuya',
+] as const;
+const propertyReviewCanonicalUrls = propertyReviewCanonicalPaths.flatMap(path =>
+  ['', '/ko'].map(prefix => `https://www.signedprice.com${prefix}${path}`),
+);
 
 function releasedDubaiEvidenceUrls(): string[] {
   const repository = dubaiEvidenceRepositoryFromEnvironment();
@@ -320,11 +343,42 @@ describe('public migration containment', () => {
     });
   });
 
-  it('publishes only the approved global, market-evidence, and guide cohort in the sitemap', () => {
+  it('indexes only the published review languages with reciprocal canonical metadata', () => {
+    const entries = new Map(sitemap().map(entry => [entry.url, entry] as const));
+    for (const path of propertyReviewCanonicalPaths) {
+      const englishUrl = `https://www.signedprice.com${path}`;
+      const koreanUrl = `https://www.signedprice.com/ko${path}`;
+      const profile = new URL(englishUrl).searchParams.get('profile') ?? undefined;
+      const languages = { en: englishUrl, ko: koreanUrl, 'x-default': englishUrl };
+      for (const [locale, url] of [['en', englishUrl], ['ko', koreanUrl]] as const) {
+        const metadata = propertyReviewMetadata(locale, profile);
+        expect(metadata.robots).toEqual({ index: true, follow: true });
+        expect(metadata.alternates).toEqual({ canonical: url, languages });
+        expect(entries.get(url)).toMatchObject({
+          url,
+          lastModified: new Date('2026-09-13T00:00:00.000Z'),
+        });
+      }
+      expect(propertyReviewMetadata('zh-CN', profile).robots).toEqual({ index: false, follow: true });
+      expect(entries.has(`https://www.signedprice.com/zh-cn${path}`)).toBe(false);
+    }
+  });
+
+  it('serializes the review cohort without raw XML ampersands using the installed Next serializer', () => {
+    const entries = sitemap().filter(entry => propertyReviewCanonicalUrls.includes(entry.url));
+    expect(entries).toHaveLength(26);
+    const xml = resolveSitemap(entries);
+    expect(xml).not.toContain('&');
+    expect([...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]))
+      .toEqual(propertyReviewCanonicalUrls);
+  });
+
+  it('publishes only the approved global, market-evidence, review, and guide cohort in the sitemap', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(true)));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
     const urls = sitemap().map(({ url }) => url);
     expect(urls.sort()).toEqual([
+      ...propertyReviewCanonicalUrls,
       'https://www.signedprice.com/kr/seoul/shortlist/',
       'https://www.signedprice.com/ko/kr/seoul/shortlist/',
       'https://www.signedprice.com/passport/',
@@ -490,6 +544,7 @@ describe('public migration containment', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(false)));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
     expect(sitemap().map(({ url }) => url).sort()).toEqual([
+      ...propertyReviewCanonicalUrls,
       'https://www.signedprice.com/kr/seoul/shortlist/',
       'https://www.signedprice.com/ko/kr/seoul/shortlist/',
       'https://www.signedprice.com/passport/',
@@ -545,6 +600,7 @@ describe('public migration containment', () => {
 
     vi.unstubAllEnvs();
     expect(sitemap().map(({ url }) => url).sort()).toEqual([
+      ...propertyReviewCanonicalUrls,
       ...tokyoCanonicalUrls,
       'https://www.signedprice.com/kr/seoul/shortlist/',
       'https://www.signedprice.com/ko/kr/seoul/shortlist/',

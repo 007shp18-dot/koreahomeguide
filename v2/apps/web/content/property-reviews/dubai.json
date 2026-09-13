@@ -1,0 +1,1082 @@
+[
+  {
+    "id": "ae-skyflame-1",
+    "marketId": "ae-dubai",
+    "name": {
+      "ko": "빙하티 스카이플레임 · 타워군",
+      "en": "Binghatti Skyflame · project group"
+    },
+    "area": {
+      "ko": "Majan · DLD 지역명 MAJAN",
+      "en": "Majan · DLD area MAJAN"
+    },
+    "checkedOn": "2026-09-13",
+    "verdict": {
+      "ko": "차량 생활과 입주 대기를 받아들인다면 후보. 무차량 통근·즉시 입주가 필수라면 우선순위를 낮추세요.",
+      "en": "Shortlist if you drive and can wait for delivery. Rank it lower if car-free commuting or immediate occupancy is essential."
+    },
+    "summary": {
+      "ko": "스카이플레임은 Majan의 오프플랜 타워군입니다. 주변 학교의 실제 학비와 운영 중인 쇼핑시설은 조사할 수 있지만, 단지 편의시설과 최종 진출입 동선은 아직 완성된 생활환경으로 평가할 수 없습니다. 기존 거래 연결키는 타워1을 가리키며, 이 리뷰의 개발사 자료는 타워군 전체 범위입니다.",
+      "en": "Skyflame is an off-plan tower group in Majan. Nearby school fees and operating shopping destinations can be examined today, while its own amenities and final access routes cannot yet be assessed as a delivered living environment. The existing transaction link refers to Tower 1; developer material used here covers the project group."
+    },
+    "bestFor": {
+      "ko": "차로 출퇴근하고 입주 전 자금 일정을 감당할 수 있으며, Dubailand 생활권을 선호하는 가구.",
+      "en": "Households that drive to work, can fund the period before delivery and prefer a Dubailand base."
+    },
+    "holdFor": {
+      "ko": "매일 메트로를 걸어서 이용하거나, 실내 소음·마감·관리 상태를 직접 보고 바로 입주하려는 가구.",
+      "en": "Households needing a daily walk to the metro or an immediately occupiable home whose noise, finishes and management they can inspect."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "도로 중심 생활에 맞는 입지",
+          "en": "A location suited to road-based routines"
+        },
+        "body": {
+          "ko": "개발사와 지역 가이드는 E311 접근을 공통으로 설명합니다. 직장이 이 도로축과 맞는 운전자에게 검토 가치가 있지만, 이를 시내까지 일정한 통근시간으로 환산할 근거는 없습니다.",
+          "en": "The developer and a local area guide both identify access to E311. This merits consideration for drivers whose workplace suits that corridor, but it does not establish a dependable journey time into central Dubai."
+        },
+        "sourceIds": [
+          "skyflame",
+          "majan-guide"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "교육비를 구체적으로 계산할 수 있는 주변 후보",
+          "en": "A nearby education option with a published budget"
+        },
+        "body": {
+          "ko": "Majan 지역 가이드에 등장하는 GEMS Winchester Dubai는 영국식 교육과정을 운영합니다. 학비가 공개돼 있어, 가족에게 이 입지가 맞는지 주거비와 교육비를 함께 비교할 출발점이 됩니다.",
+          "en": "GEMS Winchester Dubai, identified in the Majan area guide, offers a British curriculum. Published tuition gives families a concrete starting point for comparing combined housing and education costs."
+        },
+        "sourceIds": [
+          "majan-guide",
+          "winchester-school"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "타워 선택과 인도 계획은 별도 확인",
+          "en": "Tower selection and delivery still need a match"
+        },
+        "body": {
+          "ko": "공식 자료는 두 타워를 소개하고, 2027년 12월 31일을 예정 완료일로 기재합니다. 이는 계약상 인도 보장이나 타워1의 DLD 공정 확인 결과가 아니므로, 실제 계약 대상과 날짜를 일치시켜야 합니다.",
+          "en": "Official material describes two towers and lists 31 December 2027 as the scheduled completion date. This is neither guaranteed contractual delivery nor a verified DLD completion result for Tower 1; the actual contract and project identity must match."
+        },
+        "sourceIds": [
+          "skyflame",
+          "dld-status"
+        ],
+        "status": "needs-check"
+      },
+      {
+        "title": {
+          "ko": "주변 개발이 조망과 평온함을 바꿀 수 있음",
+          "en": "Surrounding development can change the outlook"
+        },
+        "body": {
+          "ko": "Betterhomes는 Majan 주변의 진행 중인 공사를 지역 변수로 설명하고, DXB Properties도 공사 소음·먼지를 지적합니다. 단지에서 측정한 피해 수준은 없으므로 결함으로 단정하지 않되, 맞은편 필지와 공사차량 동선을 먼저 살펴볼 이유가 됩니다.",
+          "en": "Betterhomes describes ongoing construction around Majan, while DXB Properties also flags construction noise and dust. There are no measurements at Skyflame, so these are reasons to examine facing plots and construction access, not findings of a building defect."
+        },
+        "sourceIds": [
+          "majan-guide",
+          "majan-blog"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "E311 진입 전 마지막 구간이 중요",
+            "en": "The final approach to E311 matters"
+          },
+          "body": {
+            "ko": "지도에서 확인할 경로는 단지 주차장 출구 → Majan 내부도로 → E311 진입로 → 실제 근무지입니다. 개발사의 도로 연결 설명만 확보했으며, 아침 진입 대기·오후 귀가 경로·주차장 출차시간은 측정하지 않았습니다.",
+            "en": "The route to examine is the parking exit, Majan local streets, the E311 ramp and the actual workplace. Road connectivity is documented; morning ramp queues, the return route and garage-exit time have not been measured."
+          },
+          "sourceIds": [
+            "skyflame",
+            "majan-guide"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "메트로 도보 생활은 현재 입지의 강점으로 보기 어려움",
+            "en": "Do not base the shortlist on walking to a metro"
+          },
+          "body": {
+            "ko": "지역 가이드는 Majan 내부의 메트로·트램 부재와 제한적인 대중교통을 설명합니다. 무차량 가구라면 택시비를 일상 비용에 넣고, 이용 가능한 정류장까지의 보행·환승 대기를 먼저 확인해야 합니다.",
+            "en": "The area guide describes no metro or tram inside Majan and limited public transport. A household without a car should budget for taxis and establish the walk to a usable bus stop and the transfer wait before choosing the location."
+          },
+          "sourceIds": [
+            "majan-guide"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "Winchester: FS부터 Year 13까지 영국식 과정",
+            "en": "Winchester: British curriculum through Year 13"
+          },
+          "body": {
+            "ko": "GEMS Winchester Dubai는 Dubailand의 IMG Worlds of Adventure 인근에서 Foundation Stage부터 Year 13까지 교육한다고 안내합니다. 학교가 지역 후보라는 점은 확인되지만, Skyflame 출입구에서 교문까지의 통학 거리·통학버스 정차·학년별 자리는 확인되지 않았습니다.",
+            "en": "GEMS Winchester Dubai lists its campus near IMG Worlds of Adventure in Dubailand and offers Foundation Stage through Year 13. It is an identified area option; the route from Skyflame, a school-bus pickup and places in the required year remain unverified."
+          },
+          "sourceIds": [
+            "winchester-school",
+            "majan-guide"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "2026–27 학비와 평가 연도를 함께 보기",
+            "en": "Read the fee year alongside the inspection year"
+          },
+          "body": {
+            "ko": "학교 공시상 2026–27 연간 수업료는 FS1·FS2 AED 20,370, Year 1 AED 25,157, Year 12·13 AED 38,403입니다. 학교가 게시한 KHDA 평가는 2023–24의 Good이며, 이번 입주 예정 연도의 평가나 학비를 보장하지 않습니다.",
+            "en": "Published annual tuition for 2026–27 is AED 20,370 for FS1/FS2, AED 25,157 for Year 1 and AED 38,403 for Years 12/13. The school posts a Good KHDA result for 2023–24; neither that assessment nor today’s fees guarantees the position at future move-in."
+          },
+          "sourceIds": [
+            "winchester-fees",
+            "winchester-inspection"
+          ],
+          "status": "documented"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "장보기는 실제 운영 몰과 단지 리테일을 분리",
+            "en": "Separate an operating grocery destination from planned retail"
+          },
+          "body": {
+            "ko": "Cityland Mall의 공식 매장 목록에는 Carrefour와 Organic Foods & Cafe가 올라 있습니다. 이 몰은 Global Village 옆 Wadi Al Safa 4의 별도 목적지이므로, 단지 상가가 열리기 전 장보기 후보가 될 수는 있어도 Skyflame의 도보상권으로 표시하지 않습니다.",
+            "en": "Cityland Mall’s official directory lists Carrefour and Organic Foods & Cafe. It is a separate destination beside Global Village in Wadi Al Safa 4: a grocery option to evaluate before on-site retail opens, not verified walkable retail at Skyflame."
+          },
+          "sourceIds": [
+            "cityland-stores"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "수영장 계획보다 사용 범위가 중요",
+            "en": "Amenity access matters more than renderings"
+          },
+          "body": {
+            "ko": "개발사 자료에는 수영장과 리테일을 포함한 시설 계획이 나옵니다. 특정 세대의 전용·공용 구분, 운영 개시, 관리 책임을 확인해야 일상에서 실제로 누릴 편의와 부담을 판단할 수 있습니다.",
+            "en": "Developer material includes planned pools and retail. The private/shared allocation, opening arrangements and maintenance responsibility for a particular unit still determine the convenience and obligations a resident will actually receive."
+          },
+          "sourceIds": [
+            "skyflame"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "분납 비율은 현금흐름, 수익률은 별개",
+            "en": "Instalments describe funding, not investment returns"
+          },
+          "body": {
+            "ko": "공식 페이지의 안내는 예약 20%·공사 중 50%·완료 시 30%입니다. 실제 납부일과 인도 전 거주비를 함께 계산하고, 매도 시 양도 조건도 계약에서 확인해야 자금이 묶이는 기간을 평가할 수 있습니다.",
+            "en": "The official indicative plan is 20% at booking, 50% during construction and 30% on completion. Match actual due dates with housing costs before delivery and the contract’s resale-assignment conditions to assess how long cash will be committed."
+          },
+          "sourceIds": [
+            "skyflame"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "순수익 판단에는 승인 관리비가 빠져 있음",
+            "en": "Approved charges are still missing from a net-return case"
+          },
+          "body": {
+            "ko": "Skyflame의 타워별 승인 관리비와 실제 임대계약 자료를 확보하지 못했습니다. DLD의 프로젝트·용도·연도별 관리비 조회 결과와 세대별 냉방·주차·수영장 유지비 범위를 채우기 전에는 순수익률이나 저평가를 제시하지 않습니다.",
+            "en": "Tower-specific approved service charges and actual lease evidence were not obtained. A net-yield or undervaluation conclusion needs the relevant DLD charge result and the unit’s cooling, parking and pool-maintenance obligations."
+          },
+          "sourceIds": [
+            "dld-charges"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "빙하티 스카이테라시스",
+          "en": "Binghatti Skyterraces"
+        },
+        "reason": {
+          "ko": "Motor City의 기존 상가·학교를 사용하는 생활과 Majan의 개발 중 생활권을 비교할 후보입니다.",
+          "en": "Compare an established Motor City retail/school routine with Majan’s developing surroundings."
+        },
+        "condition": {
+          "ko": "침실 수, 입주 시점, 차량 통근과 연간 교육비를 맞춰 비교하며 같은 예산이라고 가정하지 않습니다.",
+          "en": "Match bedroom count, timing, car commute and annual school costs; do not assume the same budget."
+        }
+      },
+      {
+        "name": {
+          "ko": "발리아",
+          "en": "Valia"
+        },
+        "reason": {
+          "ko": "수변 생활과 향후 메트로 계획을 더 중시한다면 Creek Harbour도 비교할 수 있습니다.",
+          "en": "Consider Creek Harbour if waterfront living and a future metro connection matter more."
+        },
+        "condition": {
+          "ko": "Blue Line 개통 전 조건과 구매가격·인도 일정이 다르므로 교통 호재만으로 우열을 정하지 않습니다.",
+          "en": "Compare pre-opening access, purchase cost and delivery timing before ranking the locations."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "skyflame",
+        "title": "Binghatti — Skyflame project and FAQ",
+        "url": "https://www.binghatti.com/en/projects/binghatti-skyflame",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "타워군 계획, E311, 예정 완료일과 분납 안내. 운영·인도 보증 또는 DLD 타워1 등록 대조가 아님.",
+          "en": "Project-group plans, E311 access, indicative completion and instalments; not operating conditions, a delivery guarantee or a DLD Tower 1 match."
+        }
+      },
+      {
+        "id": "majan-guide",
+        "title": "Betterhomes — Majan area guide",
+        "url": "https://www.bhomes.com/en/area-guides/majan",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "editorial",
+        "note": {
+          "ko": "중개사의 지역 가이드. 도로·학교 후보·공사 변수를 사용했으며 통근시간·수익률은 채택하지 않음.",
+          "en": "Agency area guide used for road, school-option and construction context; journey-time and yield claims were not adopted."
+        }
+      },
+      {
+        "id": "majan-blog",
+        "title": "DXB Properties — Pros and cons of living in Majan",
+        "url": "https://dxbproperties.ae/blog/pros-and-cons-of-living-in-majan",
+        "checkedOn": "2026-09-13",
+        "publishedOn": "2025-08-13",
+        "kind": "editorial",
+        "note": {
+          "ko": "2026-02-17 업데이트. 지역 공사 우려는 참고 의견이며 단지 실측이 아님.",
+          "en": "Updated 17 February 2026. Construction concerns are area commentary, not measurements at the project."
+        }
+      },
+      {
+        "id": "winchester-school",
+        "title": "GEMS Winchester Dubai — School and location",
+        "url": "https://www.gemswinchesterschool-dubai.com/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "Dubai 캠퍼스 교육과정·학년·위치 확인. Abu Dhabi·Fujairah 또는 The Winchester Jebel Ali와 구분.",
+          "en": "Verified curriculum, year range and Dubai campus location; distinct from the Abu Dhabi/Fujairah schools and The Winchester in Jebel Ali."
+        }
+      },
+      {
+        "id": "winchester-fees",
+        "title": "GEMS Winchester Dubai — Tuition 2026–27",
+        "url": "https://www.gemswinchesterschool-dubai.com/Admissions/Tuition-Fees",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "2026–27 연간 수업료 공시. 미래 인도 연도 학비로 사용하지 않음.",
+          "en": "School-published 2026–27 annual tuition; not a fee forecast for future delivery."
+        }
+      },
+      {
+        "id": "winchester-inspection",
+        "title": "GEMS Winchester Dubai — KHDA report",
+        "url": "https://www.gemswinchesterschool-dubai.com/About-Us/KHDA-Report",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "학교가 게시한 2023–24 Good 평가와 보고서 링크. 새로운 검사 연도로 오기하지 않음.",
+          "en": "School-posted Good result and report link for 2023–24; not relabelled as a newer inspection."
+        }
+      },
+      {
+        "id": "cityland-stores",
+        "title": "Cityland Mall — Store directory",
+        "url": "https://citylandmall.com/our-store",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "운영사 목록에서 Carrefour·Organic Foods & Cafe 및 몰 주소 확인. 단지까지의 보행시간은 없음.",
+          "en": "Operator directory confirms Carrefour, Organic Foods & Cafe and the mall address; no walk time to the project."
+        }
+      },
+      {
+        "id": "dld-status",
+        "title": "Dubai Land Department — Project Status Enquiry",
+        "url": "https://dubailand.gov.ae/en/eservices/real-estate-project-status-landing/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "프로젝트명·번호로 공정 정보를 확인하는 공식 서비스 설명. 이번 검토에서 개별 등록번호 대조 결과는 확보하지 못함.",
+          "en": "Official description of project-name/number completion enquiries. No individual project-number match was obtained in this review."
+        }
+      },
+      {
+        "id": "dld-charges",
+        "title": "Dubai Land Department — Service Charge Index",
+        "url": "https://dubailand.gov.ae/en/eservices/service-charge-index-overview/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "프로젝트·용도·연도별 조회 방식 확인. 세 프로젝트의 승인 관리비 금액은 확보하지 못함.",
+          "en": "Verified the project, use and year lookup method. Approved charges for these three projects were not obtained."
+        }
+      }
+    ]
+  },
+  {
+    "id": "ae-skyterraces",
+    "marketId": "ae-dubai",
+    "name": {
+      "ko": "빙하티 스카이테라시스",
+      "en": "Binghatti Skyterraces"
+    },
+    "area": {
+      "ko": "Motor City · DLD 지역명 Al Hebiah First",
+      "en": "Motor City · DLD area Al Hebiah First"
+    },
+    "checkedOn": "2026-09-13",
+    "verdict": {
+      "ko": "Motor City의 학교·일상을 차량으로 연결하려는 가구에게 후보. 소음 민감도와 세대 실용면적이 선택을 가릅니다.",
+      "en": "A candidate for households combining Motor City schools and errands by car. Noise sensitivity and usable unit space should decide the shortlist."
+    },
+    "summary": {
+      "ko": "기존 Motor City 생활시설을 배경으로 한 오프플랜 고층 프로젝트입니다. 지역에 학교와 장보기 시설이 있다는 장점은 있으나, Skyterraces 출입구에서의 보행 연결과 공용시설 운영은 확인 전입니다. 이름의 지역 표기는 Motor City, 기존 거래 연결의 DLD 지역명은 Al Hebiah First로 유지합니다.",
+      "en": "This is an off-plan high-rise project within the wider Motor City setting. Existing schools and shopping destinations support the location case, but pedestrian access from Skyterraces and operation of its shared facilities remain unverified. Motor City is the marketed area; the existing transaction link uses DLD’s Al Hebiah First."
+    },
+    "bestFor": {
+      "ko": "Motor City·Studio City 일대 생활을 선호하고, 국제학교 학비와 차량 이동을 함께 계획하는 가구.",
+      "en": "Households favouring a Motor City/Studio City routine and planning international-school fees together with car travel."
+    },
+    "holdFor": {
+      "ko": "조용한 발코니·실내 환경이 최우선이거나, 메트로 도보 통근과 즉시 입주를 원하는 가구.",
+      "en": "Households prioritising a quiet balcony/interior, a walk to the metro or immediate occupancy."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "새 단지 밖에서 시작할 수 있는 생활",
+          "en": "An existing neighbourhood around a new project"
+        },
+        "body": {
+          "ko": "지역 가이드는 First Avenue Mall과 Spinneys·Carrefour Market을 생활시설로 소개합니다. 따라서 단지 리테일의 입점을 기다리는 동안 이용할 주변 후보는 있지만, 각 세대에서의 편한 보행을 뜻하지는 않습니다.",
+          "en": "The area guide identifies First Avenue Mall, Spinneys and Carrefour Market as everyday destinations. These give prospective residents options to examine while on-site retail fills, without proving a comfortable walk from each unit."
+        },
+        "sourceIds": [
+          "motor-guide"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "영국식 학교 경로를 검토하기 쉬움",
+          "en": "An identifiable British-school pathway"
+        },
+        "body": {
+          "ko": "GEMS Metropole Motor City는 Honsho Road에 있으며 FS1부터 Year 13까지 영국식 과정을 안내합니다. 선호 학교가 이곳이라면 지역 선택의 이유가 구체적이지만, 실제 학년의 입학 가능 여부가 먼저 맞아야 합니다.",
+          "en": "GEMS Metropole Motor City is on Honsho Road and offers a British curriculum from FS1 to Year 13. It provides a concrete location rationale if it is your preferred school, provided the required year has an available place."
+        },
+        "sourceIds": [
+          "metropole-school"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "경기장 주변의 매력과 소음 민감도",
+          "en": "Motorsport adds character and a noise question"
+        },
+        "body": {
+          "ko": "Dubai Autodrome의 공식 일정에는 2026년 1월 17–18일 24시간 내구 레이스가 포함됩니다. 운영 중인 경기장이라는 사실은 확인되지만 Skyterraces에서의 소음 크기는 측정되지 않았으므로, 경기 시간대와 주거 방향을 함께 확인해야 합니다.",
+          "en": "Dubai Autodrome’s official calendar lists the 24-hour endurance race on 17–18 January 2026. The active circuit is documented, but noise at Skyterraces has not been measured; assess race periods together with the unit’s orientation."
+        },
+        "sourceIds": [
+          "autodrome"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "고층 조망과 실용성은 세대마다 다름",
+          "en": "Height does not settle the unit choice"
+        },
+        "body": {
+          "ko": "개발사는 주거 40개 층과 스튜디오부터 3베드까지의 구성을 안내합니다. 조망 프리미엄을 평가하려면 실제 층·방향·앞동 계획과 실내면적을 맞춰야 하며, 건물 전체 홍보 이미지를 특정 세대의 전망으로 대입할 수 없습니다.",
+          "en": "The developer describes 40 residential floors and studio-to-three-bedroom layouts. A view premium needs the actual floor, orientation, facing development and internal area; project imagery cannot establish the outlook of a particular apartment."
+        },
+        "sourceIds": [
+          "skyterraces"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "주요 도로 연결과 통근시간은 별개",
+            "en": "Road connections are not a rush-hour journey time"
+          },
+          "body": {
+            "ko": "개발사는 Emirates Road, Sheikh Mohammed Bin Zayed Road, Al Qudra Road 접근을 소개합니다. 실제 근무지를 기준으로 단지 출구부터 연결 교차로까지를 포함해 조사해야 하며, 광고의 Dubai Marina 17분은 출퇴근 실측으로 채택하지 않았습니다.",
+            "en": "The developer identifies Emirates Road, Sheikh Mohammed Bin Zayed Road and Al Qudra Road access. Assess the garage exit and connecting junctions against the actual workplace; the advertised 17 minutes to Dubai Marina was not adopted as measured peak-hour travel."
+          },
+          "sourceIds": [
+            "skyterraces"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "버스 연결은 있으나 정류장까지가 숙제",
+            "en": "A bus option with an unresolved first leg"
+          },
+          "body": {
+            "ko": "Betterhomes는 Autodrome·Business Park 주변 정류장의 F37 이용을 설명하고, Moovit은 First Avenue Mall 인근 Spinneys Market 정류장을 안내합니다. Skyterraces 출입구에서 그 정류장까지의 연속 보도·횡단·대기시간은 확인하지 않아 무차량 통근의 충분한 대안으로 확정하지 않습니다.",
+            "en": "Betterhomes describes F37 stops around the Autodrome and Business Park; Moovit lists a Spinneys Market stop near First Avenue Mall. The continuous footpath, crossings and wait from Skyterraces remain unchecked, so this is not yet a validated car-free commute."
+          },
+          "sourceIds": [
+            "motor-guide",
+            "motor-bus"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "Metropole의 교육과정과 평가 연도",
+            "en": "Metropole’s curriculum and dated inspection"
+          },
+          "body": {
+            "ko": "학교는 National Curriculum for England를 운영하며 2023–24 KHDA 결과를 Good으로 게시합니다. 학년 전환이나 영어 지원 필요에 따라 적합성이 달라지므로, 같은 Motor City라는 이유만으로 학업 성과나 입학을 보장받는다고 보지는 않습니다.",
+            "en": "The school offers the National Curriculum for England and posts a Good KHDA result for 2023–24. Fit depends on year-group transition and language support; a Motor City address does not guarantee academic outcomes or admission."
+          },
+          "sourceIds": [
+            "metropole-school",
+            "metropole-inspection"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "2026–27 Year 1–6 수업료 AED 45,374",
+            "en": "2026–27 tuition: AED 45,374 for Years 1–6"
+          },
+          "body": {
+            "ko": "학교 공시 수업료는 FS1 AED 38,393, FS2 AED 41,884, Year 1–6 AED 45,374, Year 7–13 AED 51,190입니다. 이 연간 비용에 통학·교복 등 필요한 항목을 별도로 더하고, 가족의 입주 예정 연도와 학년으로 다시 견적을 받아야 합니다.",
+            "en": "Published annual tuition is AED 38,393 for FS1, AED 41,884 for FS2, AED 45,374 for Years 1–6 and AED 51,190 for Years 7–13. Add the transport, uniform and other items your family requires, then obtain a quote for the actual move-in year and grade."
+          },
+          "sourceIds": [
+            "metropole-fees"
+          ],
+          "status": "documented"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "First Avenue Mall을 생활 거점으로 확인",
+            "en": "Check First Avenue Mall as an errands hub"
+          },
+          "body": {
+            "ko": "지역 자료는 First Avenue Mall의 식음·장보기·의료시설을 설명합니다. 단지 안 상가보다 이 거점까지의 차량 진입·주차·그늘 있는 보행 경로가 편한지 먼저 보면, 분양 후 실제 생활 편의를 더 구체적으로 판단할 수 있습니다.",
+            "en": "Area material describes dining, groceries and healthcare at First Avenue Mall. Checking its vehicle access, parking and shaded walking approach first provides a more concrete picture of daily convenience than assuming the new project’s own shops will be ready."
+          },
+          "sourceIds": [
+            "motor-guide"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "어린이 시설은 현재 사용 가능 상태가 아님",
+            "en": "Children’s amenities are still a plan"
+          },
+          "body": {
+            "ko": "공식 계획에는 어린이 수영장·놀이공간·조깅트랙 등이 포함됩니다. 현재 운영을 확인한 시설이 아니므로, 인도 시 개방 범위와 주거층에서의 소음·이동 동선을 확인해 가족에게 맞는 세대를 골라야 합니다.",
+            "en": "Official plans include a children’s pool, play area and jogging track. Their current operation has not been verified; the areas available at handover and the unit’s relationship to activity and access routes matter for family suitability."
+          },
+          "sourceIds": [
+            "skyterraces"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "1베드라는 이름보다 가구가 들어가는 면적",
+            "en": "Check usable space behind the one-bedroom label"
+          },
+          "body": {
+            "ko": "현재 개발사 페이지의 1베드 예시 중 하나는 570 sqft로 기재됩니다. 발코니 포함 여부와 실내 순면적이 확인되지 않았으므로, 식탁·업무 책상·수납이 들어가는 평면을 받은 뒤 비슷한 면적의 후보와 가격을 비교하는 편이 타당합니다.",
+            "en": "One one-bedroom example on the developer page is listed at 570 sqft. Balcony inclusion and net internal area were not established, so obtain a furniture-scaled plan for dining, work and storage before comparing its price with similarly sized options."
+          },
+          "sourceIds": [
+            "skyterraces"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "관리비와 인도 일정이 가격 판단의 빈칸",
+            "en": "Charges and delivery are gaps in the price judgment"
+          },
+          "body": {
+            "ko": "Skyterraces의 계약상 인도일, 프로젝트별 승인 관리비와 같은 조건의 최근 거래를 확보하지 못했습니다. 수영장·리테일을 포함한 복합시설의 유지비 부담을 확인해야 하며, 개발사 예상 수익률을 임대 실적으로 사용하지 않습니다.",
+            "en": "Contractual handover, project-specific approved charges and matched recent transactions were not obtained. Establish the maintenance obligations of the mixed-use facilities; the developer’s projected yield is not evidence of achieved rent."
+          },
+          "sourceIds": [
+            "dld-status",
+            "dld-charges"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "빙하티 스카이플레임 · 타워군",
+          "en": "Binghatti Skyflame · project group"
+        },
+        "reason": {
+          "ko": "차량 생활을 공통 전제로 두고 Motor City의 학교·상가와 Majan의 학교·상가를 비교할 수 있습니다.",
+          "en": "With car-based living held constant, compare the school and errands options in Motor City and Majan."
+        },
+        "condition": {
+          "ko": "GEMS Metropole과 Winchester의 해당 학년 학비, 실제 출퇴근 경로, 실내면적을 같은 기준으로 맞춥니다.",
+          "en": "Match the required year’s Metropole/Winchester fees, actual commute and internal area."
+        }
+      },
+      {
+        "name": {
+          "ko": "발리아",
+          "en": "Valia"
+        },
+        "reason": {
+          "ko": "경기장 중심 레저보다 수변 산책과 Creek Harbour 생활을 선호하는 경우의 비교 후보입니다.",
+          "en": "An alternative to examine if Creek Harbour’s waterfront routine matters more than a motorsport setting."
+        },
+        "condition": {
+          "ko": "같은 가격대 대체재로 단정하지 않고 인도 시점·면적·교육비와 교통계획 의존도를 비교합니다.",
+          "en": "Compare timing, size, school costs and reliance on future transport without assuming equivalent prices."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "skyterraces",
+        "title": "Binghatti — Skyterraces project and FAQ",
+        "url": "https://www.binghatti.com/en/projects/binghatti-skyterraces",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "층수·타입·계획 시설·도로·570 sqft 사례 확인. 광고 소요시간·예상 수익률은 실측으로 사용하지 않음.",
+          "en": "Verified floors, layouts, planned amenities, roads and a 570 sqft example; advertising times and projected yields are not measurements."
+        }
+      },
+      {
+        "id": "motor-guide",
+        "title": "Betterhomes — Motor City area guide",
+        "url": "https://www.bhomes.com/en/area-guides/motor-city",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "editorial",
+        "note": {
+          "ko": "중개사의 지역 정보. 운영 생활거점·F37 참고; 단지 앞 거리나 지역 전체 수익률은 사용하지 않음.",
+          "en": "Agency area context for everyday destinations and F37; not proof of access from the project or a basis for its yield."
+        }
+      },
+      {
+        "id": "motor-bus",
+        "title": "Moovit — First Avenue Mall transport",
+        "url": "https://moovitapp.com/index/en/public_transit-First_Avenue_Mall-Dubai_Abu_Dhabi-site_42443233-3824",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "몰 주변 정류장·버스 안내. RTA 원본 시간표 또는 Skyterraces 출발 경로 실측은 아님.",
+          "en": "Lists bus stops around the mall; not an RTA original timetable or a measured trip from Skyterraces."
+        }
+      },
+      {
+        "id": "metropole-school",
+        "title": "GEMS Metropole Motor City — School",
+        "url": "https://www.gemsmetropoleschool-dubai.com/en/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "Motor City 캠퍼스·교육과정·학년 확인. GEMS Metropole Al Waha와 구분.",
+          "en": "Verified Motor City campus, curriculum and year range; distinct from GEMS Metropole Al Waha."
+        }
+      },
+      {
+        "id": "metropole-fees",
+        "title": "GEMS Metropole Motor City — Fees 2026–27",
+        "url": "https://www.gemsmetropoleschool-dubai.com/en/Admissions/Fees-and-Payments",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "학교 공시 연간 수업료; 미래 입주 연도 비용으로 고정하지 않음.",
+          "en": "School-published annual tuition; not fixed costs for a future move-in year."
+        }
+      },
+      {
+        "id": "metropole-inspection",
+        "title": "GEMS Metropole Motor City — Inspection reports",
+        "url": "https://www.gemsmetropoleschool-dubai.com/en/For-Parents/Inspection-Reports",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "학교가 게시한 2023–24 KHDA Good 결과. 다른 학년·개별 학생 성과를 보장하지 않음.",
+          "en": "School-posted Good KHDA result for 2023–24; no guarantee for a particular student."
+        }
+      },
+      {
+        "id": "autodrome",
+        "title": "Dubai Autodrome — Motorsport events",
+        "url": "https://dubaiautodrome.ae/motorsport/motorsport-fan-page/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "운영자의 2025–26 경기 일정. 프로젝트 세대의 소음 측정값은 아님.",
+          "en": "Operator event calendar for 2025–26; not a unit-level noise measurement."
+        }
+      },
+      {
+        "id": "dld-status",
+        "title": "Dubai Land Department — Project Status Enquiry",
+        "url": "https://dubailand.gov.ae/en/eservices/real-estate-project-status-landing/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "프로젝트명·번호로 공정 정보를 확인하는 공식 서비스 설명. 이번 검토에서 개별 등록번호 대조 결과는 확보하지 못함.",
+          "en": "Official description of project-name/number completion enquiries. No individual project-number match was obtained in this review."
+        }
+      },
+      {
+        "id": "dld-charges",
+        "title": "Dubai Land Department — Service Charge Index",
+        "url": "https://dubailand.gov.ae/en/eservices/service-charge-index-overview/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "프로젝트·용도·연도별 조회 방식 확인. 세 프로젝트의 승인 관리비 금액은 확보하지 못함.",
+          "en": "Verified the project, use and year lookup method. Approved charges for these three projects were not obtained."
+        }
+      }
+    ]
+  },
+  {
+    "id": "ae-valia",
+    "marketId": "ae-dubai",
+    "name": {
+      "ko": "발리아",
+      "en": "Valia"
+    },
+    "area": {
+      "ko": "Dubai Creek Harbour · DLD 지역명 Al Khairan First",
+      "en": "Dubai Creek Harbour · DLD area Al Khairan First"
+    },
+    "checkedOn": "2026-09-13",
+    "verdict": {
+      "ko": "수변 생활과 장기 입주 계획에는 후보. 지금의 역세권이나 확정 수변 조망을 기대한다면 보류하세요.",
+      "en": "Shortlist for a waterfront lifestyle and a longer move-in horizon. Hold if you need metro access now or a guaranteed waterfront view."
+    },
+    "summary": {
+      "ko": "Valia는 Creek Harbour의 복합 포디움과 주거 타워를 계획한 오프플랜 프로젝트입니다. 실제 운영 중인 Creek Harbour 방문시설과 주변 국제학교를 살펴볼 수 있지만, 단지의 상가·인도·메트로 연결을 이미 완성된 것으로 평가해서는 안 됩니다. DLD 지역명은 유지하되 고유 프로젝트 번호의 독립 대조는 미완료입니다.",
+      "en": "Valia is an off-plan residential tower with a planned mixed-use podium in Creek Harbour. Operating visitor destinations and nearby international-school options can be investigated today, but its retail, delivery and metro connection should not be assessed as already complete. The DLD area label is retained; an independent project-number match remains outstanding."
+    },
+    "bestFor": {
+      "ko": "현재 차량 이동을 감당하면서 향후 수변 생활을 원하고, 세대 방향과 인도 조건을 꼼꼼히 비교할 구매자.",
+      "en": "Buyers able to accommodate current car travel while planning for a waterfront routine and carefully comparing unit orientation and delivery terms."
+    },
+    "holdFor": {
+      "ko": "당장 입주·임대수익이 필요하거나 메트로 개통과 모든 세대의 Creek 조망을 확정 조건으로 보는 구매자.",
+      "en": "Buyers needing immediate occupancy or rental income, or treating metro opening and Creek views from every apartment as certain."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "수변을 실제로 경험해 보고 판단할 수 있는 지역",
+          "en": "A waterfront setting you can visit before deciding"
+        },
+        "body": {
+          "ko": "Dubai 관광청은 Creek Harbour의 The Viewing Point를 방문지로 안내합니다. 프로젝트 조감도에만 의존하지 않고 지역의 수변 경험을 직접 확인할 수 있다는 장점이 있지만, 그 전망이 Valia 세대에서 재현된다는 뜻은 아닙니다.",
+          "en": "Dubai’s tourism authority lists The Viewing Point in Creek Harbour. You can experience the wider waterfront before deciding instead of relying solely on project imagery, although that view is not evidence of the outlook from a Valia apartment."
+        },
+        "sourceIds": [
+          "viewing-point"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "교통계획은 시행 근거가 있음",
+          "en": "The transport plan has evidence of implementation"
+        },
+        "body": {
+          "ko": "2026년 5월 3일 정부 발표는 Blue Line 터널 공사 착수와 2029년 9월 9일 개통 목표를 설명합니다. 장기 거주 관점에서 검토할 변화이지만, 미래 수혜를 현재의 역 접근성이나 확정 가격 상승으로 계산하지 않습니다.",
+          "en": "The government’s 3 May 2026 announcement describes Blue Line tunnelling and a target opening of 9 September 2029. This is a change to consider for a longer stay, without treating it as current station access or assured price appreciation."
+        },
+        "sourceIds": [
+          "blue-line-2026"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "물·도시·공원 조망을 같은 상품으로 보면 안 됨",
+          "en": "Creek, skyline and park views are different products"
+        },
+        "body": {
+          "ko": "Emaar는 Creek·도시 스카이라인·커뮤니티 공원 방향의 조망을 구분해 설명합니다. 원하는 조망의 방향·층·앞 필지 계획을 특정하지 못하면, 수변 주소라는 이유만으로 추가 가격을 지불할 근거가 약합니다.",
+          "en": "Emaar describes Creek, skyline and community-park outlooks as alternatives. Without the unit’s orientation, floor and facing-plot plans, a waterfront address alone is a weak basis for paying a view premium."
+        },
+        "sourceIds": [
+          "valia"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "미래 생활시설에 대한 의존도",
+          "en": "Reliance on future facilities"
+        },
+        "body": {
+          "ko": "공식 소개의 인접 리테일·엔터테인먼트 거점과 Blue Line은 계획 맥락으로 읽어야 합니다. Valia 앞의 입점·개방일과 인도 일정이 같은지는 확인되지 않아, 입주 첫날부터 완성된 생활권을 기대하는 가구는 보류할 이유가 있습니다.",
+          "en": "The adjacent retail/entertainment destination and Blue Line in the project material belong to its development context. Opening dates at Valia and their alignment with handover remain unverified, giving households that need a complete day-one routine a reason to hold."
+        },
+        "sourceIds": [
+          "valia",
+          "dld-status"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "현재 평가의 기준은 근무지까지의 도로 경로",
+            "en": "Judge present access against the actual workplace"
+          },
+          "body": {
+            "ko": "현재 확보한 자료만으로 Valia 출입구에서 메트로까지의 운영 경로를 제시할 수 없습니다. 차량으로 Creek Harbour를 빠져나오는 구간과 실제 근무지의 진입·주차를 함께 측정해야 하며, Downtown·공항 접근 홍보를 일정한 출퇴근시간으로 사용하지 않습니다.",
+            "en": "The obtained evidence cannot establish an operating metro route from Valia’s entrance. Assess the car journey out of Creek Harbour together with workplace entry and parking; marketing references to Downtown and the airport do not establish a stable commute time."
+          },
+          "sourceIds": [
+            "valia"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "Blue Line은 2029년 개통 목표의 미래 조건",
+            "en": "Blue Line is a future condition, targeted for 2029"
+          },
+          "body": {
+            "ko": "정부의 2025년 노선 발표는 Dubai Creek Harbour 역을 포함하고, 2026년 5월 공사 발표도 2029년 9월 9일 목표를 유지했습니다. Valia에서 역 입구까지의 거리·그늘·횡단·승강장 이동은 아직 검증되지 않았으므로, 준공 후 보행 편의는 별도 평가가 필요합니다.",
+            "en": "The 2025 government route announcement includes a Dubai Creek Harbour station, and the May 2026 construction update retains the 9 September 2029 target. Distance, shade, crossings and platform access from Valia remain unverified and need a separate assessment when the connection is delivered."
+          },
+          "sourceIds": [
+            "blue-line-route",
+            "blue-line-2026"
+          ],
+          "status": "documented"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "Deira International은 Festival City의 별도 통학 후보",
+            "en": "Deira International is a separate Festival City school option"
+          },
+          "body": {
+            "ko": "Deira International School은 Dubai Festival City에 있고 영국식 교육과정에서 IGCSE·IB 경로로 이어집니다. Valia 내부 학교나 도보 통학으로 표현할 수 없으며, 자녀 학년의 자리와 통학버스·픽업 경로를 확인해야 실제 대안이 됩니다.",
+            "en": "Deira International School is in Dubai Festival City and follows a British curriculum leading to IGCSE and IB pathways. It is not an on-site Valia school or a verified walkable option; year-group availability and a bus or pickup route determine whether it works."
+          },
+          "sourceIds": [
+            "dis-faq"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "2026–27 수업료는 FS AED 44,616부터",
+            "en": "2026–27 tuition starts at AED 44,616 for FS"
+          },
+          "body": {
+            "ko": "학교의 2026–27 수업료표는 FS1·FS2 AED 44,616, Year 1–5 AED 58,034, Year 12·13 AED 89,889를 제시합니다. 교복·급식·통학은 제외되어 있고, 학교가 게시한 KHDA Outstanding 설명도 개별 자녀의 입학이나 향후 학비를 보장하지 않습니다.",
+            "en": "The school’s 2026–27 table lists AED 44,616 for FS1/FS2, AED 58,034 for Years 1–5 and AED 89,889 for Years 12/13. Uniform, meals and transport are excluded; the school’s posted KHDA Outstanding description guarantees neither a place nor future fees."
+          },
+          "sourceIds": [
+            "dis-fees",
+            "dis-inspection"
+          ],
+          "status": "documented"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "현재 장보기 거점과 분양 예정 상권을 분리",
+            "en": "Separate an operating mall from planned retail"
+          },
+          "body": {
+            "ko": "Dubai Festival City Mall 운영사는 Carrefour·LuLu 및 IKEA를 현재 쇼핑시설로 안내합니다. 이는 Creek Harbour와 별도의 개발사업에 있는 목적지로, Valia 바로 앞 상가나 걸어서 가능한 장보기로 확대해 설명하지 않습니다.",
+            "en": "Dubai Festival City Mall’s operator lists Carrefour, LuLu and IKEA among its shopping options. This is a destination in a separate development, not proof of shops at Valia’s doorstep or a walkable grocery trip."
+          },
+          "sourceIds": [
+            "festival-mall"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "수변 방문 경험과 입주민 일상은 다름",
+            "en": "Test the everyday routine beyond a waterfront visit"
+          },
+          "body": {
+            "ko": "The Viewing Point 같은 방문 거점은 현재 지역 분위기를 확인하는 데 도움이 됩니다. 다만 Valia에서 장보기·산책을 반복할 때의 출입구, 공사 펜스, 여름 그늘과 경로 개방 상태는 미확인이라 방문 만족도를 거주 편의 점수로 바꾸지 않습니다.",
+            "en": "A destination such as The Viewing Point helps establish the present area atmosphere. Repeated errands and walks from Valia still depend on its entrance, construction barriers, summer shade and open routes, so a pleasant visit is not a residential-convenience score."
+          },
+          "sourceIds": [
+            "viewing-point"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "입주 시점과 돈이 묶이는 기간부터 확정",
+            "en": "Establish delivery and the funding horizon first"
+          },
+          "body": {
+            "ko": "공식 웹페이지의 1~4베드 구성은 확인했지만, 개별 세대 계약상 인도일·납부 일정·DLD 프로젝트 대조 결과는 확보하지 못했습니다. 당장 임대수익이 필요한 사람에게는 이 빈칸이 핵심이므로, 예상 개통 시점만 보고 보유 기간을 정하지 않아야 합니다.",
+            "en": "The official page confirms one-to-four-bedroom plans, but the unit contract’s handover, payment schedule and DLD match were not obtained. These gaps are decisive if rental income is needed soon; the metro target alone cannot define the holding period."
+          },
+          "sourceIds": [
+            "valia",
+            "dld-status"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "조망 프리미엄과 순수익은 아직 판단 보류",
+            "en": "The view premium and net yield remain open"
+          },
+          "body": {
+            "ko": "동일 면적·층·방향의 최근 거래, 승인 관리비와 개별 냉방 비용을 확보하지 못했습니다. 공원 방향과 Creek 방향 세대를 따로 비교하고, 공용시설 유지비까지 확인한 뒤에야 호가의 타당성과 보유 비용을 평가할 수 있습니다.",
+            "en": "Matched recent transactions, approved charges and unit-level cooling costs were not obtained. Compare park-facing and Creek-facing apartments separately and establish shared-facility costs before judging the asking price and carrying expenses."
+          },
+          "sourceIds": [
+            "dld-charges",
+            "valia"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "빙하티 스카이테라시스",
+          "en": "Binghatti Skyterraces"
+        },
+        "reason": {
+          "ko": "수변보다 기존 학교·장보기 중심의 Motor City 일상을 더 중시한다면 비교할 후보입니다.",
+          "en": "Compare it if a Motor City school-and-errands routine matters more than the waterfront."
+        },
+        "condition": {
+          "ko": "학년별 수업료·차량 통근·소음 민감도·인도 시점을 함께 맞추며 동일 가격대라고 전제하지 않습니다.",
+          "en": "Match tuition by year, car commute, noise sensitivity and delivery timing without assuming equal prices."
+        }
+      },
+      {
+        "name": {
+          "ko": "빙하티 스카이플레임 · 타워군",
+          "en": "Binghatti Skyflame · project group"
+        },
+        "reason": {
+          "ko": "장기 교통계획보다 현재 E311 차량 생활을 기준으로 삼고 싶다면 Majan을 비교할 수 있습니다.",
+          "en": "Compare Majan if you want to focus on a present E311-based car routine rather than a future transport plan."
+        },
+        "condition": {
+          "ko": "타워군·세대별 실제 견적과 입주 전 자금 계획을 확인해야 하며 개발사 분납 비율만으로 저렴하다고 판단하지 않습니다.",
+          "en": "Obtain the actual tower/unit quote and pre-delivery funding plan; instalment ratios alone do not establish affordability."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "valia",
+        "title": "Emaar — Valia at Dubai Creek Harbour",
+        "url": "https://www.emaar.com/en/properties/valia-at-dubai-creek-harbour",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "1~4베드, 복합 포디움, 조망 유형과 예정 주변 시설 확인. 운영·인도 보장·DLD 등록번호 확정 아님.",
+          "en": "Verified one-to-four-bedroom plans, mixed-use podium, outlook types and planned surroundings; not operating status, a delivery guarantee or a DLD project-number confirmation."
+        }
+      },
+      {
+        "id": "blue-line-route",
+        "title": "Dubai Media Office — Blue Line foundation stone",
+        "url": "https://www.mediaoffice.ae/en/news/2025/june/09-06/mohammed-bin-rashid-lays-foundation-stone-for-dubai-metro-blue-line",
+        "checkedOn": "2026-09-13",
+        "publishedOn": "2025-06-09",
+        "kind": "official",
+        "note": {
+          "ko": "Creek Harbour 역 포함 공식 노선 설명. 역까지의 세대별 도보 거리 없음.",
+          "en": "Official route announcement includes Creek Harbour; no unit-to-station walking distance."
+        }
+      },
+      {
+        "id": "blue-line-2026",
+        "title": "Dubai Media Office — Blue Line tunnelling launch",
+        "url": "https://mediaoffice.ae/en/news/2026/may/03-05/mohammed-bin-rashid-inaugurates-tunneling-works-for-the-dubai-metro-blue-line-tunnels",
+        "checkedOn": "2026-09-13",
+        "publishedOn": "2026-05-03",
+        "kind": "official",
+        "note": {
+          "ko": "2026-05-03 공사 발표와 2029-09-09 개통 목표. 목표는 실제 개통 또는 9월 현재 공정률이 아님.",
+          "en": "Construction announcement dated 3 May 2026 and target opening of 9 September 2029; neither proof of opening nor September progress."
+        }
+      },
+      {
+        "id": "viewing-point",
+        "title": "Visit Dubai — The Viewing Point",
+        "url": "https://www.visitdubai.com/en/places-to-visit/the-viewing-point",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "관광청의 Creek Harbour 방문지 안내. Valia 출입구 거리·조망·현재 현장 실측 없음.",
+          "en": "Tourism-authority listing for a Creek Harbour attraction; no Valia entrance distance, unit outlook or on-site measurement."
+        }
+      },
+      {
+        "id": "festival-mall",
+        "title": "Dubai Festival City Mall — Operator directory and hours",
+        "url": "https://www.dubaifestivalcitymall.com/home/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "운영사에 Carrefour·LuLu·IKEA 안내. Valia와 별도 개발지이며 단지 상권 매출로 취급하지 않음.",
+          "en": "Operator lists Carrefour, LuLu and IKEA. Separate development; its activity is not Valia retail sales."
+        }
+      },
+      {
+        "id": "dis-faq",
+        "title": "Deira International School — FAQ",
+        "url": "https://www.disdubai.ae/faqs-dis",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "Festival City 위치와 영국식·IGCSE·IB 교육경로 확인. 해당 세대에서의 통학은 미확인.",
+          "en": "Verified Festival City location and British/IGCSE/IB pathway; travel from the apartment remains unverified."
+        }
+      },
+      {
+        "id": "dis-fees",
+        "title": "Deira International School — Tuition 2026–27",
+        "url": "https://alfuttaim.static.amais.com/DIS_Tuition_Fees_202627_WEBSITE-2510.pdf?version=639241020915770000",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "학교 웹사이트가 연결한 2026–27 수업료표. 교복·급식·교통 제외.",
+          "en": "2026–27 tuition PDF linked by the school; excludes uniforms, meals and transport."
+        }
+      },
+      {
+        "id": "dis-inspection",
+        "title": "Deira International School — Accreditations and inspections",
+        "url": "https://www.disdubai.ae/khda-dis",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "학교가 게시한 KHDA Outstanding 설명. 연결된 KHDA 원문은 본문 미확보로 특정 최신 검사 연도는 쓰지 않음.",
+          "en": "School-posted KHDA Outstanding description. Linked KHDA report body unavailable, so no specific latest inspection year is asserted."
+        }
+      },
+      {
+        "id": "dld-status",
+        "title": "Dubai Land Department — Project Status Enquiry",
+        "url": "https://dubailand.gov.ae/en/eservices/real-estate-project-status-landing/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "프로젝트명·번호로 공정 정보를 확인하는 공식 서비스 설명. 이번 검토에서 개별 등록번호 대조 결과는 확보하지 못함.",
+          "en": "Official description of project-name/number completion enquiries. No individual project-number match was obtained in this review."
+        }
+      },
+      {
+        "id": "dld-charges",
+        "title": "Dubai Land Department — Service Charge Index",
+        "url": "https://dubailand.gov.ae/en/eservices/service-charge-index-overview/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "프로젝트·용도·연도별 조회 방식 확인. 세 프로젝트의 승인 관리비 금액은 확보하지 못함.",
+          "en": "Verified the project, use and year lookup method. Approved charges for these three projects were not obtained."
+        }
+      }
+    ]
+  }
+]

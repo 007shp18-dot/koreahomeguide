@@ -59,7 +59,7 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
   if (href.startsWith('/news/')) {
     const newsSelected = ['news', 'headlines'].includes(new URLSearchParams(currentHref.split('?')[1] ?? '').get('type') ?? '');
     if (href.includes('?type=news')) return currentHref.includes('/news/') && newsSelected;
-    return !newsSelected && (currentHref.includes('/news/') || currentHref.includes('/insights/') || budgetAnalysis);
+    return !newsSelected && (currentHref.includes('/news/') || currentHref.includes('/insights/') || currentHref.includes('/living/') || budgetAnalysis);
   }
   if (href === '/guides/') return !budgetAnalysis && (currentHref.includes('/guide') || currentHref === '/guides/');
   if (href === '/tools/' || href === '/ko/tools/') return currentHref.includes('/tools/') || currentHref.includes('/check/') || currentHref.includes('/passport/') || currentHref.includes('/shortlist/') || currentHref.includes('/saved/');
