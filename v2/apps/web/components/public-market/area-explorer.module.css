@@ -1309,7 +1309,7 @@
 
   .buildingDrawer {
     position: fixed;
-    inset: auto 0 0;
+    inset: auto 0 var(--mobile-app-bottom-clearance, 0px);
     width: 100%;
     max-height: min(46dvh, 480px);
     border-top: var(--rule-strong);
@@ -2133,7 +2133,7 @@
   .districtBrowser, .buildingBrowser { padding: 16px 0; }
 }
 @media (min-width: 721px) and (max-width: 800px) {
-  .buildingDrawer { position: fixed; inset: auto 0 0; width: 100%; max-height: min(46dvh, 480px); border-top: var(--rule-strong); border-left: 0; }
+  .buildingDrawer { position: fixed; inset: auto 0 var(--mobile-app-bottom-clearance, 0px); width: 100%; max-height: min(46dvh, 480px); border-top: var(--rule-strong); border-left: 0; }
   .buildingDialogHeader { min-height: 84px; padding: .85rem 1rem; }
   .buildingDialogBody { padding: .85rem; }
 }

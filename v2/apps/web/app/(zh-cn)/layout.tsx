@@ -1,3 +1,5 @@
+import { MobileAppProvider } from '@/components/mobile-app/mobile-app-provider';
+import { mobileAppMetadata, mobileAppViewport } from '@/lib/mobile-app/model';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { preload } from 'react-dom';
@@ -15,7 +17,10 @@ import { notoSansKr } from '../fonts';
 
 import '../globals.css';
 
+export const viewport = mobileAppViewport;
+
 export const metadata: Metadata = {
+  ...mobileAppMetadata('zh-CN'),
   metadataBase: new URL('https://www.signedprice.com'),
   title: '韩国房地产数据与指南 | signedprice',
   description: '面向跨境租客与买家的韩国房地产成交数据、原创报告和实用中文指南。',
@@ -34,7 +39,7 @@ export default function ChineseRootLayout({ children }: Readonly<{ children: Rea
   return (
     <html lang="zh-CN" className={notoSansKr.variable}>
       <body>
-        {children}
+        <MobileAppProvider locale="zh-CN">{children}</MobileAppProvider>
         <PublicSiteJsonLd />
         {analytics.status === 'ready' || advertising.status === 'ready' ? (
           <AdvertisingConsent

@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { InstallAppCard } from '../mobile-app/install-app-card';
 import { useMemo, useState, useSyncExternalStore } from 'react';
 import { cityPaths } from '@/lib/global-shortlist/model';
 import { parseGlobalSaved, readGlobalSaved, subscribeGlobalSaved } from '@/lib/global-shortlist/storage';
@@ -46,7 +47,7 @@ export function SavedCities({ locale = 'en', initiallyOpen = false }: { locale?:
   const seoulRaw = useSyncExternalStore(subscribeSavedSearch, readSavedSearch, empty);
   const places = useMemo(() => [...parseSavedSearch(seoulRaw).buildings.map(p => ({ ...p, market:'seoul' as const })), ...parseGlobalSaved(globalRaw).places], [globalRaw,seoulRaw]);
   const view = <SavedPlacesView locale={locale} places={places} city={city} onCityChange={setCity} />;
-  if (initiallyOpen) return <section className={styles.saved} aria-label={locale === 'ko' ? '관심 목록' : locale === 'zh-CN' ? '收藏' : 'Saved places'}><SavedPropertyReviews locale={locale} /><RecentPlaces locale={locale} market={city === 'all' ? undefined : city as City} />{view}</section>;
+  if (initiallyOpen) return <section className={styles.saved} aria-label={locale === 'ko' ? '관심 목록' : locale === 'zh-CN' ? '收藏' : 'Saved places'}><SavedPropertyReviews locale={locale} /><RecentPlaces locale={locale} market={city === 'all' ? undefined : city as City} />{view}<InstallAppCard locale={locale} /></section>;
   return <details className={styles.saved}><summary>{locale === 'ko' ? '모든 도시 관심 목록' : locale === 'zh-CN' ? '所有城市的收藏' : 'Saved across cities'} · {places.length}</summary>{view}</details>;
 }
 

@@ -140,5 +140,5 @@
   .neighbourhoodList a { flex-wrap: wrap; }
   .page :global(dialog) .neighbourhoodList { max-height: none; overflow-y: visible; }
   .page :global(dialog) .areaMap { padding-top: 0; }
-  .page :global([data-market-shell-region="discovery"]) { position: sticky; bottom: max(var(--space-3), env(safe-area-inset-bottom)); z-index: 2; }
+  .page :global([data-market-shell-region="discovery"]) { position: sticky; bottom: calc(var(--mobile-app-bottom-clearance, 0px) + max(var(--space-3), env(safe-area-inset-bottom))); z-index: 2; }
 }

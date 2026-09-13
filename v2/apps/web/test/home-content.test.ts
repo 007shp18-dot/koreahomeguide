@@ -46,6 +46,10 @@ describe('signedprice homepage copy', () => {
     const layoutModule = await import('../app/(en)/layout');
 
     expect(layoutModule.metadata).toEqual({
+      applicationName: 'SignedPrice',
+      manifest: '/app-manifest/en/',
+      appleWebApp: { capable: true, title: 'SignedPrice', statusBarStyle: 'default' },
+      icons: { apple: [{ url: '/app-icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }] },
       metadataBase: new URL('https://www.signedprice.com'),
       title: 'signedprice | Real prices. Better property decisions.',
       description: 'Compare property prices, rents and buying costs in Seoul, Singapore and Dubai, with transaction dates and sources.',

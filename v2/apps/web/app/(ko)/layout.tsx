@@ -1,3 +1,5 @@
+import { MobileAppProvider } from '@/components/mobile-app/mobile-app-provider';
+import { mobileAppMetadata, mobileAppViewport } from '@/lib/mobile-app/model';
 import { EditorialAnalytics } from '@/components/editorial-analytics';
 import { AdvertisingConsent } from '@/components/consent/advertising-consent';
 import { PublicSiteJsonLd } from '@/components/public-json-ld';
@@ -16,7 +18,10 @@ import { notoSansKr } from '../fonts';
 import '../globals.css';
 import '../korean-typography.css';
 
+export const viewport = mobileAppViewport;
+
 export const metadata: Metadata = {
+  ...mobileAppMetadata('ko'),
   metadataBase: new URL('https://www.signedprice.com'),
   title: homepageCopy.metadata.title,
   description: homepageCopy.metadata.description,
@@ -35,7 +40,7 @@ export default function KoreanRootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang="ko" className={notoSansKr.variable}>
       <body>
-        {children}
+        <MobileAppProvider locale="ko">{children}</MobileAppProvider>
         <PublicSiteJsonLd />
         {analytics.status === 'ready' || advertising.status === 'ready' ? (
           <AdvertisingConsent
