@@ -690,9 +690,9 @@
   font-size: var(--review-control);
 }
 
-.reviewRoot .checkForm input,
+.checkForm input,
 .checkForm select,
-.reviewRoot .exploreSearch input,
+.exploreSearch input,
 .exploreFilters select,
 .resultBar select {
   min-height: 48px;
@@ -704,6 +704,11 @@
   border-radius: 8px;
   font-size: var(--review-control);
 }
+
+/* Keep the intended height above the shared logical minimum without changing
+   the cascade for unit padding or other field-specific styles. */
+.reviewRoot .checkForm input,
+.reviewRoot .exploreSearch input { min-block-size: 48px; }
 
 .inputWithUnit { position: relative; }
 .inputWithUnit input { padding-right: var(--review-space-8); }
