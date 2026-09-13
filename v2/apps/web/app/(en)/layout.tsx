@@ -1,3 +1,5 @@
+import { MobileAppProvider } from '@/components/mobile-app/mobile-app-provider';
+import { mobileAppMetadata, mobileAppViewport } from '@/lib/mobile-app/model';
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { preload } from "react-dom";
@@ -14,7 +16,10 @@ import { homepageCopy } from "@/lib/site-copy";
 import { notoSansKr } from "../fonts";
 import "../globals.css";
 
+export const viewport = mobileAppViewport;
+
 export const metadata: Metadata = {
+  ...mobileAppMetadata('en'),
   metadataBase: new URL('https://www.signedprice.com'),
   title: homepageCopy.metadata.title,
   description: homepageCopy.metadata.description,
@@ -33,7 +38,7 @@ export default function EnglishRootLayout({ children }: { children: ReactNode })
   return (
     <html lang="en" className={notoSansKr.variable}>
       <body>
-        {children}
+        <MobileAppProvider locale="en">{children}</MobileAppProvider>
         <PublicSiteJsonLd />
         {analytics.status === "ready" || advertising.status === "ready" ? (
           <AdvertisingConsent
