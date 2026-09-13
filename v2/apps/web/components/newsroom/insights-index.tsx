@@ -61,20 +61,21 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
 }
 
 function StoryPhoto({ item, eager = false, locale = 'en' }: { item: Insight; eager?: boolean; locale?: ContentLocale }) {
-  if(item.uploadedPhoto)return <figure className={styles.photo}><Link href={item.href} data-editorial-event="article_open" aria-label={item.title} tabIndex={-1}><img src={item.uploadedPhoto.src} alt={item.uploadedPhoto.alt} loading={eager?'eager':'lazy'} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}}/></Link>{item.uploadedPhoto.caption&&<figcaption className={styles.credit}>{item.uploadedPhoto.caption}</figcaption>}</figure>;
+  const creditLabel = locale === 'ko' ? '사진 출처' : locale === 'zh-CN' ? '图片来源' : 'Photo credit';
+  if(item.uploadedPhoto)return <figure className={styles.photo}><Link href={item.href} data-editorial-event="article_open" aria-label={item.title} tabIndex={-1}><Image src={item.uploadedPhoto.src} alt={item.uploadedPhoto.alt} fill loading={eager?'eager':'lazy'} unoptimized={!item.uploadedPhoto.src.startsWith('/assets/')} sizes={eager ? '(max-width: 760px) calc(100vw - 40px), 700px' : '(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 380px'} /></Link>{item.uploadedPhoto.caption&&<figcaption className={styles.credit}><details><summary>{creditLabel}</summary><span>{item.uploadedPhoto.caption}</span></details></figcaption>}</figure>;
   const photo = item.photo ?? (!item.requiresLocalPhoto && item.city ? MARKET_PHOTOS[item.city] : undefined);
   if (!photo) return null;
   return <figure className={styles.photo}>
     <Link href={item.href} data-editorial-event="article_open" aria-label={item.title} tabIndex={-1}>
       <Image src={photo.src} alt={photo.alt} fill priority={eager} sizes={eager ? '(max-width: 760px) calc(100vw - 40px), 700px' : '(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 380px'} />
     </Link>
-    {item.photo && <details className={styles.credit}><summary aria-label={locale === 'ko' ? '사진 출처' : locale === 'zh-CN' ? '图片来源' : 'Photo credit'}>{locale === 'ko' ? '사진' : locale === 'zh-CN' ? '图片' : 'Photo'}</summary><span>{item.photo.caption} · <a href={item.photo.source}>{item.photo.author}</a> · <a href={item.photo.licenseUrl}>{item.photo.license}</a></span></details>}
+    {item.photo && <figcaption className={styles.credit}><details><summary aria-label={locale === 'ko' ? '사진 출처' : locale === 'zh-CN' ? '图片来源' : 'Photo credit'}>{creditLabel}</summary><span>{item.photo.caption} · <a href={item.photo.source}>{item.photo.author}</a> · <a href={item.photo.licenseUrl}>{item.photo.license}</a></span></details></figcaption>}
   </figure>;
 }
 
 function StoryCard({ item, hero = false, locale = 'en' }: { item: Insight; hero?: boolean; locale?: ContentLocale }) {
   const Heading = hero ? 'h2' : 'h3';
-  return <article className={`${hero ? styles.hero : styles.card} ${item.requiresLocalPhoto && !item.photo ? styles.textStory : ''}`} data-newsroom-lead={hero ? "Featured story" : undefined} data-editorial-content-id={item.id} data-editorial-content-type={item.type} data-editorial-locale={item.language} lang={item.language} data-editorial-market={item.city ? marketIds[item.city] : undefined}>
+  return <article className={`${hero ? styles.hero : styles.card} ${item.requiresLocalPhoto && !item.photo && !item.uploadedPhoto ? styles.textStory : ''}`} data-newsroom-lead={hero ? "Featured story" : undefined} data-editorial-content-id={item.id} data-editorial-content-type={item.type} data-editorial-locale={item.language} lang={item.language} data-editorial-market={item.city ? marketIds[item.city] : undefined}>
     <StoryPhoto item={item} eager={hero} locale={locale} />
     <div className={styles.copy}><p className={styles.topic}>{item.city ? localizedCities[locale][item.city] : locale === 'ko' ? '전체 도시' : locale === 'zh-CN' ? '跨城市' : 'Across cities'} <span>·</span> {topicLabels[locale][item.topic] ?? item.topic}{item.language !== locale && <span className={styles.language}>English</span>}</p>
       <Heading><Link href={item.href} data-editorial-event="article_open">{item.title}</Link></Heading><p className={styles.deck}>{item.deck}</p>
