@@ -2,8 +2,26 @@ import { expect, test } from '@playwright/test';
 import { editorialAlternates } from './public-route-contract';
 import { NEIGHBOURHOOD_STORIES, neighbourhoodHref } from '../../apps/web/content/neighbourhood-stories';
 
+function decodeEntities(value: string): string {
+  const named: Record<string, string> = { amp: '&', quot: '"', apos: "'", lt: '<', gt: '>' };
+  // Decode serialized XML/HTML once; URL percent escapes remain untouched.
+  return value.replace(/&(amp|quot|apos|lt|gt|#\d+|#x[\da-f]+);/gi, (entity, name: string) => {
+    if (!name.startsWith('#')) return named[name.toLowerCase()]!;
+    const hex = name[1]?.toLowerCase() === 'x';
+    const codePoint = Number.parseInt(name.slice(hex ? 2 : 1), hex ? 16 : 10);
+    return codePoint > 0 && codePoint <= 0x10ffff && !(codePoint >= 0xd800 && codePoint <= 0xdfff)
+      ? String.fromCodePoint(codePoint)
+      : entity;
+  });
+}
+
 function sitemapLocations(xml: string): string[] {
-  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]!);
+  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => decodeEntities(match[1]!));
+}
+
+function requestPath(url: string): string {
+  const parsed = new URL(url);
+  return `${parsed.pathname}${parsed.search}`;
 }
 
 function linkTags(html: string, rel: string): string[] {
@@ -13,7 +31,8 @@ function linkTags(html: string, rel: string): string[] {
 }
 
 function attribute(tag: string, name: string): string | undefined {
-  return tag.match(new RegExp(`\\b${name}=["']([^"']+)["']`, 'i'))?.[1];
+  const value = tag.match(new RegExp(`\\b${name}\\s*=\\s*(["'])(.*?)\\1`, 'i'))?.[2];
+  return value === undefined ? undefined : decodeEntities(value);
 }
 
 function canonicalFrom(html: string): string | undefined {
@@ -36,6 +55,25 @@ function metaContent(html: string, key: 'name' | 'property', value: string): str
   return tag === undefined ? undefined : attribute(tag, 'content');
 }
 
+test('SEO helpers: encoded URLs preserve their complete query and decode only once', () => {
+  const url = 'https://www.signedprice.com/living/?market=kr-seoul&profile=kr-acro-river-park';
+  const escaped = url.replaceAll('&', '&amp;');
+  const decimal = url.replaceAll('&', '&#38;');
+  const hexadecimal = url.replaceAll('&', '&#x26;');
+  expect(sitemapLocations(`<urlset><loc>${escaped}</loc><loc>${decimal}</loc><loc>${hexadecimal}</loc></urlset>`))
+    .toEqual([url, url, url]);
+  expect(requestPath(url)).toBe('/living/?market=kr-seoul&profile=kr-acro-river-park');
+  expect(requestPath('https://www.signedprice.com/ko/living/?profile=sg-marina-one-residences&note=R%26D'))
+    .toBe('/ko/living/?profile=sg-marina-one-residences&note=R%26D');
+  expect(canonicalFrom(`<link rel="canonical" href="${escaped}"/>`)).toBe(url);
+  expect(alternatesFrom(`<link rel='alternate' hreflang='en' href='${hexadecimal}'/>`).get('en')).toBe(url);
+  expect(metaContent(`<meta property="og:url" content="${decimal}"/>`, 'property', 'og:url')).toBe(url);
+  expect(attribute('<meta content="Buyer\'s &quot;home&quot; &apos;visit&apos; &lt;1km&gt;"/>', 'content'))
+    .toBe('Buyer\'s "home" \'visit\' <1km>');
+  expect(decodeEntities('&amp;amp; &#x1F3E0; &#x110000; &#xD800; &unknown;'))
+    .toBe('&amp; 🏠 &#x110000; &#xD800; &unknown;');
+});
+
 test('SEO foundation: every sitemap URL is terminal, indexable, and self-canonical', async ({ request }) => {
   const sitemapResponse = await request.get('/sitemap.xml', { maxRedirects: 0 });
   expect(sitemapResponse.status()).toBe(200);
@@ -55,7 +93,7 @@ test('SEO foundation: every sitemap URL is terminal, indexable, and self-canonic
     const parsed = new URL(url);
     expect(parsed.origin, url).toBe('https://www.signedprice.com');
 
-    const response = await request.get(parsed.pathname, { maxRedirects: 0 });
+    const response = await request.get(requestPath(url), { maxRedirects: 0 });
     expect(response.status(), url).toBe(200);
     const html = await response.text();
     expect(canonicalFrom(html), url).toBe(url);
@@ -79,7 +117,7 @@ test('SEO foundation: every English and Korean alternate links back', async ({ r
   const locations = sitemapLocations(await sitemapResponse.text());
 
   for (const sourceUrl of locations) {
-    const sourceResponse = await request.get(new URL(sourceUrl).pathname);
+    const sourceResponse = await request.get(requestPath(sourceUrl));
     const sourceHtml = await sourceResponse.text();
     const sourceCanonical = canonicalFrom(sourceHtml);
     const sourceAlternates = alternatesFrom(sourceHtml);
@@ -92,7 +130,7 @@ test('SEO foundation: every English and Korean alternate links back', async ({ r
     const counterpartUrl = sourceAlternates.get(counterpartLanguage);
     if (counterpartUrl === undefined) continue;
 
-    const counterpartResponse = await request.get(new URL(counterpartUrl).pathname, {
+    const counterpartResponse = await request.get(requestPath(counterpartUrl), {
       maxRedirects: 0,
     });
     expect(counterpartResponse.status(), counterpartUrl).toBe(200);
