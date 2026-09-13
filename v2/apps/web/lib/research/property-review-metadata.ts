@@ -6,11 +6,12 @@ import dubai from '../../content/property-reviews/dubai.json';
 import tokyo from '../../content/property-reviews/tokyo.json';
 
 const reviews = [...seoul,...singapore,...dubai,...tokyo];
-export const propertyReviewPaths = reviews.flatMap(r => ['', '/ko'].map(prefix => `${prefix}/living/?market=${r.marketId}&profile=${r.id}` as `/${string}`));
+// A property ID determines its market; keep indexed URLs to one query parameter.
+export const propertyReviewPaths = reviews.flatMap(r => ['', '/ko'].map(prefix => `${prefix}/living/?profile=${r.id}` as `/${string}`));
 export function propertyReviewMetadata(locale: MarketLocale, profileId?: string) {
   const p = reviews.find(r=>r.id===profileId);
   const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
-  const query = p ? `?market=${p.marketId}&profile=${p.id}` : '';
+  const query = p ? `?profile=${p.id}` : '';
   const lang = locale === 'ko' ? 'ko' : 'en';
   const metadata = indexableMetadata({
     path: `${prefix}/living/${query}`,
