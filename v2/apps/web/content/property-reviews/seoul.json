@@ -1,0 +1,1018 @@
+[
+  {
+    "id": "kr-acro-river-park",
+    "marketId": "kr-seoul",
+    "name": {
+      "ko": "아크로리버파크",
+      "en": "Acro River Park"
+    },
+    "area": {
+      "ko": "반포 · 신반포역 · 한강변",
+      "en": "Banpo · Sinbanpo · Han River"
+    },
+    "checkedOn": "2026-09-13",
+    "verdict": {
+      "ko": "한강 산책과 반포 생활을 자주 누릴 가구에 추천 후보. 조망만 보고 고르면 도로 소음과 통학 동선을 놓칠 수 있습니다.",
+      "en": "Shortlist for regular riverside living in Banpo. A view-led choice can overlook road exposure and the school journey."
+    },
+    "summary": {
+      "ko": "한강 보행 연결, 단지 내 운동·독서 시설, 9호선 접근을 함께 활용할 때 장점이 분명합니다. 다만 신반포역은 급행 정차역이 아니며, 학교 거리와 조망은 해당 동·세대 기준으로 다시 봐야 합니다.",
+      "en": "The case is strongest when riverside walks, on-site recreation and reading facilities, and Line 9 all form part of daily life. Sinbanpo is a local-service stop; school access and outlook still require a specific building and unit."
+    },
+    "bestFor": {
+      "ko": "반포 생활권과 한강 산책을 중시하고 커뮤니티 시설을 실제로 이용할 가구",
+      "en": "Households who value Banpo, frequent riverside walks and regular use of shared facilities"
+    },
+    "holdFor": {
+      "ko": "급행역 바로 앞, 확정된 짧은 통학, 모든 방의 한강 조망을 필수로 삼는 가구",
+      "en": "Households requiring an express station at the doorstep, a confirmed short school walk or river views from every room"
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "한강은 바라보는 대상에서 일상 동선으로",
+          "en": "A river setting you can use daily"
+        },
+        "body": {
+          "ko": "AURUM의 준공 건축 기록은 공공공지에서 수변공원으로 이어지는 보행자 전용도로를 설명합니다. 산책을 자주 한다면 의미 있는 장점이지만, 관심 동에서 실제 공원 진입점까지 걸어 접근성을 판단해야 합니다.",
+          "en": "The AURUM architectural record describes a pedestrian link from public open space to the riverside park. That benefits frequent walkers, subject to checking the route from the chosen building to the actual park entrance."
+        },
+        "sourceIds": [
+          "river-aurum"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "운동과 독서를 단지 안에서 해결할 수 있는 구성",
+          "en": "Facilities support a routine close to home"
+        },
+        "body": {
+          "ko": "개발사 소개에는 수영장·피트니스·사우나와 독서실·작은 도서관이 포함됩니다. 이용 빈도가 높은 가구에 가치는 커지며, 현재 운영시간·예약 방식·추가 이용료는 관리사무소에 확인할 항목입니다.",
+          "en": "The developer lists a pool, gym, sauna, reading rooms and a small library. These matter most to regular users; current opening hours, reservations and extra charges require management confirmation."
+        },
+        "sourceIds": [
+          "river-acro"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "한강 방향과 도로 노출을 같이 보기",
+          "en": "Balance the river outlook against road exposure"
+        },
+        "body": {
+          "ko": "북측에는 올림픽대로가 있다는 건축 기록이 있습니다. 북향 조망 프리미엄을 검토할 때 창문을 연 상태의 소음과 침실 방향을 함께 비교해야 하며, 이번 조사에서 특정 세대의 소음 수준을 측정하지는 않았습니다.",
+          "en": "The architectural record places Olympic-daero along the northern boundary. Assess a river-view premium together with open-window noise and bedroom orientation; noise levels in individual homes were not measured."
+        },
+        "sourceIds": [
+          "river-aurum"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "가까운 학교 목록과 실제 배정은 다릅니다",
+          "en": "Nearby schools do not establish admission"
+        },
+        "body": {
+          "ko": "포털에는 잠원초와 계성초가 함께 나타나지만 계성초는 별도 입학 절차를 안내하는 사립학교입니다. 가장 가까운 학교를 배정학교로 간주하지 말고 입주 연도의 정확한 주소별 공립초 배정을 확인해야 합니다.",
+          "en": "Portals show both Jamwon and Gyeseong elementary schools, but Gyeseong is a private school with a separate admissions process. Do not treat the closest school as an assigned place; confirm public-school allocation for the exact address and entry year."
+        },
+        "sourceIds": [
+          "river-zip",
+          "river-school"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "신반포역: 포털 도보 6분과 9분의 차이",
+            "en": "Sinbanpo: portals show six versus nine minutes"
+          },
+          "body": {
+            "ko": "집품은 신반포역 363m·도보 6분, 아보카도는 374m·도보 9분으로 안내합니다. 두 값 모두 포털 안내이며 출발 출입구·횡단보도·승강장 이동을 포함한 실측 시간이 아니므로, 매물 방문 때 같은 경로를 왕복해 비교하세요.",
+            "en": "Zippoom lists Sinbanpo at 363 m / six minutes; Avocado shows 374 m / nine minutes. These are portal estimates rather than a measured journey including the chosen entrance, crossings and platform access; compare the same route in both directions at a viewing."
+          },
+          "sourceIds": [
+            "river-zip",
+            "river-avo"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "9호선 접근과 급행 이용을 분리해서 계산",
+            "en": "Separate Line 9 access from express access"
+          },
+          "body": {
+            "ko": "9호선 운영사의 노선 안내에서 신반포는 일반 정차역, 고속터미널은 급행·환승역으로 구분됩니다. 여의도나 강남 업무지 출근은 일반열차 이용과 급행 환승 대기를 포함한 전체 경로로 비교해야 하며, 현재 출근시간을 측정한 수치는 없습니다.",
+            "en": "The operator distinguishes Sinbanpo as a local stop and Express Bus Terminal as an express and interchange stop. Compare a full commute including local service and any express-transfer wait; no current peak-hour journey was timed."
+          },
+          "sourceIds": [
+            "river-metro"
+          ],
+          "status": "documented"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "잠원초 통학은 단지 출입구부터 확인",
+            "en": "Check the Jamwon school route from your building"
+          },
+          "body": {
+            "ko": "아보카도는 잠원초를 631m·도보 14분으로 표시합니다. 이는 포털의 경로 안내로, 자녀의 보행 속도나 등교 시간 횡단 대기를 반영한 실측도 배정 확약도 아닙니다.",
+            "en": "Avocado displays Jamwon Elementary at 631 m / 14 minutes. This is portal routing, not a timed child-paced walk with morning crossing delays or confirmation of school allocation."
+          },
+          "sourceIds": [
+            "river-avo"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "학군 이름보다 방과후 생활의 실행 가능성",
+            "en": "Assess the after-school routine, not a district label"
+          },
+          "body": {
+            "ko": "계성초의 입학안내는 별도 지원 절차를 제시하고, 단지에는 개발사가 안내한 독서·어린이 시설이 있습니다. 사립초 입학 가능성, 실제 다닐 학원의 귀가 동선, 단지 시설 이용 자격을 따로 확인해야 교육환경에 대한 기대를 구체화할 수 있습니다.",
+            "en": "Gyeseong publishes a separate application process, while the developer lists reading and children’s facilities on site. Verify private-school eligibility, the return route from chosen tutoring centres and access to shared facilities separately."
+          },
+          "sourceIds": [
+            "river-school",
+            "river-acro"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "수변 산책길에는 실제 통과 지점이 있습니다",
+            "en": "Identify the actual passage into the park"
+          },
+          "body": {
+            "ko": "반포한강공원 안내 글은 신반포역 1번 출구에서 반포2동주민센터와 아크로리버파크를 지나 안내센터 나들목으로 향하는 경로를 제시합니다. 지도에서 강까지 직선을 긋기보다 이 통과 지점과 관심 동 사이의 동선을 확인하는 편이 유용합니다.",
+            "en": "A Banpo Hangang Park guide routes walkers from Sinbanpo Exit 1 past the community centre and Acro River Park to the information-centre underpass. Check the link between this passage and your building rather than drawing a straight line to the river."
+          },
+          "sourceIds": [
+            "river-walk"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "단지 내 편의가 생활비를 대신 설명하지는 않습니다",
+            "en": "Amenities need an operating-cost check"
+          },
+          "body": {
+            "ko": "공식 소개상 2016년 8월 준공, 1,612세대·15개 동의 단지입니다. 큰 규모와 커뮤니티 구성은 선택 이유가 될 수 있지만, 장보기 점포의 실제 운영과 관심 동의 배달·차량 진입 편의는 별도로 확인할 필요가 있습니다.",
+            "en": "The developer records completion in August 2016, with 1,612 homes across 15 buildings. Scale and shared facilities can support a shortlist, while operating grocery options and delivery or vehicle access still need a building-specific check."
+          },
+          "sourceIds": [
+            "river-acro"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "2016년 준공: 수선 내역과 겨울 고지서 확인",
+            "en": "Review repairs and winter bills for this 2016 estate"
+          },
+          "body": {
+            "ko": "개발사 준공 기록과 포털의 지역난방 안내를 함께 보면, 관심 세대의 수선 이력과 계절별 사용료를 확인하는 것이 중요합니다. 최근 12개월 고지서에서 공용관리비·난방비·장기수선충당금·시설 이용료를 나눠 보고 실제 부담액을 계산하세요.",
+            "en": "The completion record and portal-reported district heating make repair history and seasonal charges relevant. Separate shared management, heating, reserve contributions and amenity fees in the last 12 months of bills to establish the unit’s actual running cost."
+          },
+          "sourceIds": [
+            "river-acro",
+            "river-daangn"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "한강 조망 가격은 같은 조건의 거래로 검증",
+            "en": "Test the view premium against matched transactions"
+          },
+          "body": {
+            "ko": "현재 호가를 같은 전용면적·동·층·조망 방향의 실거래와 맞춘 가격 판단은 아직 완료하지 않았습니다. 매수자는 조망에 얼마를 더 내는지, 매도자는 비조망 거래와 비교해 얼마를 설명해야 하는지 확인한 뒤 가격 결론을 내리는 것이 맞습니다.",
+            "en": "Current asking prices have not yet been matched to completed transactions with comparable internal area, building, floor and outlook. Buyers should establish the extra amount paid for the view; sellers need evidence for any premium over non-view sales."
+          },
+          "sourceIds": [
+            "river-acro"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "아크로서울포레스트",
+          "en": "Acro Seoul Forest"
+        },
+        "reason": {
+          "ko": "한강 산책 중심의 생활과 서울숲·문화시설 중심의 생활을 비교할 때 적합합니다. 단지 규모와 주거·상업 공간 구성이 달라 일상의 혼잡 체감도 함께 봐야 합니다.",
+          "en": "Compare riverside routines with a Seoul Forest and cultural-venue routine. Estate scale and the residential–commercial arrangement differ, so assess everyday activity around entrances."
+        },
+        "condition": {
+          "ko": "생활 방식 비교이며 같은 예산의 대체 매물인지 확인하지 않았습니다.",
+          "en": "This compares lifestyles; equivalent options at the same budget have not been established."
+        }
+      },
+      {
+        "name": {
+          "ko": "마포래미안푸르지오",
+          "en": "Mapo Raemian Prugio"
+        },
+        "reason": {
+          "ko": "강남권 생활보다 도심 출근과 가족의 일상 동선이 더 중요할 때 함께 검토할 후보입니다. 한강 조망 프리미엄을 포기해도 되는지부터 판단하세요.",
+          "en": "Consider it when central-Seoul commuting and family routines matter more than Banpo. First decide whether a river-view premium is necessary."
+        },
+        "condition": {
+          "ko": "생활 방식 비교이며 같은 예산의 대체 매물인지 확인하지 않았습니다.",
+          "en": "This compares lifestyles; equivalent options at the same budget have not been established."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "river-acro",
+        "title": "DL E&C / ACRO — Acro River Park",
+        "url": "https://www.acro.co.kr/MPosm_main.action?commonMap.CD_BIZ_LND=010366",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "개발사 단지 규모·준공월·시설 소개. 현재 운영·요금 자료가 아닙니다.",
+          "en": "Developer identity, completion month and facility descriptions; not a current operating or fee schedule."
+        }
+      },
+      {
+        "id": "river-aurum",
+        "title": "AURUM — Acro River Park Banpo",
+        "url": "https://www.aurum.re.kr/Bits/BuildingDoc.aspx?mm=4&num=6861&ss=1",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "준공 건축 기록의 도로 방향·공공 보행로. 세대 소음 실측은 없습니다.",
+          "en": "Architectural record of road orientation and public pedestrian links, without unit noise measurements."
+        }
+      },
+      {
+        "id": "river-zip",
+        "title": "Zippoom — Acro River Park",
+        "url": "https://zippoom.com/부동산/서울-서초구-반포동-아크로리버파크/cjydq4",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "역 거리·도보 안내·학교 목록. 출입구 기준과 실제 통학 배정은 확인되지 않았습니다.",
+          "en": "Portal station estimates and nearby-school list; starting gate and actual school allocation unverified."
+        }
+      },
+      {
+        "id": "river-avo",
+        "title": "Avocado — Acro River Park, 68-pyeong type",
+        "url": "https://avo-kado.co.kr/actual-price/A10027205/68/sale",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "포털 역·학교 거리와 도보 분 수치만 참고. 해당 평형의 가격·세금을 다른 세대에 적용하지 않습니다.",
+          "en": "Only portal station/school distances and walking estimates used; type-specific pricing and tax figures are not generalized."
+        }
+      },
+      {
+        "id": "river-metro",
+        "title": "Seoul Metro Line 9 — Station information",
+        "url": "https://www.metro9.co.kr/prog/subwayInfo/kor/sub01_01/view.do",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "운영사 노선도와 공개 HTML의 급행 표기를 대조. 신반포 4122 일반, 고속터미널 4123 급행·환승.",
+          "en": "Operator map and public HTML distinguish Sinbanpo 4122 as local and Express Bus Terminal 4123 as express/interchange."
+        }
+      },
+      {
+        "id": "river-school",
+        "title": "Gyeseong Elementary — Admissions",
+        "url": "https://www.gyeseong1882.es.kr/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "공식 학교 입학안내의 검색 색인에서 사립초 입학포털·지원 절차 확인. 원문 직접 열람은 403으로 제한돼 특정 자녀의 입학 가능성을 판정하지 않습니다.",
+          "en": "Official admissions search index identifies the private-school application process. Direct page access returned 403; no child-specific eligibility determination."
+        }
+      },
+      {
+        "id": "river-walk",
+        "title": "Expat Guide Korea — How to Get to Banpo Hangang Park",
+        "url": "https://expatguidekorea.com/article/how-to-get-to-banpo-hangang-park.html",
+        "checkedOn": "2026-09-13",
+        "publishedOn": "2024-10-11",
+        "kind": "editorial",
+        "note": {
+          "ko": "공원 나들목 경로 안내. 현재 통제·우회 여부와 실제 소요시간은 미확인.",
+          "en": "Park-underpass route guide; current closures, diversions and elapsed walking time unverified."
+        }
+      },
+      {
+        "id": "river-daangn",
+        "title": "Daangn Realty — Acro River Park",
+        "url": "https://realty.daangn.com/complexes/10705363",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "단지 난방 방식 참고. 개별 관리비와 실거래 원자료는 대조하지 않았습니다.",
+          "en": "Heating-system reference; individual bills and raw transaction records not reconciled."
+        }
+      },
+      {
+        "id": "river-video",
+        "title": "Ace Rent Realty — Acro River Park tour",
+        "url": "https://www.youtube.com/watch?v=xHYADDau5KM",
+        "checkedOn": "2026-09-13",
+        "publishedOn": "2022-11-17",
+        "kind": "video-companion",
+        "note": {
+          "ko": "검색에 노출된 제목·발행일만 확인. 영상 재생·자막 미확인으로 입지·학군 판단 근거에서 제외했습니다.",
+          "en": "Only indexed title and publication date obtained; playback/transcript unverified and excluded from location or school judgments."
+        }
+      }
+    ]
+  },
+  {
+    "id": "kr-acro-seoul-forest",
+    "marketId": "kr-seoul",
+    "name": {
+      "ko": "아크로서울포레스트",
+      "en": "Acro Seoul Forest"
+    },
+    "area": {
+      "ko": "성수 · 서울숲 · 수인분당선",
+      "en": "Seongsu · Seoul Forest · Suin–Bundang Line"
+    },
+    "checkedOn": "2026-09-13",
+    "verdict": {
+      "ko": "서울숲과 문화·외식 생활을 자주 즐긴다면 추천 후보. 짧은 통학과 낮은 고정비가 우선이라면 더 엄격하게 비교하세요.",
+      "en": "Shortlist for frequent park, culture and dining use. Be more selective if a short school walk and low running costs come first."
+    },
+    "summary": {
+      "ko": "공원 옆 입지와 주거·리테일·오피스가 만나는 구성이 핵심입니다. 역 연결은 공공 복합시설 동선과 주거 출입구를 나눠 보고, 경일초 통학과 주차 배정은 포털 간 차이를 실제 주소·세대 기준으로 해소해야 합니다.",
+      "en": "The defining feature is a park-edge setting within a residential, retail and office complex. Separate public station links from residential access, and resolve conflicting school-walk and parking figures for the actual address and unit."
+    },
+    "bestFor": {
+      "ko": "서울숲 산책·전시·외식을 반복해서 이용하고 주상복합의 생활 방식을 선호하는 가구",
+      "en": "Households who regularly use Seoul Forest, exhibitions and dining, and prefer mixed-use tower living"
+    },
+    "holdFor": {
+      "ko": "확정된 짧은 초등 통학, 낮은 월 고정비, 방문객 동선과 완전히 분리된 생활이 필수인 가구",
+      "en": "Households requiring a confirmed short primary-school walk, low monthly costs or complete separation from visitor activity"
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "서울숲 옆의 문화·리테일 복합 생활",
+          "en": "A park-edge mix of homes and cultural amenities"
+        },
+        "body": {
+          "ko": "설계사 RATIO는 서울숲 가장자리의 주거동·오피스동과 이를 연결하는 저층 리테일을 설명합니다. 공원과 외식을 자주 이용할 가구에는 설득력 있는 구성이며, 단지 안팎의 시설이 실제 생활에서 얼마나 쓰일지가 선택 기준입니다.",
+          "en": "Architect RATIO describes residential and office towers linked by retail at the edge of Seoul Forest. The arrangement is compelling for frequent park and dining users; judge it by how often these amenities would enter your routine."
+        },
+        "sourceIds": [
+          "forest-ratio"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "전망과 공간감은 세대에서 확인할 장점",
+          "en": "Outlook and space are unit-level strengths"
+        },
+        "body": {
+          "ko": "개발사는 49층 주거 2개 동·280세대와 최대 3.3m 천장고를 안내합니다. 높은 천장이나 숲 조망을 중요하게 본다면 후보 가치가 있지만, 최대 사양과 홍보 조망이 모든 평면·층에 동일하게 적용되는 것은 아닙니다.",
+          "en": "The developer lists 280 homes in two 49-storey residential towers and ceiling heights of up to 3.3 m. These can matter to buyers seeking volume and park views, but maximum specifications and promotional outlooks do not describe every layout and floor."
+        },
+        "sourceIds": [
+          "forest-acro"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "경일초 도보 안내가 7분과 16분으로 다릅니다",
+          "en": "School-walk estimates range from seven to sixteen minutes"
+        },
+        "body": {
+          "ko": "집품은 경일초 도보 7분, 당근부동산은 16분으로 표시합니다. 출발 지점과 경로 차이를 해결하지 않고 초등 통학이 짧다고 단정할 수 없으므로, 관심 동에서 교문까지 자녀와 걸어본 뒤 판단하세요.",
+          "en": "Zippoom displays seven minutes to Gyeongil Elementary, while Daangn shows sixteen. Resolve the starting point and routing difference before calling the school walk short, ideally by walking from the chosen building to the school gate with your child."
+        },
+        "sourceIds": [
+          "forest-zip",
+          "forest-daangn"
+        ],
+        "status": "needs-check"
+      },
+      {
+        "title": {
+          "ko": "복합단지 편의에는 출입 동선 비교가 필요합니다",
+          "en": "Mixed-use convenience needs an entrance check"
+        },
+        "body": {
+          "ko": "설계상 저층 리테일은 주거동과 오피스동을 하나의 복합시설로 묶습니다. 전시·식음 방문이 많은 날의 차량 진입과 주거 로비 접근을 확인해야 하며, 현재 거주 구역의 혼잡·소음 문제가 실측된 것은 아닙니다.",
+          "en": "The architectural design joins residential and office towers through low-level retail. Check vehicle arrival and residential-lobby access during busy dining or exhibition periods; residential congestion or noise was not measured."
+        },
+        "sourceIds": [
+          "forest-ratio"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "서울숲역 연결은 주거 로비까지 다시 이어보기",
+            "en": "Trace the station connection all the way to the lobby"
+          },
+          "body": {
+            "ko": "KoreaToDo는 D Tower 복합시설이 서울숲역 4·5번 출구와 직접 연결된다고 설명합니다. 이 공공 연결이 관심 주거동에서 승강장까지 전 구간 실내 이동을 보장하는 것은 아니므로, 주거 보안문·엘리베이터·연결통로 운영시간까지 확인할 필요가 있습니다.",
+            "en": "KoreaToDo describes a direct link between the D Tower complex and Seoul Forest Station Exits 4/5. That does not establish an entirely indoor journey from the selected residential tower to the platform; check secure doors, lifts and link operating hours."
+          },
+          "sourceIds": [
+            "forest-walk"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "수인분당선과 2호선의 출근 경로를 따로 비교",
+            "en": "Compare Suin–Bundang and Line 2 routes separately"
+          },
+          "body": {
+            "ko": "집품의 안내는 서울숲역 114m·도보 2분, 뚝섬역 도보 7분입니다. 이는 포털 추정으로, 역까지 짧은 경로가 직장까지도 가장 빠른 경로인지는 환승·열차 대기·직장 출구를 포함해 확인해야 합니다.",
+            "en": "Zippoom lists Seoul Forest Station at 114 m / two minutes and Ttukseom at seven minutes. These portal estimates do not establish the fastest commute; include transfers, train waits and the exit serving your workplace."
+          },
+          "sourceIds": [
+            "forest-zip"
+          ],
+          "status": "documented"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "경일초 표시는 배정 확인의 출발점",
+            "en": "Gyeongil is a starting point for allocation checks"
+          },
+          "body": {
+            "ko": "당근부동산은 경일초 배정 단지로 안내하지만 이번 조사에서는 교육지원청의 해당 연도 주소별 통학구역 원문을 대조하지 않았습니다. 가까운 중·고교 이름까지 자동 배정으로 확대하지 말고, 초등 배정과 중등 진학 절차를 각각 확인하세요.",
+            "en": "Daangn labels the estate as assigned to Gyeongil, but this review did not reconcile the education office’s address-level catchment for the entry year. Nearby secondary-school names must not be treated as automatic allocations; check primary and secondary procedures separately."
+          },
+          "sourceIds": [
+            "forest-daangn"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "숲은 방과후 장점, 교육 여건은 별도 판단",
+            "en": "The park supports after-school time; teaching quality is separate"
+          },
+          "body": {
+            "ko": "한국관광공사는 서울숲을 네 개 주제 구역으로 구성된 도시공원으로 안내합니다. 야외활동을 중시하는 가족에는 이점이지만, 그 사실만으로 학교 교육의 질이나 학원 통원 편의까지 높게 평가할 근거는 없습니다.",
+            "en": "Korea Tourism Organization describes Seoul Forest as a city park with four themed sections. It supports outdoor family time, but that alone does not establish school quality or convenient journeys to chosen tutoring centres."
+          },
+          "sourceIds": [
+            "forest-park"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "문화시설과 장보기는 다른 생활 과제입니다",
+            "en": "Culture and groceries are different daily needs"
+          },
+          "body": {
+            "ko": "개발사 소개에는 아트센터·리테일·식음시설이 명시되고, 설계사도 저층 상업공간을 설명합니다. 외식 선택지는 장점이 될 수 있지만, 일주일 장보기를 할 매장과 약국의 실제 영업시간을 확인하기 전에는 모든 생활이 단지 안에서 해결된다고 판단하지 않습니다.",
+            "en": "The developer identifies an art centre, retail and dining, supported by the architect’s description of the retail base. Dining can be a strength, but verify weekly grocery shopping and pharmacy hours before assuming every everyday need is handled on site."
+          },
+          "sourceIds": [
+            "forest-acro",
+            "forest-ratio"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "주차 2.7대와 5.52대: 실제 배정부터 확인",
+            "en": "Parking: verify the entitlement behind conflicting figures"
+          },
+          "body": {
+            "ko": "당근부동산은 총 750대·세대당 2.7대, 집품은 총 1,546대·세대당 5.52대로 표시합니다. 복합시설 전체와 주거 전용 범위 차이 가능성을 확인하지 않았으므로 어느 수치도 개별 세대의 보장 주차대수로 사용하지 않습니다.",
+            "en": "Daangn shows 750 spaces / 2.7 per home; Zippoom shows 1,546 / 5.52. A possible difference between whole-complex and residential scope has not been resolved, so neither figure is treated as a guaranteed unit entitlement."
+          },
+          "sourceIds": [
+            "forest-daangn",
+            "forest-zip"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "월 비용은 같은 면적의 최근 고지서로",
+            "en": "Use recent bills for the same unit size"
+          },
+          "body": {
+            "ko": "집품에는 월 관리비 부담을 언급하는 공개 후기가 있지만 평형·사용량·청구 범위가 서로 일치하는지 확인되지 않았습니다. 최근 12개월의 공용관리비·냉난방·장기수선충당금·주차·커뮤니티 비용을 분리해서 받아야 월 예산을 검증할 수 있습니다.",
+            "en": "Public Zippoom reviews discuss monthly charges, but comparable unit sizes, consumption and billing scope are unverified. Obtain 12 months separating shared management, heating/cooling, reserves, parking and amenity charges before setting a monthly budget."
+          },
+          "sourceIds": [
+            "forest-zip"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "조망과 평면을 맞추기 전 적정가 판단은 보류",
+            "en": "Defer fair-value judgment until outlook and layout match"
+          },
+          "body": {
+            "ko": "주거 280세대의 서로 다른 평면·층·조망을 한 개의 대표 거래가로 설명하기는 어렵습니다. 현재 매물의 전용면적과 전망·테라스 유무를 맞춘 최근 실거래 비교는 미완료이므로, 이 리뷰는 입지 적합성 판단이며 저평가나 수익률을 제시하지 않습니다.",
+            "en": "Different layouts, floors and outlooks across 280 homes cannot be represented adequately by one headline sale. Recent transactions have not been matched to the listing’s internal area, view and terrace configuration; this is a location-fit review, without an undervaluation or yield conclusion."
+          },
+          "sourceIds": [
+            "forest-acro"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "아크로리버파크",
+          "en": "Acro River Park"
+        },
+        "reason": {
+          "ko": "숲·문화시설보다 한강 산책과 반포 생활이 더 자주 쓰일 때 비교하세요. 주상복합 동선과 15개 동 아파트의 동선은 직접 걸어서 차이를 확인할 부분입니다.",
+          "en": "Compare it if riverside walks and Banpo would be used more often than park-side cultural venues. Walk the routes to understand the difference between mixed-use towers and a 15-building estate."
+        },
+        "condition": {
+          "ko": "생활 방식 비교이며 같은 예산의 대체 매물인지 확인하지 않았습니다.",
+          "en": "This compares lifestyles; equivalent options at the same budget have not been established."
+        }
+      },
+      {
+        "name": {
+          "ko": "마포래미안푸르지오",
+          "en": "Mapo Raemian Prugio"
+        },
+        "reason": {
+          "ko": "도심 출근과 초등 자녀의 반복 동선이 우선이라면 대단지 가족 생활과 비교할 수 있습니다. 학교 배정과 경사는 마래푸에서도 단지별 확인이 필요합니다.",
+          "en": "Compare large-estate family routines if central-Seoul commuting and primary-school journeys come first. Allocation and slopes still require block-specific checks at Mapo."
+        },
+        "condition": {
+          "ko": "생활 방식 비교이며 같은 예산의 대체 매물인지 확인하지 않았습니다.",
+          "en": "This compares lifestyles; equivalent options at the same budget have not been established."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "forest-acro",
+        "title": "DL E&C / ACRO — Acro Seoul Forest",
+        "url": "https://www.acro.co.kr/MPosm_main.action?commonMap.CD_BIZ_LND=170263",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "주거 규모·최대 천장고·복합시설 구성. 낡은 메뉴의 공사중 문구를 현재 상태로 사용하지 않았습니다.",
+          "en": "Residential scale, maximum ceiling height and mixed-use configuration; stale under-construction menu text was not used as current status."
+        }
+      },
+      {
+        "id": "forest-ratio",
+        "title": "RATIO — Acro Seoul Forest",
+        "url": "https://ratiodesign.com/project/acro-seoul-forest/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "설계사가 직접 설명한 공원 가장자리 입지와 주거·오피스·저층 리테일 구성.",
+          "en": "Architect’s own account of the park-edge site and residential, office and retail arrangement."
+        }
+      },
+      {
+        "id": "forest-walk",
+        "title": "KoreaToDo — Seoul Forest and nearby attractions",
+        "url": "https://www.koreatodo.com/seoul-forest",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "editorial",
+        "note": {
+          "ko": "D Tower와 서울숲역 4·5번 출구 연결 설명. 주거 로비의 보안·운영시간·실내 연속 경로 미확인.",
+          "en": "Description of the D Tower link to station Exits 4/5; residential security, hours and a continuous indoor route unverified."
+        }
+      },
+      {
+        "id": "forest-park",
+        "title": "Korea Tourism Organization — Seoul Forest",
+        "url": "https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=95429",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "공원 구성과 성격. 단지 출입구에서의 보행 실측 자료는 아닙니다.",
+          "en": "Park character and configuration; not measured walking access from a residential entrance."
+        }
+      },
+      {
+        "id": "forest-zip",
+        "title": "Zippoom — Acro Seoul Forest",
+        "url": "https://zippoom.com/부동산/서울-성동구-성수동1가-아크로서울포레스트/76jxlv",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "보행·학교·주차 안내 및 공개 관리비 후기. 주차 범위는 당근과 다르고 후기는 고지서로 검증되지 않았습니다.",
+          "en": "Walking, schools and parking plus public fee comments; parking scope conflicts with Daangn and comments are not verified bills."
+        }
+      },
+      {
+        "id": "forest-daangn",
+        "title": "Daangn Realty — Acro Seoul Forest",
+        "url": "https://realty.daangn.com/complexes/11122483",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "경일초 보행·배정 표기와 주차 안내. 교육지원청 배정 원문과 관리규약 미대조.",
+          "en": "Gyeongil walk/allocation labels and parking; not reconciled with education-office catchments or management rules."
+        }
+      },
+      {
+        "id": "forest-video",
+        "title": "Acro Seoul Forest interior-unit tour",
+        "url": "https://www.youtube.com/watch?v=i1JUOhLqy4Y",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "video-companion",
+        "note": {
+          "ko": "검색 제목만 확보, 영상·자막은 열람하지 못해 평면·조망의 검증 근거로 사용하지 않았습니다.",
+          "en": "Only indexed title obtained; video/transcript inaccessible and not used to verify layouts or views."
+        }
+      }
+    ]
+  },
+  {
+    "id": "kr-mapo-raemian-prugio",
+    "marketId": "kr-seoul",
+    "name": {
+      "ko": "마포래미안푸르지오",
+      "en": "Mapo Raemian Prugio"
+    },
+    "area": {
+      "ko": "아현 · 애오개 · 마포대로",
+      "en": "Ahyeon · Aeogae · Mapo-daero"
+    },
+    "checkedOn": "2026-09-13",
+    "verdict": {
+      "ko": "도심 출근과 가족의 일상을 함께 맞추기 좋은 후보. 역 거리보다 1~4단지 중 어디에 사는지가 먼저입니다.",
+      "en": "A strong candidate for central-Seoul commuting and family routines. Choose the block before judging the station distance."
+    },
+    "summary": {
+      "ko": "2호선 아현역과 5호선 애오개역, 주변 초등학교와 생활업종을 함께 활용하는 단지군입니다. 같은 이름의 매물도 역 동선·경사·학교 접근이 달라질 수 있어 단지 전체의 한 개 도보시간이나 평균 가격으로 선택하면 중요한 차이를 놓칩니다.",
+      "en": "This estate group combines access to Ahyeon on Line 2, Aeogae on Line 5 and nearby schools and everyday services. Listings under one name can differ in walking routes, slopes and school access, so a single estate-wide walking time or average price misses meaningful differences."
+    },
+    "bestFor": {
+      "ko": "도심 출근과 초등 자녀의 생활 동선을 맞추며 동·출입구를 직접 비교할 가구",
+      "en": "Households balancing central-Seoul work and children’s routines, willing to compare buildings and entrances"
+    },
+    "holdFor": {
+      "ko": "모든 동에서 같은 역 접근, 완전한 평지, 차량 2대의 여유로운 주차가 필수인 가구",
+      "en": "Households requiring identical station access from every building, entirely level routes or assured space for two cars"
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "두 노선을 목적지에 맞게 선택할 수 있습니다",
+          "en": "Two lines provide distinct commute options"
+        },
+        "body": {
+          "ko": "집품은 애오개역 5호선과 아현역 2호선을 이용 가능한 역으로 안내합니다. 광화문 등 실제 직장 위치에 맞춰 출입구와 역을 고르면 장점이 커지며, 포털의 출근시간 추정을 개인의 실제 소요시간으로 보지는 않습니다.",
+          "en": "Zippoom identifies Aeogae on Line 5 and Ahyeon on Line 2 as nearby options. The advantage grows when the building and station fit the workplace; portal commute estimates are not treated as personal elapsed journey times."
+        },
+        "sourceIds": [
+          "mapo-zip"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "학교와 생활 서비스가 함께 있는 대단지군",
+          "en": "An estate group with schools and everyday services nearby"
+        },
+        "body": {
+          "ko": "서울시 단지정보는 전체를 3,885세대·51개 동으로 안내하며, 포털에는 한서초와 아현초가 나타납니다. 가족의 반복 생활을 구성하기 좋은 후보지만 이 규모를 각 하위 단지의 세대수로 적용하거나 모든 동의 통학이 같다고 해석해서는 안 됩니다.",
+          "en": "Seoul’s apartment portal lists 3,885 homes across 51 buildings for the whole group; property portals identify Hanseo and Ahyeon elementary schools nearby. This supports a family shortlist, without assigning the group’s totals or a uniform school walk to each block."
+        },
+        "sourceIds": [
+          "mapo-seoul",
+          "mapo-zip"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "매물별 아현역 안내가 5분과 11분으로 갈립니다",
+          "en": "Ahyeon estimates differ across listings"
+        },
+        "body": {
+          "ko": "당근부동산의 같은 단지군 매물에 아현역 5분과 11분 안내가 함께 나타납니다. 실측 차이로 확정한 것은 아니지만, 이름만 보고 역세권 편의를 동일하게 평가하면 안 된다는 구체적인 확인 지점입니다.",
+          "en": "Daangn listings within the same estate group show Ahyeon estimates of five and eleven minutes. This is not a verified measured gap, but it demonstrates why the shared estate name is insufficient to establish equal station convenience."
+        },
+        "sourceIds": [
+          "mapo-daangn"
+        ],
+        "status": "documented"
+      },
+      {
+        "title": {
+          "ko": "3단지 언덕 언급은 실제 귀가길로 확인",
+          "en": "Test the uphill return route around Block 3"
+        },
+        "body": {
+          "ko": "2026년 9월 집품 공개 후기에는 3단지의 언덕을 언급하는 내용이 있습니다. 개별 후기의 체감이므로 경사도나 모든 동의 불편으로 일반화하지 않고, 유모차·장보기 짐·고령 가족을 기준으로 귀가 방향을 확인해야 합니다.",
+          "en": "A September 2026 public Zippoom review mentions a hill around Block 3. Treat it as an individual observation, not a measured gradient or a defect affecting every building; test the return route with a stroller, shopping load or older family member in mind."
+        },
+        "sourceIds": [
+          "mapo-zip"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "애오개 6분·아현 9분은 포털의 대표 안내",
+            "en": "Six minutes to Aeogae and nine to Ahyeon are portal estimates"
+          },
+          "body": {
+            "ko": "집품의 대표 안내는 애오개역 343m·도보 6분과 아현역 도보 9분입니다. 관심 동의 현관에서 단지 출입구·횡단보도·역 승강장까지 이어지는 구간은 별도이므로, 출근 직전과 퇴근 후 각각 확인하세요.",
+            "en": "Zippoom’s headline guidance is 343 m / six minutes to Aeogae and nine minutes to Ahyeon. The route from the actual building through estate gates, crossings and platform access is separate; check it before work and on the return journey."
+          },
+          "sourceIds": [
+            "mapo-zip"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "1~4단지별 경로를 먼저 고정하세요",
+            "en": "Fix a route for each of the four blocks"
+          },
+          "body": {
+            "ko": "래미안 공식 배치도는 단지 전체의 건물·보행 구조를 파악할 자료입니다. 매물 비교표에는 단지 번호와 동, 주 출입구, 이용역을 같이 적어야 역 안내가 다른 매물을 같은 조건으로 잘못 비교하지 않습니다.",
+            "en": "The official Raemian site plan is a reference for the estate’s building and circulation layout. Record the block, building, main gate and chosen station together so listings with different routes are not compared as if their access were identical."
+          },
+          "sourceIds": [
+            "mapo-plan",
+            "mapo-daangn"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "한서초 290m·아현초 454m는 학교 위치 참고",
+            "en": "Hanseo at 290 m and Ahyeon at 454 m are location references"
+          },
+          "body": {
+            "ko": "집품은 한서초 290m·5분과 아현초 454m·7분을 안내합니다. 이는 포털 기준이며, 원하는 세대의 배정학교와 교문까지의 실제 통학 동선은 입주 연도의 주소별 확인이 필요합니다.",
+            "en": "Zippoom lists Hanseo at 290 m / five minutes and Ahyeon at 454 m / seven minutes. These are portal references; confirm the actual allocation and gate-to-gate route for the chosen address and entry year."
+          },
+          "sourceIds": [
+            "mapo-zip"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "학교에 가깝다는 후기는 배정 증명이 아닙니다",
+            "en": "School-proximity comments are not allocation evidence"
+          },
+          "body": {
+            "ko": "KB부동산의 단지 소개에는 아현초와 한서초가 모두 등장합니다. 어느 학교가 더 좋다고 순위를 붙이기보다 희망 동의 배정, 등교 때 차량과 만나는 지점, 방과후 귀가 경로를 확인하는 편이 주거 선택에 직접 도움이 됩니다.",
+            "en": "KB’s estate presentation refers to both Ahyeon and Hanseo elementary schools. Rather than rank their quality without evidence, verify the chosen building’s allocation, vehicle crossings at school time and the after-school return route."
+          },
+          "sourceIds": [
+            "mapo-kb"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "자연약국 등 생활업종은 실제 운영시간까지",
+            "en": "Check the hours of practical services such as Jayeon Pharmacy"
+          },
+          "body": {
+            "ko": "집품은 자연약국과 주변 의원을 생활권 시설로 표시합니다. 가까운 시설의 존재는 유용하지만 야간·주말 이용 여부와 유모차 접근은 미확인이므로, 가족이 실제 이용할 시간대에 맞춰 확인하세요.",
+            "en": "Zippoom lists Jayeon Pharmacy and nearby clinics among local services. Proximity is useful, but evening/weekend opening and stroller access are unverified; check against the hours the household would actually need."
+          },
+          "sourceIds": [
+            "mapo-zip"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "주차 평균 1.2대는 두 대 보장과 다릅니다",
+            "en": "An average of 1.2 spaces does not guarantee two cars"
+          },
+          "body": {
+            "ko": "당근부동산은 전체 주차 4,580대·세대당 약 1.2대로 안내합니다. 차량 두 대를 보유했다면 단지별 등록 가능 대수·추가 요금·밤 시간 주차 위치를 확인해야 하며, 평균 수치만으로 여유를 판단하지 않습니다.",
+            "en": "Daangn reports 4,580 spaces, approximately 1.2 per home. Two-car households should verify registration limits, extra charges and where they can park at night; the average does not establish spare capacity."
+          },
+          "sourceIds": [
+            "mapo-daangn"
+          ],
+          "status": "documented"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "2014년 입주: 개별 보일러와 공용 수선을 나눠 보기",
+            "en": "Separate boiler condition from shared repairs in this 2014 estate"
+          },
+          "body": {
+            "ko": "래미안은 2014년 9월 입주를 안내하고 당근부동산은 개별난방으로 표시합니다. 관심 세대의 보일러 교체·배관 점검 이력과 단지의 장기수선 계획을 분리해 보고, 현재 고장이나 수선 필요가 확인됐다고 해석하지 마세요.",
+            "en": "Raemian gives September 2014 for occupancy and Daangn reports individual heating. Review the unit’s boiler replacement and pipe-inspection history separately from the estate’s long-term repair plan; no current failure or required repair is established here."
+          },
+          "sourceIds": [
+            "mapo-raemian",
+            "mapo-daangn"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "같은 84㎡라도 단지·동과 수선 상태를 맞추세요",
+            "en": "Match block, building and refurbishment within the same area"
+          },
+          "body": {
+            "ko": "단지군 전체 실거래를 섞으면 역 접근이나 내부 상태가 다른 세대의 가격이 한 숫자로 합쳐집니다. 현재 매물과 같은 전용면적·단지·층·수선 조건의 최근 계약을 대조하는 작업은 미완료이므로, 싸다·비싸다 또는 매도 적정가라는 결론은 보류합니다.",
+            "en": "Pooling sales across the estate group merges homes with different station access and interior condition. Recent contracts have not yet been matched to the listing’s internal area, block, floor and refurbishment, so no cheap/expensive or fair selling-price conclusion is offered."
+          },
+          "sourceIds": [
+            "mapo-plan",
+            "mapo-raemian"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "아크로리버파크",
+          "en": "Acro River Park"
+        },
+        "reason": {
+          "ko": "도심 출근보다 반포 생활권과 한강 산책이 더 중요할 때 비교하세요. 한강 조망과 단지 커뮤니티를 얼마나 자주 이용할지가 선택을 가릅니다.",
+          "en": "Compare it if Banpo and riverside walks matter more than a central-Seoul commute. Consider how often river views and the shared facilities would actually matter."
+        },
+        "condition": {
+          "ko": "생활 방식 비교이며 같은 예산의 대체 매물인지 확인하지 않았습니다.",
+          "en": "This compares lifestyles; equivalent options at the same budget have not been established."
+        }
+      },
+      {
+        "name": {
+          "ko": "아크로서울포레스트",
+          "en": "Acro Seoul Forest"
+        },
+        "reason": {
+          "ko": "대단지 가족 생활과 숲 옆 주상복합·문화시설 생활을 비교할 후보입니다. 주차 배정과 월 고정비는 양쪽 모두 실제 세대 조건으로 다시 확인하세요.",
+          "en": "Compare a large-estate family routine with park-side mixed-use and cultural facilities. Check parking entitlement and monthly charges for the actual homes on both sides."
+        },
+        "condition": {
+          "ko": "생활 방식 비교이며 같은 예산의 대체 매물인지 확인하지 않았습니다.",
+          "en": "This compares lifestyles; equivalent options at the same budget have not been established."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "mapo-seoul",
+        "title": "Seoul Metropolitan Government — Mapo Raemian Prugio",
+        "url": "https://openapt.seoul.go.kr/commonPortal/programLink.do?aptCode=A12175203&codParams=&jspNm=/openApt/dMenu/dangiInfo/dangiInfo.open&tr_code=sweb",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "전체 단지군 3,885세대·51개 동. 개발사 옛 분양 페이지는 44개 동으로 달라 동수는 서울시 현행 표시를 따릅니다.",
+          "en": "Whole group: 3,885 homes and 51 buildings; the historical developer sales page says 44, so the current city display is used for the total."
+        }
+      },
+      {
+        "id": "mapo-plan",
+        "title": "Samsung C&T / Raemian — Site layout",
+        "url": "https://www.raemian.co.kr/sales/sub/ahyun3/?menuSeq=162",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "공식 단지배치 참고. 실제 출입구 개방이나 무장애 경로 검증은 아닙니다.",
+          "en": "Official site-plan reference; not verification of gate availability or step-free access."
+        }
+      },
+      {
+        "id": "mapo-raemian",
+        "title": "Samsung C&T / Raemian — Mapo Raemian Prugio",
+        "url": "https://www.raemian.co.kr/sales/s/ahyun3",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "2014년 9월 입주와 전용면적별 다양한 유형 확인. 역사적 분양 정보의 동수는 현행 서울시 표시와 다릅니다.",
+          "en": "September 2014 occupancy and varied internal-area types; historical building count differs from the city’s current display."
+        }
+      },
+      {
+        "id": "mapo-zip",
+        "title": "Zippoom — Mapo Raemian Prugio",
+        "url": "https://zippoom.com/부동산/서울-마포구-아현동-마포래미안푸르지오/n0mjyc",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "보행 안내·학교 위치·생활업종 및 2026년 9월 공개 후기 일부. 실측 경사도나 주소별 학교 배정 자료가 아닙니다.",
+          "en": "Walking estimates, school locations, services and a September 2026 public-review excerpt; not measured gradients or address-level allocation."
+        }
+      },
+      {
+        "id": "mapo-daangn",
+        "title": "Daangn Realty — Mapo Raemian Prugio",
+        "url": "https://realty.daangn.com/complexes/10895293",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "매물별 다른 역 보행 표기, 난방·주차 정보. 현재 가격 평가나 개별 주차 권리로 사용하지 않습니다.",
+          "en": "Differing station-walk labels across listings, heating and parking; not used as a current valuation or unit parking entitlement."
+        }
+      },
+      {
+        "id": "mapo-kb",
+        "title": "KB Real Estate — Mapo Raemian Prugio",
+        "url": "https://kbland.kr/se/c/26415",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "단지 소개의 아현초·한서초 언급만 사용. 학교 우열·치안 관련 홍보 해석은 채택하지 않았습니다.",
+          "en": "Only references to Ahyeon and Hanseo schools used; promotional conclusions about school quality or safety were not adopted."
+        }
+      },
+      {
+        "id": "mapo-video",
+        "title": "착한언니복덕방 — Mapo Raemian Prugio estate introduction",
+        "url": "https://www.youtube.com/watch?v=ejsu6S5bUyk",
+        "checkedOn": "2026-09-13",
+        "publishedOn": "2023-05-04",
+        "kind": "video-companion",
+        "note": {
+          "ko": "2023년 4월 방문을 설명한 검색 메타데이터만 확보. 재생·자막 미확인으로 보행시간·학교 배정 근거로 사용하지 않았습니다.",
+          "en": "Indexed description refers to an April 2023 visit; playback/transcript unverified and not used for walk times or allocation."
+        }
+      }
+    ]
+  }
+]

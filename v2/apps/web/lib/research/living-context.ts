@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { propertyReviewSchema } from './property-review';
 
 const source = z.object({ title: z.string(), url: z.url().refine(url => url.startsWith('https://')), scope: z.string(), checked_on: z.string() });
 const profile = z.object({
@@ -9,6 +10,7 @@ const profile = z.object({
   facts: z.array(z.object({ id: z.string(), text: z.string(), status: z.enum(['planned', 'historical_design', 'source_reported']), source_ids: z.array(z.string()).min(1) })),
   analysis: z.array(z.object({ dimension: z.string(), interpretation: z.string(), basis_fact_ids: z.array(z.string()) })),
   field_checks: z.array(z.string()),
+  review: propertyReviewSchema.optional(),
 });
 const metadataSchema = z.object({ schema_version: z.literal('property-context-v1'), profile, sources: z.record(z.string(), source) });
 export type LivingContext = z.infer<typeof profile> & { sources: Record<string, z.infer<typeof source>> };
@@ -16,6 +18,7 @@ export function projectLivingContext(value: unknown): LivingContext | null {
   const parsed = metadataSchema.safeParse(value);
   if (!parsed.success) return null;
   const { profile: p, sources } = parsed.data;
+  if (p.review && (p.review.id !== p.id || p.review.marketId !== p.market_id)) return null;
   if (p.facts.some(f => f.source_ids.some(id => !sources[id])) || p.analysis.some(a => a.basis_fact_ids.some(id => !p.facts.some(f => f.id === id)))) return null;
   return { ...p, sources };
 }

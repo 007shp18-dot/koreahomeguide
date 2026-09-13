@@ -10,6 +10,28 @@ const metadata = { schema_version: 'property-context-v1', profile: {
   field_checks: ['영업 확인'], measurements: { footfall: null }, internal_secret: 'never public',
 }, sources: { s: { title: '공식', url: 'https://example.com/', scope: '개발계획', checked_on: '2026-09-13' } } };
 describe('living context publication boundary', () => {
+  const text = { ko: '확인한 근거', en: 'Documented evidence' };
+  const point = { title: text, body: text, sourceIds: ['station'], status: 'documented' };
+  const review = {
+    id: 'test', marketId: 'kr-seoul', name: text, area: text, checkedOn: '2026-09-13',
+    verdict: text, summary: text, bestFor: text, holdFor: text,
+    strengths: [point], tradeoffs: [point],
+    sections: { transport: [point], schools: [point], daily: [point], costs: [point] },
+    comparisons: [], sources: [{ id: 'station', title: 'Station', url: 'https://example.com/station', checkedOn: '2026-09-13', publishedOn: null, kind: 'official', note: text }],
+  };
+  it('publishes both languages of a verified review without internal authoring fields', () => {
+    const result = projectLivingContext({ ...metadata, profile: { ...metadata.profile, review: { ...review, authorToken: 'private' } } });
+    expect(result).toHaveProperty('review.verdict.en', 'Documented evidence');
+    expect(result).toHaveProperty('review.verdict.ko', '확인한 근거');
+    expect(result).not.toHaveProperty('review.authorToken');
+  });
+  it('rejects reviews with a mismatched identity, missing translation or broken evidence link', () => {
+    for (const candidate of [
+      { ...review, id: 'another-property' },
+      { ...review, verdict: { ko: '한글만' } },
+      { ...review, strengths: [{ ...point, sourceIds: ['missing'] }] },
+    ]) expect(projectLivingContext({ ...metadata, profile: { ...metadata.profile, review: candidate } })).toBeNull();
+  });
   it('rejects unpublished and malformed records', () => {
     expect(projectLivingContext({ ...metadata, profile: { ...metadata.profile, publication_status: 'internal_review' } })).toBeNull();
     expect(projectLivingContext({})).toBeNull();
