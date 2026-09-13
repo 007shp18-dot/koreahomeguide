@@ -251,7 +251,7 @@ export const SEPTEMBER_13_EDITORIAL: readonly EditorialPortfolioRecord[] = stori
     authorName: 'SignedPrice Editorial', reviewedBy: 'SignedPrice source check (AI-assisted)',
     reviewedAt: checkedAt, publishedAt: checkedAt, updatedAt: checkedAt,
     readerQuestion: title, revisionNote: 'Original explainer or neighbourhood introduction; source links checked 13 September 2026. Numerical examples are illustrative, not market observations.',
-    sources: [story.source], evidenceReleaseIds: [story.source.id],
+    sources: [{ ...story.source, checkedAt: checkedAt.slice(0, 10) }], evidenceReleaseIds: [story.source.id],
     canonicalHref: `${prefix}/news/${story.slug}/`, translationGroupId: story.slug,
     relatedHref: `${prefix}/news/`, infographic: null,
   };
