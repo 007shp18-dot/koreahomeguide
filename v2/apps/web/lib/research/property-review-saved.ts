@@ -4,7 +4,7 @@ export function parseReviewSaved(raw: string): string[] {
   if (raw.length > 20_000) return [];
   try {
     const value: unknown = JSON.parse(raw);
-    return Array.isArray(value) ? [...new Set(value.filter((id): id is string => typeof id === 'string' && /^(kr|sg|ae|jp)-[a-z0-9-]{1,100}$/.test(id)))].slice(0,30) : [];
+    return Array.isArray(value) ? [...new Set(value.filter((id): id is string => typeof id === 'string' && /^(kr|sg|ae|jp)-[a-z0-9-]{1,100}$/.test(id)))].slice(0,100) : [];
   } catch { return []; }
 }
 let volatile: string | null = null;

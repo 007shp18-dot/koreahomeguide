@@ -1,4 +1,6 @@
 'use client';
+import { PropertyReviewDirectory } from '../market-ui/property-review-directory';
+import { reviewDirectoryForMarket } from '../../lib/research/property-review-locations';
 import { localizedMarketCopy } from '../../lib/locale/market-localization';
 
 import { requestSingaporeExplore } from '../../lib/singapore/explore-request';
@@ -268,6 +270,7 @@ export function SingaporeExplorer({ locale = 'en',
         related={<DiscoveryReading market="singapore" locale={locale} />}
         priceGuide={<ExplorePriceGuide locale={locale} market="singapore" />}
         discovery={<section className={styles.segmentPanel} id="ura-private" aria-labelledby="segment-heading">
+          <PropertyReviewDirectory entries={reviewDirectoryForMarket('sg-singapore')} locale={locale} query={deferredQuery} />
           <h2 id="segment-heading">{sgText(locale, "Private residential projects")}</h2>
           <p className={styles.marketScopeLine}>{sgText(locale, "URA private sales · New sale, Subsale and Resale")}<br />{sgText(locale, model.transactionLabel)}</p>
           <div className={styles.segmentTabs} role="tablist" aria-label={sgText(locale, "Singapore market regions")}>

@@ -81,7 +81,7 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     if (english === '/kr/seoul' || english.includes('/explore') || english.includes('/check') || english.includes('/shortlist')) destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
-  } else if (/^\/jp\/tokyo(?:\/(?:explore|shortlist|tools))?$/.test(english)) {
+  } else if (/^\/jp\/tokyo(?:\/(?:explore(?:\/properties\/[^/]+)?|shortlist|tools))?$/.test(english)) {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
@@ -108,7 +108,7 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     destinations.ko = withQuery(`/ko${english}`);
     destinations.en = withQuery(english);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
-  } else if (/^\/sg\/singapore\/(?:explore(?:\/[^/]+(?:\/[^/]+)?)?|hdb\/[^/]+(?:\/[^/]+)?|check|rankings|shortlist|corrections)$/.test(english) || /^\/ae\/dubai\/(?:explore(?:\/[^/]+)?|check|shortlist|guide)$/.test(english)) {
+  } else if (/^\/sg\/singapore\/(?:explore(?:\/[^/]+(?:\/[^/]+)?)?|hdb\/[^/]+(?:\/[^/]+)?|check|rankings|shortlist|corrections)$/.test(english) || /^\/ae\/dubai\/(?:explore(?:\/[^/]+(?:\/[^/]+)?)?|check|shortlist|guide)$/.test(english)) {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);

@@ -1,4 +1,5 @@
 import { PropertyLivingContext } from '../market-ui/living-context';
+import { hasPropertyReviewForEntity } from '../../lib/research/property-review-locations';
 import { localizedMarketCopy } from '../../lib/locale/market-localization';
 
 import { sgText } from '../../lib/locale/singapore-copy';
@@ -49,6 +50,10 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
     </SingaporePage>
   );
   const displayName = singaporeProjectDisplayName(model.identity);
+  const reviewEntity = `sg-singapore:project:${model.identity.id}`;
+  const reviewSections = hasPropertyReviewForEntity(reviewEntity)
+    ? [{ id: 'property-review', label: locale === 'ko' ? '입지·생활 분석' : locale === 'zh-CN' ? '区位与生活' : 'Location & living' }]
+    : [];
   if (model.status === 'insufficient') return (
     <SingaporePage locale={locale} currentHref={marketHref(locale, '/sg/singapore/explore/')} unframed>
       <MarketDetailShell locale={locale}
@@ -56,6 +61,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
         sections={[
           { id: 'detail-overview', label: localizedMarketCopy(locale, "Overview", "개요") },
           { id: 'detail-evidence', label: localizedMarketCopy(locale, "Evidence status", "자료 현황") },
+          ...reviewSections,
           { id: 'detail-source', label: localizedMarketCopy(locale, "Sources", "출처") },
         ]}
         summary={<div data-singapore-project="insufficient"><MarketSummary locale={locale} kind="project" title={displayName}
@@ -66,11 +72,12 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
           browserKey={googleMapsBrowserKey} buildingName={model.identity.project} displayBuildingName={displayName}
           buildingKey={`singapore:project:${model.identity.id}`} address={`${model.identity.street}, Singapore`}
           locationHref={marketHref(locale, `/sg/singapore/explore/?region=${model.identity.marketSegment.toLowerCase()}&q=${encodeURIComponent(displayName)}&project=${encodeURIComponent(model.identity.id)}`)} />}
-        evidence={<section className={detailStyles.section}><h2>{localizedMarketCopy(locale, "Not enough transactions to publish a price", "가격 게시에 필요한 거래가 부족합니다")}</h2>
+        evidence={<><section className={detailStyles.section}><h2>{localizedMarketCopy(locale, "Not enough transactions to publish a price", "가격 게시에 필요한 거래가 부족합니다")}</h2>
           <p>{locale === 'ko' ? `신고 거래 ${model.count}건입니다. 중앙값은 ${model.threshold}건 이상일 때 공개합니다.` : locale === 'zh-CN' ? `${model.count} 笔申报交易，至少 ${model.threshold} 笔才公布中位数。` : `${model.count} reported transactions. A median requires at least ${model.threshold}.`}</p>
           <SingaporeNearbyPlaces locale={locale} proximity={proximity} />
-          <PropertyLivingContext entity={`sg-singapore:project:${model.identity.id}`} locale={locale} />
-        </section>}
+        </section>
+          <PropertyLivingContext entity={reviewEntity} locale={locale} />
+        </>}
         rail={<SingaporeEvidence locale={locale} model={model.evidence} />} />
     </SingaporePage>
   );
@@ -90,6 +97,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
           { id: 'detail-overview', label: localizedMarketCopy(locale, "Overview", "개요") },
           { id: 'detail-evidence', label: localizedMarketCopy(locale, "Prices & transactions", "가격·실거래") },
           { id: 'project-profile', label: localizedMarketCopy(locale, "Property & location", "건물·주변 정보") },
+          ...reviewSections,
           { id: 'detail-tools', label: localizedMarketCopy(locale, "Compare", "내 조건 비교") },
           { id: 'detail-source', label: localizedMarketCopy(locale, "Sources", "출처") },
         ]}
@@ -146,8 +154,8 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
         </dl>
         <Link href={marketHref(locale, `/sg/singapore/explore/?region=${model.identity.marketSegment.toLowerCase()}&q=${encodeURIComponent(displayName)}&project=${encodeURIComponent(model.identity.id)}`)}>{sgText(locale, 'View this project on the map')}</Link>
         <SingaporeNearbyPlaces locale={locale} proximity={proximity} />
-          <PropertyLivingContext entity={`sg-singapore:project:${model.identity.id}`} locale={locale} />
       </section>
+      <PropertyLivingContext entity={reviewEntity} locale={locale} />
       <DetailTools locale={locale} checkHref={marketHref(locale, model.checkHref)}
         calculatorHref={createPropertyScenarioHref({locale,market:'sg-singapore',currency:'SGD',entity:model.identity.id,propertyName:displayName,transaction:'sale',price:model.identity.medianPriceSgd,returnTo:marketHref(locale, `/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${model.identity.id}/`)})} />
 </>}

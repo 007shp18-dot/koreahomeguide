@@ -32,6 +32,8 @@ import {
 } from '../lib/public-market/route-model.server';
 import { buildPublicDistrictModel } from '../lib/public-market/area-route-model.server';
 import { indexableMetadata } from '../lib/public-metadata';
+import dubaiReviews from '../content/property-reviews/dubai.json';
+import tokyoReviews from '../content/property-reviews/tokyo.json';
 import { propertyReviewMetadata } from '../lib/research/property-review-metadata';
 import { buildMarketPageModel } from '../lib/route-model';
 import { dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-repository.server';
@@ -64,20 +66,9 @@ const tokyoCanonicalUrls = ['', '/ko', '/zh-cn'].flatMap(locale => ['/jp/tokyo/'
 // This approved editorial cohort is independent of the Seoul transaction release.
 // Keep the identities explicit so an accidental addition or omission fails the contract.
 const propertyReviewCanonicalPaths = [
-  '/living/',
-  '/living/?profile=kr-acro-river-park',
-  '/living/?profile=kr-acro-seoul-forest',
-  '/living/?profile=kr-mapo-raemian-prugio',
-  '/living/?profile=sg-marina-one-residences',
-  '/living/?profile=sg-park-place-plq',
-  '/living/?profile=sg-wallich-residence',
-  '/living/?profile=ae-skyflame-1',
-  '/living/?profile=ae-skyterraces',
-  '/living/?profile=ae-valia',
-  '/living/?profile=jp-park-city-toyosu',
-  '/living/?profile=jp-brillia-towers-meguro',
-  '/living/?profile=jp-park-court-shibuya',
-] as const;
+  ...dubaiReviews.map(review => `/ae/dubai/explore/projects/${review.id}/`),
+  ...tokyoReviews.map(review => `/jp/tokyo/explore/properties/${review.id}/`),
+];
 const propertyReviewCanonicalUrls = propertyReviewCanonicalPaths.flatMap(path =>
   ['', '/ko'].map(prefix => `https://www.signedprice.com${prefix}${path}`),
 );
@@ -348,7 +339,7 @@ describe('public migration containment', () => {
     for (const path of propertyReviewCanonicalPaths) {
       const englishUrl = `https://www.signedprice.com${path}`;
       const koreanUrl = `https://www.signedprice.com/ko${path}`;
-      const profile = new URL(englishUrl).searchParams.get('profile') ?? undefined;
+      const profile = new URL(englishUrl).pathname.split('/').filter(Boolean).at(-1);
       const languages = { en: englishUrl, ko: koreanUrl, 'x-default': englishUrl };
       for (const [locale, url] of [['en', englishUrl], ['ko', koreanUrl]] as const) {
         const metadata = propertyReviewMetadata(locale, profile);
@@ -366,7 +357,8 @@ describe('public migration containment', () => {
 
   it('serializes the review cohort without raw XML ampersands using the installed Next serializer', () => {
     const entries = sitemap().filter(entry => propertyReviewCanonicalUrls.includes(entry.url));
-    expect(entries).toHaveLength(26);
+    expect(entries).toHaveLength((dubaiReviews.length+tokyoReviews.length)*2);
+    expect(sitemap().some(entry=>entry.url.includes('/living/'))).toBe(false);
     const xml = resolveSitemap(entries);
     expect(xml).not.toContain('&');
     expect([...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]))

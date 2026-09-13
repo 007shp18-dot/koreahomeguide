@@ -1,4 +1,5 @@
 import { PropertyLivingContext } from '../market-ui/living-context';
+import { hasPropertyReviewForEntity } from '../../lib/research/property-review-locations';
 import { seoulBuildingLocationHref } from '../../lib/public-market/seoul-building-location';
 import {localizedSeoulHref, type ProductLocale} from '../../lib/locale/product-copy';
 import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
@@ -80,6 +81,7 @@ export function BuildingDetailPage({
 }>) {
   const { mode, contract } = decision.selection;
   const t = (value: string) => seoulDetailText(locale, value);
+  const reviewEntity = `kr-seoul:estate:${model.building.buildingId}`;
   const districtName = locale === 'ko' ? model.district.nameKo : model.district.nameEn;
   const exploreHref = backHref ?? localizedSeoulHref(`/kr/seoul/explore/?district=${model.district.slug}`,locale);
   const exploreTarget = new URL(exploreHref, 'https://signedprice.invalid');
@@ -115,7 +117,9 @@ export function BuildingDetailPage({
           actions={<><Link href={locationHref}>{locale === 'ko' ? '지도에서 위치 확인' : locale === 'zh-CN' ? '在地图上查看位置' : 'View location on map'}</Link><Link href={checkHref}>{locale === 'ko' ? '매물 가격 비교' : locale === 'zh-CN' ? '比较挂牌价格' : 'Compare an asking price'}</Link><BuildingSaveButton buildingKey={`${model.district.slug}/${model.building.buildingId}`} buildingName={model.building.name} locale={locale} variant="detail" /></>} />
         <div data-detail-order="media">{propertyMedia ?? (visual.kind !== 'unavailable' ? <BuildingVisual model={visual} /> : <ProjectedEntityMedia locale={locale} buildingName={model.building.name} address={`${model.building.neighborhoodName}, ${districtName}, Seoul`} media={null} showLocationAction={false} locationHref={locationHref} />)}</div>
         <nav className={pageStyles.tabs} aria-label={t('Building page sections')}>
-          <a href="#building-overview">{t('Overview')}</a><a href="#building-evidence">{t('Transactions')}</a><a href="#building-facts">{t('Building profile')}</a><a href="#building-tools">{locale === 'ko' ? '내 조건 비교' : locale === 'zh-CN' ? '比较' : 'Compare'}</a><a href="#building-source">{t('Source')}</a>
+          <a href="#building-overview">{t('Overview')}</a><a href="#building-evidence">{t('Transactions')}</a><a href="#building-facts">{t('Building profile')}</a>
+          {hasPropertyReviewForEntity(reviewEntity) && <a href="#property-review">{locale === 'ko' ? '입지·생활 분석' : locale === 'zh-CN' ? '区位与生活' : 'Location & living'}</a>}
+          <a href="#building-tools">{locale === 'ko' ? '내 조건 비교' : locale === 'zh-CN' ? '比较' : 'Compare'}</a><a href="#building-source">{t('Source')}</a>
         </nav>
         <div className={pageStyles.details} id="building-evidence"><BuildingEvidenceDetails model={model} locale={locale} includeSource={false} /></div>
         <details id="rent-evidence" className={detailStyles.disclosure} open={mode !== 'overview'}>
@@ -132,7 +136,7 @@ export function BuildingDetailPage({
         <div id="building-facts" className={detailStyles.section} data-detail-order="facts">
           {facts ?? <section><h2>{t('Building profile')}</h2><p>{t(model.building.housingType)} · {model.building.neighborhoodName}</p></section>}
         </div>
-        <PropertyLivingContext entity={`kr-seoul:estate:${model.building.buildingId}`} locale={locale} />
+        <PropertyLivingContext entity={reviewEntity} locale={locale} />
         <DetailTools locale={locale} id="building-tools" checkHref={checkHref} />
         <div className={pageStyles.details} data-detail-order="sources"><BuildingSourceEvidence model={model} locale={locale} /></div>
         <DiscoveryReading market="seoul" locale={locale} />

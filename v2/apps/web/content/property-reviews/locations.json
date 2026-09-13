@@ -1,0 +1,5618 @@
+[
+  {
+    "reviewId": "kr-acro-river-park",
+    "name": {
+      "ko": "아크로리버파크",
+      "en": "Acro River Park"
+    },
+    "area": {
+      "ko": "반포 · 신반포역 · 한강변",
+      "en": "Banpo · Sinbanpo · Han River"
+    },
+    "address": "서울 서초구 신반포로15길 19",
+    "entityIds": [
+      "kr-seoul:estate:seocho-gu-1hxlpyy"
+    ],
+    "detailPath": "/kr/seoul/explore/seocho-gu/seocho-gu-1hxlpyy/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 1612,
+        "unit": "homes",
+        "basis": {
+          "ko": "개발사 전체 단지 소개",
+          "en": "Developer whole-estate description"
+        },
+        "sourceId": "river-acro"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 15,
+        "unit": "buildings",
+        "basis": {
+          "ko": "개발사 전체 단지 소개",
+          "en": "Developer whole-estate description"
+        },
+        "sourceId": "river-acro"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-acro-seoul-forest",
+    "name": {
+      "ko": "아크로서울포레스트",
+      "en": "Acro Seoul Forest"
+    },
+    "area": {
+      "ko": "성수 · 서울숲 · 수인분당선",
+      "en": "Seongsu · Seoul Forest · Suin–Bundang Line"
+    },
+    "address": "서울 성동구 성수동1가 685-700",
+    "entityIds": [
+      "kr-seoul:estate:seongdong-gu-zcx1z8"
+    ],
+    "detailPath": "/kr/seoul/explore/seongdong-gu/seongdong-gu-zcx1z8/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "주거 세대",
+          "en": "Residential homes"
+        },
+        "value": 280,
+        "unit": "homes",
+        "basis": {
+          "ko": "개발사 주거동 범위",
+          "en": "Developer residential-building scope"
+        },
+        "sourceId": "forest-acro"
+      },
+      {
+        "label": {
+          "ko": "주거동",
+          "en": "Residential towers"
+        },
+        "value": 2,
+        "unit": "buildings",
+        "basis": {
+          "ko": "개발사 주거동 범위",
+          "en": "Developer residential-building scope"
+        },
+        "sourceId": "forest-acro"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-banpo-riche",
+    "name": {
+      "ko": "반포리체",
+      "en": "Banpo Riche"
+    },
+    "area": {
+      "ko": "반포동 · 고무래로 · 사평역 생활권",
+      "en": "Banpo-dong · Gomurae-ro · Sapyeong area"
+    },
+    "address": "서울특별시 서초구 고무래로 35",
+    "entityIds": [
+      "kr-seoul:estate:seocho-gu-j8re2"
+    ],
+    "detailPath": "/kr/seoul/explore/seocho-gu/seocho-gu-j8re2/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 1119,
+        "unit": "homes",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 9,
+        "unit": "buildings",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "등록 주차면",
+          "en": "Recorded parking spaces"
+        },
+        "value": 1684,
+        "unit": "spaces",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 배정 권리 아님",
+          "en": "K-apt management record as of 2026-09-04 · not allocated entitlement"
+        },
+        "sourceId": "kapt"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-banpo-xi",
+    "name": {
+      "ko": "반포자이",
+      "en": "Banpo Xi"
+    },
+    "area": {
+      "ko": "반포동 · 반포역 · 사평역",
+      "en": "Banpo-dong · Banpo · Sapyeong"
+    },
+    "address": "서울특별시 서초구 신반포로 270",
+    "entityIds": [
+      "kr-seoul:estate:seocho-gu-q5se5y"
+    ],
+    "detailPath": "/kr/seoul/explore/seocho-gu/seocho-gu-q5se5y/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 3410,
+        "unit": "homes",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 44,
+        "unit": "buildings",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "등록 주차면",
+          "en": "Recorded parking spaces"
+        },
+        "value": 6075,
+        "unit": "spaces",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 배정 권리 아님",
+          "en": "K-apt management record as of 2026-09-04 · not allocated entitlement"
+        },
+        "sourceId": "kapt"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-centras",
+    "name": {
+      "ko": "센트라스",
+      "en": "Centras"
+    },
+    "area": {
+      "ko": "하왕십리동 · 상왕십리역 · 숭신초 주변",
+      "en": "Hawangsimni-dong · Sangwangsimni · Soongshin school area"
+    },
+    "address": "서울 성동구 왕십리로 410",
+    "entityIds": [
+      "kr-seoul:estate:seongdong-gu-1cnlghk"
+    ],
+    "detailPath": "/kr/seoul/explore/seongdong-gu/seongdong-gu-1cnlghk/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 2529,
+        "unit": "homes",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "portal"
+      },
+      {
+        "label": {
+          "ko": "입주 연도",
+          "en": "Occupancy year"
+        },
+        "value": 2016,
+        "unit": "year",
+        "basis": {
+          "ko": "자료의 입주 연도 · 현재 상태는 세대별",
+          "en": "Recorded occupancy year · present condition varies by unit"
+        },
+        "sourceId": "portal"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-dogok-rexle",
+    "name": {
+      "ko": "도곡렉슬",
+      "en": "Dogok Rexle"
+    },
+    "area": {
+      "ko": "도곡동 · 한티역 · 대도초",
+      "en": "Dogok-dong · Hanti · Daedo Elementary"
+    },
+    "address": "서울특별시 강남구 선릉로 221",
+    "entityIds": [
+      "kr-seoul:estate:gangnam-gu-1p962sn"
+    ],
+    "detailPath": "/kr/seoul/explore/gangnam-gu/gangnam-gu-1p962sn/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 3002,
+        "unit": "homes",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 34,
+        "unit": "buildings",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "등록 주차면",
+          "en": "Recorded parking spaces"
+        },
+        "value": 4435,
+        "unit": "spaces",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 배정 권리 아님",
+          "en": "K-apt management record as of 2026-09-04 · not allocated entitlement"
+        },
+        "sourceId": "kapt"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-eunma",
+    "name": {
+      "ko": "은마",
+      "en": "Eunma"
+    },
+    "area": {
+      "ko": "대치동 · 대치역 · 정비사업",
+      "en": "Daechi-dong · Daechi · Redevelopment"
+    },
+    "address": "서울특별시 강남구 삼성로 212",
+    "entityIds": [
+      "kr-seoul:estate:gangnam-gu-183n1vu"
+    ],
+    "detailPath": "/kr/seoul/explore/gangnam-gu/gangnam-gu-183n1vu/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 4424,
+        "unit": "homes",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 28,
+        "unit": "buildings",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "등록 주차면",
+          "en": "Recorded parking spaces"
+        },
+        "value": 3021,
+        "unit": "spaces",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 배정 권리 아님",
+          "en": "K-apt management record as of 2026-09-04 · not allocated entitlement"
+        },
+        "sourceId": "kapt"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-godeok-arteon",
+    "name": {
+      "ko": "고덕아르테온",
+      "en": "Godeok Arteon"
+    },
+    "area": {
+      "ko": "상일동 · 상일동역 · 고현초 주변",
+      "en": "Sangil-dong · Sangildong station · Gohyeon school area"
+    },
+    "address": "서울 강동구 상일동 519",
+    "entityIds": [
+      "kr-seoul:estate:gangdong-gu-1627xs4"
+    ],
+    "detailPath": "/kr/seoul/explore/gangdong-gu/gangdong-gu-1627xs4/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 4066,
+        "unit": "homes",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "field"
+      },
+      {
+        "label": {
+          "ko": "입주 연도",
+          "en": "Occupancy year"
+        },
+        "value": 2020,
+        "unit": "year",
+        "basis": {
+          "ko": "자료의 입주 연도 · 현재 상태는 세대별",
+          "en": "Recorded occupancy year · present condition varies by unit"
+        },
+        "sourceId": "field"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-godeok-gracium",
+    "name": {
+      "ko": "고덕그라시움",
+      "en": "Godeok Gracium"
+    },
+    "area": {
+      "ko": "고덕동 · 고덕역 · 상일동역",
+      "en": "Godeok-dong · Godeok · Sangildong"
+    },
+    "address": "서울 강동구 고덕로 333",
+    "entityIds": [
+      "kr-seoul:estate:gangdong-gu-1xx7h8m"
+    ],
+    "detailPath": "/kr/seoul/explore/gangdong-gu/gangdong-gu-1xx7h8m/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 4932,
+        "unit": "homes",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "field"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 53,
+        "unit": "buildings",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "field"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-gyeonghuigung-xi-3",
+    "name": {
+      "ko": "경희궁자이 3단지",
+      "en": "Gyeonghuigung Xi Phase 3"
+    },
+    "area": {
+      "ko": "평동 · 서대문역 · 경교장길",
+      "en": "Pyeong-dong · Seodaemun · Gyeonggyojang-gil"
+    },
+    "address": "서울특별시 종로구 경교장길 35",
+    "entityIds": [
+      "kr-seoul:estate:jongno-gu-1f8d7db"
+    ],
+    "detailPath": "/kr/seoul/explore/jongno-gu/jongno-gu-1f8d7db/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 589,
+        "unit": "homes",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 8,
+        "unit": "buildings",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "등록 주차면",
+          "en": "Recorded parking spaces"
+        },
+        "value": 734,
+        "unit": "spaces",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 배정 권리 아님",
+          "en": "K-apt management record as of 2026-09-04 · not allocated entitlement"
+        },
+        "sourceId": "kapt"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-helio-city",
+    "name": {
+      "ko": "헬리오시티",
+      "en": "Helio City"
+    },
+    "area": {
+      "ko": "가락동 · 송파역 · 해누리학교",
+      "en": "Garak-dong · Songpa · Haenuri School"
+    },
+    "address": "서울 송파구 송파대로 345",
+    "entityIds": [
+      "kr-seoul:estate:songpa-gu-1j88w6f"
+    ],
+    "detailPath": "/kr/seoul/explore/songpa-gu/songpa-gu-1j88w6f/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 9510,
+        "unit": "homes",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "helio-listing"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 84,
+        "unit": "buildings",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "helio-listing"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-heukseok-xi",
+    "name": {
+      "ko": "흑석자이",
+      "en": "Heukseok Xi"
+    },
+    "area": {
+      "ko": "흑석동 · 서달산 주변 · 흑석역 생활권",
+      "en": "Heukseok-dong · Seodal setting · Heukseok station area"
+    },
+    "address": "서울 동작구 흑석동 흑석자이 (거래명: 흑석리버파크자이)",
+    "entityIds": [
+      "kr-seoul:estate:dongjak-gu-15fmgge"
+    ],
+    "detailPath": "/kr/seoul/explore/dongjak-gu/dongjak-gu-15fmgge/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 1772,
+        "unit": "homes",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "operator"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 26,
+        "unit": "buildings",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "operator"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-jamsil-els",
+    "name": {
+      "ko": "잠실엘스",
+      "en": "Jamsil Els"
+    },
+    "area": {
+      "ko": "잠실동 · 잠실새내 · 종합운동장",
+      "en": "Jamsil-dong · Jamsilsaenae · Sports Complex"
+    },
+    "address": "서울 송파구 올림픽로 99",
+    "entityIds": [
+      "kr-seoul:estate:songpa-gu-1lqiba6"
+    ],
+    "detailPath": "/kr/seoul/explore/songpa-gu/songpa-gu-1lqiba6/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 5678,
+        "unit": "homes",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "els-2017"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 72,
+        "unit": "buildings",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "els-2017"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-jamsil-ricenz",
+    "name": {
+      "ko": "리센츠",
+      "en": "Jamsil Ricenz"
+    },
+    "area": {
+      "ko": "잠실동 · 잠실새내 · 잠신학교",
+      "en": "Jamsil-dong · Jamsilsaenae · Jamsin schools"
+    },
+    "address": "서울 송파구 올림픽로 135",
+    "entityIds": [
+      "kr-seoul:estate:songpa-gu-13t34fi"
+    ],
+    "detailPath": "/kr/seoul/explore/songpa-gu/songpa-gu-13t34fi/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 5563,
+        "unit": "homes",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "ricenz-record"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 65,
+        "unit": "buildings",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "ricenz-record"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-jamsil-trizium",
+    "name": {
+      "ko": "트리지움",
+      "en": "Trizium"
+    },
+    "area": {
+      "ko": "잠실동 · 잠실새내 · 버들초 주변",
+      "en": "Jamsil-dong · Jamsilsaenae · Beodeul school area"
+    },
+    "address": "서울 송파구 잠실로 62",
+    "entityIds": [
+      "kr-seoul:estate:songpa-gu-12ffbx6"
+    ],
+    "detailPath": "/kr/seoul/explore/songpa-gu/songpa-gu-12ffbx6/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 46,
+        "unit": "buildings",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "59.88㎡ 세대",
+          "en": "59.88 m² homes"
+        },
+        "value": 740,
+        "unit": "homes",
+        "basis": {
+          "ko": "전용면적별 세대 구성 · 전체 3,696세대 · 84㎡대 3유형 합산",
+          "en": "Internal-area mix · 3,696 homes total · three 84 m² layouts combined"
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "84㎡대 세대",
+          "en": "84 m² homes"
+        },
+        "value": 2402,
+        "unit": "homes",
+        "basis": {
+          "ko": "전용면적별 세대 구성 · 전체 3,696세대 · 84㎡대 3유형 합산",
+          "en": "Internal-area mix · 3,696 homes total · three 84 m² layouts combined"
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "114.7㎡ 세대",
+          "en": "114.7 m² homes"
+        },
+        "value": 330,
+        "unit": "homes",
+        "basis": {
+          "ko": "전용면적별 세대 구성 · 전체 3,696세대 · 84㎡대 3유형 합산",
+          "en": "Internal-area mix · 3,696 homes total · three 84 m² layouts combined"
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "149.45㎡ 세대",
+          "en": "149.45 m² homes"
+        },
+        "value": 224,
+        "unit": "homes",
+        "basis": {
+          "ko": "전용면적별 세대 구성 · 전체 3,696세대 · 84㎡대 3유형 합산",
+          "en": "Internal-area mix · 3,696 homes total · three 84 m² layouts combined"
+        },
+        "sourceId": "facts"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-mapo-prestige-xi",
+    "name": {
+      "ko": "마포프레스티지자이",
+      "en": "Mapo Prestige Xi"
+    },
+    "area": {
+      "ko": "염리동 · 한서초 주변 · 대흥 생활권",
+      "en": "Yeomni-dong · Hanseo school area · Daeheung area"
+    },
+    "address": "서울 마포구 대흥로24길 24",
+    "entityIds": [
+      "kr-seoul:estate:mapo-gu-9frtd6"
+    ],
+    "detailPath": "/kr/seoul/explore/mapo-gu/mapo-gu-9frtd6/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 1694,
+        "unit": "homes",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "portal"
+      },
+      {
+        "label": {
+          "ko": "입주 연도",
+          "en": "Occupancy year"
+        },
+        "value": 2021,
+        "unit": "year",
+        "basis": {
+          "ko": "자료의 입주 연도 · 현재 상태는 세대별",
+          "en": "Recorded occupancy year · present condition varies by unit"
+        },
+        "sourceId": "portal"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-mapo-raemian-prugio",
+    "name": {
+      "ko": "마포래미안푸르지오",
+      "en": "Mapo Raemian Prugio"
+    },
+    "area": {
+      "ko": "아현 · 애오개 · 마포대로",
+      "en": "Ahyeon · Aeogae · Mapo-daero"
+    },
+    "address": "서울 마포구 아현동 마포래미안푸르지오 1·2·3·4단지 전체",
+    "entityIds": [
+      "kr-seoul:estate:mapo-gu-um9a6d",
+      "kr-seoul:estate:mapo-gu-18cb81o",
+      "kr-seoul:estate:mapo-gu-k3g1i3",
+      "kr-seoul:estate:mapo-gu-1x9y6cq"
+    ],
+    "detailPath": "/kr/seoul/explore/mapo-gu/mapo-gu-um9a6d/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "전체 세대수",
+          "en": "Combined homes"
+        },
+        "value": 3885,
+        "unit": "homes",
+        "basis": {
+          "ko": "서울시 표시 · 1·2·3·4단지 전체",
+          "en": "Seoul city display · all four phases combined"
+        },
+        "sourceId": "mapo-seoul"
+      },
+      {
+        "label": {
+          "ko": "전체 동수",
+          "en": "Combined buildings"
+        },
+        "value": 51,
+        "unit": "buildings",
+        "basis": {
+          "ko": "서울시 표시 · 1·2·3·4단지 전체",
+          "en": "Seoul city display · all four phases combined"
+        },
+        "sourceId": "mapo-seoul"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-oksu-park-hills",
+    "name": {
+      "ko": "e편한세상 옥수파크힐스",
+      "en": "e-Pyeonhansesang Oksu Park Hills"
+    },
+    "area": {
+      "ko": "옥수동 · 금호역 · 매봉산 주변",
+      "en": "Oksu-dong · Geumho · Maebong setting"
+    },
+    "address": "서울 성동구 매봉길 50",
+    "entityIds": [
+      "kr-seoul:estate:seongdong-gu-j1lfde",
+      "kr-seoul:estate:seongdong-gu-1kt7b3n"
+    ],
+    "detailPath": "/kr/seoul/explore/seongdong-gu/seongdong-gu-j1lfde/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 1976,
+        "unit": "homes",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "portal"
+      },
+      {
+        "label": {
+          "ko": "입주 연도",
+          "en": "Occupancy year"
+        },
+        "value": 2016,
+        "unit": "year",
+        "basis": {
+          "ko": "자료의 입주 연도 · 현재 상태는 세대별",
+          "en": "Recorded occupancy year · present condition varies by unit"
+        },
+        "sourceId": "portal"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-olympic-park-foreon",
+    "name": {
+      "ko": "올림픽파크포레온",
+      "en": "Olympic Park Foreon"
+    },
+    "area": {
+      "ko": "둔촌동 · 둔촌동역 · 올림픽공원 생활권",
+      "en": "Dunchon-dong · Dunchon-dong station · Olympic Park area"
+    },
+    "address": "서울특별시 강동구 둔촌동 633- 올림픽파크포레온",
+    "entityIds": [
+      "kr-seoul:estate:gangdong-gu-bm6tb"
+    ],
+    "detailPath": "/kr/seoul/explore/gangdong-gu/gangdong-gu-bm6tb/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 12032,
+        "unit": "homes",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 85,
+        "unit": "buildings",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "등록 주차면",
+          "en": "Recorded parking spaces"
+        },
+        "value": 17166,
+        "unit": "spaces",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 배정 권리 아님",
+          "en": "K-apt management record as of 2026-09-04 · not allocated entitlement"
+        },
+        "sourceId": "kapt"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-parkrio",
+    "name": {
+      "ko": "파크리오",
+      "en": "Parkrio"
+    },
+    "area": {
+      "ko": "신천동 · 잠실나루 · 올림픽공원",
+      "en": "Sincheon-dong · Jamsillaru · Olympic Park"
+    },
+    "address": "서울 송파구 올림픽로 435",
+    "entityIds": [
+      "kr-seoul:estate:songpa-gu-1m34gty"
+    ],
+    "detailPath": "/kr/seoul/explore/songpa-gu/songpa-gu-1m34gty/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 6864,
+        "unit": "homes",
+        "basis": {
+          "ko": "확인된 아파트 단지 전체",
+          "en": "Verified whole apartment estate"
+        },
+        "sourceId": "parkrio-size"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-raemian-daechi-palace",
+    "name": {
+      "ko": "래미안대치팰리스",
+      "en": "Raemian Daechi Palace"
+    },
+    "area": {
+      "ko": "대치동 · 도곡·대치역",
+      "en": "Daechi-dong · Dogok and Daechi"
+    },
+    "address": "서울특별시 강남구 삼성로57길 37-3",
+    "entityIds": [
+      "kr-seoul:estate:gangnam-gu-1xq16pe"
+    ],
+    "detailPath": "/kr/seoul/explore/gangnam-gu/gangnam-gu-1xq16pe/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 1608,
+        "unit": "homes",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 1·2단지 합산",
+          "en": "K-apt management record as of 2026-09-04 · phases 1 and 2 combined"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 17,
+        "unit": "buildings",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 1·2단지 합산",
+          "en": "K-apt management record as of 2026-09-04 · phases 1 and 2 combined"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "등록 주차면",
+          "en": "Recorded parking spaces"
+        },
+        "value": 3119,
+        "unit": "spaces",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 1·2단지 합산 · 배정 권리 아님",
+          "en": "K-apt management record as of 2026-09-04 · phases 1 and 2 combined · not allocated entitlement"
+        },
+        "sourceId": "kapt"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-raemian-firstige",
+    "name": {
+      "ko": "래미안퍼스티지",
+      "en": "Raemian Firstige"
+    },
+    "area": {
+      "ko": "반포동 · 고속터미널 · 잠원초 주변",
+      "en": "Banpo-dong · Express Bus Terminal · Jamwon school area"
+    },
+    "address": "서울특별시 서초구 반포대로 275",
+    "entityIds": [
+      "kr-seoul:estate:seocho-gu-x2zjvi"
+    ],
+    "detailPath": "/kr/seoul/explore/seocho-gu/seocho-gu-x2zjvi/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 2444,
+        "unit": "homes",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 28,
+        "unit": "buildings",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "등록 주차면",
+          "en": "Recorded parking spaces"
+        },
+        "value": 4368,
+        "unit": "spaces",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 배정 권리 아님",
+          "en": "K-apt management record as of 2026-09-04 · not allocated entitlement"
+        },
+        "sourceId": "kapt"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-raemian-la-classy",
+    "name": {
+      "ko": "래미안라클래시",
+      "en": "Raemian La Classy"
+    },
+    "area": {
+      "ko": "삼성동 · 청담역 · 삼성중앙역",
+      "en": "Samseong-dong · Cheongdam · Samseong Jungang"
+    },
+    "address": "서울특별시 강남구 삼성로 651",
+    "entityIds": [
+      "kr-seoul:estate:gangnam-gu-i87ccz"
+    ],
+    "detailPath": "/kr/seoul/explore/gangnam-gu/gangnam-gu-i87ccz/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 679,
+        "unit": "homes",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 7,
+        "unit": "buildings",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "등록 주차면",
+          "en": "Recorded parking spaces"
+        },
+        "value": 1211,
+        "unit": "spaces",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 배정 권리 아님",
+          "en": "K-apt management record as of 2026-09-04 · not allocated entitlement"
+        },
+        "sourceId": "kapt"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-raemian-one-bailey",
+    "name": {
+      "ko": "래미안원베일리",
+      "en": "Raemian One Bailey"
+    },
+    "area": {
+      "ko": "반포동 · 반포대로 · 고속터미널 생활권",
+      "en": "Banpo-dong · Banpo-daero · Express Bus Terminal area"
+    },
+    "address": "서울특별시 서초구 반포대로 333",
+    "entityIds": [
+      "kr-seoul:estate:seocho-gu-lxozfa"
+    ],
+    "detailPath": "/kr/seoul/explore/seocho-gu/seocho-gu-lxozfa/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 2990,
+        "unit": "homes",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 23,
+        "unit": "buildings",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "등록 주차면",
+          "en": "Recorded parking spaces"
+        },
+        "value": 5460,
+        "unit": "spaces",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 배정 권리 아님",
+          "en": "K-apt management record as of 2026-09-04 · not allocated entitlement"
+        },
+        "sourceId": "kapt"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-tenz-hill-1",
+    "name": {
+      "ko": "텐즈힐 1단지",
+      "en": "Tenz Hill Phase 1"
+    },
+    "area": {
+      "ko": "하왕십리동 · 무학로 · 청계천 주변",
+      "en": "Hawangsimni-dong · Muhak-ro · Cheonggyecheon"
+    },
+    "address": "서울특별시 성동구 무학로 33",
+    "entityIds": [
+      "kr-seoul:estate:seongdong-gu-771dma"
+    ],
+    "detailPath": "/kr/seoul/explore/seongdong-gu/seongdong-gu-771dma/",
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 1369,
+        "unit": "homes",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "동수",
+          "en": "Buildings"
+        },
+        "value": 18,
+        "unit": "buildings",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록",
+          "en": "K-apt management record as of 2026-09-04"
+        },
+        "sourceId": "kapt"
+      },
+      {
+        "label": {
+          "ko": "등록 주차면",
+          "en": "Recorded parking spaces"
+        },
+        "value": 2055,
+        "unit": "spaces",
+        "basis": {
+          "ko": "2026-09-04 K-apt 관리 기록 · 배정 권리 아님",
+          "en": "K-apt management record as of 2026-09-04 · not allocated entitlement"
+        },
+        "sourceId": "kapt"
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "sg-altez",
+    "address": "ENGGOR STREET",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:7ee1184d58f580cfe73b7c5ac90c3047722852e7cfb286c091b7f6935b3f3403"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/7ee1184d58f580cfe73b7c5ac90c3047722852e7cfb286c091b7f6935b3f3403/",
+    "metrics": [],
+    "photo": null,
+    "name": {
+      "en": "Altez",
+      "ko": "알테즈"
+    },
+    "area": {
+      "en": "16 Enggor Street · D02",
+      "ko": "16 Enggor Street · D02"
+    }
+  },
+  {
+    "reviewId": "sg-concourse-skyline",
+    "address": "BEACH ROAD",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:4e852fbc8cf4af90e14e9396ff58a989c19eb2dabbe557610097ba08128cbb69"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/4e852fbc8cf4af90e14e9396ff58a989c19eb2dabbe557610097ba08128cbb69/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Nicoll Highway MRT",
+          "ko": "Nicoll Highway역"
+        },
+        "value": 330,
+        "unit": "m",
+        "basis": {
+          "en": "12 September 2026 sale advertisement; method and full sheltered route unverified.",
+          "ko": "2026년 9월 12일 매매 광고. 측정 방식·전 구간 우천 경로 미확인."
+        },
+        "sourceId": "listing"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "Concourse Skyline",
+      "ko": "콩코스 스카이라인"
+    },
+    "area": {
+      "en": "Beach Road · D07",
+      "ko": "Beach Road · D07"
+    }
+  },
+  {
+    "reviewId": "sg-corals-at-keppel-bay",
+    "address": "KEPPEL BAY DRIVE",
+    "segment": "RCR",
+    "entityIds": [
+      "sg-singapore:project:7acf26122076d9f32fb5b66303f4dd09e397d6b1270b1dd833f49279ffcb497e"
+    ],
+    "detailPath": "/sg/singapore/explore/rcr/7acf26122076d9f32fb5b66303f4dd09e397d6b1270b1dd833f49279ffcb497e/",
+    "metrics": [
+      {
+        "label": {
+          "en": "HarbourFront MRT",
+          "ko": "HarbourFront역"
+        },
+        "value": 600,
+        "unit": "m",
+        "basis": {
+          "en": "April 2020 original-review walking estimate; current block/gate route unmeasured.",
+          "ko": "2020년 4월 원본 리뷰 보행 추정치. 현재 동·문 경로 미실측."
+        },
+        "sourceId": "visit"
+      },
+      {
+        "label": {
+          "en": "Caribbean at Keppel Bay bus stop",
+          "ko": "Caribbean at Keppel Bay 버스 정류장"
+        },
+        "value": 230,
+        "unit": "m",
+        "basis": {
+          "en": "Same April 2020 review; stop direction and current services require checking.",
+          "ko": "같은 2020년 4월 리뷰. 정류장 방향·현재 노선 확인 필요."
+        },
+        "sourceId": "visit"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "Corals at Keppel Bay",
+      "ko": "코랄스 앳 케펠 베이"
+    },
+    "area": {
+      "en": "Keppel Bay Drive · D04",
+      "ko": "Keppel Bay Drive · D04"
+    }
+  },
+  {
+    "reviewId": "sg-d-leedon",
+    "address": "LEEDON HEIGHTS",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:83b6a6904415bc80db64b5d77ff63e425e6a1b7de6b6072d8314ddce52ee0522"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/83b6a6904415bc80db64b5d77ff63e425e6a1b7de6b6072d8314ddce52ee0522/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Condominium units",
+          "ko": "공동주택 세대"
+        },
+        "value": 1703,
+        "unit": "homes",
+        "basis": {
+          "en": "Developer separates 1,703 apartments from 12 semi-detached houses.",
+          "ko": "개발사가 공동주택 1,703세대와 반단독주택 12채를 구분."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "en": "Lap-pool length",
+          "ko": "랩풀 길이"
+        },
+        "value": 50,
+        "unit": "m",
+        "basis": {
+          "en": "Developer describes two pools of this length; not station distance.",
+          "ko": "개발사는 이 길이의 수영장 2개를 설명. 역 거리 아님."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "D’Leedon",
+      "ko": "디리든"
+    },
+    "area": {
+      "en": "Leedon Heights · D10",
+      "ko": "Leedon Heights · D10"
+    }
+  },
+  {
+    "reviewId": "sg-duo-residences",
+    "address": "FRASER STREET",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:a45ee125bf5ce376f3c58ea4dc11fedfc7a7e697dda980fa3df6b759b9fb9f4e"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/a45ee125bf5ce376f3c58ea4dc11fedfc7a7e697dda980fa3df6b759b9fb9f4e/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Bugis MRT",
+          "ko": "Bugis역"
+        },
+        "value": 110,
+        "unit": "m",
+        "basis": {
+          "en": "PropertyGuru listing proximity; method and apartment origin unverified.",
+          "ko": "PropertyGuru 매물 근접 거리. 방식·세대 출발점 미확인."
+        },
+        "sourceId": "listing"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "Duo Residences",
+      "ko": "듀오 레지던스"
+    },
+    "area": {
+      "en": "1 Fraser Street · Bugis · D07",
+      "ko": "1 Fraser Street · Bugis · D07"
+    }
+  },
+  {
+    "reviewId": "sg-icon",
+    "address": "GOPENG STREET",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:c67052818946282ac078df09333b548d13ad321ead7660b60d19968e9d0b6884"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/c67052818946282ac078df09333b548d13ad321ead7660b60d19968e9d0b6884/",
+    "metrics": [],
+    "photo": null,
+    "name": {
+      "en": "Icon",
+      "ko": "아이콘"
+    },
+    "area": {
+      "en": "10 Gopeng Street · D02",
+      "ko": "10 Gopeng Street · D02"
+    }
+  },
+  {
+    "reviewId": "sg-jadescape",
+    "address": "SHUNFU ROAD",
+    "segment": "RCR",
+    "entityIds": [
+      "sg-singapore:project:9b7369d7953064d285a55aec5471127e52795730a9ae03a989b21d47812ad09b"
+    ],
+    "detailPath": "/sg/singapore/explore/rcr/9b7369d7953064d285a55aec5471127e52795730a9ae03a989b21d47812ad09b/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Marymount MRT",
+          "ko": "Marymount역"
+        },
+        "value": 350,
+        "unit": "m",
+        "basis": {
+          "en": "June 2020 reviewer walking estimate; current apartment-to-platform route unmeasured.",
+          "ko": "2020년 6월 리뷰어 보행 추정치. 현재 현관·승강장 경로 미실측."
+        },
+        "sourceId": "visit"
+      },
+      {
+        "label": {
+          "en": "Thomson Plaza",
+          "ko": "Thomson Plaza"
+        },
+        "value": 1200,
+        "unit": "m",
+        "basis": {
+          "en": "June 2020 reviewer mall walking estimate; separate from MRT access.",
+          "ko": "2020년 6월 리뷰어 쇼핑몰 보행 추정치. MRT 접근과 별도."
+        },
+        "sourceId": "visit"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "JadeScape",
+      "ko": "제이드스케이프"
+    },
+    "area": {
+      "en": "Shunfu Road · Bishan · D20",
+      "ko": "Shunfu Road · Bishan · D20"
+    }
+  },
+  {
+    "reviewId": "sg-marina-bay-residences",
+    "address": "MARINA BOULEVARD",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:4558ec2cb2cc1d8f2102ac4fb949267c44cf2a31111585085e4dc5083d886951"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/4558ec2cb2cc1d8f2102ac4fb949267c44cf2a31111585085e4dc5083d886951/",
+    "metrics": [],
+    "photo": null,
+    "name": {
+      "en": "Marina Bay Residences",
+      "ko": "마리나 베이 레지던스"
+    },
+    "area": {
+      "en": "18 Marina Boulevard · D01",
+      "ko": "18 Marina Boulevard · D01"
+    }
+  },
+  {
+    "reviewId": "sg-marina-bay-suites",
+    "address": "CENTRAL BOULEVARD",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:68d992585ce86cfd07ae803ba2c90cfab1c9da4ee85d31ec7ac37412659fb854"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/68d992585ce86cfd07ae803ba2c90cfab1c9da4ee85d31ec7ac37412659fb854/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Downtown MRT",
+          "ko": "Downtown역"
+        },
+        "value": 160,
+        "unit": "m",
+        "basis": {
+          "en": "PropertyGuru advertisement estimate; not a measured residence route.",
+          "ko": "PropertyGuru 광고 추정치. 실측 주거동 경로 아님."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "Marina Bay Suites",
+      "ko": "마리나 베이 스위트"
+    },
+    "area": {
+      "en": "3 Central Boulevard · D01",
+      "ko": "3 Central Boulevard · D01"
+    }
+  },
+  {
+    "reviewId": "sg-marina-one-residences",
+    "address": "MARINA WAY",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:9cd03c11923b0270da24ac49d60f632ff2fedbd7e8926733f621de1ce8561f93"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/9cd03c11923b0270da24ac49d60f632ff2fedbd7e8926733f621de1ce8561f93/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Cantonment Primary",
+          "ko": "Cantonment 초등학교"
+        },
+        "value": 1490,
+        "unit": "m",
+        "basis": {
+          "en": "SRX portal proximity; method unknown, not a walked route or official admission band.",
+          "ko": "SRX 포털 근접 거리. 측정 방식 미확인; 보행 경로나 공식 입학 구간 아님."
+        },
+        "sourceId": "marina-listing"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "ko": "마리나 원 레지던스",
+      "en": "Marina One Residences"
+    },
+    "area": {
+      "ko": "마리나 베이 · 21/23 Marina Way",
+      "en": "Marina Bay · 21/23 Marina Way"
+    }
+  },
+  {
+    "reviewId": "sg-martin-modern",
+    "address": "MARTIN PLACE",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:a30fe002c2e24a2a4f8bd5bfc55c02dd53ee3e856a459e275f8e8e066365719c"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/a30fe002c2e24a2a4f8bd5bfc55c02dd53ee3e856a459e275f8e8e066365719c/",
+    "metrics": [
+      {
+        "label": {
+          "en": "River Valley Primary",
+          "ko": "River Valley 초등학교"
+        },
+        "value": 100,
+        "unit": "m",
+        "basis": {
+          "en": "January 2022 reviewer walking estimate; not official admission band or present measurement.",
+          "ko": "2022년 1월 리뷰어 보행 추정치. 공식 입학 구간·현재 실측 아님."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "en": "Great World MRT",
+          "ko": "Great World역"
+        },
+        "value": 400,
+        "unit": "m",
+        "basis": {
+          "en": "January 2022 estimate before station opening; current exit journey needs verification.",
+          "ko": "역 개통 전 2022년 1월 추정치. 현재 출구 경로 검증 필요."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "Martin Modern",
+      "ko": "마틴 모던"
+    },
+    "area": {
+      "en": "Martin Place · River Valley · D09",
+      "ko": "Martin Place · River Valley · D09"
+    }
+  },
+  {
+    "reviewId": "sg-midtown-bay",
+    "address": "BEACH ROAD",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:8eb7f3566441296ed84d4f8666e6a73d3f3e63c1aab897f421be26e57ccc2e23"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/8eb7f3566441296ed84d4f8666e6a73d3f3e63c1aab897f421be26e57ccc2e23/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Type A1a floor area",
+          "ko": "A1a 평면 면적"
+        },
+        "value": 409,
+        "unit": "sq ft",
+        "basis": {
+          "en": "Developer floorplan type A1a; a unit type, not a project median.",
+          "ko": "개발사 A1a 평면. 특정 타입이며 단지 중앙값 아님."
+        },
+        "sourceId": "layout"
+      },
+      {
+        "label": {
+          "en": "Type B1 floor area",
+          "ko": "B1 평면 면적"
+        },
+        "value": 732,
+        "unit": "sq ft",
+        "basis": {
+          "en": "Developer floorplan type B1; compare like with like.",
+          "ko": "개발사 B1 평면. 동일 조건 비교 필요."
+        },
+        "sourceId": "layout"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "Midtown Bay",
+      "ko": "미드타운 베이"
+    },
+    "area": {
+      "en": "122 Beach Road · D07",
+      "ko": "122 Beach Road · D07"
+    }
+  },
+  {
+    "reviewId": "sg-midtown-modern",
+    "address": "TAN QUEE LAN STREET",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:a92ec4d22c8dea007bed7a195df0db51a1f63db03173501631498b16cd8a522b"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/a92ec4d22c8dea007bed7a195df0db51a1f63db03173501631498b16cd8a522b/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Bugis Exit D",
+          "ko": "Bugis D출구"
+        },
+        "value": 150,
+        "unit": "m",
+        "basis": {
+          "en": "2021 original review estimate for external route; not a current measured integrated-link journey.",
+          "ko": "2021년 원본 리뷰의 외부 경로 추정치. 현재 직결 경로 실측 아님."
+        },
+        "sourceId": "visit"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "Midtown Modern",
+      "ko": "미드타운 모던"
+    },
+    "area": {
+      "en": "16–20 Tan Quee Lan Street · D07",
+      "ko": "16–20 Tan Quee Lan Street · D07"
+    }
+  },
+  {
+    "reviewId": "sg-one-shenton",
+    "address": "SHENTON WAY",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:a34eafe0fc96a298b57a429d0864c7bba2ff90361f7c36ad9b0ed1fca0f9d72d"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/a34eafe0fc96a298b57a429d0864c7bba2ff90361f7c36ad9b0ed1fca0f9d72d/",
+    "metrics": [],
+    "photo": null,
+    "name": {
+      "en": "One Shenton",
+      "ko": "원 셴턴"
+    },
+    "area": {
+      "en": "1 Shenton Way · D01",
+      "ko": "1 Shenton Way · D01"
+    }
+  },
+  {
+    "reviewId": "sg-parc-esta",
+    "address": "SIMS AVENUE",
+    "segment": "RCR",
+    "entityIds": [
+      "sg-singapore:project:3c539e954769fbf6ff6f724574e32bb4f93f906c4c19a9fb818c850d6e11e6da"
+    ],
+    "detailPath": "/sg/singapore/explore/rcr/3c539e954769fbf6ff6f724574e32bb4f93f906c4c19a9fb818c850d6e11e6da/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Eunos MRT",
+          "ko": "Eunos역"
+        },
+        "value": 230,
+        "unit": "m",
+        "basis": {
+          "en": "December 2019 reviewer walking estimate; full current lift/gate route unmeasured.",
+          "ko": "2019년 12월 리뷰어 보행 추정치. 현재 엘리베이터·문 전체 경로 미실측."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "en": "Eunos Primary driving route",
+          "ko": "Eunos Primary 차량 경로"
+        },
+        "value": 900,
+        "unit": "m",
+        "basis": {
+          "en": "December 2019 driving-distance table; not walking distance or official admission radius.",
+          "ko": "2019년 12월 차량 거리 표. 보행 거리·공식 입학 반경 아님."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "Parc Esta",
+      "ko": "파크 에스타"
+    },
+    "area": {
+      "en": "Sims Avenue · Eunos · D14",
+      "ko": "Sims Avenue · Eunos · D14"
+    }
+  },
+  {
+    "reviewId": "sg-park-place-plq",
+    "address": "PAYA LEBAR ROAD",
+    "segment": "RCR",
+    "entityIds": [
+      "sg-singapore:project:0bf3fd90f21ba1950e28743edbc045f94b5218fe4c093b6279e4b5500fa10e74"
+    ],
+    "detailPath": "/sg/singapore/explore/rcr/0bf3fd90f21ba1950e28743edbc045f94b5218fe4c093b6279e4b5500fa10e74/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Kong Hwa School",
+          "ko": "Kong Hwa 초등학교"
+        },
+        "value": 730,
+        "unit": "m",
+        "basis": {
+          "en": "SRX portal proximity; method unknown, not a walked route or official admission band.",
+          "ko": "SRX 포털 근접 거리. 측정 방식 미확인; 보행 경로나 공식 입학 구간 아님."
+        },
+        "sourceId": "plq-srx"
+      },
+      {
+        "label": {
+          "en": "Geylang Methodist Primary",
+          "ko": "Geylang Methodist 초등학교"
+        },
+        "value": 1010,
+        "unit": "m",
+        "basis": {
+          "en": "Same SRX listing, method unverified; do not label within 1 km.",
+          "ko": "같은 SRX 매물의 방식 미확인 수치; 1km 이내로 표시하지 않음."
+        },
+        "sourceId": "plq-srx"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "ko": "파크 플레이스 레지던스 앳 PLQ",
+      "en": "Park Place Residences at PLQ"
+    },
+    "area": {
+      "ko": "파야 레바 · 2/6/8 Paya Lebar Road",
+      "en": "Paya Lebar · 2/6/8 Paya Lebar Road"
+    },
+    "series": [
+      {
+        "label": {
+          "en": "PLQ Mall annual visits",
+          "ko": "PLQ Mall 연간 방문"
+        },
+        "unit": "million visits",
+        "basis": {
+          "en": "Complete calendar years 2022–2024. Values transcribed at the published one-decimal precision from Lendlease Global Commercial REIT’s 5 November 2025 presentation, page 9. Mall visit counts, not unique people, condominium residents or 2026 observations.",
+          "ko": "2022~2024년 각 연간 실적. Lendlease Global Commercial REIT의 2025년 11월 5일 발표 9쪽에서 공개된 소수 첫째 자리 값을 그대로 옮겼습니다. 쇼핑몰 방문 횟수이며 고유 방문자·단지 주민·2026년 현황이 아닙니다."
+        },
+        "sourceId": "plq-retail",
+        "points": [
+          {
+            "period": "2022",
+            "value": 10.4
+          },
+          {
+            "period": "2023",
+            "value": 12.3
+          },
+          {
+            "period": "2024",
+            "value": 13.1
+          }
+        ]
+      },
+      {
+        "label": {
+          "en": "PLQ Mall annual tenant sales",
+          "ko": "PLQ Mall 연간 입점사 매출"
+        },
+        "unit": "S$ million",
+        "basis": {
+          "en": "Complete calendar years 2022–2024. Published nominal tenant sales, at one-decimal precision, in Lendlease Global Commercial REIT’s 5 November 2025 presentation, page 9. PLQ Mall scope; not condominium residents’ spending, city retail sales, apartment returns or 2026 turnover.",
+          "ko": "2022~2024년 각 연간 실적. Lendlease Global Commercial REIT의 2025년 11월 5일 발표 9쪽에 공개된 소수 첫째 자리의 명목 입점사 매출입니다. PLQ Mall 범위이며 단지 주민 소비·도시 소매매출·주택 수익·2026년 매출이 아닙니다."
+        },
+        "sourceId": "plq-retail",
+        "points": [
+          {
+            "period": "2022",
+            "value": 243.0
+          },
+          {
+            "period": "2023",
+            "value": 275.9
+          },
+          {
+            "period": "2024",
+            "value": 278.9
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "reviewId": "sg-reflections-at-keppel-bay",
+    "address": "KEPPEL BAY VIEW",
+    "segment": "RCR",
+    "entityIds": [
+      "sg-singapore:project:60853cb5b0c921e2eae8b11463e09518878ede4cc2e7b8c49a1f055689fb0174"
+    ],
+    "detailPath": "/sg/singapore/explore/rcr/60853cb5b0c921e2eae8b11463e09518878ede4cc2e7b8c49a1f055689fb0174/",
+    "metrics": [],
+    "photo": null,
+    "name": {
+      "en": "Reflections at Keppel Bay",
+      "ko": "리플렉션스 앳 케펠 베이"
+    },
+    "area": {
+      "en": "Keppel Bay View · D04",
+      "ko": "Keppel Bay View · D04"
+    }
+  },
+  {
+    "reviewId": "sg-rivergate",
+    "address": "ROBERTSON QUAY",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:420002a476448326ff10803a151271e5e504d29e56662ae61d79fe0f62365cd1"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/420002a476448326ff10803a151271e5e504d29e56662ae61d79fe0f62365cd1/",
+    "metrics": [],
+    "photo": null,
+    "name": {
+      "en": "Rivergate",
+      "ko": "리버게이트"
+    },
+    "area": {
+      "en": "Robertson Quay · D09",
+      "ko": "Robertson Quay · D09"
+    }
+  },
+  {
+    "reviewId": "sg-seaside-residences",
+    "address": "SIGLAP LINK",
+    "segment": "OCR",
+    "entityIds": [
+      "sg-singapore:project:9f940209ccf2250cc4fc781962380dc5d8970edd1706ec9f6bf53e577c41740a"
+    ],
+    "detailPath": "/sg/singapore/explore/ocr/9f940209ccf2250cc4fc781962380dc5d8970edd1706ec9f6bf53e577c41740a/",
+    "metrics": [],
+    "photo": null,
+    "name": {
+      "en": "Seaside Residences",
+      "ko": "시사이드 레지던스"
+    },
+    "area": {
+      "en": "Siglap Link · East Coast · D15",
+      "ko": "Siglap Link · East Coast · D15"
+    }
+  },
+  {
+    "reviewId": "sg-skysuites-at-anson",
+    "address": "ENGGOR STREET",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:ed19440e1ede68c59d52c3684f6cf346ef5933821d0f23d6314ebab046112a45"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/ed19440e1ede68c59d52c3684f6cf346ef5933821d0f23d6314ebab046112a45/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Tanjong Pagar MRT",
+          "ko": "Tanjong Pagar역"
+        },
+        "value": 410,
+        "unit": "m",
+        "basis": {
+          "en": "September 2026 advertisement estimate; private lift/gate time not included or verified.",
+          "ko": "2026년 9월 광고 추정치. 주거 엘리베이터·문 이동 포함 여부 미확인."
+        },
+        "sourceId": "listing"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "Skysuites at Anson",
+      "ko": "스카이스위트 앳 앤슨"
+    },
+    "area": {
+      "en": "8 Enggor Street · D02",
+      "ko": "8 Enggor Street · D02"
+    }
+  },
+  {
+    "reviewId": "sg-south-beach-residences",
+    "address": "BEACH ROAD",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:34c10366c0b0f633380d4a592cd89ed738349043b2f6ef1f55d42cab47630bcc"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/34c10366c0b0f633380d4a592cd89ed738349043b2f6ef1f55d42cab47630bcc/",
+    "metrics": [],
+    "photo": null,
+    "name": {
+      "en": "South Beach Residences",
+      "ko": "사우스 비치 레지던스"
+    },
+    "area": {
+      "en": "Beach Road · D07",
+      "ko": "Beach Road · D07"
+    }
+  },
+  {
+    "reviewId": "sg-the-interlace",
+    "address": "DEPOT ROAD",
+    "segment": "RCR",
+    "entityIds": [
+      "sg-singapore:project:c6f63b0801fe8816fe4d7c697140085394f9cf206fb3b01f88767bf3a93f7b4d"
+    ],
+    "detailPath": "/sg/singapore/explore/rcr/c6f63b0801fe8816fe4d7c697140085394f9cf206fb3b01f88767bf3a93f7b4d/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Site area",
+          "ko": "부지 면적"
+        },
+        "value": 80761,
+        "unit": "m²",
+        "basis": {
+          "en": "Developer-reported whole development site; not per-home exclusive area.",
+          "ko": "개발사 발표 전체 부지. 세대별 전용 면적 아님."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "en": "Homes",
+          "ko": "총 세대수"
+        },
+        "value": 1040,
+        "unit": "homes",
+        "basis": {
+          "en": "Developer project record.",
+          "ko": "개발사 프로젝트 기록."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "The Interlace",
+      "ko": "더 인터레이스"
+    },
+    "area": {
+      "en": "180–226 Depot Road · D04",
+      "ko": "180–226 Depot Road · D04"
+    }
+  },
+  {
+    "reviewId": "sg-the-sail-marina-bay",
+    "address": "MARINA BOULEVARD",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:ada7b0c88ffae557e257f643a36f32f113cbaa541f67d52558961370be053e50"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/ada7b0c88ffae557e257f643a36f32f113cbaa541f67d52558961370be053e50/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Downtown MRT",
+          "ko": "Downtown역"
+        },
+        "value": 360,
+        "unit": "m",
+        "basis": {
+          "en": "Sale-listing estimate; origin/method unknown, not measured walk.",
+          "ko": "매물 추정 거리. 출발점·방식 미확인; 실측 보행 아님."
+        },
+        "sourceId": "listing"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "The Sail @ Marina Bay",
+      "ko": "더 세일 앳 마리나 베이"
+    },
+    "area": {
+      "en": "Marina Boulevard · D01",
+      "ko": "Marina Boulevard · D01"
+    }
+  },
+  {
+    "reviewId": "sg-the-trillium",
+    "address": "KIM SENG ROAD",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:ec89729c9b9fa8b6dc93620c0b086e1c399272e713389c1b7811ea3809e905c2"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/ec89729c9b9fa8b6dc93620c0b086e1c399272e713389c1b7811ea3809e905c2/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Two-bedroom floor area",
+          "ko": "2베드룸 평면 면적"
+        },
+        "value": 1399,
+        "unit": "sq ft",
+        "basis": {
+          "en": "2019 review’s published apartment format; not a measured listing or project median.",
+          "ko": "2019년 리뷰의 공개 타입. 매물 실측·단지 중앙값 아님."
+        },
+        "sourceId": "visit"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "en": "The Trillium",
+      "ko": "더 트릴리움"
+    },
+    "area": {
+      "en": "Kim Seng Road · D09",
+      "ko": "Kim Seng Road · D09"
+    }
+  },
+  {
+    "reviewId": "sg-wallich-residence",
+    "address": "WALLICH STREET",
+    "segment": "CCR",
+    "entityIds": [
+      "sg-singapore:project:42ba00f9d0e1c40e6a497c20797d42def1e152d8226ae0a11d08f20fea337176"
+    ],
+    "detailPath": "/sg/singapore/explore/ccr/42ba00f9d0e1c40e6a497c20797d42def1e152d8226ae0a11d08f20fea337176/",
+    "metrics": [
+      {
+        "label": {
+          "en": "Cantonment Primary",
+          "ko": "Cantonment 초등학교"
+        },
+        "value": 670,
+        "unit": "m",
+        "basis": {
+          "en": "SRX portal proximity; method unknown, not a walked route or official admission band.",
+          "ko": "SRX 포털 근접 거리. 측정 방식 미확인; 보행 경로나 공식 입학 구간 아님."
+        },
+        "sourceId": "wallich-srx"
+      }
+    ],
+    "photo": null,
+    "name": {
+      "ko": "왈리치 레지던스",
+      "en": "Wallich Residence"
+    },
+    "area": {
+      "ko": "탄종 파가 · 3 Wallich Street",
+      "en": "Tanjong Pagar · 3 Wallich Street"
+    }
+  },
+  {
+    "reviewId": "ae-azizi-venice-6",
+    "address": "Azizi Venice 6, Dubai South, Madinat Al Mataar, Dubai, UAE",
+    "projectId": "3474-apartment-off-plan",
+    "areaSlug": "madinat-al-mataar",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 800,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 745000,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 21971,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-azizi-venice-6/",
+    "name": {
+      "ko": "아지지 베니스 6",
+      "en": "Azizi Venice 6"
+    },
+    "area": {
+      "ko": "Dubai South · Madinat Al Mataar",
+      "en": "Dubai South · Madinat Al Mataar"
+    }
+  },
+  {
+    "reviewId": "ae-binghatti-aquarise",
+    "address": "Binghatti Aquarise, Business Bay, Dubai, UAE",
+    "projectId": "3585-apartment-off-plan",
+    "areaSlug": "business-bay",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 43,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 2000000,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 26490,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "예약 납부",
+          "en": "Booking instalment"
+        },
+        "value": 20,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "ko": "공사 중 납부",
+          "en": "Construction instalments"
+        },
+        "value": 50,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "ko": "완공 납부",
+          "en": "Completion instalment"
+        },
+        "value": 30,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-binghatti-aquarise/",
+    "name": {
+      "ko": "빙하티 아쿠아라이즈",
+      "en": "Binghatti Aquarise"
+    },
+    "area": {
+      "ko": "Business Bay",
+      "en": "Business Bay"
+    }
+  },
+  {
+    "reviewId": "ae-boulevard-park-1",
+    "address": "Boulevard Park 1, Wasl Gate, Jabal Ali First, Dubai, UAE",
+    "projectId": "4184-apartment-off-plan",
+    "areaSlug": "jabal-ali-first",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 125,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 2168000,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 18680,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "전체 계획 주택 수",
+          "en": "Full-scheme planned homes"
+        },
+        "value": 1248,
+        "unit": "homes",
+        "basis": {
+          "ko": "2개 필지·6개 동 Boulevard Park 전체. Park 1만의 수량이 아닙니다. · 2026-09-13 확인.",
+          "en": "Full Boulevard Park across two plots/six buildings; not a Park 1-only count. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-boulevard-park-1/",
+    "name": {
+      "ko": "불러바드 파크 1",
+      "en": "Boulevard Park 1"
+    },
+    "area": {
+      "ko": "Wasl Gate · Jabal Ali First",
+      "en": "Wasl Gate · Jabal Ali First"
+    }
+  },
+  {
+    "reviewId": "ae-creek-bay",
+    "address": "Creek Bay, Dubai Creek Harbour, Al Khairan First, Dubai, UAE",
+    "projectId": "4198-apartment-off-plan",
+    "areaSlug": "al-khairan-first",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 103,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 3476888,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 30474,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-creek-bay/",
+    "name": {
+      "ko": "크리크 베이",
+      "en": "Creek Bay"
+    },
+    "area": {
+      "ko": "Dubai Creek Harbour · Al Khairan First",
+      "en": "Dubai Creek Harbour · Al Khairan First"
+    }
+  },
+  {
+    "reviewId": "ae-creek-haven",
+    "address": "Creek Haven, Dubai Creek Harbour, Al Khairan First, Dubai, UAE",
+    "projectId": "4225-apartment-off-plan",
+    "areaSlug": "al-khairan-first",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 33,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 2667888,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 29261,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-creek-haven/",
+    "name": {
+      "ko": "크리크 헤이븐",
+      "en": "Creek Haven"
+    },
+    "area": {
+      "ko": "Dubai Creek Harbour · Al Khairan First",
+      "en": "Dubai Creek Harbour · Al Khairan First"
+    }
+  },
+  {
+    "reviewId": "ae-eltiera-views",
+    "address": "Eltiera Views, Jumeirah Islands, Al Thanyah Fifth, Dubai, UAE",
+    "projectId": "4116-apartment-off-plan",
+    "areaSlug": "al-thanyah-fifth",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 429,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 2180828,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 25083,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "계획 클럽하우스 층수",
+          "en": "Planned clubhouse levels"
+        },
+        "value": 4,
+        "unit": "levels",
+        "basis": {
+          "ko": "개발사 전체 클럽하우스 계획. 영업·사용료·예약 조건 미확인. · 2026-09-13 확인.",
+          "en": "Developer full clubhouse plan; operation, fees and booking conditions unverified. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-eltiera-views/",
+    "name": {
+      "ko": "엘티에라 뷰스",
+      "en": "Eltiera Views"
+    },
+    "area": {
+      "ko": "Jumeirah Islands · Al Thanyah Fifth",
+      "en": "Jumeirah Islands · Al Thanyah Fifth"
+    }
+  },
+  {
+    "reviewId": "ae-golf-fields",
+    "address": "Golf Fields, Emaar South, Madinat Al Mataar, Dubai, UAE",
+    "projectId": "4415-apartment-off-plan",
+    "areaSlug": "madinat-al-mataar",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 181,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 1605012,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 17004,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-golf-fields/",
+    "name": {
+      "ko": "골프 필즈",
+      "en": "Golf Fields"
+    },
+    "area": {
+      "ko": "Emaar South · Madinat Al Mataar",
+      "en": "Emaar South · Madinat Al Mataar"
+    }
+  },
+  {
+    "reviewId": "ae-hayat-1",
+    "address": "Hayat 1, Dubai South, Madinat Al Mataar, Dubai, UAE",
+    "projectId": "4422-villa-off-plan",
+    "areaSlug": "madinat-al-mataar",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 106,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 4850000,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 16001,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "초기 공개 계약금",
+          "en": "Initial published deposit"
+        },
+        "value": 5,
+        "unit": "%",
+        "basis": {
+          "ko": "최초 단계 개발사 출시 조건. 모든 후속 단계 계약에 자동 적용되지 않습니다. · 2026-09-13 확인.",
+          "en": "Initial-phase developer launch term; not automatically applicable to all later contracts. Checked 13 September 2026."
+        },
+        "sourceId": "launch"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-hayat-1/",
+    "name": {
+      "ko": "하야트 1",
+      "en": "Hayat 1"
+    },
+    "area": {
+      "ko": "Dubai South · Madinat Al Mataar",
+      "en": "Dubai South · Madinat Al Mataar"
+    }
+  },
+  {
+    "reviewId": "ae-one-by-binghatti",
+    "address": "One by Binghatti, Business Bay, Dubai, UAE",
+    "projectId": "3107-apartment-off-plan",
+    "areaSlug": "business-bay",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 48,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 2275000,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 23973,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "계획 주거 층수",
+          "en": "Planned residential floors"
+        },
+        "value": 61,
+        "unit": "floors",
+        "basis": {
+          "ko": "개발사 층 구성의 주거 층만. 지하·포디엄·시설층 제외. · 2026-09-13 확인.",
+          "en": "Residential floors from the developer breakdown, excluding basements, podiums and amenity floor. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "ko": "계약 납부",
+          "en": "Contract instalment"
+        },
+        "value": 20,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "ko": "공사 중 납부",
+          "en": "Construction instalments"
+        },
+        "value": 50,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "ko": "완공 납부",
+          "en": "Completion instalment"
+        },
+        "value": 30,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-one-by-binghatti/",
+    "name": {
+      "ko": "원 바이 빙하티",
+      "en": "One by Binghatti"
+    },
+    "area": {
+      "ko": "Business Bay",
+      "en": "Business Bay"
+    }
+  },
+  {
+    "reviewId": "ae-passo",
+    "address": "Passo, West Crescent, Palm Jumeirah, Dubai, UAE",
+    "projectId": "3886-apartment-off-plan",
+    "areaSlug": "palm-jumeirah",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 31,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 8259780,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 61719,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "Regent Year 1~6 학비",
+          "en": "Regent Years 1–6 tuition"
+        },
+        "value": 57254,
+        "unit": "AED/year",
+        "basis": {
+          "ko": "2026–27 학교 공시 수업료. 교통·급식·교복·활동비 별도. · 2026-09-13 확인.",
+          "en": "School-published annual 2026–27 tuition; transport, meals, uniform and activities separate. Checked 13 September 2026."
+        },
+        "sourceId": "school-fees"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-passo/",
+    "name": {
+      "ko": "파쏘",
+      "en": "Passo"
+    },
+    "area": {
+      "ko": "West Crescent · Palm Jumeirah",
+      "en": "West Crescent · Palm Jumeirah"
+    }
+  },
+  {
+    "reviewId": "ae-peninsula-three",
+    "address": "Peninsula Three, Business Bay, Dubai, UAE",
+    "projectId": "2372-apartment-ready",
+    "areaSlug": "business-bay",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 44,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 1775000,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 28121,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "공식 타워 층수",
+          "en": "Official tower storeys"
+        },
+        "value": 49,
+        "unit": "storeys",
+        "basis": {
+          "ko": "개발사 건물 층수. 주거 전용 층수로 다시 분류하지 않았습니다. · 2026-09-13 확인.",
+          "en": "Developer building-storey count; not reclassified as exclusively residential floors. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "ko": "대표 스튜디오 면적",
+          "en": "Example studio area"
+        },
+        "value": 410,
+        "unit": "sqft",
+        "basis": {
+          "ko": "개발사 대표 평면 면적. 모든 스튜디오가 같은 면적은 아닙니다. · 2026-09-13 확인.",
+          "en": "Developer representative plan area; not uniform across all studios. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "ko": "대표 2베드룸 면적",
+          "en": "Example two-bedroom area"
+        },
+        "value": 1061,
+        "unit": "sqft",
+        "basis": {
+          "ko": "개발사 대표 평면 면적. 전용 실내 면적과 동일한 기준으로 보지 않습니다. · 2026-09-13 확인.",
+          "en": "Developer representative plan area; not assumed equal to exclusive interior area. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-peninsula-three/",
+    "name": {
+      "ko": "페닌슐라 쓰리",
+      "en": "Peninsula Three"
+    },
+    "area": {
+      "ko": "Business Bay",
+      "en": "Business Bay"
+    }
+  },
+  {
+    "reviewId": "ae-raw-district-r",
+    "address": "RAW District R, Jabal Ali Industrial Second, Dubai, UAE",
+    "projectId": "4500-apartment-off-plan",
+    "areaSlug": "jabal-ali-industrial-second",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 558,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 749711,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 18881,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-raw-district-r/",
+    "name": {
+      "ko": "로우 디스트릭트 R",
+      "en": "RAW District R"
+    },
+    "area": {
+      "ko": "Jabal Ali Industrial Second",
+      "en": "Jabal Ali Industrial Second"
+    }
+  },
+  {
+    "reviewId": "ae-regalia",
+    "address": "Regalia, Business Bay, Dubai, UAE",
+    "projectId": "2270-apartment-off-plan",
+    "areaSlug": "business-bay",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 34,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 1200000,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 19089,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "공식 타워 층수",
+          "en": "Official tower storeys"
+        },
+        "value": 70,
+        "unit": "storeys",
+        "basis": {
+          "ko": "개발사 발표의 건물 규모. 실측 승강기 대기·혼잡이 아닙니다. · 2026-09-13 확인.",
+          "en": "Developer release building scale; not measured lift waits or congestion. Checked 13 September 2026."
+        },
+        "sourceId": "launch"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-regalia/",
+    "name": {
+      "ko": "레갈리아",
+      "en": "Regalia"
+    },
+    "area": {
+      "ko": "Business Bay",
+      "en": "Business Bay"
+    }
+  },
+  {
+    "reviewId": "ae-reportage-hills",
+    "address": "Reportage Hills / R. Hills, Dubailand, Al Hebiah Fifth, Dubai, UAE",
+    "projectId": "3465-villa-off-plan",
+    "areaSlug": "al-hebiah-fifth",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 78,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 2179800,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 15908,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "3베드룸 계획 주택",
+          "en": "Planned three-bedroom homes"
+        },
+        "value": 744,
+        "unit": "homes",
+        "basis": {
+          "ko": "공식 902개 주택 팩트시트 구성. 현재 거주·판매 완료 수가 아닙니다. · 2026-09-13 확인.",
+          "en": "Official 902-home factsheet mix; not occupied or sold-home counts. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "4베드룸 계획 주택",
+          "en": "Planned four-bedroom homes"
+        },
+        "value": 66,
+        "unit": "homes",
+        "basis": {
+          "ko": "공식 902개 주택 팩트시트 구성. 현재 거주·판매 완료 수가 아닙니다. · 2026-09-13 확인.",
+          "en": "Official 902-home factsheet mix; not occupied or sold-home counts. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "5베드룸 계획 주택",
+          "en": "Planned five-bedroom homes"
+        },
+        "value": 92,
+        "unit": "homes",
+        "basis": {
+          "ko": "공식 902개 주택 팩트시트 구성. 현재 거주·판매 완료 수가 아닙니다. · 2026-09-13 확인.",
+          "en": "Official 902-home factsheet mix; not occupied or sold-home counts. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-reportage-hills/",
+    "name": {
+      "ko": "리포타지 힐즈",
+      "en": "Reportage Hills / R. Hills"
+    },
+    "area": {
+      "ko": "Dubailand · Al Hebiah Fifth",
+      "en": "Dubailand · Al Hebiah Fifth"
+    }
+  },
+  {
+    "reviewId": "ae-reportage-village-1",
+    "address": "Reportage Village 1, Dubailand, Wadi Al Safa 7, Dubai, UAE",
+    "projectId": "2784-villa-off-plan",
+    "areaSlug": "wadi-al-safa-7",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 50,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 1290713,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 12557,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "2베드룸 G+1",
+          "en": "Two-bedroom G+1 homes"
+        },
+        "value": 1321,
+        "unit": "homes",
+        "basis": {
+          "ko": "Dubai 공식 팩트시트 1,767개 주택 계획 구성. Abu Dhabi 동명 단지 제외. · 2026-09-13 확인.",
+          "en": "Dubai official 1,767-home planned mix; excludes the Abu Dhabi namesake. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "3베드룸 G+1",
+          "en": "Three-bedroom G+1 homes"
+        },
+        "value": 156,
+        "unit": "homes",
+        "basis": {
+          "ko": "Dubai 공식 팩트시트 1,767개 주택 계획 구성. Abu Dhabi 동명 단지 제외. · 2026-09-13 확인.",
+          "en": "Dubai official 1,767-home planned mix; excludes the Abu Dhabi namesake. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "4베드룸 G+2",
+          "en": "Four-bedroom G+2 homes"
+        },
+        "value": 290,
+        "unit": "homes",
+        "basis": {
+          "ko": "Dubai 공식 팩트시트 1,767개 주택 계획 구성. Abu Dhabi 동명 단지 제외. · 2026-09-13 확인.",
+          "en": "Dubai official 1,767-home planned mix; excludes the Abu Dhabi namesake. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-reportage-village-1/",
+    "name": {
+      "ko": "리포타지 빌리지 1",
+      "en": "Reportage Village 1"
+    },
+    "area": {
+      "ko": "Dubailand · Wadi Al Safa 7",
+      "en": "Dubailand · Wadi Al Safa 7"
+    }
+  },
+  {
+    "reviewId": "ae-rise-by-athlon-1",
+    "address": "Rise by Athlon 1, Athlon, Wadi Al Safa 5, Dubai, UAE",
+    "projectId": "4044-apartment-off-plan",
+    "areaSlug": "wadi-al-safa-5",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 41,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 1722031,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 17321,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "Rise 전체 테마 동",
+          "en": "Themed buildings across Rise"
+        },
+        "value": 8,
+        "unit": "buildings",
+        "basis": {
+          "ko": "공식 Rise 전체 계획. DLD Rise 1의 동 수나 현재 준공 수가 아닙니다. · 2026-09-13 확인.",
+          "en": "Official full Rise plan; not a building count for DLD Rise 1 or completed-building count. Checked 13 September 2026."
+        },
+        "sourceId": "launch"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-rise-by-athlon-1/",
+    "name": {
+      "ko": "라이즈 바이 애슬론 1",
+      "en": "Rise by Athlon 1"
+    },
+    "area": {
+      "ko": "Athlon · Wadi Al Safa 5",
+      "en": "Athlon · Wadi Al Safa 5"
+    }
+  },
+  {
+    "reviewId": "ae-serenia-district-east",
+    "address": "Serenia District East, Jumeirah Islands, Al Thanyah Fifth, Dubai, UAE",
+    "projectId": "4281-apartment-off-plan",
+    "areaSlug": "al-thanyah-fifth",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 61,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 3712000,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 27141,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-serenia-district-east/",
+    "name": {
+      "ko": "세레니아 디스트릭트 이스트",
+      "en": "Serenia District East"
+    },
+    "area": {
+      "ko": "Jumeirah Islands · Al Thanyah Fifth",
+      "en": "Jumeirah Islands · Al Thanyah Fifth"
+    }
+  },
+  {
+    "reviewId": "ae-skyflame-1",
+    "address": "Binghatti Skyflame project group, Majan, Dubai, UAE",
+    "projectId": null,
+    "areaSlug": "majan",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "예약 납부",
+          "en": "Booking instalment"
+        },
+        "value": 20,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "skyflame"
+      },
+      {
+        "label": {
+          "ko": "공사 중 납부",
+          "en": "Construction instalments"
+        },
+        "value": 50,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "skyflame"
+      },
+      {
+        "label": {
+          "ko": "완공 납부",
+          "en": "Completion instalment"
+        },
+        "value": 30,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "skyflame"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-skyflame-1/",
+    "name": {
+      "ko": "빙하티 스카이플레임 · 타워군",
+      "en": "Binghatti Skyflame · project group"
+    },
+    "area": {
+      "ko": "Majan · DLD 지역명 MAJAN",
+      "en": "Majan · DLD area MAJAN"
+    }
+  },
+  {
+    "reviewId": "ae-skyterraces",
+    "address": "Binghatti Skyterraces, Motor City, DLD area Al Hebiah First, Dubai, UAE",
+    "projectId": "4327-apartment-off-plan",
+    "areaSlug": "al-hebiah-first",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 313,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 861999,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 19754,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "계획 주거 층수",
+          "en": "Planned residential floors"
+        },
+        "value": 40,
+        "unit": "floors",
+        "basis": {
+          "ko": "개발사 층 구성 공시. 세대별 고도·조망이나 완공 상태가 아닙니다. · 2026-09-13 확인.",
+          "en": "Developer floor breakdown; not a unit elevation, view or delivery statement. Checked 13 September 2026."
+        },
+        "sourceId": "skyterraces"
+      },
+      {
+        "label": {
+          "ko": "대표 1베드룸 면적",
+          "en": "Example one-bedroom area"
+        },
+        "value": 570,
+        "unit": "sqft",
+        "basis": {
+          "ko": "개발사 대표 세대 총면적. 발코니 포함·전용면적 기준은 미확인. · 2026-09-13 확인.",
+          "en": "Developer representative unit area; balcony inclusion and exclusive interior measurement unverified. Checked 13 September 2026."
+        },
+        "sourceId": "skyterraces"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-skyterraces/",
+    "name": {
+      "ko": "빙하티 스카이테라시스",
+      "en": "Binghatti Skyterraces"
+    },
+    "area": {
+      "ko": "Motor City · DLD 지역명 Al Hebiah First",
+      "en": "Motor City · DLD area Al Hebiah First"
+    }
+  },
+  {
+    "reviewId": "ae-sobha-central",
+    "address": "Sobha Central, Sheikh Zayed Road, Jabal Ali First, Dubai, UAE",
+    "projectId": "4328-apartment-off-plan",
+    "areaSlug": "jabal-ali-first",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 89,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 2000000,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 34767,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "전체 계획 타워 수",
+          "en": "Full-scheme planned towers"
+        },
+        "value": 6,
+        "unit": "towers",
+        "basis": {
+          "ko": "Sobha Central 전체 타워 수. 각 타워의 인도 예정 연도는 서로 다릅니다. · 2026-09-13 확인.",
+          "en": "Full Sobha Central tower count; delivery targets differ between towers. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-sobha-central/",
+    "name": {
+      "ko": "소바 센트럴",
+      "en": "Sobha Central"
+    },
+    "area": {
+      "ko": "Sheikh Zayed Road · Jabal Ali First",
+      "en": "Sheikh Zayed Road · Jabal Ali First"
+    }
+  },
+  {
+    "reviewId": "ae-taormina-village-1",
+    "address": "Taormina Village 1, Dubailand, Wadi Al Safa 3, Dubai, UAE",
+    "projectId": "3108-villa-off-plan",
+    "areaSlug": "wadi-al-safa-3",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 49,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 2067500,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 25670,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "3베드룸 G+2 타운하우스",
+          "en": "Three-bedroom G+2 townhouses"
+        },
+        "value": 392,
+        "unit": "homes",
+        "basis": {
+          "ko": "공식 838개 주택 전체 계획 구성. 집계 거래 수와 별도. · 2026-09-13 확인.",
+          "en": "Official full 838-home planned mix, separate from transaction counts. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "3베드룸 빌라",
+          "en": "Three-bedroom villas"
+        },
+        "value": 30,
+        "unit": "homes",
+        "basis": {
+          "ko": "공식 838개 주택 전체 계획 구성. 집계 거래 수와 별도. · 2026-09-13 확인.",
+          "en": "Official full 838-home planned mix, separate from transaction counts. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "4베드룸 타운하우스",
+          "en": "Four-bedroom townhouses"
+        },
+        "value": 334,
+        "unit": "homes",
+        "basis": {
+          "ko": "공식 838개 주택 전체 계획 구성. 집계 거래 수와 별도. · 2026-09-13 확인.",
+          "en": "Official full 838-home planned mix, separate from transaction counts. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "4베드룸 빌라",
+          "en": "Four-bedroom villas"
+        },
+        "value": 46,
+        "unit": "homes",
+        "basis": {
+          "ko": "공식 838개 주택 전체 계획 구성. 집계 거래 수와 별도. · 2026-09-13 확인.",
+          "en": "Official full 838-home planned mix, separate from transaction counts. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "4베드룸 독립 빌라",
+          "en": "Four-bedroom standalone villas"
+        },
+        "value": 2,
+        "unit": "homes",
+        "basis": {
+          "ko": "공식 838개 주택 전체 계획 구성. 집계 거래 수와 별도. · 2026-09-13 확인.",
+          "en": "Official full 838-home planned mix, separate from transaction counts. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      },
+      {
+        "label": {
+          "ko": "5베드룸 코너 빌라",
+          "en": "Five-bedroom corner villas"
+        },
+        "value": 34,
+        "unit": "homes",
+        "basis": {
+          "ko": "공식 838개 주택 전체 계획 구성. 집계 거래 수와 별도. · 2026-09-13 확인.",
+          "en": "Official full 838-home planned mix, separate from transaction counts. Checked 13 September 2026."
+        },
+        "sourceId": "facts"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-taormina-village-1/",
+    "name": {
+      "ko": "타오르미나 빌리지 1",
+      "en": "Taormina Village 1"
+    },
+    "area": {
+      "ko": "Dubailand · Wadi Al Safa 3",
+      "en": "Dubailand · Wadi Al Safa 3"
+    }
+  },
+  {
+    "reviewId": "ae-terra-woods",
+    "address": "Terra Woods, Expo Living, Madinat Al Mataar, Dubai, UAE",
+    "projectId": "4367-apartment-off-plan",
+    "areaSlug": "madinat-al-mataar",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 56,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 1762888,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 23694,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-terra-woods/",
+    "name": {
+      "ko": "테라 우즈",
+      "en": "Terra Woods"
+    },
+    "area": {
+      "ko": "Expo Living · Madinat Al Mataar",
+      "en": "Expo Living · Madinat Al Mataar"
+    }
+  },
+  {
+    "reviewId": "ae-the-edge",
+    "address": "The EDGE, Business Bay, Dubai, UAE",
+    "projectId": "2611-apartment-off-plan",
+    "areaSlug": "business-bay",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 38,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 1422500,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 24315,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "계획 레저데크 면적",
+          "en": "Planned leisure deck"
+        },
+        "value": 61000,
+        "unit": "sqft",
+        "basis": {
+          "ko": "개발사 공개 공용 데크 면적. 아파트 전용 면적이나 현재 개장 면적이 아닙니다. · 2026-09-13 확인.",
+          "en": "Developer-published shared deck area; not private apartment area or confirmed open facilities. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "ko": "14일 내 납부",
+          "en": "Within 14 days"
+        },
+        "value": 20,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "ko": "6개월 내 납부",
+          "en": "Within six months"
+        },
+        "value": 20,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      },
+      {
+        "label": {
+          "ko": "완공 납부",
+          "en": "Completion instalment"
+        },
+        "value": 60,
+        "unit": "%",
+        "basis": {
+          "ko": "개발사 공개 기본 분납안. 현재 양도 매물은 계약과 기납부 금액에 따라 다릅니다. · 2026-09-13 확인.",
+          "en": "Developer-published indicative instalment schedule; a resale depends on its contract and amounts already paid. Checked 13 September 2026."
+        },
+        "sourceId": "project"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-the-edge/",
+    "name": {
+      "ko": "더 엣지",
+      "en": "The EDGE"
+    },
+    "area": {
+      "ko": "Business Bay",
+      "en": "Business Bay"
+    }
+  },
+  {
+    "reviewId": "ae-the-wilds-residences",
+    "address": "The Wilds Residences, Dubailand, Wadi Al Safa 3, Dubai, UAE",
+    "projectId": "4377-apartment-off-plan",
+    "areaSlug": "wadi-al-safa-3",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 33,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 1755800,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 20141,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "아파트 단계 계획 주택",
+          "en": "Planned apartment-phase homes"
+        },
+        "value": 740,
+        "unit": "homes",
+        "basis": {
+          "ko": "공식 Residences 단계 전체. Wilds 빌라 공급과 구분. · 2026-09-13 확인.",
+          "en": "Official full Residences phase; separate from Wilds villa supply. Checked 13 September 2026."
+        },
+        "sourceId": "launch"
+      },
+      {
+        "label": {
+          "ko": "아파트 단계 계획 동",
+          "en": "Planned apartment-phase buildings"
+        },
+        "value": 6,
+        "unit": "buildings",
+        "basis": {
+          "ko": "공식 Residences 중층 단계. 개별 동 수량이 아닙니다. · 2026-09-13 확인.",
+          "en": "Official full mid-rise Residences phase, not an individual building count. Checked 13 September 2026."
+        },
+        "sourceId": "launch"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-the-wilds-residences/",
+    "name": {
+      "ko": "더 와일즈 레지던스",
+      "en": "The Wilds Residences"
+    },
+    "area": {
+      "ko": "Dubailand · Wadi Al Safa 3",
+      "en": "Dubailand · Wadi Al Safa 3"
+    }
+  },
+  {
+    "reviewId": "ae-valia",
+    "address": "Valia, Dubai Creek Harbour, DLD area Al Khairan First, Dubai, UAE",
+    "projectId": "4448-apartment-off-plan",
+    "areaSlug": "al-khairan-first",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "기간 내 거래 표본",
+          "en": "Transactions in period"
+        },
+        "value": 134,
+        "unit": "transactions",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "거래가격 중앙값",
+          "en": "Median transaction price"
+        },
+        "value": 2285888,
+        "unit": "AED",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "㎡당 거래가격 중앙값",
+          "en": "Median price per square metre"
+        },
+        "value": 28103,
+        "unit": "AED/m²",
+        "basis": {
+          "ko": "SignedPrice 공개 DLD 집계 · 2026-06-08~09-05 · 주택유형·거래단계별 표본. 동일 면적·층·조망을 맞춘 가격이 아닙니다.",
+          "en": "SignedPrice published DLD aggregate, 8 June–5 September 2026, segmented by property type and transaction stage. Not matched for size, floor or view."
+        },
+        "sourceId": "signedprice-dld"
+      },
+      {
+        "label": {
+          "ko": "DIS Year 1~5 학비",
+          "en": "DIS Years 1–5 tuition"
+        },
+        "value": 58034,
+        "unit": "AED/year",
+        "basis": {
+          "ko": "2026–27 학교 공시 연간 수업료. 교통·급식·교복 별도. · 2026-09-13 확인.",
+          "en": "School-published annual 2026–27 tuition; transport, meals and uniform excluded. Checked 13 September 2026."
+        },
+        "sourceId": "dis-fees"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/ae/dubai/explore/projects/ae-valia/",
+    "name": {
+      "ko": "발리아",
+      "en": "Valia"
+    },
+    "area": {
+      "ko": "Dubai Creek Harbour · DLD 지역명 Al Khairan First",
+      "en": "Dubai Creek Harbour · DLD area Al Khairan First"
+    }
+  },
+  {
+    "reviewId": "jp-bayz-tower-garden",
+    "address": "6-2-29 Toyosu, Koto, Tokyo",
+    "wardCode": "13108",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "신도요스역",
+          "en": "Shin-Toyosu Station"
+        },
+        "value": 6,
+        "unit": "min",
+        "basis": {
+          "ko": "공식 개요의 광고 도보시간 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Advertised walk in official outline · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "bz-outline"
+      },
+      {
+        "label": {
+          "ko": "도요스 · 유라쿠초선",
+          "en": "Toyosu · Yurakucho Line"
+        },
+        "value": 11,
+        "unit": "min",
+        "basis": {
+          "ko": "공식 개요의 광고 도보시간 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Advertised walk in official outline · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "bz-outline"
+      },
+      {
+        "label": {
+          "ko": "하루미바시공원",
+          "en": "Harumibashi Park"
+        },
+        "value": 1030,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "bz-location"
+      },
+      {
+        "label": {
+          "ko": "라라포트 도요스",
+          "en": "LaLaport Toyosu"
+        },
+        "value": 1080,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "bz-location"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-bayz-tower-garden/",
+    "name": {
+      "ko": "베이즈 타워 앤 가든",
+      "en": "BAYZ Tower & Garden"
+    },
+    "area": {
+      "ko": "신도요스 · 고토구",
+      "en": "Shin-Toyosu · Koto"
+    }
+  },
+  {
+    "reviewId": "jp-branz-tower-toyosu",
+    "address": "5-1-13 Toyosu, Koto, Tokyo",
+    "wardCode": "13108",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "다이에이 도요스",
+          "en": "Daiei Toyosu"
+        },
+        "value": 170,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "bt-list"
+      },
+      {
+        "label": {
+          "ko": "도요스니시 초등학교",
+          "en": "Toyosu Nishi Elementary"
+        },
+        "value": 310,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "bt-list"
+      },
+      {
+        "label": {
+          "ko": "도요스5초메공원",
+          "en": "Toyosu 5-chome Park"
+        },
+        "value": 320,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "bt-list"
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/d/df/%E3%83%96%E3%83%A9%E3%83%B3%E3%82%BA%E3%82%BF%E3%83%AF%E3%83%BC%E8%B1%8A%E6%B4%B2.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E3%83%96%E3%83%A9%E3%83%B3%E3%82%BA%E3%82%BF%E3%83%AF%E3%83%BC%E8%B1%8A%E6%B4%B2.jpg",
+      "credit": "Yama0904 / Wikimedia Commons",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "takenOn": "2025-02-19",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "Branz Tower Toyosu viewed from Toyosu Gururi Park in February 2025.",
+        "ko": "도요스 구루리 공원에서 본 브란즈 타워 도요스, 2025년 2월."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-branz-tower-toyosu/",
+    "name": {
+      "ko": "브란즈 타워 도요스",
+      "en": "Branz Tower Toyosu"
+    },
+    "area": {
+      "ko": "도요스5초메 · 고토구",
+      "en": "Toyosu 5-chome · Koto"
+    }
+  },
+  {
+    "reviewId": "jp-brillia-ariake-city-tower",
+    "address": "1-5-2 Ariake, Koto-ku, Tokyo",
+    "wardCode": "13108",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "en": "Ariake-Tennis-no-Mori",
+          "ko": "아리아케테니스노모리역"
+        },
+        "value": 9,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "ba-outline"
+      },
+      {
+        "label": {
+          "en": "Kokusai-Tenjijo",
+          "ko": "고쿠사이텐지조역"
+        },
+        "value": 15,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "ba-outline"
+      },
+      {
+        "label": {
+          "en": "Ariake Nishi Gakuen",
+          "ko": "아리아케 니시 가쿠엔"
+        },
+        "value": 80,
+        "unit": "m",
+        "basis": {
+          "en": "Approximate building-guide distance; admission and actual gate route are unverified. Checked 2026-09-13.",
+          "ko": "단지 안내의 개략 거리이며 입학 및 실제 교문 경로는 미확인입니다. 2026-09-13 확인."
+        },
+        "sourceId": "ba-location"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-brillia-ariake-city-tower/",
+    "name": {
+      "en": "Brillia Ariake City Tower",
+      "ko": "브릴리아 아리아케 시티 타워"
+    },
+    "area": {
+      "en": "Ariake, Koto",
+      "ko": "고토구 아리아케"
+    }
+  },
+  {
+    "reviewId": "jp-brillia-ariake-sky-tower",
+    "address": "1-4-20 Ariake, Koto, Tokyo",
+    "wardCode": "13108",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "아리아케테니스노모리역",
+          "en": "Ariake-tennis-no-mori"
+        },
+        "value": 6,
+        "unit": "min",
+        "basis": {
+          "ko": "공식 개요의 광고 도보시간 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Advertised walk in official outline · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "as-outline"
+      },
+      {
+        "label": {
+          "ko": "고쿠사이텐지조역",
+          "en": "Kokusai-tenjijo"
+        },
+        "value": 10,
+        "unit": "min",
+        "basis": {
+          "ko": "공식 개요의 광고 도보시간 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Advertised walk in official outline · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "as-outline"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-brillia-ariake-sky-tower/",
+    "name": {
+      "ko": "브릴리아 아리아케 스카이 타워",
+      "en": "Brillia Ariake Sky Tower"
+    },
+    "area": {
+      "ko": "아리아케1초메 · 고토구",
+      "en": "Ariake 1-chome · Koto"
+    }
+  },
+  {
+    "reviewId": "jp-brillia-mare-ariake",
+    "address": "1-4-11 Ariake, Koto, Tokyo",
+    "wardCode": "13108",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "아리아케테니스노모리역",
+          "en": "Ariake-tennis-no-mori"
+        },
+        "value": 5,
+        "unit": "min",
+        "basis": {
+          "ko": "공식 개요의 광고 도보시간 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Advertised walk in official outline · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "ma-outline"
+      },
+      {
+        "label": {
+          "ko": "고쿠사이텐지조역",
+          "en": "Kokusai-tenjijo"
+        },
+        "value": 8,
+        "unit": "min",
+        "basis": {
+          "ko": "공식 개요의 광고 도보시간 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Advertised walk in official outline · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "ma-outline"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-brillia-mare-ariake/",
+    "name": {
+      "ko": "브릴리아 마레 아리아케",
+      "en": "Brillia Mare Ariake"
+    },
+    "area": {
+      "ko": "아리아케1초메 · 고토구",
+      "en": "Ariake 1-chome · Koto"
+    }
+  },
+  {
+    "reviewId": "jp-brillia-towers-meguro",
+    "address": "3-1 Kami-Osaki, Shinagawa, Tokyo (North and South towers have separate street numbers)",
+    "wardCode": "13109",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "North → 메구로역",
+          "en": "North → Meguro Station"
+        },
+        "value": 2,
+        "unit": "min",
+        "sourceId": "mg-outline",
+        "basis": {
+          "ko": "공식 단지 개요의 광고 역 도보 시간 · 2026-09-13 확인 · 현관~승강장 실측 아님",
+          "en": "Advertised station walks in the official estate outline · checked 2026-09-13 · not measured apartment-to-platform"
+        }
+      },
+      {
+        "label": {
+          "ko": "South → 메구로역",
+          "en": "South → Meguro Station"
+        },
+        "value": 3,
+        "unit": "min",
+        "sourceId": "mg-outline",
+        "basis": {
+          "ko": "공식 단지 개요의 광고 역 도보 시간 · 2026-09-13 확인 · 현관~승강장 실측 아님",
+          "en": "Advertised station walks in the official estate outline · checked 2026-09-13 · not measured apartment-to-platform"
+        }
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/af/Tree_blossom_in_front_of_%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E3%82%BF%E3%83%AF%E3%83%BC%E3%82%BA%E7%9B%AE%E9%BB%92%E3%82%B5%E3%82%A6%E3%82%B9%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tree_blossom_in_front_of_%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E3%82%BF%E3%83%AF%E3%83%BC%E3%82%BA%E7%9B%AE%E9%BB%92%E3%82%B5%E3%82%A6%E3%82%B9%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9.jpg",
+      "credit": "Syced / Wikimedia Commons",
+      "license": "CC0 1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "takenOn": "2025-04-05",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "Brillia Towers Meguro South Residence exterior with spring blossoms in April 2025.",
+        "ko": "봄꽃과 함께 촬영한 브릴리아 타워즈 메구로 사우스 레지던스 외관, 2025년 4월."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-brillia-towers-meguro/",
+    "name": {
+      "ko": "브릴리아 타워스 메구로",
+      "en": "Brillia Towers Meguro"
+    },
+    "area": {
+      "ko": "메구로역 · 시나가와구 가미오사키",
+      "en": "Meguro Station · Kamiosaki, Shinagawa"
+    }
+  },
+  {
+    "reviewId": "jp-capital-mark-tower",
+    "address": "4-10-1 Shibaura, Minato-ku, Tokyo",
+    "wardCode": "13103",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "en": "Tamachi station",
+          "ko": "다마치역"
+        },
+        "value": 9,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "cm-reg"
+      },
+      {
+        "label": {
+          "en": "Mita station",
+          "ko": "미타역"
+        },
+        "value": 10,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "cm-reg"
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Capital_Mark_Tower_2012_Tokyo.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Capital_Mark_Tower_2012_Tokyo.jpg",
+      "credit": "Harani0403 / Wikimedia Commons",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "takenOn": "2012-06-25",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "Capital Mark Tower exterior in Shibaura, photographed in June 2012; archival photograph.",
+        "ko": "시바우라의 캐피털 마크 타워 외관, 2012년 6월 촬영한 과거 사진입니다."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-capital-mark-tower/",
+    "name": {
+      "en": "Capital Mark Tower",
+      "ko": "캐피털 마크 타워"
+    },
+    "area": {
+      "en": "Shibaura, Minato",
+      "ko": "미나토구 시바우라"
+    }
+  },
+  {
+    "reviewId": "jp-city-towers-toyosu-the-symbol",
+    "address": "3-6-8 Toyosu, Koto, Tokyo",
+    "wardCode": "13108",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "도요스키타 초등학교",
+          "en": "Toyosu Kita Elementary"
+        },
+        "value": 230,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "sy-list"
+      },
+      {
+        "label": {
+          "ko": "비바홈 도요스",
+          "en": "Viva Home Toyosu"
+        },
+        "value": 520,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "sy-list"
+      },
+      {
+        "label": {
+          "ko": "후카가와 제5중학교",
+          "en": "Fukagawa No. 5 Junior High"
+        },
+        "value": 1030,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "sy-list"
+      },
+      {
+        "label": {
+          "ko": "라라포트 도요스",
+          "en": "LaLaport Toyosu"
+        },
+        "value": 1030,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "sy-list"
+      },
+      {
+        "label": {
+          "ko": "도요스 · 유라쿠초선",
+          "en": "Toyosu · Yurakucho Line"
+        },
+        "value": 6,
+        "unit": "min",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "sy-list"
+      },
+      {
+        "label": {
+          "ko": "도요스 · 유리카모메",
+          "en": "Toyosu · Yurikamome"
+        },
+        "value": 10,
+        "unit": "min",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "sy-list"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-city-towers-toyosu-the-symbol/",
+    "name": {
+      "ko": "시티 타워스 도요스 더 심볼",
+      "en": "City Towers Toyosu The Symbol"
+    },
+    "area": {
+      "ko": "도요스3초메 · 고토구",
+      "en": "Toyosu 3-chome · Koto"
+    }
+  },
+  {
+    "reviewId": "jp-city-towers-toyosu-the-twin",
+    "address": "South:3-4-1 / North:3-4-2 Toyosu, Koto, Tokyo",
+    "wardCode": "13108",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "도요스 · 유라쿠초선",
+          "en": "Toyosu · Yurakucho Line"
+        },
+        "value": 5,
+        "unit": "min",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "tw-current"
+      },
+      {
+        "label": {
+          "ko": "도요스 · 유리카모메",
+          "en": "Toyosu · Yurikamome"
+        },
+        "value": 10,
+        "unit": "min",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "tw-current"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-city-towers-toyosu-the-twin/",
+    "name": {
+      "ko": "시티 타워스 도요스 더 트윈",
+      "en": "City Towers Toyosu The Twin"
+    },
+    "area": {
+      "ko": "도요스3초메 · 고토구",
+      "en": "Toyosu 3-chome · Koto"
+    }
+  },
+  {
+    "reviewId": "jp-deux-tours",
+    "address": "East:3-13-1 / West:3-13-2 Harumi, Chuo, Tokyo",
+    "wardCode": "13102",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "가치도키 · 주거 안내",
+          "en": "Kachidoki · residential profile"
+        },
+        "value": 5,
+        "unit": "min",
+        "basis": {
+          "ko": "주거 소개의 도보 표기 · 매장 경로와 다름 · 2026-09-13 확인",
+          "en": "Residential advertised walk · different from store route · checked 2026-09-13"
+        },
+        "sourceId": "dt-home"
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/8b/DEUX_TOURS_CANAL%26SPA_EAST.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:DEUX_TOURS_CANAL%26SPA_EAST.jpg",
+      "credit": "Yama0904 / Wikimedia Commons",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "takenOn": "2025-02-19",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "DEUX TOURS Canal & Spa East tower exterior in February 2025; East tower only.",
+        "ko": "두 투르 캐널 앤 스파 이스트동 외관, 2025년 2월. 이스트동 사진입니다."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-deux-tours/",
+    "name": {
+      "ko": "드 투르",
+      "en": "DEUX TOURS"
+    },
+    "area": {
+      "ko": "하루미3초메 · 주오구",
+      "en": "Harumi 3-chome · Chuo"
+    }
+  },
+  {
+    "reviewId": "jp-harumi-flag",
+    "address": "Harumi 5-chome, Chuo, Tokyo (multi-building estate; select Village and building for street number)",
+    "wardCode": "13102",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "B33 → 신바시 · 평일8시대",
+          "en": "B33 → Shinbashi · weekday 08:00 hour"
+        },
+        "value": 6,
+        "unit": "min",
+        "basis": {
+          "ko": "2026-03-01 시간표의 예정 출발 간격 · 실제 대기 아님 · 2026-09-13 확인",
+          "en": "Scheduled departure spacing in 2026-03-01 timetable · not observed waiting · checked 2026-09-13"
+        },
+        "sourceId": "hf-brt"
+      },
+      {
+        "label": {
+          "ko": "B33 → 신바시 · 평일12시대",
+          "en": "B33 → Shinbashi · weekday 12:00 hour"
+        },
+        "value": 15,
+        "unit": "min",
+        "basis": {
+          "ko": "2026-03-01 시간표의 예정 출발 간격 · 실제 대기 아님 · 2026-09-13 확인",
+          "en": "Scheduled departure spacing in 2026-03-01 timetable · not observed waiting · checked 2026-09-13"
+        },
+        "sourceId": "hf-brt"
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/34/HARUMI_FLAG_SUN_VILLAGE_%26_PARK_VILLAGE.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:HARUMI_FLAG_SUN_VILLAGE_%26_PARK_VILLAGE.jpg",
+      "credit": "しっかかもっかか / Wikimedia Commons",
+      "license": "CC0 1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "takenOn": "2024-06-01",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "HARUMI FLAG project group: Sun Village and Park Village in June 2024, while parts of the project were still under construction.",
+        "ko": "하루미 플래그의 선 빌리지·파크 빌리지 구역 전경, 2024년 6월. 사업 일부가 공사 중이던 당시 모습입니다."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-harumi-flag/",
+    "name": {
+      "ko": "하루미 플래그",
+      "en": "HARUMI FLAG"
+    },
+    "area": {
+      "ko": "하루미5초메 · 주오구",
+      "en": "Harumi 5-chome · Chuo"
+    }
+  },
+  {
+    "reviewId": "jp-kachidoki-the-tower",
+    "address": "5-3-1 Kachidoki, Chuo, Tokyo",
+    "wardCode": "13102",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "가치도키역 · 원분양 안내",
+          "en": "Kachidoki · original release"
+        },
+        "value": 6,
+        "unit": "min",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "kt-build"
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/99/KACHIDOKI_THE_TOWER_1.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:KACHIDOKI_THE_TOWER_1.jpg",
+      "credit": "Beryllium Transistor / Wikimedia Commons",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "takenOn": "2023-02-26",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "Kachidoki The Tower viewed from Kachidoki Bridge in February 2023.",
+        "ko": "가치도키교에서 본 가치도키 더 타워, 2023년 2월."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-kachidoki-the-tower/",
+    "name": {
+      "ko": "가치도키 더 타워",
+      "en": "Kachidoki The Tower"
+    },
+    "area": {
+      "ko": "가치도키 5초메 · 주오구",
+      "en": "Kachidoki 5-chome · Chuo"
+    }
+  },
+  {
+    "reviewId": "jp-park-city-osaki-the-tower",
+    "address": "5-3-1 Kitashinagawa, Shinagawa-ku, Tokyo",
+    "wardCode": "13109",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "en": "Osaki station",
+          "ko": "오사키역"
+        },
+        "value": 7,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "os-reg"
+      },
+      {
+        "label": {
+          "en": "Gotenyama Elementary",
+          "ko": "고텐야마초등학교"
+        },
+        "value": 150,
+        "unit": "m",
+        "basis": {
+          "en": "Broker-advertised proximity, not school assignment or a measured gate route. Checked 2026-09-13.",
+          "ko": "중개 광고 인접 거리이며 학교 배정이나 교문까지의 실측 동선이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "os-sale"
+      },
+      {
+        "label": {
+          "en": "Shinagawa Gakuen Junior High",
+          "ko": "시나가와 가쿠엔 중학교"
+        },
+        "value": 1380,
+        "unit": "m",
+        "basis": {
+          "en": "Broker-advertised proximity; designation and route remain to confirm. Checked 2026-09-13.",
+          "ko": "중개 광고 인접 거리이며 배정과 실제 경로는 확인이 필요합니다. 2026-09-13 확인."
+        },
+        "sourceId": "os-sale"
+      },
+      {
+        "label": {
+          "en": "Management + reserve, sample unit",
+          "ko": "표본 세대 관리비+수선적립금"
+        },
+        "value": 48630,
+        "unit": "JPY/month",
+        "basis": {
+          "en": "23 F, 71.97 m²: 29,700 + 18,930; excludes other costs. Checked 2026-09-13.",
+          "ko": "23층 71.97㎡: 29,700+18,930엔이며 기타 비용 제외. 2026-09-13 확인."
+        },
+        "sourceId": "os-sale"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-park-city-osaki-the-tower/",
+    "name": {
+      "en": "Park City Osaki The Tower",
+      "ko": "파크 시티 오사키 더 타워"
+    },
+    "area": {
+      "en": "Kitashinagawa, Shinagawa",
+      "ko": "시나가와구 기타시나가와"
+    }
+  },
+  {
+    "reviewId": "jp-park-city-toyosu",
+    "address": "Tower A: 2-5-1 Toyosu, Koto, Tokyo (other towers have separate street numbers)",
+    "wardCode": "13108",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "A동 → 도요스역",
+          "en": "Tower A → Toyosu Station"
+        },
+        "value": 8,
+        "unit": "min",
+        "sourceId": "ty-visit",
+        "basis": {
+          "ko": "2025-02-16 방문기에 기재된 광고 도보 시간 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Advertised walks recorded in the 2025-02-16 visit report · checked 2026-09-13 · not measured on site"
+        }
+      },
+      {
+        "label": {
+          "ko": "B동 → 도요스역",
+          "en": "Tower B → Toyosu Station"
+        },
+        "value": 8,
+        "unit": "min",
+        "sourceId": "ty-visit",
+        "basis": {
+          "ko": "2025-02-16 방문기에 기재된 광고 도보 시간 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Advertised walks recorded in the 2025-02-16 visit report · checked 2026-09-13 · not measured on site"
+        }
+      },
+      {
+        "label": {
+          "ko": "C동 → 도요스역",
+          "en": "Tower C → Toyosu Station"
+        },
+        "value": 6,
+        "unit": "min",
+        "sourceId": "ty-visit",
+        "basis": {
+          "ko": "2025-02-16 방문기에 기재된 광고 도보 시간 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Advertised walks recorded in the 2025-02-16 visit report · checked 2026-09-13 · not measured on site"
+        }
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/4c/%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B7%E3%83%86%E3%82%A3%E8%B1%8A%E6%B4%B2_%E3%82%BF%E3%83%AF%E3%83%BCA%E6%A3%9F.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B7%E3%83%86%E3%82%A3%E8%B1%8A%E6%B4%B2_%E3%82%BF%E3%83%AF%E3%83%BCA%E6%A3%9F.jpg",
+      "credit": "Yama0904 / Wikimedia Commons",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "takenOn": "2025-02-19",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "Park City Toyosu Tower A, photographed from Harumi Rinkai Park in February 2025.",
+        "ko": "하루미 임해공원에서 촬영한 파크시티 도요스 A동, 2025년 2월."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-park-city-toyosu/",
+    "name": {
+      "ko": "어반독 파크시티 도요스",
+      "en": "Urban Dock Park City Toyosu"
+    },
+    "area": {
+      "ko": "도요스 · 고토구 수변",
+      "en": "Toyosu · Koto waterfront"
+    }
+  },
+  {
+    "reviewId": "jp-park-court-hamarikyu",
+    "address": "1-3-2 Hamamatsucho, Minato-ku, Tokyo",
+    "wardCode": "13103",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "en": "Hamamatsucho station",
+          "ko": "하마마쓰초역"
+        },
+        "value": 6,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "ha-reg"
+      },
+      {
+        "label": {
+          "en": "Daimon station",
+          "ko": "다이몬역"
+        },
+        "value": 6,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "ha-reg"
+      },
+      {
+        "label": {
+          "en": "Onarimon station",
+          "ko": "오나리몬역"
+        },
+        "value": 8,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "ha-reg"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-park-court-hamarikyu/",
+    "name": {
+      "en": "Park Court Hamarikyu The Tower",
+      "ko": "파크 코트 하마리큐 더 타워"
+    },
+    "area": {
+      "en": "Hamamatsucho, Minato",
+      "ko": "미나토구 하마마쓰초"
+    }
+  },
+  {
+    "reviewId": "jp-park-court-shibuya",
+    "address": "1-12 Udagawacho, Shibuya, Tokyo",
+    "wardCode": "13113",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "시부야역",
+          "en": "Shibuya Station"
+        },
+        "value": 8,
+        "unit": "min",
+        "sourceId": "sb-access",
+        "basis": {
+          "ko": "공식 80m/분 기준 광고 역 도보 시간 · 2026-09-13 확인 · 현관~승강장 실측 아님",
+          "en": "Official advertised station walks using 80 m/min · checked 2026-09-13 · not measured apartment-to-platform"
+        }
+      },
+      {
+        "label": {
+          "ko": "메이지진구마에역",
+          "en": "Meiji-jingumae Station"
+        },
+        "value": 11,
+        "unit": "min",
+        "sourceId": "sb-access",
+        "basis": {
+          "ko": "공식 80m/분 기준 광고 역 도보 시간 · 2026-09-13 확인 · 현관~승강장 실측 아님",
+          "en": "Official advertised station walks using 80 m/min · checked 2026-09-13 · not measured apartment-to-platform"
+        }
+      },
+      {
+        "label": {
+          "ko": "하라주쿠역",
+          "en": "Harajuku Station"
+        },
+        "value": 12,
+        "unit": "min",
+        "sourceId": "sb-access",
+        "basis": {
+          "ko": "공식 80m/분 기준 광고 역 도보 시간 · 2026-09-13 확인 · 현관~승강장 실측 아님",
+          "en": "Official advertised station walks using 80 m/min · checked 2026-09-13 · not measured apartment-to-platform"
+        }
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Omotesando-Harajuku-Tokyo---2024-06-15_001.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Omotesando-Harajuku-Tokyo---2024-06-15_001.jpg",
+      "credit": "RuinDig/Yuki Uchida / Wikimedia Commons",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "takenOn": "2024-06-15",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "Park Court Shibuya The Tower viewed from near the Yoyogi Park zelkova avenue in June 2024.",
+        "ko": "요요기공원 느티나무길 부근에서 본 파크코트 시부야 더 타워, 2024년 6월."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-park-court-shibuya/",
+    "name": {
+      "ko": "파크코트 시부야 더 타워",
+      "en": "Park Court Shibuya The Tower"
+    },
+    "area": {
+      "ko": "시부야 · 우다가와초 · 요요기공원 남측",
+      "en": "Shibuya · Udagawacho · south of Yoyogi Park"
+    }
+  },
+  {
+    "reviewId": "jp-park-tower-harumi",
+    "address": "2-2-42 Harumi, Chuo, Tokyo",
+    "wardCode": "13102",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "하루미 임해공원",
+          "en": "Harumi Rinkai Park"
+        },
+        "value": 370,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "ph-environment"
+      },
+      {
+        "label": {
+          "ko": "트리톤 스퀘어",
+          "en": "Triton Square"
+        },
+        "value": 500,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "ph-environment"
+      },
+      {
+        "label": {
+          "ko": "라라포트 도요스",
+          "en": "LaLaport Toyosu"
+        },
+        "value": 970,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "ph-environment"
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/1/14/Park_Tower_Harumi.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Park_Tower_Harumi.jpg",
+      "credit": "Beryllium Transistor / Wikimedia Commons",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "takenOn": "2023-02-26",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "Park Tower Harumi exterior, photographed in February 2023.",
+        "ko": "파크타워 하루미 외관, 2023년 2월 촬영."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-park-tower-harumi/",
+    "name": {
+      "ko": "파크타워 하루미",
+      "en": "Park Tower Harumi"
+    },
+    "area": {
+      "ko": "하루미 2초메 · 주오구",
+      "en": "Harumi 2-chome · Chuo"
+    }
+  },
+  {
+    "reviewId": "jp-park-tower-kachidoki",
+    "address": "Mid:4-6-2 / South:4-6-1 Kachidoki, Chuo, Tokyo",
+    "wardCode": "13102",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "Mid → 가치도키역",
+          "en": "Mid → Kachidoki Station"
+        },
+        "value": 1,
+        "unit": "min",
+        "basis": {
+          "ko": "공식80m/분 올림 광고 계산 · 건물~역 출입구 · 2026-09-13 확인",
+          "en": "Official 80 m/min rounded-up estimate · building-to-station entrances · checked 2026-09-13"
+        },
+        "sourceId": "pk-outline"
+      },
+      {
+        "label": {
+          "ko": "South → 가치도키역",
+          "en": "South → Kachidoki Station"
+        },
+        "value": 2,
+        "unit": "min",
+        "basis": {
+          "ko": "공식80m/분 올림 광고 계산 · 건물~역 출입구 · 2026-09-13 확인",
+          "en": "Official 80 m/min rounded-up estimate · building-to-station entrances · checked 2026-09-13"
+        },
+        "sourceId": "pk-outline"
+      },
+      {
+        "label": {
+          "ko": "Mid → Life슈퍼",
+          "en": "Mid → Life supermarket"
+        },
+        "value": 50,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "pk-list"
+      },
+      {
+        "label": {
+          "ko": "Mid → 하루미니시 학교",
+          "en": "Mid → Harumi Nishi schools"
+        },
+        "value": 1100,
+        "unit": "m",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "pk-list"
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E5%8B%9D%E3%81%A9%E3%81%8D_%E3%82%B5%E3%82%A6%E3%82%B9.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E5%8B%9D%E3%81%A9%E3%81%8D_%E3%82%B5%E3%82%A6%E3%82%B9.jpg",
+      "credit": "Yama0904 / Wikimedia Commons",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "takenOn": "2025-02-19",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "Park Tower Kachidoki South viewed from Asashio Canal Waterside Park in February 2025; South tower only.",
+        "ko": "아사시오 운하 친수공원에서 본 파크 타워 가치도키 사우스동, 2025년 2월. 사우스동 사진입니다."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-park-tower-kachidoki/",
+    "name": {
+      "ko": "파크 타워 가치도키",
+      "en": "Park Tower Kachidoki"
+    },
+    "area": {
+      "ko": "가치도키4초메 · 주오구",
+      "en": "Kachidoki 4-chome · Chuo"
+    }
+  },
+  {
+    "reviewId": "jp-shibaura-island-cape-tower",
+    "address": "4-19-1 Shibaura, Minato-ku, Tokyo",
+    "wardCode": "13103",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "en": "Tamachi station",
+          "ko": "다마치역"
+        },
+        "value": 12,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "ca-reg"
+      },
+      {
+        "label": {
+          "en": "Mita station",
+          "ko": "미타역"
+        },
+        "value": 14,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "ca-reg"
+      },
+      {
+        "label": {
+          "en": "Platanus Park",
+          "ko": "플라타너스 공원"
+        },
+        "value": 450,
+        "unit": "m",
+        "basis": {
+          "en": "Approximate distance in the official building environment page; route not measured. Checked 2026-09-13.",
+          "ko": "공식 단지 생활환경 페이지의 개략 거리이며 동선 실측은 하지 않았습니다. 2026-09-13 확인."
+        },
+        "sourceId": "ca-environment"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-shibaura-island-cape-tower/",
+    "name": {
+      "en": "Shibaura Island Cape Tower",
+      "ko": "시바우라 아일랜드 케이프 타워"
+    },
+    "area": {
+      "en": "Shibaura Island, Minato",
+      "ko": "미나토구 시바우라 아일랜드"
+    }
+  },
+  {
+    "reviewId": "jp-shibaura-island-grove-tower",
+    "address": "4-21-1 Shibaura, Minato-ku, Tokyo",
+    "wardCode": "13103",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "en": "Tamachi station",
+          "ko": "다마치역"
+        },
+        "value": 9,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "gr-reg"
+      },
+      {
+        "label": {
+          "en": "Mita Asakusa Line",
+          "ko": "미타역 아사쿠사선"
+        },
+        "value": 11,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "gr-reg"
+      },
+      {
+        "label": {
+          "en": "Mita Mita Line",
+          "ko": "미타역 미타선"
+        },
+        "value": 14,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "gr-reg"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-shibaura-island-grove-tower/",
+    "name": {
+      "en": "Shibaura Island Grove Tower",
+      "ko": "시바우라 아일랜드 그로브 타워"
+    },
+    "area": {
+      "en": "Shibaura Island, Minato",
+      "ko": "미나토구 시바우라 아일랜드"
+    }
+  },
+  {
+    "reviewId": "jp-shirokane-the-sky",
+    "address": "East: 1-2-1 / West: 1-2-2 Shirokane, Minato, Tokyo",
+    "wardCode": "13103",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "시로카네타카나와역",
+          "en": "Shirokane-takanawa Station"
+        },
+        "value": 3,
+        "unit": "min",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "ss-outline"
+      },
+      {
+        "label": {
+          "ko": "시로카네노오카 초등학교",
+          "en": "Shirokane-no-Oka Elementary"
+        },
+        "value": 780,
+        "unit": "m",
+        "sourceId": "ss-area",
+        "basis": {
+          "ko": "원분양 자료 기반 공식 주변 안내 거리 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Distance in official surrounding-area page based on original sales material · checked 2026-09-13 · not measured on site"
+        }
+      },
+      {
+        "label": {
+          "ko": "아리스가와노미야 기념공원",
+          "en": "Arisugawa-no-miya Memorial Park"
+        },
+        "value": 1060,
+        "unit": "m",
+        "sourceId": "ss-area",
+        "basis": {
+          "ko": "원분양 자료 기반 공식 주변 안내 거리 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Distance in official surrounding-area page based on original sales material · checked 2026-09-13 · not measured on site"
+        }
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/af/Shirokane_The_Sky.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Shirokane_The_Sky.jpg",
+      "credit": "Syced / Wikimedia Commons",
+      "license": "CC0 1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "takenOn": "2024-09-25",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "Shirokane The Sky exterior, photographed in September 2024.",
+        "ko": "시로카네 더 스카이 외관, 2024년 9월 촬영."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-shirokane-the-sky/",
+    "name": {
+      "ko": "시로카네 더 스카이",
+      "en": "Shirokane The Sky"
+    },
+    "area": {
+      "ko": "시로카네타카나와 · 미나토구",
+      "en": "Shirokane-takanawa · Minato"
+    }
+  },
+  {
+    "reviewId": "jp-skyz-tower-garden",
+    "address": "6-2-31 Toyosu, Koto, Tokyo",
+    "wardCode": "13108",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "신도요스역",
+          "en": "Shin-Toyosu Station"
+        },
+        "value": 6,
+        "unit": "min",
+        "basis": {
+          "ko": "공식 개요의 광고 도보시간 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Advertised walk in official outline · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "sz-outline"
+      },
+      {
+        "label": {
+          "ko": "도요스 · 유라쿠초선",
+          "en": "Toyosu · Yurakucho Line"
+        },
+        "value": 12,
+        "unit": "min",
+        "basis": {
+          "ko": "공식 개요의 광고 도보시간 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Advertised walk in official outline · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "sz-outline"
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Skyz_Tower_2026-2.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Skyz_Tower_2026-2.jpg",
+      "credit": "VisionFarSee / Wikimedia Commons",
+      "license": "CC0 1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "takenOn": "2026-01-31",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "SKYZ Tower & Garden photographed from the waterside in January 2026.",
+        "ko": "수변에서 촬영한 스카이즈 타워 앤 가든, 2026년 1월."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-skyz-tower-garden/",
+    "name": {
+      "ko": "스카이즈 타워 앤 가든",
+      "en": "SKYZ Tower & Garden"
+    },
+    "area": {
+      "ko": "신도요스 · 고토구",
+      "en": "Shin-Toyosu · Koto"
+    }
+  },
+  {
+    "reviewId": "jp-the-tokyo-towers",
+    "address": "6-3-1 / 6-3-2 Kachidoki, Chuo, Tokyo",
+    "wardCode": "13102",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "가치도키역 · Mid Tower",
+          "en": "Kachidoki · Mid Tower"
+        },
+        "value": 6,
+        "unit": "min",
+        "basis": {
+          "ko": "출처의 안내 수치 · 2026-09-13 확인 · 현장 실측 아님",
+          "en": "Source-reported figure · checked 2026-09-13 · not measured on site"
+        },
+        "sourceId": "tt-record"
+      }
+    ],
+    "photo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/THE_TOKYO_TOWERS_MID_TOWER.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:THE_TOKYO_TOWERS_MID_TOWER.jpg",
+      "credit": "Yama0904 / Wikimedia Commons",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "takenOn": "2025-02-19",
+      "checkedOn": "2026-09-13",
+      "alt": {
+        "en": "The Tokyo Towers Mid Tower viewed from north of Asashio Kobashi in February 2025.",
+        "ko": "아사시오 코바시 북쪽에서 본 더 도쿄 타워즈 미드 타워, 2025년 2월."
+      }
+    },
+    "detailPath": "/jp/tokyo/explore/properties/jp-the-tokyo-towers/",
+    "name": {
+      "ko": "더 도쿄 타워스",
+      "en": "The Tokyo Towers"
+    },
+    "area": {
+      "ko": "가치도키 6초메 · 주오구",
+      "en": "Kachidoki 6-chome · Chuo"
+    }
+  },
+  {
+    "reviewId": "jp-tomihisa-cross-comfort-tower",
+    "address": "15-1 Tomihisacho, Shinjuku-ku, Tokyo",
+    "wardCode": "13104",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "en": "Shinjuku-Gyoenmae",
+          "ko": "신주쿠교엔마에역"
+        },
+        "value": 7,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "to-sale"
+      },
+      {
+        "label": {
+          "en": "Shinjuku-Sanchome",
+          "ko": "신주쿠산초메역"
+        },
+        "value": 9,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "to-sale"
+      },
+      {
+        "label": {
+          "en": "JR Shinjuku",
+          "ko": "JR 신주쿠역"
+        },
+        "value": 16,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "to-building"
+      },
+      {
+        "label": {
+          "en": "Management + reserve, sample unit",
+          "ko": "표본 세대 관리비+수선적립금"
+        },
+        "value": 33960,
+        "unit": "JPY/month",
+        "basis": {
+          "en": "53 F, 60 m²: 21,110 + 12,850; excludes other costs. Checked 2026-09-13.",
+          "ko": "53층 60㎡: 21,110+12,850엔이며 기타 비용 제외. 2026-09-13 확인."
+        },
+        "sourceId": "to-sale"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-tomihisa-cross-comfort-tower/",
+    "name": {
+      "en": "Tomihisa Cross Comfort Tower",
+      "ko": "도미히사 크로스 컴포트 타워"
+    },
+    "area": {
+      "en": "Tomihisacho, Shinjuku",
+      "ko": "신주쿠구 도미히사초"
+    }
+  },
+  {
+    "reviewId": "jp-world-city-towers",
+    "address": "4-chome Konan, Minato-ku, Tokyo",
+    "wardCode": "13103",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "en": "Tennozu Isle monorail, Breeze",
+          "ko": "덴노즈아일 모노레일·브리즈"
+        },
+        "value": 4,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "wc-unit"
+      },
+      {
+        "label": {
+          "en": "Shinagawa, Breeze",
+          "ko": "시나가와·브리즈"
+        },
+        "value": 14,
+        "unit": "min",
+        "basis": {
+          "en": "Advertised station walk; not a measured door-to-platform journey. Checked 2026-09-13.",
+          "ko": "광고상 역 도보 시간이며 현관부터 승강장까지 실측한 시간이 아닙니다. 2026-09-13 확인."
+        },
+        "sourceId": "wc-unit"
+      },
+      {
+        "label": {
+          "en": "Management + reserve, sample unit",
+          "ko": "표본 세대 관리비+수선적립금"
+        },
+        "value": 49058,
+        "unit": "JPY/month",
+        "basis": {
+          "en": "Breeze 25 F, 64.79 m²: 16,078 + 32,980; excludes other costs. Checked 2026-09-13.",
+          "ko": "브리즈 25층 64.79㎡: 16,078+32,980엔이며 기타 비용 제외. 2026-09-13 확인."
+        },
+        "sourceId": "wc-unit"
+      }
+    ],
+    "photo": null,
+    "detailPath": "/jp/tokyo/explore/properties/jp-world-city-towers/",
+    "name": {
+      "en": "World City Towers",
+      "ko": "월드 시티 타워즈"
+    },
+    "area": {
+      "en": "Konan, Minato",
+      "ko": "미나토구 고난"
+    }
+  }
+]

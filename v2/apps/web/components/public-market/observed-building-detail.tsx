@@ -1,4 +1,5 @@
 import { PropertyLivingContext } from '../market-ui/living-context';
+import { hasPropertyReviewForEntity } from '../../lib/research/property-review-locations';
 import { seoulBuildingLocationHref } from '../../lib/public-market/seoul-building-location';
 import { buildingDisplayName, neighborhoodDisplayName } from '../../lib/public-market/seoul-display-names';
 import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
@@ -140,6 +141,7 @@ export function ObservedBuildingDetail({
 }>) {
   const hasMonthly = model.observations.monthly > 0;
   const t = (value: string) => seoulDetailText(locale, value);
+  const reviewEntity = `kr-seoul:estate:${model.building.buildingId}`;
   const hasJeonse = model.observations.jeonse > 0;
   const evidenceKinds = [
     hasJeonse ? t('Jeonse') : null,
@@ -178,7 +180,11 @@ export function ObservedBuildingDetail({
           </div>
         </section>
 
-        <nav className={styles.mockupTabs} aria-label={t('Building page sections')}><a href="#building-overview">{t('Overview')}</a><a href="#building-facts">{t('Building profile')}</a><a href="#building-source">{t('Source')}</a></nav>
+        <nav className={styles.mockupTabs} aria-label={t('Building page sections')}>
+          <a href="#building-overview">{t('Overview')}</a><a href="#building-facts">{t('Building profile')}</a>
+          {hasPropertyReviewForEntity(reviewEntity) && <a href="#property-review">{locale === 'ko' ? '입지·생활 분석' : locale === 'zh-CN' ? '区位与生活' : 'Location & living'}</a>}
+          <a href="#building-source">{t('Source')}</a>
+        </nav>
         <section id="building-overview" className={styles.evidence} data-building-section="identity-evidence">
           <div className={styles.sectionHeading}>
             <p>{t('Evidence boundary')}</p>
@@ -196,7 +202,7 @@ export function ObservedBuildingDetail({
         <div id="building-facts" className={detailStyles.section}>
           {facts ?? <KnownBuildingFacts locale={locale} facts={[{ label: 'Map identity', value: coordinateLabel }]} />}
         </div>
-        <PropertyLivingContext entity={`kr-seoul:estate:${model.building.buildingId}`} locale={locale} />
+        <PropertyLivingContext entity={reviewEntity} locale={locale} />
         {facts === undefined ? <BuildingProximityDisclosure proximity={model.proximity} locale={locale} /> : null}
         <section id="building-source" className={styles.source}>
           <details className={styles.sourceDetails}>
@@ -287,6 +293,7 @@ export function KoreaEvidenceBuildingDetail({
 }>) {
   const areaLabel = locale === 'ko' ? {all:'전체 면적','under-40':'40㎡ 미만','40-60':'40~60㎡','60-85':'60~85㎡','85-plus':'85㎡ 이상'}[model.selection.areaBand] : areaLabels[model.selection.areaBand];
   const t = (value: string) => seoulDetailText(locale, value);
+  const reviewEntity = `kr-seoul:estate:${model.building.buildingId}`;
   const transactionLabel = locale === 'ko' ? {sale:'매매',jeonse:'전세',monthly:'월세'}[model.selection.transaction] : locale === 'zh-CN' ? {sale:'买卖',jeonse:'全租',monthly:'月租'}[model.selection.transaction] : transactionLabels[model.selection.transaction];
   const publicationHeading = model.evidence.state === 'published'
     ? (model.selection.areaBand === 'all' ? (locale === 'ko' ? '이 단지 신고 거래 · 전체 면적' : locale === 'zh-CN' ? '申报合同 · 全部面积' : 'Reported contracts · all sizes') : (locale === 'ko' ? '같은 면적대 신고 거래' : locale === 'zh-CN' ? '申报合同 · 相同面积区间' : 'Reported contracts · same size'))
@@ -316,6 +323,7 @@ export function KoreaEvidenceBuildingDetail({
           <a href="#building-overview">{locale === 'ko' ? '개요' : locale === 'zh-CN' ? '概览' : 'Overview'}</a>
           <a href="#building-transactions">{locale === 'ko' ? '실거래' : locale === 'zh-CN' ? '交易记录' : 'Transactions'}</a>
           <a href="#building-facts">{locale === 'ko' ? '단지 정보' : locale === 'zh-CN' ? '楼盘资料' : 'Building facts'}</a>
+          {hasPropertyReviewForEntity(reviewEntity) && <a href="#property-review">{locale === 'ko' ? '입지·생활 분석' : locale === 'zh-CN' ? '区位与生活' : 'Location & living'}</a>}
           <a href="#building-tools">{locale === 'ko' ? '내 조건 비교' : locale === 'zh-CN' ? '比较' : 'Compare'}</a>
           <a href="#building-source">{locale === 'ko' ? '출처' : locale === 'zh-CN' ? '来源' : 'Sources'}</a>
         </nav>
@@ -383,7 +391,7 @@ export function KoreaEvidenceBuildingDetail({
             { label: 'Housing type', value: model.building.housingType },
           ]} />}
         </div>
-        <PropertyLivingContext entity={`kr-seoul:estate:${model.building.buildingId}`} locale={locale} />
+        <PropertyLivingContext entity={reviewEntity} locale={locale} />
         <DetailTools locale={locale} id="building-tools" checkHref={buildKoreaEvidenceCheckHref(model, locale)}
           calculatorHref={model.selection.transaction === 'sale' ? createPropertyScenarioHref({locale,market:'kr-seoul',currency:'KRW',entity:model.building.buildingId,propertyName:model.building.officialName,transaction:'sale',housing:model.building.housingType,areaBand:model.selection.areaBand,price:model.evidence.state === 'published' ? model.evidence.medianWon : null,annualRent:model.rentStartingPoint?.annualRent,returnTo:localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${model.selection.areaBand}`,locale)}) : undefined} />
 

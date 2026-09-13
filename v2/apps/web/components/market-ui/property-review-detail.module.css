@@ -1,0 +1,23 @@
+.identity { padding-block: 16px 20px; }
+.identity h1 { margin: 8px 0 12px; }
+.identity p { margin: 6px 0; }
+.meta { color: var(--muted); }
+.identity nav { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 16px; }
+.identity nav a { display: inline-flex; align-items: center; min-height: var(--control-min); color: var(--accent); text-underline-offset: 3px; }
+.scope { padding: 20px; background: var(--surface); border-radius: var(--radius-control); }
+.scope h2 { margin-top: 0; }
+.scope p { margin-bottom: 0; }
+.directory { margin-block: 20px 24px; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); }
+.directory h2 { margin: 0; font-size: 1.25rem; line-height: 1.4; }
+.directory > p { margin: 8px 0 16px; color: var(--muted); font-size: .875rem; line-height: 1.6; }
+.directory ul { display: grid; gap: 8px; max-height: 24rem; overflow-y: auto; margin: 0; padding: 0; list-style: none; }
+.directory a { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: var(--control-height); padding: 12px; border: 1px solid var(--line); border-radius: var(--radius-control); color: var(--ink); text-decoration: none; background: var(--surface-strong); }
+.directory a:hover { border-color: var(--accent); }
+.directory a > span:first-child { min-width: 0; }
+.directory strong { display: block; font-size: 1rem; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.directory small { display: block; margin-top: 4px; color: var(--muted); font-size: .875rem; line-height: 1.5; }
+.directory a:focus-visible, .identity a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .directory { padding: 16px; }
+  .directory a { padding: 10px; }
+}
