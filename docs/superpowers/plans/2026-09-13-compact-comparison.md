@@ -20,3 +20,12 @@ Keep the existing information and functions, but make the supporting UI quieter.
 3. Inspect hosted desktop and mobile comparison, saved and note screens; run the
    existing comparison/saved browser flows in CI. Review the completed diff.
 4. Merge only after required checks pass, then verify the existing production site.
+
+## Follow-up: Tokyo neighbourhood scroll
+
+The user also reports being sent down the page on Tokyo neighbourhood selection.
+The directory links append `#tokyo-transactions`, unlike ward/map selection which
+already opts out of scrolling. Remove the fragment and pass `scroll={false}` on
+the neighbourhood links. Keep explicit transaction pagination anchors and the
+mobile results panel intact. A regression test must fail on the old fragment and
+verify no-scroll navigation with locale, period, type and area filters preserved.

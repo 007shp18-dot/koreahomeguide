@@ -86,7 +86,7 @@ export function TokyoAreaMap({ rows, city, year, quarter, browserKey, filters, u
         <div className={styles.neighbourhoodColumns} aria-hidden="true"><span>{t('Neighbourhood · transactions')}</span><span>{t('Median price')}</span></div>
         <nav className={styles.neighbourhoodList} aria-label="Choose a Tokyo neighbourhood">
           {visible.map(row => <Link key={`${row.city}:${row.district}`} data-neighbourhood={row.district}
-            href={`${tokyoMapAreaHref(row, filters, locale)}#tokyo-transactions`} prefetch={false}
+            href={tokyoMapAreaHref(row, filters, locale)} prefetch={false} scroll={false}
             aria-current={row.district === (filters.neighbourhood || filters.q) ? 'location' : undefined}>
             <span><strong>{row.district}</strong><small>{row.count.toLocaleString('en')} {t('transactions')} · {row.year} Q{row.quarter}</small></span><span className={styles.neighbourhoodPrice}>¥{row.median.toLocaleString('en')} <span aria-hidden="true">↗</span></span>
           </Link>)}
