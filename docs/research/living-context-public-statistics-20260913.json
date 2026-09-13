@@ -1,0 +1,450 @@
+{
+  "checked_on": "2026-09-13",
+  "updates": [
+    {
+      "profile_id": "jp-brillia-towers-meguro",
+      "fact": {
+        "id": "q1",
+        "text": "인근 메구로역의 JR동일본 2024회계연도 일평균 승차 인원은 93,384명이다. 하차 인원과 다른 운영사 이용량을 포함하지 않으며, 단지 앞 보행량으로 해석하지 않는다.",
+        "status": "source_reported",
+        "source_ids": [
+          "jp-jr-ridership"
+        ]
+      },
+      "source_id": "jp-jr-ridership",
+      "source": {
+        "title": "JR동일본 · 2024년도 역별 승차 인원",
+        "url": "https://www.jreast.co.jp/company/data/passenger/",
+        "scope": "JR동일본 운영분의 일평균 승차 인원. 회계연도 2024. 단지 유동인구·전 운영사 합계가 아님.",
+        "checked_on": "2026-09-13"
+      },
+      "observations": [
+        {
+          "metric": "station_boardings_daily",
+          "value": 93384,
+          "unit": "boardings/day",
+          "period": "FY2024",
+          "geography": "JR East Meguro station"
+        }
+      ]
+    },
+    {
+      "profile_id": "jp-park-court-shibuya",
+      "fact": {
+        "id": "q1",
+        "text": "광역 교통거점인 시부야역의 JR동일본 2024회계연도 일평균 승차 인원은 324,414명이다. 여러 출구·노선에 걸친 역 이용 규모이며, 파크코트 출입구 주변 보행량이나 상가 매출을 뜻하지 않는다.",
+        "status": "source_reported",
+        "source_ids": [
+          "jp-jr-ridership"
+        ]
+      },
+      "source_id": "jp-jr-ridership",
+      "source": {
+        "title": "JR동일본 · 2024년도 역별 승차 인원",
+        "url": "https://www.jreast.co.jp/company/data/passenger/",
+        "scope": "JR동일본 시부야역 승차만 집계. 하차 및 다른 운영사 제외. 단지 인근 실측 아님.",
+        "checked_on": "2026-09-13"
+      },
+      "observations": [
+        {
+          "metric": "station_boardings_daily",
+          "value": 324414,
+          "unit": "boardings/day",
+          "period": "FY2024",
+          "geography": "JR East Shibuya station"
+        }
+      ]
+    },
+    {
+      "profile_id": "jp-park-city-toyosu",
+      "fact": {
+        "id": "q1",
+        "text": "도요스역의 도쿄메트로 2025회계연도 일평균 승하차 인원은 215,423명으로, 전년 대비 2.2% 증가했다. 유리카모메는 포함하지 않으며 라라포트 방문객이나 단지 앞 유동인구와 구분한다.",
+        "status": "source_reported",
+        "source_ids": [
+          "jp-metro-ridership"
+        ]
+      },
+      "source_id": "jp-metro-ridership",
+      "source": {
+        "title": "도쿄메트로 · 2025년도 역별 승하차 인원",
+        "url": "https://www.tokyometro.jp/corporate/enterprise/passenger_rail/transportation/passengers/index.html",
+        "scope": "도쿄메트로 도요스역의 승하차 합계. JR의 승차-only 지표와 직접 비교·합산하지 않음.",
+        "checked_on": "2026-09-13"
+      },
+      "observations": [
+        {
+          "metric": "station_entries_exits_daily",
+          "value": 215423,
+          "unit": "entries_and_exits/day",
+          "period": "FY2025",
+          "geography": "Tokyo Metro Toyosu station"
+        },
+        {
+          "metric": "station_entries_exits_yoy",
+          "value": 2.2,
+          "unit": "percent",
+          "period": "FY2025 vs FY2024",
+          "geography": "Tokyo Metro Toyosu station"
+        }
+      ]
+    },
+    {
+      "profile_id": "sg-park-place-plq",
+      "fact": {
+        "id": "q1",
+        "text": "같은 복합개발 내 PLQ Mall은 2024년 방문 1,310만 회와 입점 점포 매출 S$278.9 million(2억 7,890만 싱가포르달러)을 보고했다. 방문 횟수는 고유 방문자 수가 아니며, 몰 전체 매출로서 주거단지의 매출·수익과 구분한다.",
+        "status": "source_reported",
+        "source_ids": [
+          "sg-plq-operating"
+        ]
+      },
+      "source_id": "sg-plq-operating",
+      "source": {
+        "title": "Lendlease REIT · PLQ Mall 운영실적 (2025-11-05, 9쪽)",
+        "url": "https://links.sgx.com/1.0.0/corporate-announcements/N2OEHDPIY103X4GV/865999_Proposed_Acquisition_of_70percent_Interest_in_PLQ_Mall_Presentation.pdf",
+        "scope": "인수 발표자료 9쪽 PLQ Mall 자체 실적. 포트폴리오 합계나 운영사 임대수익이 아님. 원문 자료 재배포 없이 짧은 사실요약·링크만 사용.",
+        "checked_on": "2026-09-13"
+      },
+      "observations": [
+        {
+          "metric": "mall_visits",
+          "value": 13100000,
+          "unit": "visits",
+          "period": "CY2024",
+          "geography": "PLQ Mall"
+        },
+        {
+          "metric": "mall_tenant_sales",
+          "value": 278900000,
+          "unit": "SGD",
+          "period": "CY2024",
+          "geography": "PLQ Mall"
+        }
+      ]
+    },
+    {
+      "profile_id": "sg-park-place-plq",
+      "fact": {
+        "id": "q2",
+        "text": "같은 자료의 2025년 1~9월 실적은 방문 1,000만 회, 입점 점포 매출 S$209.5 million이다. 9개월 누계이므로 2024년 연간 수치와 그대로 증감률을 계산하지 않는다.",
+        "status": "source_reported",
+        "source_ids": [
+          "sg-plq-operating"
+        ]
+      },
+      "source_id": "sg-plq-operating",
+      "source": {
+        "title": "Lendlease REIT · PLQ Mall 운영실적 (2025-11-05, 9쪽)",
+        "url": "https://links.sgx.com/1.0.0/corporate-announcements/N2OEHDPIY103X4GV/865999_Proposed_Acquisition_of_70percent_Interest_in_PLQ_Mall_Presentation.pdf",
+        "scope": "PLQ Mall, 2025년 1~9월 누계와 2024년 연간은 관측기간이 다름.",
+        "checked_on": "2026-09-13"
+      },
+      "observations": [
+        {
+          "metric": "mall_visits",
+          "value": 10000000,
+          "unit": "visits",
+          "period": "2025-01/2025-09",
+          "geography": "PLQ Mall"
+        },
+        {
+          "metric": "mall_tenant_sales",
+          "value": 209500000,
+          "unit": "SGD",
+          "period": "2025-01/2025-09",
+          "geography": "PLQ Mall"
+        }
+      ]
+    },
+    {
+      "profile_id": "ae-valia",
+      "fact": {
+        "id": "q1",
+        "text": "Creek 권역의 별도 상업거점 Dubai Festival City Mall에 대해 운영사 보도자료는 2025년 방문 2,500만 회 초과를 보고했다. Valia와 같은 개발사업이 아니며, 이 수치를 Valia 도보상권이나 미래 입주민 수요로 적용하지 않는다.",
+        "status": "source_reported",
+        "source_ids": [
+          "ae-dfc-operating"
+        ]
+      },
+      "source_id": "ae-dfc-operating",
+      "source": {
+        "title": "Al-Futtaim 운영사 발표 · Dubai Festival City Mall (2026-03-27)",
+        "url": "https://www.tradingview.com/news/reuters.com,2026-03-27:newsml_Zaw6RLHlV:0-zawya-al-futtaim-s-malls-report-strong-ramadan-eid-performance-signaling-positive-momentum-and-long-term-resilience-for-the-retail-sector/",
+        "scope": "Zawya/TradingView에 배포된 운영사 보도자료. 독립 실측·감사 확인 아님. Creek 권역의 별도 몰 참고정보이며 단지 반경 집계 아님.",
+        "checked_on": "2026-09-13"
+      },
+      "observations": [
+        {
+          "metric": "mall_visits",
+          "value": 25000000,
+          "comparison": "greater_than",
+          "unit": "visits",
+          "period": "CY2025",
+          "geography": "Dubai Festival City Mall"
+        }
+      ]
+    },
+    {
+      "profile_id": "ae-valia",
+      "fact": {
+        "id": "q2",
+        "text": "동일 운영사 발표에서 Dubai Festival City Mall의 2026년 라마단·이드 기간 매출은 전년 동기 대비 12%, 방문은 5% 증가했다. 특정 행사기간의 비교로, 연간 성장률이나 절대 매출액을 나타내지 않는다.",
+        "status": "source_reported",
+        "source_ids": [
+          "ae-dfc-operating"
+        ]
+      },
+      "source_id": "ae-dfc-operating",
+      "source": {
+        "title": "Al-Futtaim 운영사 발표 · Dubai Festival City Mall (2026-03-27)",
+        "url": "https://www.tradingview.com/news/reuters.com,2026-03-27:newsml_Zaw6RLHlV:0-zawya-al-futtaim-s-malls-report-strong-ramadan-eid-performance-signaling-positive-momentum-and-long-term-resilience-for-the-retail-sector/",
+        "scope": "운영사 보고치. 라마단·이드 행사기간 전년 비교이며 정확한 일자 범위·절대매출액은 미공개.",
+        "checked_on": "2026-09-13"
+      },
+      "observations": [
+        {
+          "metric": "mall_tenant_sales_yoy",
+          "value": 12,
+          "unit": "percent",
+          "period": "Ramadan/Eid 2026 vs 2025",
+          "geography": "Dubai Festival City Mall"
+        },
+        {
+          "metric": "mall_visits_yoy",
+          "value": 5,
+          "unit": "percent",
+          "period": "Ramadan/Eid 2026 vs 2025",
+          "geography": "Dubai Festival City Mall"
+        }
+      ]
+    },
+    {
+      "profile_id": "kr-acro-river-park",
+      "fact": {
+        "id": "q1",
+        "text": "2025년 4분기 참고상권 ‘구반포역’(코드 3110908)의 공개 11개 업종 추정매출 합계는 9.26억 원이다. 주요 업종은 일반의류 4.30억 원·화초 2.15억 원·분식전문점 1.04억 원. 단지 상가나 단지 반경 전체의 매출이 아니며, 공개되지 않은 업종은 합계에서 빠져 있다.",
+        "status": "source_reported",
+        "source_ids": [
+          "kr-area-sales"
+        ]
+      },
+      "source_id": "kr-area-sales",
+      "source": {
+        "title": "서울시·서울신용보증재단 · 추정매출-상권 2025년 CSV",
+        "url": "https://data.seoul.go.kr/dataList/OA-15572/S/1/datasetView.do",
+        "checked_on": "2026-09-13",
+        "scope": "상권 3110908 구반포역, 기준_년분기_코드=20254. 당월_매출_금액 열의 공개 업종 행을 중복 없이 합산. 공공누리 1유형 출처표시. 표준단위구역 변경으로 장기 비교에 주의. 참고상권은 단지 출입구 반경·전체 생활권과 다름."
+      },
+      "observations": [
+        {
+          "metric": "published_industry_estimated_sales_sum",
+          "value": 926263619,
+          "unit": "KRW",
+          "period": "2025 Q4",
+          "geography": "구반포역",
+          "geography_code": "3110908",
+          "industry_count": 11,
+          "aggregation": "sum(당월_매출_금액) over published distinct service industries"
+        }
+      ]
+    },
+    {
+      "profile_id": "kr-acro-seoul-forest",
+      "fact": {
+        "id": "q1",
+        "text": "2025년 4분기 참고상권 ‘서울숲역’(코드 3120050)의 공개 9개 업종 추정매출 합계는 21.39억 원이다. 주요 업종은 한식음식점 8.90억 원·화장품 5.57억 원·미용실 2.56억 원. 단지 상가나 단지 반경 전체의 매출이 아니며, 공개되지 않은 업종은 합계에서 빠져 있다.",
+        "status": "source_reported",
+        "source_ids": [
+          "kr-area-sales"
+        ]
+      },
+      "source_id": "kr-area-sales",
+      "source": {
+        "title": "서울시·서울신용보증재단 · 추정매출-상권 2025년 CSV",
+        "url": "https://data.seoul.go.kr/dataList/OA-15572/S/1/datasetView.do",
+        "checked_on": "2026-09-13",
+        "scope": "상권 3120050 서울숲역, 기준_년분기_코드=20254. 당월_매출_금액 열의 공개 업종 행을 중복 없이 합산. 공공누리 1유형 출처표시. 표준단위구역 변경으로 장기 비교에 주의. 참고상권은 단지 출입구 반경·전체 생활권과 다름."
+      },
+      "observations": [
+        {
+          "metric": "published_industry_estimated_sales_sum",
+          "value": 2138892329,
+          "unit": "KRW",
+          "period": "2025 Q4",
+          "geography": "서울숲역",
+          "geography_code": "3120050",
+          "industry_count": 9,
+          "aggregation": "sum(당월_매출_금액) over published distinct service industries"
+        }
+      ]
+    },
+    {
+      "profile_id": "kr-mapo-raemian-prugio",
+      "fact": {
+        "id": "q1",
+        "text": "2025년 4분기 참고상권 ‘아현역 4번’(코드 3110584)의 공개 4개 업종 추정매출 합계는 136.53억 원이다. 주요 업종은 일반의원 93.90억 원·의약품 41.67억 원·호프-간이주점 0.84억 원. 단지 상가나 단지 반경 전체의 매출이 아니며, 공개되지 않은 업종은 합계에서 빠져 있다.",
+        "status": "source_reported",
+        "source_ids": [
+          "kr-area-sales"
+        ]
+      },
+      "source_id": "kr-area-sales",
+      "source": {
+        "title": "서울시·서울신용보증재단 · 추정매출-상권 2025년 CSV",
+        "url": "https://data.seoul.go.kr/dataList/OA-15572/S/1/datasetView.do",
+        "checked_on": "2026-09-13",
+        "scope": "상권 3110584 아현역 4번, 기준_년분기_코드=20254. 당월_매출_금액 열의 공개 업종 행을 중복 없이 합산. 공공누리 1유형 출처표시. 표준단위구역 변경으로 장기 비교에 주의. 참고상권은 단지 출입구 반경·전체 생활권과 다름."
+      },
+      "observations": [
+        {
+          "metric": "published_industry_estimated_sales_sum",
+          "value": 13652638589,
+          "unit": "KRW",
+          "period": "2025 Q4",
+          "geography": "아현역 4번",
+          "geography_code": "3110584",
+          "industry_count": 4,
+          "aggregation": "sum(당월_매출_금액) over published distinct service industries"
+        }
+      ]
+    },
+    {
+      "profile_id": "kr-mapo-raemian-prugio",
+      "fact": {
+        "id": "q2",
+        "text": "같은 참고상권 ‘아현역 4번’의 2025년 4분기 서울시 생활인구 자료에서 ‘총_유동인구_수’는 94,938명으로 제공된다. 원자료 집계치를 그대로 표시하며 고유 방문자·일평균·단지 출입구 보행량으로 환산하지 않는다.",
+        "status": "source_reported",
+        "source_ids": [
+          "kr-area-population"
+        ]
+      },
+      "source_id": "kr-area-population",
+      "source": {
+        "title": "서울시·서울신용보증재단 · 길단위인구-상권",
+        "url": "https://data.seoul.go.kr/dataList/OA-15568/S/1/datasetView.do",
+        "scope": "공식 사이트 JSON 내려받기에서 STDR_YYQU_CD=20254, TRDAR_CD=3110584 행의 TOT_FLPOP_CO 원값. 서비스는 상권 영역 내 생활인구를 제공. 시간 집계의 고유인원 중복제거 여부를 확인하지 않아 일평균·고유방문자로 환산하지 않음.",
+        "checked_on": "2026-09-13"
+      },
+      "observations": [
+        {
+          "metric": "source_TOT_FLPOP_CO",
+          "value": 94938,
+          "unit": "source_population_count",
+          "period": "2025 Q4",
+          "geography": "아현역 4번",
+          "geography_code": "3110584",
+          "temporal_aggregation": "source raw value; no daily or unique-person conversion"
+        }
+      ]
+    },
+    {
+      "profile_id": "kr-acro-seoul-forest",
+      "fact": {
+        "id": "q2",
+        "text": "같은 참고상권 ‘서울숲역’의 2025년 4분기 서울시 생활인구 자료에서 ‘총_유동인구_수’는 195,087명으로 제공된다. 원자료 집계치를 그대로 표시하며 고유 방문자·일평균·단지 출입구 보행량으로 환산하지 않는다.",
+        "status": "source_reported",
+        "source_ids": [
+          "kr-area-population"
+        ]
+      },
+      "source_id": "kr-area-population",
+      "source": {
+        "title": "서울시·서울신용보증재단 · 길단위인구-상권",
+        "url": "https://data.seoul.go.kr/dataList/OA-15568/S/1/datasetView.do",
+        "scope": "공식 사이트 JSON 내려받기에서 STDR_YYQU_CD=20254, TRDAR_CD=3120050 행의 TOT_FLPOP_CO 원값. 서비스는 상권 영역 내 생활인구를 제공. 시간 집계의 고유인원 중복제거 여부를 확인하지 않아 일평균·고유방문자로 환산하지 않음.",
+        "checked_on": "2026-09-13"
+      },
+      "observations": [
+        {
+          "metric": "source_TOT_FLPOP_CO",
+          "value": 195087,
+          "unit": "source_population_count",
+          "period": "2025 Q4",
+          "geography": "서울숲역",
+          "geography_code": "3120050",
+          "temporal_aggregation": "source raw value; no daily or unique-person conversion"
+        }
+      ]
+    },
+    {
+      "profile_id": "kr-acro-river-park",
+      "fact": {
+        "id": "q2",
+        "text": "같은 참고상권 ‘구반포역’의 2025년 4분기 서울시 생활인구 자료에서 ‘총_유동인구_수’는 34,003명으로 제공된다. 원자료 집계치를 그대로 표시하며 고유 방문자·일평균·단지 출입구 보행량으로 환산하지 않는다.",
+        "status": "source_reported",
+        "source_ids": [
+          "kr-area-population"
+        ]
+      },
+      "source_id": "kr-area-population",
+      "source": {
+        "title": "서울시·서울신용보증재단 · 길단위인구-상권",
+        "url": "https://data.seoul.go.kr/dataList/OA-15568/S/1/datasetView.do",
+        "scope": "공식 사이트 JSON 내려받기에서 STDR_YYQU_CD=20254, TRDAR_CD=3110908 행의 TOT_FLPOP_CO 원값. 서비스는 상권 영역 내 생활인구를 제공. 시간 집계의 고유인원 중복제거 여부를 확인하지 않아 일평균·고유방문자로 환산하지 않음.",
+        "checked_on": "2026-09-13"
+      },
+      "observations": [
+        {
+          "metric": "source_TOT_FLPOP_CO",
+          "value": 34003,
+          "unit": "source_population_count",
+          "period": "2025 Q4",
+          "geography": "구반포역",
+          "geography_code": "3110908",
+          "temporal_aggregation": "source raw value; no daily or unique-person conversion"
+        }
+      ]
+    }
+  ],
+  "coverage": [
+    {
+      "profile_id": "kr-acro-river-park",
+      "numeric_facts": 2
+    },
+    {
+      "profile_id": "kr-acro-seoul-forest",
+      "numeric_facts": 2
+    },
+    {
+      "profile_id": "kr-mapo-raemian-prugio",
+      "numeric_facts": 2
+    },
+    {
+      "profile_id": "jp-park-city-toyosu",
+      "numeric_facts": 1
+    },
+    {
+      "profile_id": "jp-brillia-towers-meguro",
+      "numeric_facts": 1
+    },
+    {
+      "profile_id": "jp-park-court-shibuya",
+      "numeric_facts": 1
+    },
+    {
+      "profile_id": "sg-marina-one-residences",
+      "numeric_facts": 0
+    },
+    {
+      "profile_id": "sg-park-place-plq",
+      "numeric_facts": 2
+    },
+    {
+      "profile_id": "sg-wallich-residence",
+      "numeric_facts": 0
+    },
+    {
+      "profile_id": "ae-skyflame-1",
+      "numeric_facts": 0
+    },
+    {
+      "profile_id": "ae-skyterraces",
+      "numeric_facts": 0
+    },
+    {
+      "profile_id": "ae-valia",
+      "numeric_facts": 2
+    }
+  ]
+}
