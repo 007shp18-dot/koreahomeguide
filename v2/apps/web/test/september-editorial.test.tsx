@@ -10,6 +10,13 @@ import { editorialImages } from '../lib/insights/editorial-images';
 import { editorialLanguageRoutes } from '../lib/navigation/editorial-language-routes';
 
 describe('September 13 bilingual edition', () => {
+  it('does not present first-party brokerage research as an official authority', () => {
+    const article = SEPTEMBER_13_EDITORIAL.find(a => a.locale === 'ko' && a.slug === 'dubai-new-renewal-rent-mix')!;
+    const html = renderToStaticMarkup(<NewsroomArticle article={article} />);
+    const sources = html.slice(html.indexOf('<h2 id="article-sources-title"'));
+    expect(sources).toContain('Betterhomes');
+    expect(sources).not.toContain('공식 자료');
+  });
   it('offers all four stories in both languages and separates neighbourhoods from investment', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-09-13T15:00:00Z'));
@@ -37,11 +44,25 @@ describe('September 13 bilingual edition', () => {
       expect(html).toMatch(/<figcaption[^>]*><details><summary>Photo credit<\/summary>/);
     } finally { vi.useRealTimers(); }
   });
-  it('keeps Korean body copy within 1,000–1,500 characters excluding picture and reference lines', () => {
+  it('keeps the requested long-form reading length excluding images and references', () => {
     for (const record of SEPTEMBER_13_EDITORIAL.filter(a => a.locale === 'ko')) {
-      const body = record.bodyMarkdown.split('\n').filter(line => !line.startsWith('![') && !/^(분류 참고:|\[공식 헤리티지|\[GO TOKYO 지역)/.test(line)).join('\n').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').trim();
-      expect(body.length, record.slug).toBeGreaterThanOrEqual(1000);
-      expect(body.length, record.slug).toBeLessThanOrEqual(1500);
+      const body = record.bodyMarkdown.split('## 자료와 제작')[0]!.split('\n').filter(line => !line.startsWith('![')).join('\n').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[#*|]/g, '').trim();
+      const longForm = ['singapore-lower-psf-higher-total-budget', 'dubai-new-renewal-rent-mix'].includes(record.slug);
+      expect(body.length, record.slug).toBeGreaterThanOrEqual(longForm ? 3600 : 1800);
+      expect(body.length, record.slug).toBeLessThanOrEqual(longForm ? 4400 : 2200);
+    }
+  });
+  it('renders the visual analysis in both languages with accessible descriptions and captions', () => {
+    for (const record of SEPTEMBER_13_EDITORIAL) {
+      const photos = editorialImages(record.bodyMarkdown);
+      const longForm = ['singapore-lower-psf-higher-total-budget', 'dubai-new-renewal-rent-mix'].includes(record.slug);
+      expect(photos.length, record.id).toBeGreaterThanOrEqual(longForm ? 3 : 2);
+      const html = renderToStaticMarkup(<NewsroomArticle article={record} />);
+      for (const photo of photos) {
+        expect(photo.alt.length).toBeGreaterThan(15);
+        expect(photo.caption.length).toBeGreaterThan(15);
+        expect(html).toContain(photo.src);
+      }
     }
   });
   it('keeps the credit in document flow with an independent image frame', () => {

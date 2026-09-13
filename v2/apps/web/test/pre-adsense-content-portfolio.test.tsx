@@ -19,10 +19,10 @@ const primarySourceHosts = new Set([
   'www.law.go.kr', 'rt.molit.go.kr', 'www.molit.go.kr', 'land.seoul.go.kr',
   'www.fsc.go.kr', 'www.iras.gov.sg', 'www.hdb.gov.sg', 'www.ura.gov.sg',
   'www.mitsuifudosan.co.jp', 'www.cbre.ae', 'easylaw.go.kr', 'www.gov.kr', 'www.hf.go.kr',
-  'www.roots.gov.sg', 'www.gotokyo.org',
+  'www.roots.gov.sg', 'www.gotokyo.org', 'www.bhomes.com',
 ]);
 
-const secondaryHosts = new Set(['kbthink.com', 'www.ajunews.com', 'v.daum.net', 'news.nate.com', 'www.guocoland.com.sg']);
+const secondaryHosts = new Set(['kbthink.com', 'www.ajunews.com', 'v.daum.net', 'news.nate.com', 'www.guocoland.com.sg', 'stackedhomes.com', 'www.thenationalnews.com']);
 
 function sectionCount(body: string): number {
   return body.match(/^## /gmu)?.length ?? 0;
