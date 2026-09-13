@@ -1,3 +1,4 @@
+import { PropertyLivingContext } from '../market-ui/living-context';
 import { seoulBuildingLocationHref } from '../../lib/public-market/seoul-building-location';
 import { buildingDisplayName, neighborhoodDisplayName } from '../../lib/public-market/seoul-display-names';
 import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
@@ -195,6 +196,7 @@ export function ObservedBuildingDetail({
         <div id="building-facts" className={detailStyles.section}>
           {facts ?? <KnownBuildingFacts locale={locale} facts={[{ label: 'Map identity', value: coordinateLabel }]} />}
         </div>
+        <PropertyLivingContext entity={`kr-seoul:estate:${model.building.buildingId}`} locale={locale} />
         {facts === undefined ? <BuildingProximityDisclosure proximity={model.proximity} locale={locale} /> : null}
         <section id="building-source" className={styles.source}>
           <details className={styles.sourceDetails}>
@@ -381,6 +383,7 @@ export function KoreaEvidenceBuildingDetail({
             { label: 'Housing type', value: model.building.housingType },
           ]} />}
         </div>
+        <PropertyLivingContext entity={`kr-seoul:estate:${model.building.buildingId}`} locale={locale} />
         <DetailTools locale={locale} id="building-tools" checkHref={buildKoreaEvidenceCheckHref(model, locale)}
           calculatorHref={model.selection.transaction === 'sale' ? createPropertyScenarioHref({locale,market:'kr-seoul',currency:'KRW',entity:model.building.buildingId,propertyName:model.building.officialName,transaction:'sale',housing:model.building.housingType,areaBand:model.selection.areaBand,price:model.evidence.state === 'published' ? model.evidence.medianWon : null,annualRent:model.rentStartingPoint?.annualRent,returnTo:localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${model.selection.areaBand}`,locale)}) : undefined} />
 
