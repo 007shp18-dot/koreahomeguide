@@ -53,7 +53,7 @@ export function PropertyLivingContext({ entity, locale }: { entity: string; loca
     const controller = new AbortController();
     fetch(`/api/living-context/?entity=${encodeURIComponent(entity)}`, { signal: controller.signal })
       .then(async response => { if (!response.ok) throw new Error('unavailable'); return response.json(); })
-      .then(data => setResult({ entity, profiles: data.profiles, failed: false }))
+      .then(data => setResult({ entity, profiles: data.profiles, failed: data.status !== 'ready' }))
       .catch(() => { if (!controller.signal.aborted) setResult({ entity, profiles: [], failed: true }); });
     return () => controller.abort();
   }, [entity]);
