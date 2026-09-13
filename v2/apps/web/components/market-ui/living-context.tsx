@@ -26,7 +26,7 @@ export function LivingContextCard({ profile: p, locale }: { profile: LivingConte
     <details className={styles.details}><summary>{t('거주수요 가설·현장 확인사항', 'Demand hypotheses and field checks', '居住需求假设与现场核查')}</summary>
       <div lang="ko">{p.analysis.slice(3).map(a => <p key={a.dimension}><strong>{a.dimension}: </strong>{a.interpretation}</p>)}<ul>{p.field_checks.map(f => <li key={f}>{f}</li>)}</ul></div>
     </details>
-    <p className={styles.note}>{t('유동인구·상가 매출·공실률·도보시간: 미수집. 점수나 투자수익률을 산정하지 않은 1차 정성 조사입니다.', 'Footfall, retail sales, vacancy and walking times: not collected. Qualitative desk research; no score or investment return is calculated.', '人流量、商铺销售额、空置率和步行时间：尚未采集。本次为定性案头研究，未计算评分或投资回报。')}</p>
+    <p className={styles.note}>{t('주변 상권·역·쇼핑몰 수치는 각 출처의 집계 범위와 기간을 따릅니다. 단지 출입구 유동인구·단지 상가 매출·공실률·실제 도보시간은 미수집이며, 점수나 투자수익률은 산정하지 않습니다.', 'Area, station and mall figures use each source’s geography and reporting period. Property-entrance footfall, on-site retail sales, vacancy and measured walking times remain uncollected; no score or investment return is calculated.', '周边商圈、车站及商场数据按各来源的统计范围和期间展示。小区出入口人流、区内商铺销售额、空置率及实测步行时间尚未采集，未计算评分或投资回报。')}</p>
     <details className={styles.details}><summary>{t('출처별 적용 범위', 'Source scope', '来源适用范围')}</summary><ul lang="ko">{Object.entries(p.sources).map(([id, s]) => <li key={id}><a href={s.url} target="_blank" rel="noopener noreferrer">{s.title} ↗</a><p>{s.scope}</p></li>)}</ul></details>
   </article>;
 }
