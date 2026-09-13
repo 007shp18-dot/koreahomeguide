@@ -1,0 +1,11 @@
+import { loadLivingContexts } from '../../../lib/research/living-context.server';
+import { selectLivingContexts } from '../../../lib/research/living-context';
+export async function GET(request: Request) {
+  const entity = new URL(request.url).searchParams.get('entity');
+  if (entity !== null && (!entity || entity.length > 180)) return Response.json({ error: 'Invalid entity' }, { status: 400 });
+  const result = await loadLivingContexts();
+  return Response.json({ ...result, profiles: selectLivingContexts(result.profiles, entity) }, {
+    status: result.status === 'unavailable' ? 503 : 200,
+    headers: { 'Cache-Control': 'no-store' },
+  });
+}

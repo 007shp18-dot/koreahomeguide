@@ -1,3 +1,4 @@
+import { PropertyLivingContext } from '../market-ui/living-context';
 import { localizedMarketCopy } from '../../lib/locale/market-localization';
 
 import { sgText } from '../../lib/locale/singapore-copy';
@@ -68,6 +69,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
         evidence={<section className={detailStyles.section}><h2>{localizedMarketCopy(locale, "Not enough transactions to publish a price", "가격 게시에 필요한 거래가 부족합니다")}</h2>
           <p>{locale === 'ko' ? `신고 거래 ${model.count}건입니다. 중앙값은 ${model.threshold}건 이상일 때 공개합니다.` : locale === 'zh-CN' ? `${model.count} 笔申报交易，至少 ${model.threshold} 笔才公布中位数。` : `${model.count} reported transactions. A median requires at least ${model.threshold}.`}</p>
           <SingaporeNearbyPlaces locale={locale} proximity={proximity} />
+          <PropertyLivingContext entity={`sg-singapore:project:${model.identity.id}`} locale={locale} />
         </section>}
         rail={<SingaporeEvidence locale={locale} model={model.evidence} />} />
     </SingaporePage>
@@ -144,6 +146,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
         </dl>
         <Link href={marketHref(locale, `/sg/singapore/explore/?region=${model.identity.marketSegment.toLowerCase()}&q=${encodeURIComponent(displayName)}&project=${encodeURIComponent(model.identity.id)}`)}>{sgText(locale, 'View this project on the map')}</Link>
         <SingaporeNearbyPlaces locale={locale} proximity={proximity} />
+          <PropertyLivingContext entity={`sg-singapore:project:${model.identity.id}`} locale={locale} />
       </section>
       <DetailTools locale={locale} checkHref={marketHref(locale, model.checkHref)}
         calculatorHref={createPropertyScenarioHref({locale,market:'sg-singapore',currency:'SGD',entity:model.identity.id,propertyName:displayName,transaction:'sale',price:model.identity.medianPriceSgd,returnTo:marketHref(locale, `/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${model.identity.id}/`)})} />

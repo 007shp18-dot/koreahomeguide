@@ -1,3 +1,4 @@
+import { PropertyLivingContext } from '../market-ui/living-context';
 import { seoulBuildingLocationHref } from '../../lib/public-market/seoul-building-location';
 import {localizedSeoulHref, type ProductLocale} from '../../lib/locale/product-copy';
 import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
@@ -131,6 +132,7 @@ export function BuildingDetailPage({
         <div id="building-facts" className={detailStyles.section} data-detail-order="facts">
           {facts ?? <section><h2>{t('Building profile')}</h2><p>{t(model.building.housingType)} · {model.building.neighborhoodName}</p></section>}
         </div>
+        <PropertyLivingContext entity={`kr-seoul:estate:${model.building.buildingId}`} locale={locale} />
         <DetailTools locale={locale} id="building-tools" checkHref={checkHref} />
         <div className={pageStyles.details} data-detail-order="sources"><BuildingSourceEvidence model={model} locale={locale} /></div>
         <DiscoveryReading market="seoul" locale={locale} />
