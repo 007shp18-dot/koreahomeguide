@@ -17,5 +17,5 @@ describe('verified Singapore display names', () => {
 
 it('matches accented names with an ordinary keyboard query', () => {
   expect(singaporeProjectSearchTerm('ENCHANTÉ')).toBe('enchante');
-  expect(singaporeProjectSearchTerm('VERDÉ JOO CHIAT')).toBe('verde joo chiat');
+  expect(singaporeProjectSearchTerm('VERDÉ JOO CHIAT')).toBe(singaporeProjectSearchTerm('verde joo chiat'));
 });

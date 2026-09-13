@@ -367,7 +367,7 @@ describe('public area Explore model', () => {
     });
   });
 
-  it('keeps the selected district inventory visible for a Korean district query', () => {
+  it('finds Korean district names city-wide without silently changing the selection', () => {
     const model = buildPublicAreaExploreModel(undefined, {
       ...dependencies(),
       observedBuildingSource: observedBuildingFixture(),
@@ -376,7 +376,7 @@ describe('public area Explore model', () => {
     expect(model.status).toBe('ready');
     if (model.status !== 'ready' || model.buildingAvailability.status !== 'ready') return;
 
-    expect(model.selectedSlug).toBe('gangnam-gu');
+    expect(model.selectedSlug).toBe('jongno-gu');
     expect(model.buildingAvailability.buildings.map(({ id }) => id)).toEqual([
       'gangnam-evidence-tower',
       'gangnam-large-detached',

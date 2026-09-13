@@ -91,6 +91,19 @@ describe('Dubai research release', () => {
       budgetMaximumAed: 1_500_000, yieldMinimumPct: null,
     }).map(({ area }) => area.slug)).toEqual(['business-bay']);
   });
+  it('finds verified project names without changing housing or sale stage', async () => {
+    const model = await readyExploreModel();
+    if (model.status !== 'ready') throw new Error('missing fixture');
+    const area = model.areas[0]!;
+    const projects = [{ id: '1-apartment-ready', projectNumber: '1', areaSlug: area.slug,
+      name: 'Example Marina Tower', housing: 'apartment' as const, stage: 'ready' as const,
+      n: 10, medianPriceAed: 1_500_000, medianPricePerSqmAed: 20_000 }];
+    const filters = { query: 'example-marina tower', housing: 'apartment' as const,
+      stage: 'ready' as const, budgetMaximumAed: null, yieldMinimumPct: null };
+    expect(filterDubaiExploreResults(model.areas, filters, projects).map(r => r.area.slug)).toEqual([area.slug]);
+    expect(filterDubaiExploreResults(model.areas, { ...filters, stage: 'off-plan' }, projects)).toEqual([]);
+    expect(filterDubaiExploreResults(model.areas, { ...filters, query: 'unknown tower' }, projects)).toEqual([]);
+  });
   it('serializes only active Dubai Explore filters in a stable order', () => {
     expect(buildDubaiExploreHref({
       query: '  marina ', housing: 'villa', stage: 'off-plan',

@@ -126,7 +126,7 @@ describe('Korean embedded product components', () => {
       }),
     }));
 
-    expect(html).toContain('선택 · 강남구');
+    expect(html).toContain('선택 · 종로구');
     expect(html).toContain('value="강남구"');
     expect(html).toContain('갱신 계약');
   });

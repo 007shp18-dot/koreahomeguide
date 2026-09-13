@@ -20,6 +20,7 @@ import {
   buildDubaiExploreHref,
   DUBAI_EXPLORE_PAGE_SIZE,
   filterDubaiExploreResults,
+  matchingDubaiProjects,
 } from '../../lib/dubai/explore-model';
 import { DUBAI_AREAS, DUBAI_SOURCES, filterDubaiAreas } from '../../lib/dubai/research';
 import type { DubaiExploreModel } from '../../lib/dubai/route-types';
@@ -188,8 +189,8 @@ export function DubaiExplorer({ locale = 'en',
       stage,
       budgetMaximumAed,
       yieldMinimumPct,
-    },
-  ), [budgetMaximumAed, deferredQuery, housing, model, stage, yieldMinimumPct]);
+    }, projects,
+  ), [budgetMaximumAed, deferredQuery, housing, model, stage, yieldMinimumPct, projects]);
   const pageCount = Math.max(1, Math.ceil(results.length / DUBAI_EXPLORE_PAGE_SIZE));
   const activePage = selectedResultPage(results.map(({ area }) => area.slug), selectedArea, page, DUBAI_EXPLORE_PAGE_SIZE);
   const visible = useMemo(() => results.slice(
@@ -198,6 +199,7 @@ export function DubaiExplorer({ locale = 'en',
   ), [activePage, results]);
   const selected = results.find(({ area }) => area.slug === selectedArea);
   const projectResults = useMemo(() => projects.filter(project => project.housing === housing && project.stage === stage), [projects, housing, stage]);
+  const matchingProjects = useMemo(() => matchingDubaiProjects(projectResults, deferredQuery), [projectResults, deferredQuery]);
   const selectedProject = projectResults.find(project => project.id === selectedProjectId && project.areaSlug === selected?.area.slug);
   const selectedAreaProjects = useMemo(() => projectResults.filter(project => project.areaSlug === selected?.area.slug), [projectResults, selected]);
   const mapPoints = useMemo<readonly GoogleMarketMapPoint[]>(() => visible.map((result) => ({
@@ -268,11 +270,11 @@ export function DubaiExplorer({ locale = 'en',
       priceGuide={<ExplorePriceGuide locale={locale} market="dubai" />}
       layers={<div className={styles.evidenceToolbar}>
         <form role="search" onSubmit={(event) => event.preventDefault()}>
-          <label className={styles.searchField}>{t("Find an area")}<input
+          <label className={styles.searchField}>{projects.length > 0 ? localizedMarketCopy(locale, "Find an area or project", "지역·프로젝트 검색") : t("Find an area")}<input
             name="q"
             type="search"
             value={query}
-            placeholder={t("Area or known community name")}
+            placeholder={projects.length > 0 ? localizedMarketCopy(locale, "Area or project name", "지역 또는 프로젝트 이름") : t("Area or known community name")}
             onChange={(event) => {
               setQuery(event.currentTarget.value);
               setSelectedArea(null);
@@ -349,6 +351,10 @@ export function DubaiExplorer({ locale = 'en',
             <button type="button" aria-pressed={area.slug === selectedArea} aria-controls="dubai-selected-area" onClick={() => selectArea(selectedArea === area.slug ? null : area.slug)}>
               <span><strong title={t(area.name)}>{t(area.name)}</strong><small>{t(housing === 'apartment' ? 'Apartment' : 'Villa')}{t(" · ")}{t(stage === 'ready' ? 'Ready' : 'Off-Plan')}</small></span>
             </button>
+            {matchingProjects.filter(project => project.areaSlug === area.slug).map(project => <button
+              type="button" key={project.id} onClick={() => { selectArea(area.slug); setSelectedProjectId(project.id); }}>
+              {project.name}
+            </button>)}
             <p className={layout.price}><strong>{t(money(sale.medianPriceAed))}</strong><span>{t(sale.n.toLocaleString('en'))} {localizedMarketCopy(locale, "sales", "건 거래")} · {t(moneyPerSqm(sale.medianPricePerSqmAed))}</span></p>
             <div className={layout.rowActions}><div className={comparisonStyles.rowAction}><button type="button" aria-pressed={comparison.ids.includes(area.slug)}
               disabled={comparison.ids.length >= 3 && !comparison.ids.includes(area.slug)}

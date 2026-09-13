@@ -1,10 +1,10 @@
+import { matchesSeoulSearch, seoulSearchQuery } from './seoul-search';
 import { buildingDisplayName } from './seoul-display-names';
 import 'server-only';
 import { matchesSeoulNeighborhoodQuery } from './seoul-neighborhood-label';
 
 import {
   KOREA_EVIDENCE_AREA_BANDS,
-  SEOUL_RENT_CHECK_DISTRICTS,
   classifyAreaBand,
   getSeoulDistrictBySlug,
   type KoreaEvidenceAreaBand,
@@ -415,7 +415,7 @@ function buildingMatchesQuery(
   districtAliases: readonly string[],
 ): boolean {
   if (query.length === 0 || districtAliases.some((alias) => (
-    alias.toLocaleLowerCase('en-US').includes(query)
+    matchesSeoulSearch([alias], query)
   ))) return true;
   if (matchesSeoulNeighborhoodQuery(building.districtSlug, building.neighborhoodName, query)) return true;
   const housingAliases = {
@@ -432,7 +432,7 @@ function buildingMatchesQuery(
     buildingDisplayName(building.officialName, 'en'),
     building.housingType,
     ...housingAliases,
-  ].some((value) => value.toLocaleLowerCase('en-US').includes(query));
+  ].some((value) => matchesSeoulSearch([value], query));
 }
 
 function projectedBuildingData(
@@ -484,42 +484,22 @@ function projectedBuildingData(
   }
 
   const query = typeof options.buildingQuery === 'string'
-    ? options.buildingQuery.trim().toLocaleLowerCase('en-US')
+    ? seoulSearchQuery(options.buildingQuery)
     : '';
   const requestedDistrict = getSeoulDistrictBySlug(
     typeof options.districtSlug === 'string' ? options.districtSlug : '',
   )?.slug ?? 'jongno-gu';
-  const districtFromQuery = query.length === 0 ? undefined : SEOUL_RENT_CHECK_DISTRICTS.find(
-    ({ slug, nameEn, nameKo }) => [slug, nameEn, nameKo].some((value) => (
-      value.toLocaleLowerCase('en-US').includes(query)
-    )),
-  )?.slug;
-  const requestedIdentities = index.identitiesByDistrict.get(requestedDistrict) ?? [];
-  const requestedIdentityMatches = requestedIdentities.some((identity) => {
-    if (!housingMatches(identity)) return false;
-    if (!koreaBuildingMatchesProximity(identity.buildingId, options.proximityRepository, options.proximitySelection)) return false;
-    const district = getSeoulDistrictBySlug(requestedDistrict)!;
-    return buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo]);
+  // A submitted city-wide query searches the complete index; an explicit district
+  // is a constraint, never a hint that can be silently replaced by the first hit.
+  const citySearch = getSeoulDistrictBySlug(typeof options.districtSlug === 'string' ? options.districtSlug : '') === null && query.length > 0;
+  const districtSlug = requestedDistrict;
+  const candidates = citySearch ? index.identities : (index.identitiesByDistrict.get(districtSlug) ?? []);
+  const districtMatches = candidates.filter((identity) => {
+    const district = getSeoulDistrictBySlug(identity.districtSlug)!;
+    return housingMatches(identity)
+      && koreaBuildingMatchesProximity(identity.buildingId, options.proximityRepository, options.proximitySelection)
+      && buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo]);
   });
-  const firstGlobalMatch = requestedIdentityMatches || query.length === 0
-    ? undefined
-    : index.identities.find((identity) => {
-        if (!housingMatches(identity)) return false;
-        if (!koreaBuildingMatchesProximity(identity.buildingId, options.proximityRepository, options.proximitySelection)) return false;
-        const district = getSeoulDistrictBySlug(identity.districtSlug);
-        return district !== null && buildingMatchesQuery(
-          identity,
-          query,
-          [district.slug, district.nameEn, district.nameKo],
-        );
-      })?.districtSlug;
-  const districtSlug = districtFromQuery ?? firstGlobalMatch ?? requestedDistrict;
-  const district = getSeoulDistrictBySlug(districtSlug)!;
-  const districtMatches = (index.identitiesByDistrict.get(districtSlug) ?? []).filter((identity) => (
-    housingMatches(identity)
-    && koreaBuildingMatchesProximity(identity.buildingId, options.proximityRepository, options.proximitySelection)
-    && buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo])
-  ));
   const neighborhoodCounts = new Map<string, { id: string; name: string; count: number }>();
   for (const identity of districtMatches) {
     const item = neighborhoodCounts.get(identity.neighborhoodId)
@@ -601,8 +581,8 @@ function projectedBuildingData(
       total: matches.length,
       buildings: Object.freeze(buildings),
       mapBuildings,
-      mapGroups: Object.freeze([...unloadedGroups.values()].map(group => Object.freeze(group))),
-      neighborhoods,
+      mapGroups: citySearch ? Object.freeze([]) : Object.freeze([...unloadedGroups.values()].map(group => Object.freeze(group))),
+      neighborhoods: citySearch ? Object.freeze([]) : neighborhoods,
     }),
   });
 }
