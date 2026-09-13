@@ -690,9 +690,9 @@
   font-size: var(--review-control);
 }
 
-.checkForm input,
+.reviewRoot .checkForm input,
 .checkForm select,
-.exploreSearch input,
+.reviewRoot .exploreSearch input,
 .exploreFilters select,
 .resultBar select {
   min-height: 48px;

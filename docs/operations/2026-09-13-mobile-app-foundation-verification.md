@@ -19,7 +19,7 @@ GitHub Actions run `34763427932` passed lint and typecheck, then reported 3,389 
 
 Independent code review found installed tabs could cover the Seoul mobile building drawer and Tokyo discovery trigger. Both now consume a shared standalone bottom-clearance variable; normal browser mode uses zero additional clearance. Singapore overview `/sg/` also retains its city when opening Explore. Actual overlap checks in a browser remain required.
 
-## Not yet verified
+## Initial verification limits
 
 - Visual layout, hydration and install prompt interaction in an actual browser: Chromium download failed with CDN 502/timeouts; no screenshot or browser-pass claim is made.
 - Physical iPhone and Android installation, safe-area appearance, OS back behavior, accessibility and cross-language navigation in standalone mode.
@@ -29,3 +29,13 @@ Independent code review found installed tabs could cover the Seoul mobile buildi
 ## Release gate
 
 Keep the PR in draft until browser and device checks pass. Review map sheets, consent panel and installed navigation for overlap, verify app start and shortcuts in all supported languages, check that all PNG assets are reachable over production HTTPS, and test prompt acceptance/dismissal plus manual iOS installation. Merge/deploy only after resolving those checks. No App Store/Play Console submission has occurred.
+
+## Hosted and CI follow-up
+
+Actions run `34764752639`, candidate `24b8858339607b4cd8e9e2755959099f73d51147`, passed lint, TypeScript, 3,390 unit tests (85 skipped), snapshot memory/warm reuse, the production build, client data-boundary scans and the Phase 0 legacy gate. The browser matrix passed 777 tests, including all 12 new mobile/desktop install-guidance and prompt-lifecycle cases, with 36 skipped and 8 screenshot failures. Separate Dubai comparison and Seoul map-bubble suites passed 6 and 2 cases respectively.
+
+The eight Check/Explore review screenshot failures exposed a CSS cascade dependency: the shipped trace loads the review's `.checkForm input` / `.exploreSearch input` 48px `min-height` before the equally specific global `input:not([type=hidden])` 44px `min-block-size`. Received images show two Check inputs each shrinking by 4px. Both input rules now include `.reviewRoot` so their approved size is independent of stylesheet order. Existing screenshot baselines are unchanged; follow-up CI must confirm the fix.
+
+Preview `dpl_GFatTEZsoN7YwR268M4oNXoJdDsp` reached READY for `e7a8d4a7046ed1e2fb7988c088d1ee6d872ca461`. Direct hosted inspection remained blocked by Vercel SSO despite a temporary share URL and the authenticated fetch tool; protection was retained. CI screenshots and traces are available in artifact `10320661412`. Fixture install events verify the UI lifecycle, not browser install eligibility or a physical OS installation.
+
+Latest run/deployment outcomes and the device checklist are recorded in PR #338. The initial limits above are historical; production builds and CI browser execution have now succeeded, while hosted visual access and physical-device installation remain release gates.
