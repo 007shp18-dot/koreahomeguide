@@ -15,6 +15,7 @@ export function marketDestination(marketId: NavigationMarketId, currentHref = '/
   const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const tokyoPrefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const city = { 'kr-seoul': 'seoul', 'sg-singapore': 'singapore', 'ae-dubai': 'dubai', 'jp-tokyo': 'tokyo' }[marketId];
+  if (path === '/living/') return `${prefix}/living/?market=${marketId}`;
   if (/\/(?:seoul-apartment|singapore-condo|dubai-ready-apartment)-buying-budget-guide\//.test(path)) return `${prefix}/news/?market=${city}`;
   if (marketId === 'jp-tokyo' && /\/tools\//.test(path)) return `${tokyoPrefix}/jp/tokyo/tools/`;
   if (path.includes('/news/') || path.includes('/insights/')) {
@@ -93,7 +94,7 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
-  } else if (english === '/prices' || english === '/tools' || english === '/tools/property-scenario' || english === '/passport' || english === '/saved') {
+  } else if (english === '/prices' || english === '/living' || english === '/tools' || english === '/tools/property-scenario' || english === '/passport' || english === '/saved') {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);

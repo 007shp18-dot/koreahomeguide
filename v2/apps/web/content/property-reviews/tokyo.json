@@ -1,0 +1,952 @@
+[
+  {
+    "id": "jp-park-city-toyosu",
+    "marketId": "jp-tokyo",
+    "name": {
+      "ko": "어반독 파크시티 도요스",
+      "en": "Urban Dock Park City Toyosu"
+    },
+    "area": {
+      "ko": "도요스 · 고토구 수변",
+      "en": "Toyosu · Koto waterfront"
+    },
+    "checkedOn": "2026-09-13",
+    "verdict": {
+      "ko": "장보기와 수변 생활을 자주 누릴 가구라면 추천 후보. 역까지의 최단 동선이 우선이면 메구로부터 비교하세요.",
+      "en": "Shortlist for frequent shopping and waterfront time. Compare Meguro first if the shortest station approach is your priority."
+    },
+    "summary": {
+      "ko": "라라포트와 연결된 주거 단지라는 점이 생활상 강점입니다. 다만 A·B·C동의 역 접근, 복도 형태와 유지비가 같지 않으므로 '파크시티 도요스' 평균만 보고 세대를 고르기 어렵습니다.",
+      "en": "The residential connection to LaLaport is its practical advantage. Station access, corridor design and ownership costs vary across A, B and C, so a project average is a poor substitute for choosing a particular home."
+    },
+    "bestFor": {
+      "ko": "도요스·유라쿠초선 생활권을 쓰고, 장보기·산책·가족 외출을 집 가까이에서 해결하려는 가구.",
+      "en": "Households using Toyosu or the Yurakucho Line who want shopping, walks and family outings close to home."
+    },
+    "holdFor": {
+      "ko": "현관부터 승강장까지의 이동을 최소화하거나, 공용시설을 거의 쓰지 않으면서 낮은 고정비를 우선하는 가구.",
+      "en": "Households prioritising the shortest front-door-to-platform trip, or low fixed costs while making little use of shared amenities."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "몰 연결이 실제 생활에 쓰이는 단지",
+          "en": "A mall connection with everyday value"
+        },
+        "body": {
+          "ko": "주민 전용 지하 연결과 쇼핑카트 이용은 개발 당시 계획됐고 2025년 방문기에서도 소개됩니다. 2026년 운영 조건과 관심 동에서 거치는 문·층은 추가 확인이 필요하지만, 무거운 장을 보고 귀가하는 생활에는 의미 있는 장점입니다.",
+          "en": "The residents’ underground connection and shopping-cart provision appear in the original plans and a 2025 visit report. Their 2026 operating arrangements and the doors and levels from your chosen tower still need checking, but they offer a concrete benefit for grocery trips."
+        },
+        "sourceIds": [
+          "ty-development",
+          "ty-visit"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "수변 생활을 구매 이유로 삼을 수 있음",
+          "en": "Waterfront use can justify the location"
+        },
+        "body": {
+          "ko": "주거·상업·수변 공간을 함께 구성한 개발이어서 산책과 외출을 일상에 넣기 좋은 후보입니다. 바다를 자주 이용할 사람에게 의미가 크지만, 단지 전체의 수변 입지가 모든 세대의 바다 조망을 뜻하지는 않습니다.",
+          "en": "Housing, retail and waterfront space were planned together, making this a candidate for building walks and outings into daily life. That matters most to frequent waterfront users; the estate's setting does not establish a sea view from every apartment."
+        },
+        "sourceIds": [
+          "ty-development"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "동별 차이가 단지 이름보다 중요",
+          "en": "Choose the tower before judging the estate"
+        },
+        "body": {
+          "ko": "2025년 방문기는 A동을 외부 복도, B동을 내부 복도로 구분합니다. 비·바람에 노출되는 정도와 귀가 감각이 달라질 수 있으므로 같은 면적이라도 동을 섞어 비교하지 않는 편이 좋습니다.",
+          "en": "A 2025 visit report distinguishes A's external corridors from B's internal corridors. Exposure and the arrival experience can differ, so equal-size apartments should not be compared without accounting for their tower."
+        },
+        "sourceIds": [
+          "ty-visit"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "관리의 질과 앞으로 낼 돈은 별도 문제",
+          "en": "Amenities need a funding check"
+        },
+        "body": {
+          "ko": "수영장·라운지·식재는 2025년 방문기에 소개되지만, 2026년 운영 상태·현재 적립금 잔액·인상 계획은 확보하지 못했습니다. 장기수선계획, 최근 총회 의사록과 추가 부담 가능성을 함께 요청해야 합니다.",
+          "en": "Pools, lounges and landscaping appear in the 2025 visit report; their 2026 operating status, current reserve balances and planned contribution increases were not verified. Request the long-term repair plan, recent owners’ meeting minutes and proposed extra charges."
+        },
+        "sourceIds": [
+          "ty-development",
+          "ty-visit"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "도보 표기는 A·B 약 8분, C 약 6분",
+            "en": "Reported walks: A/B about 8 minutes, C about 6"
+          },
+          "body": {
+            "ko": "2025년 현장 방문기는 유라쿠초선 도요스역까지 A·B 약 8분, C 약 6분으로 안내합니다. 현관·엘리베이터 대기·개찰구 이후 이동을 포함한 실측이 아니므로 출근 시간에 관심 동에서 따로 걸어봐야 합니다.",
+            "en": "The 2025 visit report lists roughly 8 minutes to Toyosu on the Yurakucho Line from A/B and 6 from C. These are not measured trips including your apartment, lift waits and movement beyond the ticket gates."
+          },
+          "sourceIds": [
+            "ty-visit"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "라라포트의 2b 출구 연결과 단지 동선은 구분",
+            "en": "Exit 2b connects the mall; check the full home route"
+          },
+          "body": {
+            "ko": "라라포트 운영사는 도요스역 2b 출구 연결을 안내합니다. 몰 연결을 활용할 수 있더라도 거주동에서 승강장까지 전 구간의 상시 통행 가능 여부, 문 개방 시간과 우회 동선은 이번 조사에서 확인하지 못했습니다.",
+            "en": "LaLaport's operator identifies a connection to Toyosu Exit 2b. That does not verify unrestricted access along the entire route from a residential tower to the platform; door hours and any required detours remain unconfirmed."
+          },
+          "sourceIds": [
+            "ty-mall-access"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "학교 후보는 도요스키타·후카가와 제5",
+            "en": "School leads: Toyosu Kita and Fukagawa No. 5"
+          },
+          "body": {
+            "ko": "2025년 방문기는 도요스키타 초등학교와 후카가와 제5중학교를 통학권으로 안내합니다. 이 내용은 학교 후보를 좁히는 자료이며, 입주 주소와 입학 연도에 따른 최종 배정 확인을 대신하지 않습니다.",
+            "en": "The 2025 visit report names Toyosu Kita Elementary and Fukagawa No. 5 Junior High as catchment schools. Use this to identify candidates, then confirm allocation for the actual residential address and entry year."
+          },
+          "sourceIds": [
+            "ty-visit"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "학교 이름보다 아침 동선을 먼저",
+            "en": "Test the school morning, not just the school name"
+          },
+          "body": {
+            "ko": "저학년 자녀가 있다면 관심 동 출입구에서 학교까지 횡단 구간과 우천 시 이동을 직접 확인하는 것이 좋습니다. 학교 평판이나 도보 광고만으로 방과후 돌봄 자리, 일본어 지원과 국제학교 통학 가능성을 판단할 자료는 확보하지 못했습니다.",
+            "en": "For younger children, check crossings and the rainy-day route from the chosen tower entrance. School reputation or an advertised walk does not establish after-school places, Japanese-language support or an international-school commute; these remain open questions."
+          },
+          "sourceIds": [
+            "ty-visit"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "몰 안에서 외식·가족 외출을 묶을 수 있음",
+            "en": "Combine errands with family outings"
+          },
+          "body": {
+            "ko": "라라포트 공식 사이트는 쇼핑·식음·층별 안내를 제공하고 있으며 현재 운영 중인 생활 거점으로 확인됩니다. 이용할 매장과 시간대를 정해 장보기 후 식사까지 한 번에 가능한지 살펴보면 '몰 옆'의 가치를 자신의 생활에 맞춰 평가할 수 있습니다.",
+            "en": "LaLaport's current operator site provides shopping, dining and floor guides, establishing it as an operating destination. Pick the stores and times you would actually use to assess whether groceries and a meal can become one convenient outing."
+          },
+          "sourceIds": [
+            "ty-mall"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "수변이라고 수해 위험을 단정하지 않기",
+            "en": "Assess the relevant flood scenario"
+          },
+          "body": {
+            "ko": "고토구는 하천 범람·집중호우 내수침수·폭풍해일 지도를 따로 제공합니다. 이번 조사에서는 세 지도에서 해당 동 출입구와 전기실 위치를 정밀 대조하지 않았으므로, '위험 없음'이나 단지별 침수 깊이를 표시하지 않습니다.",
+            "en": "Koto publishes separate river-flood, surface-water and storm-surge maps. The chosen tower entrance and electrical rooms have not been precisely checked against all three, so this review assigns neither a risk-free label nor a property-specific flood depth."
+          },
+          "sourceIds": [
+            "ty-hazard"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "2008년 준공 이후의 수선 이력을 요청",
+            "en": "Ask what has been repaired since completion"
+          },
+          "body": {
+            "ko": "방문기에 기재된 준공 시기는 2008년 2월입니다. 연식만으로 상태를 평가하기보다 외벽·방수·급배수·엘리베이터의 완료 공사와 다음 교체 일정을 받아, 실내 리모델링 비용과 공용부 부담을 나눠 비교해야 합니다.",
+            "en": "The visit report dates completion to February 2008. Assess completed facade, waterproofing, plumbing and lift work alongside the next replacement schedule, separating apartment renovation spending from shared-building obligations."
+          },
+          "sourceIds": [
+            "ty-visit"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "같은 동·면적·층·방향으로 가격 맞추기",
+            "en": "Match tower, size, floor and outlook"
+          },
+          "body": {
+            "ko": "현재 호가를 같은 동의 유사 면적·층·방향 실거래 및 최신 관리비·수선적립금과 대조하는 작업은 미완료입니다. 따라서 몰 연결이 좋다는 판단을 '지금 가격이 싸다'거나 예상 수익률로 바꾸지 않았습니다.",
+            "en": "Current asking prices have not been matched with completed sales of similar size, floor and outlook in the same tower, plus current management and repair contributions. The positive mall-access judgment therefore does not establish a bargain or a forecast return."
+          },
+          "sourceIds": [
+            "ty-visit"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "브릴리아 타워스 메구로",
+          "en": "Brillia Towers Meguro"
+        },
+        "reason": {
+          "ko": "매일 역에 가는 시간이 가장 중요하면 비교 가치가 큽니다.",
+          "en": "Worth comparing when daily station access dominates your decision."
+        },
+        "condition": {
+          "ko": "노선 목적지와 전체 통근 시간을 맞춰 비교하며, 두 단지의 가격 차이는 아직 검증하지 않았습니다.",
+          "en": "Compare routes to the same destination and total commute; the price gap has not been verified."
+        }
+      },
+      {
+        "name": {
+          "ko": "파크코트 시부야 더 타워",
+          "en": "Park Court Shibuya The Tower"
+        },
+        "reason": {
+          "ko": "수변·몰보다 시부야 문화생활과 요요기공원 이용이 우선이면 후보입니다.",
+          "en": "An alternative when Shibuya outings and Yoyogi Park matter more than waterfront and mall use."
+        },
+        "condition": {
+          "ko": "시부야의 정기차지권과 철거적립금을 같은 소유 조건으로 간주하지 말고 별도 검토해야 합니다.",
+          "en": "Assess Shibuya's fixed land lease and demolition reserve separately rather than assuming equivalent ownership terms."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "ty-development",
+        "title": "三井不動産: アーバンドック パークシティ豊洲 開発発表",
+        "url": "https://www.mitsuifudosan.co.jp/corporate/news/2006/0329/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": "2006-03-29",
+        "kind": "official",
+        "note": {
+          "ko": "2006년 개발 당시의 연결·시설 계획. 현재 운영시간이나 관리조합 재정의 확인 자료가 아님.",
+          "en": "Original development plans for connections and amenities; not evidence of current hours or owners' association finances."
+        }
+      },
+      {
+        "id": "ty-visit",
+        "title": "すまいよみ: アーバンドック パークシティ豊洲 中古マンション探訪",
+        "url": "https://www.takenote1101.com/entry/%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B7%E3%83%86%E3%82%A3%E8%B1%8A%E6%B4%B2%E3%80%80%E3%81%99%E3%81%BE%E3%81%84%E3%82%88%E3%81%BF-%E4%B8%AD%E5%8F%A4%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%E6%8E%A2",
+        "checkedOn": "2026-09-13",
+        "publishedOn": "2025-02-16",
+        "kind": "editorial",
+        "note": {
+          "ko": "2025년 2월 초대 방문기. 동별 도보·복도·학교 후보 참고; 작성자의 무위험·무단점 평가는 채택하지 않음.",
+          "en": "Invited February 2025 visit; used for tower walks, corridors and school leads. The author's risk-free/no-downside conclusions are not adopted."
+        }
+      },
+      {
+        "id": "ty-mall-access",
+        "title": "ららぽーと豊洲: 電車・バスでの行き方",
+        "url": "https://mitsui-shopping-park.com/lalaport/toyosu/access/train-bus.html",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "운영사가 안내하는 도요스역 2b 출구 연결. 주거동 현관부터의 실측과 전 구간 운영시간은 아님.",
+          "en": "Operator's Exit 2b connection guide; not an apartment-to-platform timing or full-route opening-hours check."
+        }
+      },
+      {
+        "id": "ty-mall",
+        "title": "ららぽーと豊洲: アクセス・施設案内",
+        "url": "https://mitsui-shopping-park.com/lalaport/toyosu/access/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "현재 몰 주소·쇼핑·식음 및 층별 안내 확인. 유동인구·매출 자료로 사용하지 않음.",
+          "en": "Current mall location and shopping/dining/floor-guide access; not used as footfall or sales data."
+        }
+      },
+      {
+        "id": "ty-hazard",
+        "title": "江東区: 水害ハザードマップ（3種類）",
+        "url": "https://www.city.koto.lg.jp/470601/20200701.html",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "하천 범람·내수침수·폭풍해일을 구분하는 공식 지도. 건물별 위험도 판독은 미완료.",
+          "en": "Official maps distinguish river, surface-water and storm-surge scenarios; building-specific assessment remains incomplete."
+        }
+      }
+    ]
+  },
+  {
+    "id": "jp-brillia-towers-meguro",
+    "marketId": "jp-tokyo",
+    "name": {
+      "ko": "브릴리아 타워스 메구로",
+      "en": "Brillia Towers Meguro"
+    },
+    "area": {
+      "ko": "메구로역 · 시나가와구 가미오사키",
+      "en": "Meguro Station · Kamiosaki, Shinagawa"
+    },
+    "checkedOn": "2026-09-13",
+    "verdict": {
+      "ko": "메구로역 4개 노선을 자주 쓰는 가구에 추천 후보. '역 바로 앞'과 '학교 바로 앞'은 다른 조건입니다.",
+      "en": "Shortlist if you regularly use Meguro's four rail lines. Being beside the station does not mean being beside the school."
+    },
+    "summary": {
+      "ko": "North·South의 짧은 역 접근과 역 주변 생활시설이 핵심입니다. 제3히노 초등학교까지는 판매사 지도 개측으로 약 1km이므로, 가족에게도 역세권 프리미엄이 그대로 맞는지는 통학 동선과 함께 판단해야 합니다.",
+      "en": "Short station approaches from North and South, plus station-area amenities, are the core strengths. The seller's map estimate to Third Hino Elementary is around 1 km, so families should test the school route before valuing the station premium."
+    },
+    "bestFor": {
+      "ko": "야마노테선·난보쿠선·미타선·도큐 메구로선을 생활 목적지에 맞춰 사용하는 가구.",
+      "en": "Households whose regular destinations benefit from the Yamanote, Namboku, Mita or Tokyu Meguro lines."
+    },
+    "holdFor": {
+      "ko": "초등학교까지 아주 짧은 도보, 조용한 창문 개방 생활, 낮은 공용부 유지비가 최우선인 가구.",
+      "en": "Households prioritising a very short elementary-school walk, quiet living with windows open, or low shared-building charges."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "역 가까움을 동별로 확인할 수 있음",
+          "en": "Station proximity is specified by tower"
+        },
+        "body": {
+          "ko": "Tokyo Tatemono의 현재 단지 개요는 North 2분, South 3분으로 메구로역 접근을 안내합니다. 이 짧은 외부 접근은 장점이지만 현관과 승강장 사이의 전체 시간을 보장하는 수치는 아닙니다.",
+          "en": "Tokyo Tatemono's current outline advertises 2 minutes from North and 3 from South to Meguro Station. That short external approach is an advantage, but it does not guarantee a complete apartment-to-platform journey time."
+        },
+        "sourceIds": [
+          "mg-outline"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "면진 방식이 구체적으로 공개됨",
+          "en": "Seismic-isolation design is documented"
+        },
+        "body": {
+          "ko": "개발사 계열 안내는 North의 기초면진과 South의 중간층 면진을 구분합니다. 재난 대비를 볼 때 단순한 신축 연식보다 구체적인 출발점이 되지만, 현재 장치 상태나 지진 시 무피해를 확인한 것은 아닙니다.",
+          "en": "The developer-group guide distinguishes base isolation in North from intermediate-level isolation in South. This gives a more specific starting point than age alone, while establishing neither current equipment condition nor freedom from earthquake damage."
+        },
+        "sourceIds": [
+          "mg-structure"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "역 접근에 비해 통학은 긴 편일 수 있음",
+          "en": "The school trip may be a different proposition"
+        },
+        "body": {
+          "ko": "판매사 주변 안내의 제3히노 초등학교 지도 개측은 North 약 1,000m, South 약 1,050m입니다. 아이의 실제 통학거리·횡단·오르내림을 확인해야 하며, '메구로역 앞'만으로 저학년 통학도 편하다고 판단하기 어렵습니다.",
+          "en": "The seller's map estimates to Third Hino Elementary are about 1,000 m from North and 1,050 m from South. Check the child's actual route, crossings and gradients; the station-front address alone does not establish an easy school morning."
+        },
+        "sourceIds": [
+          "mg-location"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "방음 설계와 실제 들리는 소리는 다름",
+          "en": "Acoustic specifications are not a listening test"
+        },
+        "body": {
+          "ko": "안내 자료에는 세대에 따라 T-2 또는 T-3 상당의 방음 창호가 기재돼 있습니다. 관심 세대의 창 방향과 창문을 열었을 때의 철도·도로 소음은 직접 확인하지 않았으므로, 조용함을 매수 이유로 삼으려면 현장 청음이 필요합니다.",
+          "en": "The guide lists window specifications equivalent to T-2 or T-3 depending on the apartment. Rail and road noise at the chosen orientation with windows open has not been checked, so quietness needs a listening test before it becomes a purchase reason."
+        },
+        "sourceIds": [
+          "mg-structure"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "North 2분·South 3분은 현재 안내 기준",
+            "en": "North 2 / South 3 minutes in the current outline"
+          },
+          "body": {
+            "ko": "현재 개요의 노선은 JR 야마노테선·도큐 메구로선·도쿄메트로 난보쿠선·도에이 미타선입니다. 오래된 '1분' 홍보보다 관심 동을 명시한 자료를 쓰고, 이용할 노선의 개찰구와 승강장까지 걸어보는 편이 정확합니다.",
+            "en": "The current outline lists JR Yamanote, Tokyu Meguro, Tokyo Metro Namboku and Toei Mita services. Use the tower-specific listing instead of an older one-minute headline, then walk to the ticket gate and platform of the line you will use."
+          },
+          "sourceIds": [
+            "mg-outline"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "4개 노선 중 실제 필요한 노선으로 평가",
+            "en": "Value the line you will actually use"
+          },
+          "body": {
+            "ko": "서로 다른 목적지를 가진 맞벌이 가구라면 한 역에서 여러 노선을 선택할 수 있다는 점이 유용합니다. 다만 출구·개찰구·엘리베이터 경로와 피크 시간 전체 소요는 미실측이므로 노선 개수만으로 통근 시간을 줄였다고 계산하지 않습니다.",
+            "en": "Several lines at one station can help a household with different work destinations. Exit, ticket-gate and lift routing and full peak-time journeys have not been measured, so the line count is not converted into claimed time savings."
+          },
+          "sourceIds": [
+            "mg-outline"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "메구로라는 이름보다 시나가와구 주소가 기준",
+            "en": "Use the Shinagawa address for school checks"
+          },
+          "body": {
+            "ko": "단지는 메구로역 앞이지만 행정 주소는 시나가와구 가미오사키 3초메 1번입니다. 판매사 자료의 학교 후보를 확인할 때도 메구로구 학교 목록 대신 시나가와구의 주소·입학연도 조회를 이용해야 합니다.",
+            "en": "The development is beside Meguro Station but its address is Kamiosaki 3-chome 1, Shinagawa. Check the schools named by the seller through Shinagawa's address and entry-year system, rather than a Meguro Ward school list."
+          },
+          "sourceIds": [
+            "mg-outline",
+            "mg-school-navi"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "제3히노·히노가쿠엔은 배정 확인의 출발점",
+            "en": "Third Hino and Hino Gakuen are leads to verify"
+          },
+          "body": {
+            "ko": "판매사 자료는 제3히노 초등학교와 히노가쿠엔을 통학권으로 제시합니다. 시나가와구 안내는 학교 선택 제도를 운영하되 구역 밖 희망은 수용 상황에 영향을 받는다고 하므로, 이름이 보인다는 이유만으로 선택 가능성을 확정하지 않습니다.",
+            "en": "The seller names Third Hino Elementary and Hino Gakuen as catchment schools. Shinagawa explains that out-of-area school choices depend on capacity, so seeing a school listed is not confirmation that any desired placement is available."
+          },
+          "sourceIds": [
+            "mg-location",
+            "mg-school-navi"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "아트레를 귀가 동선에 넣기 좋음",
+            "en": "Atre can fit into the journey home"
+          },
+          "body": {
+            "ko": "아트레 메구로는 현재 식품·드러그스토어·식음·서점 등의 카테고리를 안내합니다. 역 이용 후 필요한 품목을 해결할 수 있는 구성은 강점이지만, 실제로 쓰는 매장의 영업시간과 거주동 쪽 출구를 함께 맞춰봐야 합니다.",
+            "en": "Atre Meguro currently lists food, pharmacy, dining and book categories. That mix can make errands on the journey home practical; match the opening hours of your actual stores with the exit toward your residential tower."
+          },
+          "sourceIds": [
+            "mg-atre"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "비상 전원 72시간의 의미를 정확히 보기",
+            "en": "Understand what 72-hour backup means"
+          },
+          "body": {
+            "ko": "개발사 계열 자료는 가정한 사용계획하에 약 72시간 비상 발전을 안내하며 급수펌프와 비상 엘리베이터 등을 설명합니다. 모든 세대에 평상시와 같은 전력이 보장되는 뜻은 아니며, 수도관·엘리베이터 고장 시 제약과 최근 점검 결과를 확인해야 합니다.",
+            "en": "The developer-group guide describes approximately 72 hours of generation under an assumed operating plan, including pumps and emergency lifts. This is not normal household power guaranteed everywhere; pipe or lift failures and the latest inspection results matter."
+          },
+          "sourceIds": [
+            "mg-safety"
+          ],
+          "status": "documented"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "North와 South의 비용표를 섞지 않기",
+            "en": "Keep North and South charges separate"
+          },
+          "body": {
+            "ko": "공식 개요상 두 동은 높이와 세대수가 다른 2017년 준공 건물입니다. 관심 세대의 관리비·수선적립금, 해당 관리조합의 장기계획과 면진장치 점검·교체 예산을 받아야 하며 이번 조사에서는 최신 재무자료를 확보하지 못했습니다.",
+            "en": "The official outline identifies two 2017 buildings with different heights and unit counts. Obtain the selected apartment's charges and its association's long-term plan, including isolation-equipment inspection and replacement budgets; current financial documents were not obtained."
+          },
+          "sourceIds": [
+            "mg-outline",
+            "mg-structure"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "역세권 프리미엄이 적정한지는 미확인",
+            "en": "The station premium is not yet priced"
+          },
+          "body": {
+            "ko": "North·South와 층·방향·면적을 맞춘 최근 실거래 대조는 완료하지 않았습니다. 매도자는 공개 호가를 성사 가격으로 제시하지 말고, 매수자는 관리비와 리모델링 상태까지 같은 조건의 거래로 희망 가격을 검증해야 합니다.",
+            "en": "Recent completed sales have not been matched by tower, floor, orientation and size. Sellers should not present public asking prices as achieved prices, and buyers need comparable charges and renovation condition before validating an asking price."
+          },
+          "sourceIds": [
+            "mg-outline"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "어반독 파크시티 도요스",
+          "en": "Urban Dock Park City Toyosu"
+        },
+        "reason": {
+          "ko": "역 접근보다 몰 연결·수변 산책·가족 외출의 비중이 크면 비교하세요.",
+          "en": "Compare it when mall access, waterfront walks and family outings matter more than the shortest station approach."
+        },
+        "condition": {
+          "ko": "도요스의 동별 동선과 통학 배정, 양쪽 단지의 같은 면적 총비용을 맞춰야 합니다.",
+          "en": "Match Toyosu's tower route and school allocation, then compare total ownership costs at the same apartment size."
+        }
+      },
+      {
+        "name": {
+          "ko": "파크코트 시부야 더 타워",
+          "en": "Park Court Shibuya The Tower"
+        },
+        "reason": {
+          "ko": "시부야에서 일하고 외식·공원 이용을 더 자주 한다면 직접 비교할 후보입니다.",
+          "en": "A direct alternative if you work in Shibuya and use its dining and park surroundings more often."
+        },
+        "condition": {
+          "ko": "시부야는 언덕 접근과 정기차지권을 함께 검토해야 하며, 가격의 우열은 아직 판단하지 않았습니다.",
+          "en": "Include Shibuya's uphill approach and fixed land lease; no conclusion on relative pricing has been established."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "mg-outline",
+        "title": "Tokyo Tatemono: Brillia Towers 目黒 物件概要",
+        "url": "https://www.bt-meguro.com/outline/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "현재 계열 중개 사이트의 동별 2분·3분 표기와 주소·준공 정보. 현장 도보 실측이 아님.",
+          "en": "Current group resale outline with 2/3-minute tower walks, address and completion details; not a field-timed walk."
+        }
+      },
+      {
+        "id": "mg-structure",
+        "title": "Tokyo Tatemono: Brillia Towers 目黒 構造",
+        "url": "https://www.bt-meguro.com/page6/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "분양 당시 자료 기반 면진·방음 설명. 최신 성능 시험·점검 기록은 아님.",
+          "en": "Isolation and acoustic specifications based on original sales materials; not a current inspection or performance test."
+        }
+      },
+      {
+        "id": "mg-location",
+        "title": "Tokyo Tatemono: Brillia Towers 目黒 周辺環境",
+        "url": "https://www.bt-meguro.com/page9/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "학교 이름 및 동별 지도 개측. 안내 자체가 분양 당시 자료 기반임을 명시하므로 최신 배정·실측과 구분.",
+          "en": "School names and map estimates by tower. The page states it is based on original sales material, so current allocation and field measurement remain separate."
+        }
+      },
+      {
+        "id": "mg-school-navi",
+        "title": "品川区: しながわ学校選択案内ナビ",
+        "url": "https://www.city.shinagawa.tokyo.jp/gakkukensaku.html",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "주소·입학연도와 학교 선택 조건을 확인하는 공식 경로. 특정 세대의 확정 배정 결과를 받지는 않음.",
+          "en": "Official address/entry-year and school-choice route; no final result for an individual apartment was obtained."
+        }
+      },
+      {
+        "id": "mg-safety",
+        "title": "Tokyo Tatemono: Brillia Towers 目黒 防災",
+        "url": "https://www.bt-meguro.com/page7/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "원분양 자료 기반 비상 전원·급수 설명과 72시간의 전제 조건. 장치 현상태를 보증하지 않음.",
+          "en": "Original-material backup-power and water descriptions, including the assumptions behind 72 hours; not a guarantee of current equipment condition."
+        }
+      },
+      {
+        "id": "mg-atre",
+        "title": "アトレ目黒: ショップ・施設案内",
+        "url": "https://www.atre.co.jp/meguro/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "운영 중인 역 상업시설의 현재 매장 카테고리 확인. 특정 매장의 최신 영업시간은 별도 확인.",
+          "en": "Current categories at the operating station retail complex; individual shop hours require a separate check."
+        }
+      }
+    ]
+  },
+  {
+    "id": "jp-park-court-shibuya",
+    "marketId": "jp-tokyo",
+    "name": {
+      "ko": "파크코트 시부야 더 타워",
+      "en": "Park Court Shibuya The Tower"
+    },
+    "area": {
+      "ko": "시부야 · 우다가와초 · 요요기공원 남측",
+      "en": "Shibuya · Udagawacho · south of Yoyogi Park"
+    },
+    "checkedOn": "2026-09-13",
+    "verdict": {
+      "ko": "시부야와 요요기공원을 자주 누릴 실거주 후보. 토지 소유와 장기 승계가 우선이면 다른 후보부터.",
+      "en": "Shortlist for frequent Shibuya and Yoyogi Park use. Look elsewhere first if land ownership and long-term succession are essential."
+    },
+    "summary": {
+      "ko": "역·문화생활·공원을 함께 누리는 입지가 매력적이지만, 언덕 위 접근과 2093년 9월 만료 정기차지권을 함께 봐야 합니다. 학교 역시 기존 건물까지의 거리보다 진난 초등학교의 현재 임시 캠퍼스 통학을 확인하는 것이 중요합니다.",
+      "en": "Its appeal combines rail access, city life and park use, but an uphill approach and a fixed land lease ending September 2093 belong in the decision. For families, Jinnan Elementary's current temporary campus matters more than the distance to its former building."
+    },
+    "bestFor": {
+      "ko": "시부야에서 생활하는 비중이 높고, 공용 라운지·공원 이용에 가치를 두며 차지권 조건을 검토할 가구.",
+      "en": "Households centred on Shibuya who value lounges and park use and are prepared to assess the land-lease terms."
+    },
+    "holdFor": {
+      "ko": "토지 지분의 영속 소유, 평탄한 역 동선, 예측 가능한 낮은 월 고정비를 우선하는 가구.",
+      "en": "Households prioritising perpetual land ownership, a level station walk or predictably low monthly fixed costs."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "문화생활과 공원을 함께 쓰는 위치",
+          "en": "City activity and park use in one location"
+        },
+        "body": {
+          "ko": "미쓰이 계열 안내는 시부야역에서 공원도리를 올라오는 위치와 요요기공원 접근을 설명합니다. 직장·외식·산책 목적지가 실제로 이 주변에 모여 있다면 입지의 효용이 크며, 단순히 '시부야 주소'만 필요한 경우보다 적합합니다.",
+          "en": "Mitsui's guide describes an approach up Koen-dori from Shibuya and access to Yoyogi Park. The location is most useful when work, meals out and walks genuinely cluster here, rather than when the address alone is the attraction."
+        },
+        "sourceIds": [
+          "sb-mitsui-location"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "북측 공원·남측 도심이라는 조망 선택",
+          "en": "Different outlooks need different valuations"
+        },
+        "body": {
+          "ko": "설계사는 북쪽 요요기공원과 남쪽 시부야 시가지라는 방향별 입지를 설명합니다. 선호가 분명한 사람에게 선택지가 되지만, 현재 관심 층의 시야·맞은편 건물·일사를 확인하기 전에는 어느 방향도 조망 프리미엄을 확정하지 않습니다.",
+          "en": "The architect describes Yoyogi Park to the north and Shibuya's cityscape to the south. That creates meaningful preferences, but any view premium requires checking the actual floor's outlook, facing buildings and sunlight."
+        },
+        "sourceIds": [
+          "sb-design"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "2093년 9월에 끝나는 토지 이용권",
+          "en": "The land right has a September 2093 end date"
+        },
+        "body": {
+          "ko": "중개 매물은 정기차지권과 만료 시 토지 반환 조건을 명시합니다. 지역의 성장 기대와 별개로 남은 기간·매각 시 조건·대출 가능성을 검토해야 하므로, 소유권 단지의 제곱미터당 가격과 단순 비교하기 어렵습니다.",
+          "en": "The resale listing identifies a fixed land lease and land-return requirements at expiry. Remaining term, resale conditions and financing require assessment independently of area growth, making a simple price-per-square-metre comparison with ownership-title homes inadequate."
+        },
+        "sourceIds": [
+          "sb-listing"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "학교가 옆에 있다는 옛 설명에 주의",
+          "en": "An old nearby-school claim can mislead"
+        },
+        "body": {
+          "ko": "진난 초등학교 공식 사이트는 2026년 8월부터 아오야마 캠퍼스를 안내하며, 9월 소식에서도 새 캠퍼스 활동이 확인됩니다. 기존 우다가와초 교사까지의 거리만으로 자녀 통학 편의를 판단하지 않아야 합니다.",
+          "en": "Jinnan Elementary's official site directs families to Aoyama Campus from August 2026, with September posts reporting activities there. Distance to the former Udagawacho building should not be used as the child's current school commute."
+        },
+        "sourceIds": [
+          "sb-school-current"
+        ],
+        "status": "documented"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "8분은 80m/분 방식의 광고 계산",
+            "en": "Eight minutes is an advertising calculation"
+          },
+          "body": {
+            "ko": "미쓰이 계열 접근 안내의 시부야 8분·메이지진구마에 11분·하라주쿠 12분은 80m를 1분으로 환산한 수치입니다. 시부야역 내 환승·승강장 이동과 신호 대기까지 포함한 실제 통근 시간으로 표시하지 않습니다.",
+            "en": "Mitsui's 8-minute Shibuya, 11-minute Meiji-jingumae and 12-minute Harajuku walks are calculated at 80 metres per minute. They are not full commute timings including lights, station transfers and platform access."
+          },
+          "sourceIds": [
+            "sb-access"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "귀갓길은 공원도리 오르막까지 평가",
+            "en": "Include the uphill return via Koen-dori"
+          },
+          "body": {
+            "ko": "입지 안내는 역에서 공원도리를 올라오는 언덕 위 위치를 명시합니다. 유모차·짐·무더위가 있는 날을 기준으로 역의 어느 출구에서 어떤 경사와 횡단을 거치는지 확인해야 하며, 무장애 최적 경로는 아직 실측하지 않았습니다.",
+            "en": "The location guide explicitly places the tower uphill along Koen-dori from the station. Check exits, gradients and crossings with a stroller, luggage or hot weather in mind; the best step-free route has not been measured."
+          },
+          "sourceIds": [
+            "sb-mitsui-location"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "현재 통학지는 아오야마 캠퍼스",
+            "en": "Use Aoyama Campus for the current school trip"
+          },
+          "body": {
+            "ko": "학교 공식 주소 안내는 임시 캠퍼스를 진구마에 5초메 53-18로 표시합니다. 입주 시점과 자녀 학년에 맞는 배정·통학 방법·방과후 동선을 학교에 확인해야 하며 단지에서의 실제 통학시간은 미확인입니다.",
+            "en": "The school's official address notice gives the temporary campus as Jingumae 5-chome 53-18. Confirm placement, travel arrangements and after-school routing for the child's year and move date; travel time from the tower remains unverified."
+          },
+          "sourceIds": [
+            "sb-school-current"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "재건축 일정과 입학 연도를 함께 보기",
+            "en": "Match the rebuilding programme to the child's year"
+          },
+          "body": {
+            "ko": "시부야구의 2026년 8월 학교 특집은 진난 초등학교를 포함한 아오야마 캠퍼스 활용 계획을 안내합니다. 새 학교의 미래 장점은 현재 이용 가능한 시설과 구분하고, 예정 복귀 시점을 매물 광고만으로 확정하지 않는 편이 좋습니다.",
+            "en": "Shibuya's August 2026 school bulletin describes use of Aoyama Campus including Jinnan Elementary. Separate the future benefits of a rebuilt school from facilities available today, and verify the return timetable independently of property advertising."
+          },
+          "sourceIds": [
+            "sb-school-plan"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "공원 가까움은 실제 사용할 입구로 확인",
+            "en": "Check the park entrance you will use"
+          },
+          "body": {
+            "ko": "미쓰이 안내는 요요기공원까지 약 160m·도보 2분을 제시합니다. 이는 출처의 접근 표기이며 운동 코스·놀이터·반려견 이용 구역까지 같은 시간이 걸린다는 뜻은 아니므로 자신의 목적지까지 동선을 확인해야 합니다.",
+            "en": "Mitsui lists Yoyogi Park at about 160 m or two minutes. This is a source-reported access figure, not the time to a running route, playground or dog-use area; check the entrance and internal destination you actually need."
+          },
+          "sourceIds": [
+            "sb-mitsui-location"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "라운지를 쓰는 빈도가 비용 납득을 좌우",
+            "en": "Amenities are valuable when you use them"
+          },
+          "body": {
+            "ko": "현재 매물 안내는 20층 파크뷰 라운지, 21층 피트니스, 지하 2층 골프 라운지 등을 소개합니다. 자주 쓸 시설인지 살펴보되 예약·추가요금·휴관·실제 운영시간은 관리 규정에서 확인해야 합니다.",
+            "en": "The current listing describes a level-20 Park View Lounge, level-21 fitness room and B2 golf lounge. Decide which you would use frequently, then check booking rules, additional fees, closures and operating hours in the management rules."
+          },
+          "sourceIds": [
+            "sb-listing"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "철거적립금까지 포함해야 월 부담이 보임",
+            "en": "Include the demolition reserve in monthly costs"
+          },
+          "body": {
+            "ko": "확인한 141.05㎡ 매물의 기재 비용을 모두 더하면 월 213,220엔입니다. 관리비 69,680엔·수선적립금 33,850엔·철거적립금 33,570엔(소계 137,100엔)에 인터넷 2,420엔·주차 68,000엔·창고 5,700엔이 더해집니다. 주차·창고를 제외할 수 있는지는 미확인이며, 특정 매물의 표시값으로 다른 세대나 현재 관리조합 확정 고지액에 그대로 적용할 수 없습니다.",
+            "en": "The listed recurring items for a 141.05 m² unit total ¥213,220 per month: management ¥69,680, repairs ¥33,850 and demolition reserve ¥33,570 (subtotal ¥137,100), plus internet ¥2,420, parking ¥68,000 and storage ¥5,700. Whether parking and storage can be excluded is unverified; these are one listing’s figures, not universal or association-confirmed charges."
+          },
+          "sourceIds": [
+            "sb-listing"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "남은 차지기간을 맞춘 거래 비교가 필요",
+            "en": "Compare transactions with the remaining lease in view"
+          },
+          "body": {
+            "ko": "현재 호가와 최근 유사 세대 실거래를 대조하는 작업은 미완료입니다. 2018년 모델룸 방문기의 가격·월 유지비는 역사적 자료로만 남기고, 현 매물의 차지권 조건·층·방향·수선 부담을 맞추기 전에는 저평가나 향후 상승을 결론내리지 않았습니다.",
+            "en": "Current asking prices have not been matched with recent comparable completed sales. Prices and charges in a 2018 model-room review remain historical context; no undervaluation or future gain is concluded without matching lease terms, floor, orientation and repair obligations."
+          },
+          "sourceIds": [
+            "sb-original-review"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "브릴리아 타워스 메구로",
+          "en": "Brillia Towers Meguro"
+        },
+        "reason": {
+          "ko": "공원·시부야 외출보다 매일 역에 가는 시간이 중요하면 함께 보세요.",
+          "en": "Compare it when everyday station access matters more than Shibuya outings and park use."
+        },
+        "condition": {
+          "ko": "동별 역 접근과 학교 동선을 맞추고, 소유권 조건과 전체 유지비는 계약 자료로 비교해야 합니다.",
+          "en": "Match tower-specific station and school routes, then compare ownership terms and total charges from transaction documents."
+        }
+      },
+      {
+        "name": {
+          "ko": "어반독 파크시티 도요스",
+          "en": "Urban Dock Park City Toyosu"
+        },
+        "reason": {
+          "ko": "언덕 위 도심생활보다 몰 연결·수변 외출이 생활에 잘 맞는다면 대안입니다.",
+          "en": "An alternative if mall connections and waterfront outings fit better than hilltop city living."
+        },
+        "condition": {
+          "ko": "도요스의 동별 관리비·수선계획도 확인해야 하며 가격 우열을 정한 비교는 아닙니다.",
+          "en": "Toyosu's tower-specific charges and repair plan also need checking; this is not a ranking of relative pricing."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "sb-mitsui-location",
+        "title": "三井の賃貸: パークコート渋谷 ザ タワー",
+        "url": "https://www.mitsui-chintai.co.jp/resident/original/pco_shibuya_the_tower/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "위치·공원 접근·공원도리 언덕 설명. 단지 출입구부터의 실제 도보시간이나 모든 세대의 조용함을 입증하지 않음.",
+          "en": "Location, park-access and uphill Koen-dori description; not proof of measured entrance walks or quietness in every home."
+        }
+      },
+      {
+        "id": "sb-access",
+        "title": "三井の賃貸: パークコート渋谷 アクセス",
+        "url": "https://www.mitsui-chintai.co.jp/resident/original/pco_shibuya_the_tower/access.html",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "80m/분으로 산출한 역 도보. 출처는 열차 시간에도 대기·환승 미포함을 명시.",
+          "en": "Station walks calculated at 80 m/minute. The source also excludes waiting and transfers from train-time examples."
+        }
+      },
+      {
+        "id": "sb-design",
+        "title": "日本設計: パークコート渋谷 ザ タワー",
+        "url": "https://www.nihonsekkei.co.jp/projects/14002/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "설계자의 입지·방향·개발 구조 설명. 현재 개별 세대 조망을 보장하지 않음.",
+          "en": "Architect's location, orientation and development description; not a guarantee of current views from a specific apartment."
+        }
+      },
+      {
+        "id": "sb-listing",
+        "title": "東急リバブル: パークコート渋谷ザタワー C13264330",
+        "url": "https://www.livable.co.jp/mansion/C13264330/",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "141.05㎡ 특정 매물의 차지권·시설·월 비용 예시. 현장 실측·관리조합 재무 검증·실거래 가격 자료는 아님.",
+          "en": "Lease terms, amenities and charges for one 141.05 m² listing; not a measured visit, association financial audit or completed-sale record."
+        }
+      },
+      {
+        "id": "sb-school-current",
+        "title": "渋谷区立神南小学校: 公式サイト",
+        "url": "https://shibuya.schoolweb.ne.jp/swas/index.php?id=1310231",
+        "checkedOn": "2026-09-13",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "공식 페이지 원문에서 2026년 8월 이후 아오야마 캠퍼스 주소와 9월 캠퍼스 활동을 확인. 웹 검색 도구는 403, 공개 HTML 요청으로 본문 확인.",
+          "en": "Official public HTML confirms the Aoyama address from August 2026 and September campus activity. Search-tool fetch returned 403; the public HTML was retrieved directly."
+        }
+      },
+      {
+        "id": "sb-school-plan",
+        "title": "渋谷区: さらに広がる未来の学校",
+        "url": "https://www.city.shibuya.tokyo.jp/contents/koho-news/1616/20260815_special_school02.html",
+        "checkedOn": "2026-09-13",
+        "publishedOn": "2026-08-15",
+        "kind": "official",
+        "note": {
+          "ko": "공식 재건축·임시 캠퍼스 로드맵. 예정 복귀를 현 상태로 처리하지 않음.",
+          "en": "Official rebuilding and temporary-campus roadmap; planned return is not treated as the current situation."
+        }
+      },
+      {
+        "id": "sb-original-review",
+        "title": "マンションマニア: パークコート渋谷 モデルルーム訪問",
+        "url": "https://manmani.net/?p=19548",
+        "checkedOn": "2026-09-13",
+        "publishedOn": "2018-11-06",
+        "kind": "editorial",
+        "note": {
+          "ko": "2018년 모델룸 방문 및 이후 추기. 당시 가격·유지비·미래 가치 예상은 현 시세로 재사용하지 않음.",
+          "en": "2018 model-room review with later additions. Historical prices, charges and value predictions are not reused as current market facts."
+        }
+      }
+    ]
+  }
+]

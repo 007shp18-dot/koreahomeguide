@@ -19,7 +19,7 @@ export async function PricesPage({ locale = 'en', searchParams }: { locale?: Sit
   return <div id="top">
     <SiteHeader copy={{ ...homepageCopy.header, homeHref: `${prefix}/`, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', links: [{ label: t.title, href: `${prefix}/prices/`, isCurrent: true }] }} />
     <main className={styles.main}>
-      <ResearchPageHeading title={t.title} description={t.description} actions={<><Link href={`${prefix}/passport/`}>{t.budget}</Link><Link href={`${prefix}/tools/`}>{t.tools}</Link></>} />
+      <ResearchPageHeading title={t.title} description={t.description} actions={<><Link href={`${prefix}/living/`}>{locale === "ko" ? "단지 리뷰" : locale === "zh-CN" ? "住宅评估" : "Property reviews"}</Link><Link href={`${prefix}/passport/`}>{t.budget}</Link><Link href={`${prefix}/tools/`}>{t.tools}</Link></>} />
       <PriceMarketSearch locale={locale} />
       <section className={styles.section} aria-labelledby="read-prices-title">
         <div className={styles.sectionHeading}><p>{t.comparison}</p><h2 id="read-prices-title">{t.check}</h2></div>
