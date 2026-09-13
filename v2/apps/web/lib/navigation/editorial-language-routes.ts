@@ -62,6 +62,10 @@ const routes: EditorialLanguageRoutes = {
 };
 // Canonical English/Korean pairs, without importing article bodies into the client.
 const koreanPairs = [
+  ['/news/singapore-lower-psf-higher-total-budget/', '/ko/news/singapore-lower-psf-higher-total-budget/'],
+  ['/news/dubai-new-renewal-rent-mix/', '/ko/news/dubai-new-renewal-rent-mix/'],
+  ['/news/singapore-queenstown-everyday-heritage/', '/ko/news/singapore-queenstown-everyday-heritage/'],
+  ['/news/tokyo-kiyosumi-shirakawa-between-stops/', '/ko/news/tokyo-kiyosumi-shirakawa-between-stops/'],
   ['/news/singapore-condo-prices-2026-by-project/', '/ko/news/singapore-condo-prices-2026-by-project/'],
   ['/news/tokyo-asking-price-vs-contracted-price-2026/', '/ko/news/tokyo-asking-price-vs-contracted-price-2026/'],
   [
