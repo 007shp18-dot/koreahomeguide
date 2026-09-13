@@ -26,7 +26,7 @@ export function ResearchNote({ market, placeKey, placeName, locale = 'en' }: { m
     <summary>{note ? (ko ? '내 메모' : zh ? '我的备注' : 'My note') : (ko ? '메모 남기기' : zh ? '添加备注' : 'Add a note')}</summary>
     <form onSubmit={submit}>
       <label htmlFor={id}>{ko ? `${placeName} 메모` : zh ? `${placeName}的备注` : `Note for ${placeName}`}</label>
-      <textarea id={id} value={value} maxLength={1_000} rows={3} aria-describedby={`${id}-help`} placeholder={ko ? '마음에 드는 점, 확인할 점을 적어두세요.' : zh ? '记录喜欢的地方和待确认的问题。' : 'What stands out? What would you like to check?'} onChange={event => { setDraft(event.currentTarget.value); setStatus(''); }} />
+      <textarea id={id} value={value} maxLength={1_000} rows={2} aria-describedby={`${id}-help`} placeholder={ko ? '마음에 드는 점, 확인할 점을 적어두세요.' : zh ? '记录喜欢的地方和待确认的问题。' : 'What stands out? What would you like to check?'} onChange={event => { setDraft(event.currentTarget.value); setStatus(''); }} />
       <div className={styles.noteHelp}><p id={`${id}-help`}>{ko ? '이 브라우저에만 저장되는 개인 메모예요.' : zh ? '私人备注，仅保存在此浏览器中。' : 'A private note, saved only in this browser.'}</p><span>{value.length}/1,000</span></div>
       <div className={styles.noteActions}><button type="submit">{ko ? '메모 저장' : zh ? '保存备注' : 'Save note'}</button>{note && <button type="button" onClick={() => persist('')}>{ko ? '메모 삭제' : zh ? '删除备注' : 'Delete note'}</button>}</div>
       <p className={styles.status} role="status">{status}</p>

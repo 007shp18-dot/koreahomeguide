@@ -38,7 +38,7 @@ export default function DubaiComparisonDialog({ locale, model, preset, onClose, 
     try { await navigator.clipboard.writeText(url); setMessage(copy.copied); setShareUrl(''); }
     catch { setMessage(''); setShareUrl(url); }
   };
-  return <dialog ref={dialog} className={styles.dialog} data-dubai-comparison="true" aria-labelledby="dubai-comparison-title" aria-describedby="dubai-comparison-conditions" onCancel={event => { event.preventDefault(); onClose(); }}>
+  return <dialog ref={dialog} className={styles.dialog} data-dubai-comparison="true" data-area-count={rows.length} aria-labelledby="dubai-comparison-title" aria-describedby="dubai-comparison-conditions" onCancel={event => { event.preventDefault(); onClose(); }}>
     <header className={styles.header}><div><span className={styles.eyebrow}>DUBAI · {copy[preset.housing]} · {copy[preset.stage]}</span><h2 id="dubai-comparison-title">{copy.title}</h2></div><button type="button" onClick={onClose}>{copy.close}</button></header>
     <div className={styles.body}>
       <p id="dubai-comparison-conditions">{copy.conditions}</p>

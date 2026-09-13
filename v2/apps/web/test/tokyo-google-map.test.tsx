@@ -1,5 +1,10 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
+const renderedLinks = vi.hoisted(() => [] as { href: string; scroll?: boolean; prefetch?: boolean }[]);
+vi.mock('next/link', () => ({ default: ({ href, scroll, prefetch, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; scroll?: boolean; prefetch?: boolean }) => {
+  renderedLinks.push({ href, scroll, prefetch });
+  return <a href={href} {...props} />;
+} }));
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 vi.mock('../components/maps/google-place-map', () => ({ GooglePlaceMap: ({ market, points }: { market: string; points: { label: string }[] }) => <div data-google-market={market}>{points.map(p => p.label).join('|')}</div> }));
 import { TokyoAreaMap, tokyoMapAreaHref, tokyoAreaPoint, filterTokyoAreas } from '../components/japan/tokyo-area-map';
@@ -43,6 +48,18 @@ describe('Tokyo Google map', () => {
     expect(area.searchParams.get('neighbourhood')).toBe('Akasaka');
     expect(area.searchParams.has('page')).toBe(false);
   });
+  it('selects a neighbourhood without jumping away from the current browsing position', () => {
+    renderedLinks.length = 0;
+    renderToStaticMarkup(<TokyoAreaMap locale="ko" rows={[row, { ...row, district: 'Azabu' }]} city="13103" year="2025" quarter="4" browserKey="test" filters={filters} view="directory" />);
+    const selected = renderedLinks.find(link => new URL(link.href, 'https://signedprice.com').searchParams.get('neighbourhood') === 'Azabu');
+    expect(selected).toBeDefined();
+    const url = new URL(selected!.href, 'https://signedprice.com');
+    expect(url.hash).toBe('');
+    expect(selected!.scroll).toBe(false);
+    expect(selected!.prefetch).toBe(false);
+    expect(url.pathname).toBe('/ko/jp/tokyo/explore/');
+    expect(Object.fromEntries(url.searchParams)).toEqual({ city: '13103', year: '2025', quarter: '4', neighbourhood: 'Azabu', type: 'Condo', minArea: '50', maxArea: '90' });
+  });
   it('keeps the map visible during summary outages', () => {
     const html = renderToStaticMarkup(<TokyoAreaMap rows={[]} city="13103" year="2025" quarter="4" browserKey="test" filters={filters} unavailable />);
     expect(html).toContain('data-google-market="tokyo"');
@@ -60,7 +77,7 @@ describe('Tokyo Google map', () => {
     expect(html).not.toContain('data-neighbourhood="Azabu"');
     expect(html).toContain('>Minato|Shibuya</div>');
     expect(html).toMatch(/data-neighbourhood="Ebisu"[^>]*aria-current="location"/);
-    expect(html).toContain('#tokyo-transactions');
+    expect(html).not.toContain('#tokyo-transactions');
     expect(html).not.toContain('aria-label="Map detail"');
   });
   it('makes every neighbourhood searchable without six-item page navigation', () => {
