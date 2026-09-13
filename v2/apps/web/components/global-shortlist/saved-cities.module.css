@@ -6,10 +6,10 @@
 .cities button[aria-pressed='true'], .cities a[aria-current] { color: var(--accent); box-shadow: inset 0 -2px var(--accent); font-weight: 600; }
 .cities span { font-size: 12px; font-variant-numeric: tabular-nums; }
 .note { margin: 16px 0; font-size: 13px; line-height: 1.8; color: var(--muted); }
-.list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; list-style: none; padding: 0; margin: 24px 0; }
+.list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; list-style: none; padding: 0; margin: 16px 0; }
 .list li { min-width: 0; border-bottom: 1px solid var(--line); }
-.list a { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 96px; padding: 20px 0; color: var(--ink); text-decoration: none; }
-.list small { display: block; color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+.list a { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 76px; padding: 12px 0; color: var(--ink); text-decoration: none; }
+.list small { display: block; color: var(--muted); font-size: 12px; margin-bottom: 4px; }
 .list strong { display: block; font-size: 18px; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
 .open { flex-shrink: 0; color: var(--accent); font-size: 13px; }
 .empty { padding: 36px 0; max-width: 58ch; }

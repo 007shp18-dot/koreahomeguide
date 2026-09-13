@@ -318,16 +318,20 @@ export function DubaiExplorer({ locale = 'en',
           <div><h2 id="dubai-area-results">{t("Area prices")}</h2><p>{t(results.length.toLocaleString('en'))}{t(" matching areas · ")}{t(housing)}{t(" · ")}{t(stage)}</p></div>
           <small>{t(results.length === 0 ? 'No matches' : `${(activePage - 1) * DUBAI_EXPLORE_PAGE_SIZE + 1}–${Math.min(activePage * DUBAI_EXPLORE_PAGE_SIZE, results.length)} shown`)}</small>
         </header>
-        {comparison.ids.length > 0 ? <div className={comparisonStyles.tray} aria-label={compareCopy.title}>
-          <p>{compareCopy.hint}</p>
+        {comparison.ids.length > 0 ? <div className={comparisonStyles.tray} role="group" aria-label={compareCopy.title} aria-describedby="dubai-comparison-hint">
+          <p id="dubai-comparison-hint" className={comparison.ids.length < 2 ? comparisonStyles.trayHint : comparisonStyles.srOnly}>{compareCopy.hint}</p>
+          <div className={comparisonStyles.trayActions}>
           <button type="button" className={comparisonStyles.primaryButton} disabled={comparison.ids.length < 2}
             onClick={() => comparison.open({ areas: comparison.ids, housing, stage, ...model.context.comparisonPeriod })}>
             {compareCopy.open} ({comparison.ids.length}/3)
           </button>
           {comparison.ids.length > 0 ? <button type="button" onClick={comparison.clear}>{compareCopy.clear}</button> : null}
+          </div>
+          <div className={comparisonStyles.traySelection}>
           {comparison.ids.map(slug => <button key={slug} type="button" onClick={() => comparison.toggle(slug)} aria-label={`${compareCopy.remove}: ${model.areas.find(area => area.slug === slug)?.name ?? slug}`}>
-            {model.areas.find(area => area.slug === slug)?.name ?? slug} ×
+            <span>{model.areas.find(area => area.slug === slug)?.name ?? slug}</span><span aria-hidden="true">×</span>
           </button>)}
+          </div>
         </div> : null}
         {comparison.saved.length > 0 || comparison.storageError ? <details className={comparisonStyles.saved}>
           <summary>{compareCopy.saved} ({comparison.saved.length})</summary>

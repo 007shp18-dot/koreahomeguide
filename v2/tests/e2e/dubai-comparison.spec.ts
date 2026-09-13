@@ -50,13 +50,15 @@ test('Dubai comparison saves and reopens without data or map requests', async ({
   await expect(dialog.getByRole('columnheader')).toHaveCount(3);
 });
 
-test('Dubai caps candidates at three and handles off-plan and old shared periods', async ({ page }) => {
+test('Dubai caps candidates at three and handles off-plan and old shared periods', async ({ page }, testInfo) => {
   await page.goto('/ae/dubai/explore/');
   const add = page.getByRole('button', { name: /^Add to comparison:/ });
   for (let i = 0; i < 3; i++) await add.first().click();
   await expect(add.first()).toBeDisabled();
+  await testInfo.attach('dubai-comparison-selection', { body: await page.screenshot(), contentType: 'image/png' });
   await page.getByRole('button', { name: 'Compare (3/3)', exact: true }).click();
   await expect(page.getByRole('dialog').getByRole('columnheader')).toHaveCount(4);
+  await testInfo.attach('dubai-comparison-three', { body: await page.screenshot(), contentType: 'image/png' });
   await page.keyboard.press('Escape');
   const hash = '#compare=' + encodeURIComponent(JSON.stringify({ areas: ['marsa-dubai', 'nonexistent-area'], housing: 'apartment', stage: 'off-plan', from: '2020-01-01', to: '2020-03-01' }));
   await page.goto('/ko/ae/dubai/explore/' + hash);
