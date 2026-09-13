@@ -15,6 +15,8 @@ Locale-aware manifests (English, Korean, Simplified Chinese), generated app icon
 
 ## Review follow-up
 
+GitHub Actions run `34763427932` passed lint and typecheck, then reported 3,389 passing tests, 85 skipped tests and one failure: the homepage metadata contract still expected the pre-PWA object. Its exact expectation now includes the app manifest, application name, Apple capability and touch icon while retaining the existing SEO checks. The affected homepage and mobile app suites passed all 18 tests locally. A follow-up commit requests a hosted preview using the repository's documented `[vercel-preview]` opt-in; the release cost policy is unchanged.
+
 Independent code review found installed tabs could cover the Seoul mobile building drawer and Tokyo discovery trigger. Both now consume a shared standalone bottom-clearance variable; normal browser mode uses zero additional clearance. Singapore overview `/sg/` also retains its city when opening Explore. Actual overlap checks in a browser remain required.
 
 ## Not yet verified
