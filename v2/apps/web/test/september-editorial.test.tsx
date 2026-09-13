@@ -7,6 +7,7 @@ import { SEPTEMBER_13_EDITORIAL } from '../content/september-13-editorial';
 import { buildInsightItems, InsightsIndex } from '../components/newsroom/insights-index';
 import { NewsroomArticle } from '../components/newsroom/newsroom-article';
 import { editorialImages } from '../lib/insights/editorial-images';
+import { editorialLanguageRoutes } from '../lib/navigation/editorial-language-routes';
 
 describe('September 13 bilingual edition', () => {
   it('offers all four stories in both languages and separates neighbourhoods from investment', () => {
@@ -21,6 +22,9 @@ describe('September 13 bilingual edition', () => {
         expect(selected).toHaveLength(4);
         expect(selected.filter(i => i.investment)).toHaveLength(2);
         for (const record of records) {
+          const otherLocale = locale === 'en' ? 'ko' : 'en';
+          const translated = SEPTEMBER_13_EDITORIAL.find(a => a.slug === record.slug && a.locale === otherLocale)!;
+          expect(editorialLanguageRoutes()[record.canonicalHref]?.[otherLocale]).toBe(translated.canonicalHref);
           const html = renderToStaticMarkup(<NewsroomArticle article={record} />);
           expect(html).toContain(record.title);
           for (const photo of editorialImages(record.bodyMarkdown)) {
