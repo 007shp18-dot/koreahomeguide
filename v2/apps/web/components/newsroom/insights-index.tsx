@@ -105,7 +105,7 @@ export function InsightsIndex({ articles, market, locale = 'en', topic = 'all' }
   const [hero, ...items] = buildInsightItems(articles, market, locale, topic);
   const t = copy[locale];
   return <main className={styles.index} data-newsroom-layout="insights" lang={locale}>
-    <header className={styles.header}><h1>{t.title}</h1><p>{t.deck}</p><Link className={styles.read} href={`${locale === "ko" ? "/ko" : locale === "zh-CN" ? "/zh-cn" : ""}/living/${market === "all" ? "" : `?market=${marketIds[market]}`}`}>{locale === "ko" ? "단지별 입지·학교·비용 리뷰" : locale === "zh-CN" ? "住宅区位、学校与费用评估" : "Property reviews: location, schools & costs"} →</Link></header>
+    <header className={styles.header}><h1>{t.title}</h1><p>{t.deck}</p></header>
     <nav className={styles.filters} aria-label={t.cities}>{(['all', ...cities] as const).map(city => <Link prefetch={false} key={city} href={insightFilterHref(locale, city, topic)} aria-current={market === city ? 'page' : undefined}>{city === 'all' ? t.all : localizedCities[locale][city]}</Link>)}</nav>
     <nav className={styles.topicFilters} aria-label={t.topics}>{(['all', 'investment'] as const).map(value => <Link prefetch={false} key={value} href={insightFilterHref(locale, market, value)} aria-current={topic === value ? 'page' : undefined}>{value === 'all' ? t.all : t.investment}</Link>)}</nav>
     {locale !== 'en' && [hero, ...items].some(item => item && item.language !== locale) && <p className={styles.translationNote}>{t.note}</p>}

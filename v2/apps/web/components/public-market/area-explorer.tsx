@@ -1,5 +1,7 @@
 'use client';
 
+import { PropertyReviewDirectory } from '../market-ui/property-review-directory';
+import { reviewDirectoryForMarket } from '../../lib/research/property-review-locations';
 import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
 import { DiscoveryReading } from '../discovery/discovery-reading';
 import { ExplorePriceGuide } from '../market-ui/explore-price-guide';
@@ -1054,6 +1056,7 @@ function ReadyAreaExplorer({
               showContractGroups={model.evidenceSelection.transaction !== 'sale'}
             />}
           </details> : null}
+          <PropertyReviewDirectory entries={reviewDirectoryForMarket('kr-seoul')} locale={locale} query={buildingQuery} />
           <section className={styles.rail} aria-label={locale === 'ko' ? '탐색 결과' : locale === 'zh-CN' ? '探索结果' : 'Discovery results'}>
           {!mapDrilledToDistrict && !citySearch ? (
             <div className={styles.districtBrowser} data-district-browser="seoul">

@@ -1,3 +1,4 @@
+import { propertyReviewDirectoryEntries } from '@/lib/research/property-review-profile';
 import { dubaiProjectEvidenceForContext } from '@/lib/dubai/project-evidence.server';
 import { DubaiShell } from '@/components/dubai/dubai-shell';
 import { DubaiExplorer } from '@/components/dubai/dubai-explorer';
@@ -19,6 +20,7 @@ export default async function DubaiExplorePage({ searchParams }: Props) {
   const initial = parseDubaiExploreState(query);
   const repository = dubaiEvidenceRepositoryFromEnvironment();
   return <DubaiShell locale="ko" href="/ko/ae/dubai/explore/"><main><DubaiExplorer locale="ko"
+    reviewDirectory={propertyReviewDirectoryEntries('ae-dubai')}
     browserKey={googleMapsBrowserKeyFromEnvironment()}
     model={buildDubaiExploreModel(repository)}
     projects={repository === null ? [] : dubaiProjectEvidenceForContext(repository.getContext())}

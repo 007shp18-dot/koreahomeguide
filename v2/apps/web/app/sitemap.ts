@@ -173,7 +173,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ? undefined
     : validDate(dubaiEvidence.getContext().generatedAt);
   const entries: MetadataRoute.Sitemap = [
-    ...["/living/", "/ko/living/", ...propertyReviewPaths].map(path => sitemapEntry(path as `/${string}`, new Date("2026-09-13T00:00:00Z"))),
+    ...propertyReviewPaths.map(path => sitemapEntry(path as `/${string}`, new Date("2026-09-13T00:00:00Z"))),
     ...NEIGHBOURHOOD_STORIES.flatMap(story => ['en', 'ko'].map(locale => sitemapEntry(neighbourhoodHref(story.slug, locale as 'en' | 'ko'), new Date(story.publishedAt)))),
     sitemapEntry('/kr/seoul/shortlist/'),
     sitemapEntry('/ko/kr/seoul/shortlist/'),

@@ -1,11 +1,10 @@
-import {propertyReviewMetadata} from '@/lib/research/property-review-metadata';
-import {ToolsShell} from '@/components/tools/tools-shell';
-import {ResearchPageHeading} from '@/components/market-ui/research-page-heading';
-import {LivingContextExplorer} from '@/components/market-ui/living-context';
-import {loadLivingContexts} from '@/lib/research/living-context.server';
-export const dynamic = 'force-dynamic';
-export async function generateMetadata({searchParams}:{searchParams:Promise<{profile?:string}>}) { return propertyReviewMetadata('en',(await searchParams).profile); }
-export default async function Page({searchParams}:{searchParams:Promise<{market?:string;profile?:string}>}) {
- const [result, query] = await Promise.all([loadLivingContexts(),searchParams]);
- return <ToolsShell locale="en" href="/living/"><ResearchPageHeading title="Property reviews" description="Location, schools, transport and ownership trade-offs across 12 properties"/><LivingContextExplorer key={`${query.market ?? ""}:${query.profile ?? ""}`} {...result} locale="en" initialMarket={query.market} initialProfile={query.profile}/></ToolsShell>;
+import { permanentRedirect } from 'next/navigation';
+import { actualDetailHref } from '@/lib/research/property-review-locations';
+export const metadata = { robots: { index: false, follow: true } };
+export default async function Page({ searchParams }: { searchParams: Promise<{market?:string;profile?:string}> }) {
+  const query = await searchParams;
+  const detail = query.profile ? actualDetailHref('en', query.profile) : null;
+  if (detail) permanentRedirect(`${detail}#property-review`);
+  const city = ({'kr-seoul':'/kr/seoul/explore/','sg-singapore':'/sg/singapore/explore/','ae-dubai':'/ae/dubai/explore/','jp-tokyo':'/jp/tokyo/explore/'} as Record<string,string>)[query.market ?? ''];
+  permanentRedirect('' + (city ?? '/prices/'));
 }

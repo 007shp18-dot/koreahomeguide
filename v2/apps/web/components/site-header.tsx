@@ -43,10 +43,10 @@ function contextualActions(context: HeaderMarketContext, locale: SiteLocale) {
   const ko = locale === 'ko';
   const prefix = ko ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   switch (context) {
-    case 'sg-singapore': return { saved: `${prefix}/sg/singapore/shortlist/`, offer: `${prefix}/sg/singapore/check/` };
-    case 'ae-dubai': return { saved: `${prefix}/ae/dubai/shortlist/`, offer: `${prefix}/ae/dubai/check/` };
-    case 'jp-tokyo': { const jpPrefix = locale === 'zh-CN' ? '/zh-cn' : prefix; return {saved:`${jpPrefix}/jp/tokyo/shortlist/`,offer:`${jpPrefix}/tools/property-scenario/?market=jp-tokyo&currency=JPY`}; }
-    case 'kr-seoul': return { saved: locale === 'zh-CN' ? '/zh-cn/saved/' : `${prefix}/kr/seoul/shortlist/`, offer: `${prefix}/kr/seoul/check/` };
+    case 'sg-singapore': return { saved: `${prefix}/saved/`, offer: `${prefix}/sg/singapore/check/` };
+    case 'ae-dubai': return { saved: `${prefix}/saved/`, offer: `${prefix}/ae/dubai/check/` };
+    case 'jp-tokyo': { const jpPrefix = locale === 'zh-CN' ? '/zh-cn' : prefix; return {saved:`${jpPrefix}/saved/`,offer:`${jpPrefix}/tools/property-scenario/?market=jp-tokyo&currency=JPY`}; }
+    case 'kr-seoul': return { saved: `${prefix}/saved/`, offer: `${prefix}/kr/seoul/check/` };
     default: return null;
   }
 }
@@ -59,7 +59,7 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
   if (href.startsWith('/news/')) {
     const newsSelected = ['news', 'headlines'].includes(new URLSearchParams(currentHref.split('?')[1] ?? '').get('type') ?? '');
     if (href.includes('?type=news')) return currentHref.includes('/news/') && newsSelected;
-    return !newsSelected && (currentHref.includes('/news/') || currentHref.includes('/insights/') || currentHref.includes('/living/') || budgetAnalysis);
+    return !newsSelected && (currentHref.includes('/news/') || currentHref.includes('/insights/') || budgetAnalysis);
   }
   if (href === '/guides/') return !budgetAnalysis && (currentHref.includes('/guide') || currentHref === '/guides/');
   if (href === '/tools/' || href === '/ko/tools/') return currentHref.includes('/tools/') || currentHref.includes('/check/') || currentHref.includes('/passport/') || currentHref.includes('/shortlist/') || currentHref.includes('/saved/');

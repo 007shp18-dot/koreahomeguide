@@ -18,6 +18,8 @@ import styles from './tokyo-explorer.module.css';
 import { tokyoText, tokyoHref, type TokyoLocale } from './tokyo-copy';
 import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
 import { DiscoveryReading } from '../discovery/discovery-reading';
+import { PropertyReviewDirectory } from '../market-ui/property-review-directory';
+import { propertyReviewDirectoryEntries } from '../../lib/research/property-review-profile';
 
 type Params = Record<string, string | string[] | undefined>;
 export default async function TokyoExplorer({ searchParams, locale = 'en' }: { searchParams: Promise<Params>; locale?: TokyoLocale }) {
@@ -101,7 +103,7 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
         layers={<div>
       <form key={JSON.stringify([scope, filters.q, filters.type, filters.minArea, filters.maxArea, useLatestPeriod])} className={styles.filters} action={href("/jp/tokyo/explore/")} method="get" aria-label="Tokyo transaction filters">
         <div className={styles.primaryFilters}>
-        <label className={styles.search}>{t('Neighbourhood, layout or built year')}<input name="q" placeholder="Azabu, 2LDK, 2010…" defaultValue={filters.q} maxLength={100} /></label>
+        <label className={styles.search}>{locale === 'ko' ? '단지명·동네·평면·준공연도' : locale === 'zh-CN' ? '楼盘、街区、户型或建成年份' : 'Property, neighbourhood, layout or built year'}<input name="q" placeholder={locale === 'ko' ? '파크시티 도요스, Azabu, 2LDK…' : 'Park City Toyosu, Azabu, 2LDK…'} defaultValue={filters.q} maxLength={100} /></label>
         <label>{t('Ward')}<select name="city" defaultValue={scope.city}>{TOKYO_WARDS.map(([code, name]) => <option value={code} key={code}>{t(name)}</option>)}</select></label>
         <button type="submit">{t('Explore transactions')}</button>
         </div>
@@ -130,6 +132,7 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
       </div>}
         </div>}
         discovery={<>
+      <PropertyReviewDirectory entries={propertyReviewDirectoryEntries('jp-tokyo')} locale={locale} query={filters.q} />
       <div data-tokyo-area-directory="true"><Suspense fallback={<ExploreResultsLoading label={t('Loading area transactions…')} />}>
         <TokyoMapPanel view="directory" locale={locale} city={scope.city} year={scope.year} quarter={scope.quarter}
           filters={{ q: filters.q, neighbourhood: filters.neighbourhood, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />

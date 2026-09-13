@@ -49,7 +49,7 @@ describe('signedprice public navigation', () => {
 
   it('keeps saved places and offer checking alongside the language controls', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={header} />);
-    expect(html).toMatch(/<a[^>]*href="\/kr\/seoul\/shortlist\/?"[^>]*>Saved<\/a>/);
+    expect(html).toMatch(/<a[^>]*href="\/saved\/?"[^>]*>Saved<\/a>/);
     expect(html).toMatch(/<a[^>]*href="\/kr\/seoul\/check\/?"[^>]*>Check an offer<\/a>/);
     expect(html).toContain('aria-label="Language navigation"');
   });
@@ -64,7 +64,7 @@ describe('signedprice public navigation', () => {
     expect(html).toContain('data-market-context="jp-tokyo"');
     expect(html).not.toContain('aria-label="Seoul market navigation"');
     expect(html).not.toMatch(/class="site-header__action[^>]*href="\/kr\/seoul\/(?:check|shortlist)/);
-    expect(html).toMatch(/class="site-header__action[^>]*href="\/jp\/tokyo\/shortlist\/?"/);
+    expect(html).toMatch(/class="site-header__action[^>]*href="\/saved\/?"/);
     expect(html).toMatch(/href="\/tools\/property-scenario\/?\?market=jp-tokyo&amp;currency=JPY"[^>]*>Calculate costs<\/a>/);
     expect(html).toContain('aria-label="Quick actions"');
     expect(html).toMatch(/href="\/tools\/?"[^>]*>Tools<\/a>/);
@@ -77,7 +77,7 @@ describe('signedprice public navigation', () => {
       const html = renderToStaticMarkup(<SiteHeader copy={{ ...homepageCopy.header, homeHref: `${prefix}/`, languageLabel,
         marketLabel: 'Tokyo', links: [{ label: 'Explore', href: `${prefix}/jp/tokyo/explore/`, isCurrent: true }] }} />);
       expect(html).toMatch(new RegExp(`class="wordmark"[^>]*href="${prefix}/?"`));
-      expect(html).toContain(`href="${prefix}/jp/tokyo/shortlist`);
+      expect(html).toContain(`href="${prefix}/saved`);
       expect(html).toContain(`href="${prefix}/tools/property-scenario?market=jp-tokyo&amp;currency=JPY">${label}`);
       expect(html).toContain(`href="${prefix}/news?type=news"`);
       expect(html).not.toContain('href="/kr/seoul/check');

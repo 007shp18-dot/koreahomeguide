@@ -7,6 +7,7 @@ import type { Ref } from 'react';
 import { createDubaiCheckHref } from '../../lib/dubai/check-model';
 import type { DubaiExploreResult } from '../../lib/dubai/explore-model';
 import type { DubaiProjectEvidence } from '../../lib/dubai/project-evidence';
+import { actualDetailHref, reviewLocationForProject } from '../../lib/research/property-review-locations';
 import { marketHref, marketText, type MarketLocale } from '../../lib/locale/market-localization';
 import { PassportLink as Link } from '../passport/passport-journey';
 import styles from './dubai-research.module.css';
@@ -33,6 +34,8 @@ export function DubaiExploreSelection({
 }>) {
   const t = (value: string) => marketText(locale, value);
   const { area, segment, sale } = selected;
+  const propertyReview = selectedProject ? reviewLocationForProject(selectedProject.id) : undefined;
+  const propertyDetailHref = propertyReview ? actualDetailHref(locale, propertyReview.reviewId) : null;
   return <section id="dubai-selected-area" className={styles.selectedArea} ref={panelRef}
     aria-labelledby="dubai-selected-area-title" data-dubai-area-selection={area.slug}>
     <header className={styles.selectionHeader}>
@@ -74,6 +77,7 @@ export function DubaiExploreSelection({
         </div>
         {selectedProject ? <div id="dubai-project-summary" className={styles.selectedProject} data-dubai-project-selection={selectedProject.id}>
           <h4>{t(selectedProject.name)}</h4>
+          {propertyDetailHref ? <Link href={propertyDetailHref}>{locale === 'ko' ? '단지 정보·입지 분석' : locale === 'zh-CN' ? '项目资料与区位分析' : 'Property details & location analysis'} →</Link> : null}
           <p>{t('DLD project ')}{selectedProject.projectNumber} · {period}</p>
           <p>{money(selectedProject.medianPriceAed)} · {integer.format(selectedProject.n)} {t('registered sales')}</p>
           <p>{t('Area location only')}. {localizedMarketCopy(locale, "The map remains on the area; a precise project location is not verified.", "지도는 프로젝트의 정확한 건물 위치를 표시하지 않습니다.")}</p>
