@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { existsSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { resolveSitemap } from 'next/dist/build/webpack/loaders/metadata/resolve-route-data';
 
 vi.mock('server-only', () => ({}));
 
@@ -64,18 +65,18 @@ const tokyoCanonicalUrls = ['', '/ko', '/zh-cn'].flatMap(locale => ['/jp/tokyo/'
 // Keep the identities explicit so an accidental addition or omission fails the contract.
 const propertyReviewCanonicalPaths = [
   '/living/',
-  '/living/?market=kr-seoul&profile=kr-acro-river-park',
-  '/living/?market=kr-seoul&profile=kr-acro-seoul-forest',
-  '/living/?market=kr-seoul&profile=kr-mapo-raemian-prugio',
-  '/living/?market=sg-singapore&profile=sg-marina-one-residences',
-  '/living/?market=sg-singapore&profile=sg-park-place-plq',
-  '/living/?market=sg-singapore&profile=sg-wallich-residence',
-  '/living/?market=ae-dubai&profile=ae-skyflame-1',
-  '/living/?market=ae-dubai&profile=ae-skyterraces',
-  '/living/?market=ae-dubai&profile=ae-valia',
-  '/living/?market=jp-tokyo&profile=jp-park-city-toyosu',
-  '/living/?market=jp-tokyo&profile=jp-brillia-towers-meguro',
-  '/living/?market=jp-tokyo&profile=jp-park-court-shibuya',
+  '/living/?profile=kr-acro-river-park',
+  '/living/?profile=kr-acro-seoul-forest',
+  '/living/?profile=kr-mapo-raemian-prugio',
+  '/living/?profile=sg-marina-one-residences',
+  '/living/?profile=sg-park-place-plq',
+  '/living/?profile=sg-wallich-residence',
+  '/living/?profile=ae-skyflame-1',
+  '/living/?profile=ae-skyterraces',
+  '/living/?profile=ae-valia',
+  '/living/?profile=jp-park-city-toyosu',
+  '/living/?profile=jp-brillia-towers-meguro',
+  '/living/?profile=jp-park-court-shibuya',
 ] as const;
 const propertyReviewCanonicalUrls = propertyReviewCanonicalPaths.flatMap(path =>
   ['', '/ko'].map(prefix => `https://www.signedprice.com${prefix}${path}`),
@@ -361,6 +362,15 @@ describe('public migration containment', () => {
       expect(propertyReviewMetadata('zh-CN', profile).robots).toEqual({ index: false, follow: true });
       expect(entries.has(`https://www.signedprice.com/zh-cn${path}`)).toBe(false);
     }
+  });
+
+  it('serializes the review cohort without raw XML ampersands using the installed Next serializer', () => {
+    const entries = sitemap().filter(entry => propertyReviewCanonicalUrls.includes(entry.url));
+    expect(entries).toHaveLength(26);
+    const xml = resolveSitemap(entries);
+    expect(xml).not.toContain('&');
+    expect([...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]))
+      .toEqual(propertyReviewCanonicalUrls);
   });
 
   it('publishes only the approved global, market-evidence, review, and guide cohort in the sitemap', () => {

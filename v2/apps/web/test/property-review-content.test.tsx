@@ -19,6 +19,15 @@ it('renders every published review in English without leaking Korean body copy',
 });
 it('gives a selected review its own canonical URL and English/Korean alternatives', () => {
   const metadata=propertyReviewMetadata('en','sg-marina-one-residences');
-  expect(metadata.alternates?.canonical).toBe('https://www.signedprice.com/living/?market=sg-singapore&profile=sg-marina-one-residences');
+  const canonical='https://www.signedprice.com/living/?profile=sg-marina-one-residences';
+  expect(metadata.alternates).toEqual({
+    canonical,
+    languages:{
+      en:canonical,
+      ko:'https://www.signedprice.com/ko/living/?profile=sg-marina-one-residences',
+      'x-default':canonical,
+    },
+  });
+  expect(metadata.openGraph?.url).toBe(canonical);
   expect(metadata.title).toContain('Marina One');
 });
