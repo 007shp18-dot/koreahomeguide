@@ -1,4 +1,5 @@
 import 'server-only';
+import { filterExploreBuildings } from './area-explorer-state';
 
 import { publicContentDatabase } from '../db/postgres.server';
 
@@ -722,73 +723,16 @@ function priceBuildingRecordsFor(
   return priceRecords;
 }
 
-const housingTypeSearchAliases = Object.freeze({
-  apartment: Object.freeze(['아파트']),
-  officetel: Object.freeze(['오피스텔']),
-  villa_multifamily: Object.freeze(['빌라', '연립', '다세대']),
-  detached: Object.freeze(['단독', '다가구']),
-} as const);
-
-function includesExploreQuery(values: readonly string[], normalizedQuery: string): boolean {
-  return values.some((value) => value.toLocaleLowerCase('en-US').includes(normalizedQuery));
-}
-
-function resolveExploreDistrictFromInventory(
-  districts: readonly ExploreDistrictModel[],
-  observedRepository: ObservedBuildingRepository | null,
-  priceRecords: ReadonlyMap<string, PublicBuildingRecord>,
-  query: string,
-  fallback: SeoulDistrictSlug,
-): SeoulDistrictSlug {
-  const normalizedQuery = query.trim().toLocaleLowerCase('en-US');
-  if (normalizedQuery.length === 0) return fallback;
-  const district = districts.find(({ slug, nameEn, nameKo }) => (
-    includesExploreQuery([slug, nameEn, nameKo], normalizedQuery)
-  ));
-  if (district !== undefined) return district.slug;
-  const observed = observedRepository?.listRecords().find((building) => {
-    const aliases = housingTypeSearchAliases[
-      building.housingType as keyof typeof housingTypeSearchAliases
-    ] ?? [];
-    return includesExploreQuery([
-      building.buildingId,
-      building.neighborhoodId,
-      building.neighborhoodName,
-      building.officialName,
-      building.housingType,
-      ...aliases,
-      ...(building.jeonseObservationCount > 0 ? ['jeonse', '전세'] : []),
-      ...(building.monthlyObservationCount > 0 ? ['monthly', 'monthly rent', '월세'] : []),
-    ], normalizedQuery);
-  });
-  if (observed !== undefined) return observed.districtSlug;
-  const priced = [...priceRecords.values()].find((building) => {
-    const aliases = housingTypeSearchAliases[
-      building.housingType.toLocaleLowerCase('en-US') as keyof typeof housingTypeSearchAliases
-    ] ?? [];
-    return includesExploreQuery([
-      building.buildingId,
-      building.neighborhoodId,
-      building.neighborhoodName,
-      building.name,
-      building.housingType,
-      ...aliases,
-      'jeonse',
-      '전세',
-    ], normalizedQuery);
-  });
-  return priced?.districtSlug ?? fallback;
-}
-
 function exploreBuildingsFor(
-  districtSlug: SeoulDistrictSlug,
+  districtSlug: SeoulDistrictSlug | undefined,
   observedRepository: ObservedBuildingRepository | null,
   priceRecords: ReadonlyMap<string, PublicBuildingRecord>,
   proximityRepository: KoreaProximityRepositoryState | undefined,
   proximitySelection: KoreaExploreProximitySelection,
+  query = '',
 ): ExploreBuildingAvailability {
   if (observedRepository !== null) {
-    const buildings = Object.freeze(observedRepository.listByDistrict(districtSlug)
+    const buildings = Object.freeze((districtSlug ? observedRepository.listByDistrict(districtSlug) : observedRepository.listRecords())
       .filter((observed) => koreaBuildingMatchesProximity(observed.buildingId, proximityRepository, proximitySelection))
       .map((observed) => {
       const building = priceRecords.get(`${observed.districtSlug}/${observed.buildingId}`);
@@ -835,17 +779,18 @@ function exploreBuildingsFor(
         href: `/kr/seoul/explore/${observed.districtSlug}/${observed.buildingId}/` as const,
       });
     }));
+    const matches = filterExploreBuildings(buildings, query, 'all');
     return Object.freeze({
       status: 'ready',
-      buildings,
-      total: buildings.length,
+      buildings: matches,
+      total: matches.length,
       page: 1,
-      pageSize: buildings.length,
+      pageSize: matches.length,
     });
   }
   const fallbackBuildings = Object.freeze([...priceRecords.values()]
     .filter((building) => (
-      building.districtSlug === districtSlug && building.groups.all.published
+      (districtSlug === undefined || building.districtSlug === districtSlug) && building.groups.all.published
     ))
     .filter((building) => koreaBuildingMatchesProximity(building.buildingId, proximityRepository, proximitySelection))
     .map((building) => {
@@ -883,7 +828,7 @@ function exploreBuildingsFor(
       href: `/kr/seoul/explore/${building.districtSlug}/${building.buildingId}/` as const,
       });
     }));
-  return Object.freeze({ status: 'not_loaded', fallbackBuildings });
+  return Object.freeze({ status: 'not_loaded', fallbackBuildings: filterExploreBuildings(fallbackBuildings, query, 'all') });
 }
 
 export function buildPublicAreaExploreModel(
@@ -975,13 +920,8 @@ export function buildPublicAreaExploreModel(
     const requestedDistrict = getSeoulDistrictBySlug(selectedSlug ?? '')?.slug ?? 'jongno-gu';
     const observedRepository = observedBuildingRepositoryFor(dependencies);
     const priceRecords = priceBuildingRecordsFor(dependencies);
-    const selected = resolveExploreDistrictFromInventory(
-      districts,
-      observedRepository,
-      priceRecords,
-      requestedBuildingQuery,
-      requestedDistrict,
-    );
+    const selected = requestedDistrict;
+    const searchDistrict = selectedSlug === undefined && requestedBuildingQuery.trim() ? undefined : selected;
     return Object.freeze({
       status: 'ready',
       evidenceSelection: Object.freeze({
@@ -1000,7 +940,7 @@ export function buildPublicAreaExploreModel(
       districts,
       legend: legendFor(districts),
       coverage: coverageFor(summaries, citySummary, dependencies),
-      buildingAvailability: exploreBuildingsFor(selected, observedRepository, priceRecords, proximityRepository, proximity.selection),
+      buildingAvailability: exploreBuildingsFor(searchDistrict, observedRepository, priceRecords, proximityRepository, proximity.selection, requestedBuildingQuery),
       proximity,
       source,
     });

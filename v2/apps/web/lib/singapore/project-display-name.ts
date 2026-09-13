@@ -14,5 +14,5 @@ export function singaporeProjectDisplayName(project: Readonly<{ project: string;
 
 /** Match names with or without accents, while preserving their displayed spelling. */
 export function singaporeProjectSearchTerm(value: string): string {
-  return value.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase('en');
+  return value.normalize('NFKD').replace(/[\p{M}\p{P}\s]+/gu, '').toLocaleLowerCase('en');
 }

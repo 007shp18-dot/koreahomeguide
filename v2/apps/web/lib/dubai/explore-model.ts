@@ -1,3 +1,4 @@
+import type { DubaiProjectEvidence } from './project-evidence';
 import type { DubaiSaleStage } from './evidence-contract';
 import type { DubaiExploreArea } from './route-types';
 
@@ -66,20 +67,24 @@ export function parseDubaiExploreState(
 }
 
 function normalized(value: string): string {
-  return value.normalize('NFKC').trim().replace(/\s+/gu, ' ').toLocaleLowerCase('en');
+  return value.normalize('NFKC').replace(/[\s\p{P}]+/gu, '').toLocaleLowerCase('en');
 }
 
 export function filterDubaiExploreResults(
   areas: readonly DubaiExploreArea[],
   state: DubaiExploreFilterState,
+  projects: readonly DubaiProjectEvidence[] = [],
 ): readonly DubaiExploreResult[] {
   const term = normalized(state.query);
+  const matchingAreas = new Set(projects.filter(project => project.housing === state.housing
+    && project.stage === state.stage && term !== '' && normalized(project.name).includes(term))
+    .map(project => project.areaSlug));
   return Object.freeze(areas.flatMap((area) => {
     const segment = area.segments.find(({ housing }) => housing === state.housing);
     const sale = segment?.sales[state.stage === 'off-plan' ? 'offPlan' : 'ready'] ?? null;
     if (segment === undefined || sale === null) return [];
     const searchText = normalized([area.name, ...area.searchAliases].join(' '));
-    if (term !== '' && !searchText.includes(term)) return [];
+    if (term !== '' && !searchText.includes(term) && !matchingAreas.has(area.slug)) return [];
     if (state.budgetMaximumAed !== null && sale.medianPriceAed > state.budgetMaximumAed) return [];
     if (state.stage === 'ready' && state.yieldMinimumPct !== null
       && (segment.readyGrossYieldPct === null
@@ -105,4 +110,9 @@ export function buildDubaiExploreHref(state: DubaiExploreState): string {
   if (state.selectedArea !== null && state.selectedProject) query.set('project', state.selectedProject);
   const serialized = query.toString();
   return `/ae/dubai/explore/${serialized === '' ? '' : `?${serialized}`}`;
+}
+
+export function matchingDubaiProjects(projects: readonly DubaiProjectEvidence[], query: string): readonly DubaiProjectEvidence[] {
+  const term = normalized(query);
+  return term ? projects.filter(project => normalized(project.name).includes(term)) : [];
 }

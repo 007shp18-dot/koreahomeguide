@@ -1,6 +1,7 @@
+import { matchesSeoulSearch, seoulSearchQuery } from './seoul-search';
 import { buildingDisplayName } from './seoul-display-names';
 import { matchesSeoulNeighborhoodQuery } from './seoul-neighborhood-label';
-import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
+import { getSeoulDistrictBySlug, type SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
 import type { ExploreBuildingModel } from './area-route-types';
 
 export type AreaExplorerState = Readonly<{
@@ -43,10 +44,10 @@ export function filterExploreBuildings<T extends ExploreBuildingSearchItem>(
   housingType = 'all',
   districtAliases: readonly string[] = Object.freeze([]),
 ): readonly T[] {
-  const normalizedQuery = query.trim().toLocaleLowerCase('en-US');
+  const normalizedQuery = seoulSearchQuery(query);
   const queryScopesSelectedDistrict = normalizedQuery.length > 0
     && districtAliases.some((alias) => (
-      alias.toLocaleLowerCase('en-US').includes(normalizedQuery)
+      matchesSeoulSearch([alias], normalizedQuery)
     ));
   return buildings.filter((building) => {
     if (neighborhoodId !== 'all' && building.neighborhoodId !== neighborhoodId) return false;
@@ -62,6 +63,8 @@ export function filterExploreBuildings<T extends ExploreBuildingSearchItem>(
     if (matchesSeoulNeighborhoodQuery(building.districtSlug, building.neighborhoodName, query)) return true;
     return [
       building.districtSlug,
+      getSeoulDistrictBySlug(building.districtSlug)?.nameKo ?? '',
+      getSeoulDistrictBySlug(building.districtSlug)?.nameEn ?? '',
       building.neighborhoodId,
       building.name,
       buildingDisplayName(building.name, 'en'),
@@ -70,7 +73,7 @@ export function filterExploreBuildings<T extends ExploreBuildingSearchItem>(
       ...housingAliases,
       ...transactionTokens,
     ]
-      .some((value) => value.toLocaleLowerCase('en-US').includes(normalizedQuery));
+      .some((value) => matchesSeoulSearch([value], normalizedQuery));
   });
 }
 
@@ -84,10 +87,10 @@ export function resolveExploreSearchDistrict(
   query: string,
   fallback: SeoulDistrictSlug,
 ): SeoulDistrictSlug {
-  const normalizedQuery = query.trim().toLocaleLowerCase('en-US');
+  const normalizedQuery = seoulSearchQuery(query);
   if (normalizedQuery.length === 0) return fallback;
   const district = districts.find(({ slug, nameEn, nameKo }) => (
-    [slug, nameEn, nameKo].some((value) => value.toLocaleLowerCase('en-US').includes(normalizedQuery))
+    [slug, nameEn, nameKo].some((value) => matchesSeoulSearch([value], normalizedQuery))
   ));
   if (district !== undefined) return district.slug;
   return filterExploreBuildings(buildings, normalizedQuery, 'all')[0]?.districtSlug ?? fallback;

@@ -254,12 +254,13 @@ describe('public Seoul area Explorer', () => {
     };
 
     expect(clientStateKey('Evidence Tower')).toBe(
-      'gangnam-gu:Evidence Tower:jeonse:legacy-45-55:all:new:0:list:all:none',
+      'all:gangnam-gu:Evidence Tower:jeonse:legacy-45-55:all:new:0:list:all:none',
     );
     expect(clientStateKey('Apartment')).toBe(
-      'gangnam-gu:Apartment:jeonse:legacy-45-55:all:new:0:list:all:none',
+      'all:gangnam-gu:Apartment:jeonse:legacy-45-55:all:new:0:list:all:none',
     );
     expect(clientStateKey('Evidence Tower')).not.toBe(clientStateKey('Apartment'));
+    expect(clientStateKey('')).not.toBe(clientStateKey('', { market: 'kr', transaction: 'jeonse', district: 'gangnam-gu' }));
     expect(clientStateKey('', {
       market: 'kr',
       transaction: 'jeonse',
@@ -468,9 +469,7 @@ describe('public Seoul area Explorer', () => {
         },
       },
     });
-    expect(markup).toContain('Selected · Gangnam-gu');
-    expect(markup).toContain('New contracts');
-    expect(markup).toContain('Contract type unknown · 1');
+    expect(markup).toContain('value="all" selected=""');
     expect(markup).not.toContain('ncpKeyId=page-naver-client');
     expect(markup).toContain('value="Evidence Tower"');
     expect(markup).toContain('Sources &amp; limits');
