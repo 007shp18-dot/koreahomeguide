@@ -4,7 +4,6 @@ import { localizedMarketCopy } from '../../lib/locale/market-localization';
 import { retainPassportContext } from '../../lib/passport/journey';
 
 import { PassportLink as Link } from '../passport/passport-journey';
-import { DubaiSourceNotice } from './dubai-source-notice';
 import { UiIcon } from '../ui-icon';
 import {
   lazy,
@@ -345,7 +344,6 @@ export function DubaiExplorer({ locale = 'en',
           </li>)}</ul>}
           {comparison.storageError ? <p role="status">{compareCopy.failure}</p> : null}
         </details> : null}
-        <DubaiSourceNotice locale={locale} />
         <div className={layout.results} aria-live="polite" aria-busy={query !== deferredQuery}>
           {visible.map(({ area, segment, sale }) => <article key={area.id} data-selected={area.slug === selectedArea} data-has-photo={Boolean(dubaiAreaPhoto(area.slug))}>
             <DubaiAreaPhoto slug={area.slug} locale={locale} variant="thumbnail" />
@@ -362,6 +360,7 @@ export function DubaiExplorer({ locale = 'en',
               disabled={comparison.ids.length >= 3 && !comparison.ids.includes(area.slug)}
               aria-label={`${comparison.ids.includes(area.slug) ? compareCopy.remove : compareCopy.add}: ${area.name}`}
               onClick={() => comparison.toggle(area.slug)}>{comparison.ids.includes(area.slug) ? compareCopy.remove : compareCopy.add}</button></div>
+            {area.href !== null && <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>{localizedMarketCopy(locale, "Full area analysis", "지역 분석 전체 보기")}</Link>}
             <details className={styles.resultEvidence} data-area-evidence="true">
               <summary>{localizedMarketCopy(locale, "Price and rent details", "가격·임대료 자세히 보기")}</summary>
             <dl className={styles.areaMetrics}>
@@ -371,12 +370,9 @@ export function DubaiExplorer({ locale = 'en',
               <div><dt>{t("Median annual rent")}</dt><dd>{t(moneyPerYear(segment.rent.medianAnnualRentAed))}</dd></div>
               <div><dt>{t("Estimated gross rent-to-price ratio")}</dt><dd>{t(stage === 'ready' && segment.readyGrossYieldPct !== null ? `${segment.readyGrossYieldPct.toFixed(1)}%` : stage === 'off-plan' ? 'Not shown for Off-Plan' : 'Not published')}</dd></div>
             </dl>
-            {area.href === null
-              ? <span className={styles.unavailableLink}>{t("Area details unavailable")}</span>
-              : <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>{localizedMarketCopy(locale, "Full area analysis", "지역 분석 전체 보기")}</Link>}
+            {area.href === null && <span className={styles.unavailableLink}>{t("Area details unavailable")}</span>}
             <DubaiAreaPhoto slug={area.slug} locale={locale} variant="credit" />
             </details></div>
-            <DubaiSourceNotice locale={locale} compact />
             </div>
           </article>)}
           {results.length === 0 ? <p className={styles.emptyState}>{t("No areas match these filters. Increase the budget or lower the ratio threshold.")}</p> : null}
