@@ -54,3 +54,7 @@
 ### CI follow-up
 
 The first full CI run passed lint and types, with 3,468 passing tests and five failures. Two design-token failures came from inherited dashboard CSS declarations (11px text and unsupported radii); these declarations now comply with the existing checks. Three remaining failures were stale expectations from main's already-published contract-price headline and HUG/SGI source changes. Updated those explicit expectations without changing public content or weakening the checks. The seven affected test files now pass all 72 tests locally. The first Vercel preview completed successfully; final-head CI/build checks remain required.
+
+## Browser CI follow-up
+
+Run 34817904643 passed the complete verify job. Browser CI exposed four admin failures from the renamed collection/research navigation; updated only those button locators. Nine other failures were stale homepage heading expectations and four EN/ZH mobile/wide snapshots after main #343. Reviewed CI actual/diff images and matched the changes to the existing headline/source description; refreshed those four baselines from the CI screenshots without changing product content, screenshot tolerances, or test gates. Authenticated production admin visual review remains outstanding.
