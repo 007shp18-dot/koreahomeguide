@@ -1754,8 +1754,8 @@
             "en": "Separate the Jamsin listing from allocation"
           },
           "body": {
-            "ko": "공개 단지표는 잠신초를 소개합니다. 초등학교의 주소별 배정과 중·고등학교 배정은 다른 절차이므로 초·중·고가 가깝다는 문구를 연속 입학 보장으로 해석하지 않습니다.",
-            "en": "The estate table identifies Jamsin Elementary. Primary address allocation and secondary admissions are separate processes; proximity to all three school levels is not a guarantee of consecutive admission."
+            "ko": "잠신초가 가까운 단지입니다. 초등학교의 주소별 배정과 중·고등학교 배정은 절차가 달라, 주변 학교로 모두 진학할 수 있는 것은 아닙니다.",
+            "en": "Jamsin Elementary School is nearby. Elementary-school allocation and middle- and high-school admission follow different processes, so proximity does not guarantee a place at every neighbouring school."
           },
           "sourceIds": [
             "ricenz-record"
@@ -3472,8 +3472,8 @@
             "en": "A documented water-play history"
           },
           "body": {
-            "ko": "2010년 현장 보도는 미니 카약장을 어린이 물놀이장으로 전환해 운영했다고 기록했습니다. 사진 속 시설을 오늘 이용 가능한 서비스로 단정하지 말고 이번 여름 운영·연령·동반인 규정을 확인하세요.",
-            "en": "A 2010 report documented conversion of the mini-kayak facility into a children’s water-play area. Do not infer current service from photographs; verify seasonal operation, age and guest rules."
+            "ko": "2010년에는 미니 카약장을 어린이 물놀이장으로 바꿔 운영했습니다. 현재도 이용할 수 있는지는 이번 여름 운영 일정과 연령·동반인 규정으로 확인하세요.",
+            "en": "The mini-kayak facility was converted to a children's water-play area in 2010. Current availability depends on this summer's operating schedule and age and accompanying-adult rules."
           },
           "sourceIds": [
             "waterplay"
@@ -6463,8 +6463,8 @@
           "en": "A documented park and Maebong connection"
         },
         "body": {
-          "ko": "2023년 원문 탐방은 기부채납 공원과 매봉산으로 이어지는 출입구를 사진으로 기록했습니다. 녹지가 있다는 추상적 소개보다 연결 경로를 직접 검토할 단서가 있습니다.",
-          "en": "An original 2023 visit photographs a donated public park and access toward Maebong. It provides a route lead more specific than a general greenery claim."
+          "ko": "기부채납 공원과 매봉산으로 이어지는 출입구가 있어 산책 코스를 생활에 넣기 좋습니다. 2023년에 확인된 경로이므로 현재 출입 조건은 방문 때 살펴보세요.",
+          "en": "An entrance connects to the donated public park and Maebongsan, making walks a practical part of daily life. The route was documented in 2023; check current access when visiting."
         },
         "sourceIds": [
           "blog"
@@ -7138,8 +7138,8 @@
             "en": "Cross-check Soongshin with current records"
           },
           "body": {
-            "ko": "학교알리미의 마장로 161 공립 숭신초와 통학권 목록의 텐즈힐1 연결을 대조했습니다. 오래된 주변 학교 필드의 다른 학교 이름을 현재 배정으로 자동 사용하지 않았습니다.",
-            "en": "Soongshin’s official public-school address at 161 Majang-ro was cross-checked with the Tenz Hill 1 catchment listing. Stale nearby-school fields are not automatically treated as current placement."
+            "ko": "텐즈힐1은 마장로 161에 있는 공립 숭신초의 통학권에 포함됩니다. 입주할 주소와 연도를 기준으로 최종 배정을 확인하세요.",
+            "en": "Tenz Hill 1 falls within the catchment of public Sungshin Elementary School at 161 Majang-ro. Confirm allocation for the exact address and year of entry."
           },
           "sourceIds": [
             "school",
