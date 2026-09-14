@@ -4,9 +4,9 @@
 
 공개 게시판의 본문·댓글, 공개 실거주 후기 페이지, 개인의 현장 방문기를 실제 열어 확인했다. 검색 요약만 확인된 글은 근거로 채택하지 않았다. 로그인하거나 글을 게시하지 않았고, 비공개 접근을 우회하지 않았다. 기존 단지 소개문을 다시 쓰는 작업과 별도로 수행한 조사다.
 
-채택한 고유 원문 URL은 **20개**, 패널용 체크는 **20개**다. 한국어·영어·간체 중국어로 작성했으며 서울 25개 프로필 중 **24개**에 연결했다. 한 프로필에 연결된 체크는 최대 **2개**다. 이 숫자는 직접 입주민 검증률이나 주민 대표성을 뜻하지 않는다.
+채택한 고유 원문 URL은 **21개**, 패널용 체크는 **21개**다. 한국어·영어·간체 중국어로 작성했으며 서울 **25개 프로필 모두**에 연결했다. 한 프로필에 연결된 체크는 최대 **2개**다. 이 숫자는 직접 입주민 검증률이나 주민 대표성을 뜻하지 않는다.
 
-확정 작성일이 2024–2026년인 원문은 **5개**다. 포레온 후기 1개는 최근 상대 날짜만 표시돼 정확한 작성일을 `null`로 남겼다. 나머지 14개는 2009–2023년 자료다. 오래된 글에서는 지금의 상태를 단정하지 않고 현장 질문만 추렸다. 확인일과 글 작성일을 분리했으며, 방문기의 발행일을 실제 방문일로 바꾸지 않았다.
+확정 작성일이 2024–2026년인 원문은 **6개**다. 포레온 후기 1개는 최근 상대 날짜만 표시돼 정확한 작성일을 `null`로 남겼다. 나머지 14개는 2009–2023년 자료다. 오래된 글에서는 지금의 상태를 단정하지 않고 현장 질문만 추렸다. 확인일과 글 작성일을 분리했으며, 방문기의 발행일을 실제 방문일로 바꾸지 않았다.
 
 ## 화면 문구와 근거의 관계
 
@@ -22,16 +22,16 @@
 
 | mappingScope | 체크 수 | 해당 signal ID |
 |---|---:|---|
-| `named-property` | 17 | `seoul-helio-daily-facilities`, `seoul-parkrio-open-window`, `seoul-ricenz-school-move`, `seoul-jamsil-academy-door`, `seoul-mapo-raemian-lift-route`, `seoul-mapo-prestige-everyday-gates`, `seoul-oksu-outside-grounds`, `seoul-centras-retail-lift`, `seoul-godeok-quiet-commute`, `seoul-foreon-facility-loop`, `seoul-gyeonghuigung-grocery-return`, `seoul-heukseok-return-slope`, `seoul-banpo-terminal-commute`, `seoul-one-bailey-view-quiet`, `seoul-eunma-beyond-refurbished-interior`, `seoul-daechi-actual-academy`, `seoul-rexle-play-deliveries` |
+| `named-property` | 18 | `seoul-helio-daily-facilities`, `seoul-parkrio-open-window`, `seoul-ricenz-school-move`, `seoul-jamsil-academy-door`, `seoul-mapo-raemian-lift-route`, `seoul-mapo-prestige-everyday-gates`, `seoul-oksu-outside-grounds`, `seoul-centras-retail-lift`, `seoul-godeok-quiet-commute`, `seoul-foreon-facility-loop`, `seoul-gyeonghuigung-grocery-return`, `seoul-heukseok-return-slope`, `seoul-banpo-terminal-commute`, `seoul-one-bailey-view-quiet`, `seoul-eunma-beyond-refurbished-interior`, `seoul-daechi-actual-academy`, `seoul-rexle-play-deliveries`, `seoul-la-classy-school-walk` |
 | `area-context` | 3 | `seoul-tenz-hill-size-refurbishment`, `seoul-forest-weekday-errands`, `seoul-banpo-riche-real-walk` |
 | `comparable-setting` | 0 | 없음 |
 
-`named-property` 항목에 연결된 고유 프로필은 **20개**다. 넓은 지역 범위의 항목에만 연결된 프로필은 `kr-acro-river-park`, `kr-acro-seoul-forest`, `kr-banpo-riche`, `kr-tenz-hill-1`의 **4개**다. 리체 자체는 원문에서 직접 거론되지만 퍼스티지·아크로리버파크 비교를 함께 연결한 항목이라 전체 항목을 보수적으로 `area-context`로 분류했다.
+`named-property` 항목에 연결된 고유 프로필은 **21개**다. 넓은 지역 범위의 항목에만 연결된 프로필은 `kr-acro-river-park`, `kr-acro-seoul-forest`, `kr-banpo-riche`, `kr-tenz-hill-1`의 **4개**다. 리체 자체는 원문에서 직접 거론되지만 퍼스티지·아크로리버파크 비교를 함께 연결한 항목이라 전체 항목을 보수적으로 `area-context`로 분류했다.
 
 | 지역 묶음 | 연결 프로필 | 근거 범위의 한계 |
 |---|---|---|
 | 반포 | `kr-banpo-riche`, `kr-banpo-xi`, `kr-raemian-firstige`, `kr-raemian-one-bailey`, `kr-acro-river-park` | 리체·자이·퍼스티지·원베일리 직접 논의. 아크로리버파크는 지역 비교 질문만 연결. |
-| 대치·도곡 | `kr-dogok-rexle`, `kr-raemian-daechi-palace`, `kr-eunma` | 해당 단지 논의지만 주로 과거 자료. 삼성동 라클래시는 직접 근거 미확보. |
+| 대치·도곡·삼성 | `kr-dogok-rexle`, `kr-raemian-daechi-palace`, `kr-eunma`, `kr-raemian-la-classy` | 대치·도곡은 주로 과거 자료. 라클래시는 2025년 후기의 공개 문단만 확인. |
 | 잠실·가락 | `kr-helio-city`, `kr-parkrio`, `kr-jamsil-ricenz`, `kr-jamsil-els`, `kr-jamsil-trizium` | 엘스·트리지움 학원 질문은 개인 방문기의 명시적 지역 관찰. 트리지움 내부 거주 후기가 아님. |
 | 고덕·둔촌 | `kr-godeok-gracium`, `kr-godeok-arteon`, `kr-olympic-park-foreon` | 고덕은 두 단지를 명시한 주변 생활 토론. 포레온은 개별 공개 후기. |
 | 마포·아현 | `kr-mapo-raemian-prugio`, `kr-mapo-prestige-xi` | 출발 동과 이용 목적에 따른 경험 차이. 승강기와 출입 조건은 최신 확인 대상. |
@@ -43,7 +43,7 @@
 
 ## 실제 열람 후 채택한 원문
 
-아래 20개 URL은 원문 내용을 확인하고 채택한 고유 URL 수다. 검색 결과 노출 수나 실패한 재접속 횟수를 포함하지 않는다. 관련 후기 목록을 읽기 위해 열었던 보조 페이지는 채택 원문 수에 중복 집계하지 않았다. 출처별 상세 범위는 JSON의 `sources.context`에 보관한다.
+아래 21개 URL은 원문 내용을 확인하고 채택한 고유 URL 수다. 검색 결과 노출 수나 실패한 재접속 횟수를 포함하지 않는다. 관련 후기 목록을 읽기 위해 열었던 보조 페이지는 채택 원문 수에 중복 집계하지 않았다. 출처별 상세 범위는 JSON의 `sources.context`에 보관한다.
 
 | signal ID | 원문 | 작성일 | 내용 유형 |
 |---|---|---|---|
@@ -67,14 +67,17 @@
 | `seoul-eunma-beyond-refurbished-interior` | [원문](https://www.82cook.com/entiz/read.php?bn=15&num=3587349) | 2023-01-21 | 댓글은 1월 28일까지 |
 | `seoul-daechi-actual-academy` | [원문](https://www.82cook.com/entiz/read.php?bn=15&num=3033151) | 2020-06-29 | 상반된 학원 도보 경험 |
 | `seoul-rexle-play-deliveries` | [원문](https://www.82cook.com/entiz/read.php?bn=35&num=738176) | 2009-06-25 | 과거 입주 경험 주장 |
+| `seoul-la-classy-school-walk` | [공개 문단](https://realty.daangn.com/complexes/10691488/topics/noise) | 2025-11-28 | 후기 목록에 표시된 문단만 열람 |
 
 반포·대치·도곡 6개 원문은 병행 조사자가 본문과 댓글 끝까지 열람했다. 원베일리 글은 전체 5개 댓글과 그 뒤 로그인 안내까지 열람한 결과를 확인했다. 이후 다른 세션의 재접속 실패를 최초 열람 성공으로 바꾸어 세거나, 그 반대로 처리하지 않았다. 반포 출근 글에서는 삭제 표시가 없는 댓글 2·6·14만 채택 근거로 사용했다.
+
+라클래시는 추가 조사에서 후기 목록의 공개 문단을 확인해 연결했다. 더보기 뒤의 전체 후기를 읽었다고 세지 않았으며, 개별 후기 URL이 최신 목록으로 표시돼 실제 문단을 확인한 주제별 목록 URL을 근거로 남겼다.
 
 ## 확보하지 못한 근거와 제외한 자료
 
 | 대상·접근 시도 | 처리 |
 |---|---|
-| `kr-raemian-la-classy` | 공개 본문까지 열람한 직접 단지 경험을 확보하지 못함. 검색 요약·스크립트 전용 결과를 근거로 만들지 않고 미연결. |
+| `kr-raemian-la-classy` | 추가 확인에서 2025-11-28 후기의 공개된 완결 문단을 확보해 연결. 더보기 뒤 전체 후기, 거주 인증, 학교 배정은 미검증. 검색 요약·스크립트 전용 결과는 제외. |
 | `kr-acro-river-park` | 지역 비교 외의 직접 거주 후기를 확보하지 못함. 현재 입주민 의견으로 소개하지 않음. |
 | `kr-acro-seoul-forest` | [공개 단지 페이지](https://realty.daangn.com/complexes/11122483)와 후기 경로 열람 실패. 과거 지역 질문만 연결. |
 | `kr-tenz-hill-1` | 채택 토론에 기수 표기가 없음. 1단지 특정 동·면적의 현황에 일반화하지 않음. |

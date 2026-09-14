@@ -20,9 +20,9 @@ Buyers need interpretation beside the selected price data. The previous disclosu
 
 ## Public community research
 
-The follow-up adds 76 localized viewing checks from 73 retained public discussion, user-review and resident-interview URLs. They are relevant to 90 reviewed profiles: Seoul 24, Singapore 25, Dubai 25 and Tokyo 16. This is relevance coverage, not a claim of 90 verified resident testimonies. The 100 price references above are a separate coverage measure.
+The follow-up adds 86 localized viewing checks from 83 retained public discussion, user-review and resident-interview URLs. They are relevant to all 100 reviewed profiles: 25 each in Seoul, Singapore, Dubai and Tokyo. This is relevance coverage, not a claim of 100 verified resident testimonies. The 100 price references above are a separate coverage measure.
 
-Each check retains its inspected source, date, limitations and mapping scope: 46 named-property discussions, 20 area-context checks and 10 comparable-setting checks. Named-property means the property is explicitly discussed; it does not verify the commenter's identity. Dubai evidence remains area/comparison context for the reviewed projects. Seoul La Classy and nine Tokyo properties have no supported community check in this release.
+Each check retains its inspected source, date, limitations and mapping scope: 56 named-property discussions, 20 area-context checks and 10 comparable-setting checks. Named-property means the property is explicitly discussed; it does not verify the commenter's identity. Dubai evidence remains area/comparison context for the reviewed projects. The final research pass added La Classy and nine Tokyo properties after directly reading their public review paragraphs and discussion threads. The earlier gaps reflected incomplete investigation, not inaccessible sources. Older posts retain their dates and support current viewing questions rather than assertions about current conditions.
 
 Community questions appear immediately after the five priorities, adapt to the selected perspective and retain the existing financial assessment. Current defects, prices, yields and consensus are never inferred from anecdotes. The city audit files under `docs/research/community-*-20260914.md` document direct evidence, regional applications, older sources and exclusions.
 
@@ -30,4 +30,4 @@ Community questions appear immediately after the five priorities, adapt to the s
 
 Model checks cover persona differences, evidence identities and qualifications, area versus property scope, unavailable prices, and actual Dubai catalogue coverage. Browser scenarios cover desktop layout, all three locales, report-only scrolling, close/expand/Escape focus handling, mobile modality and retry without losing data.
 
-The local full unit run found one radius-rule failure; both offending radii were aligned with shared tokens and the relevant tests passed. Hosted build and browser gates remain required because local downloads of the existing Google font assets and Playwright Chromium were unavailable in this environment.
+The local full unit run found one radius-rule failure; both offending radii were aligned with shared tokens and the relevant tests passed. The hosted verification job subsequently passed lint, TypeScript, the full unit suite, workbook QA, build and legacy gates. Hosted browser gates remain required because local downloads of the existing Google font assets and Playwright Chromium were unavailable in this environment.

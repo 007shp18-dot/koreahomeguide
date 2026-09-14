@@ -706,5 +706,358 @@
     ],
     "evidenceKind": "community-anecdote",
     "mappingScope": "named-property"
+  },
+  {
+    "id": "tokyo-community-bayz-restaurant-hours",
+    "marketId": "jp-tokyo",
+    "profileIds": [
+      "jp-bayz-tower-garden"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "베이즈, 31층 식당을 평일에도 쓸까",
+      "en": "BAYZ: would the restaurant fit your week?",
+      "zh-CN": "BAYZ：31层餐厅适合日常使用吗？"
+    },
+    "body": {
+      "ko": "베이즈의 31층 식당을 두고 2025년에는 영업 시작 안내가 부족하다는 반응과 기대가 함께 나왔습니다. 전망 사진보다 지금의 메뉴와 영업시간이 내 저녁 생활에 맞는지 보세요.",
+      "en": "BAYZ posts in 2025 mixed anticipation of the 31st-floor restaurant with uncertainty about its opening. Check whether today’s menu and hours fit your evenings.",
+      "zh-CN": "2025年，BAYZ的讨论既期待31层餐厅开业，也提到开业通知不清楚。比起景观照片，更应核对现行菜单和营业时间是否适合自己的晚餐习惯。"
+    },
+    "visitQuestion": {
+      "ko": "31층 식당의 현재 예약 방식·휴무일·운영 변경 안내를 확인하고, 평소 저녁 시간에 이용할 수 있나요?",
+      "en": "Can I check current bookings, closure days and service notices, then try my usual dinner time?",
+      "zh-CN": "能否查看现行预约方式、休息日及运营通知，再按平常晚餐时间试用？"
+    },
+    "sources": [
+      {
+        "url": "https://www.e-mansion.co.jp/bbs/thread/600112/",
+        "title": "BAYZ TOWER & GARDEN Part5｜住民掲示板",
+        "publishedOn": "2025-02-03",
+        "inspectedOn": "2026-09-14",
+        "context": "Shared SKYZ/BAYZ resident thread. Read posts 3427 (8 Jan), 3429 (30 Jan) and 3430 (3 Feb 2025) about the 31st-floor restaurant opening and notices. Operator page independently identifies SKYZ/BAYZ resident access; this maps only to BAYZ. Current hours, operator continuity and satisfaction are not verified.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "tokyo-community-skyz-accessible-toilet",
+    "marketId": "jp-tokyo",
+    "profileIds": [
+      "jp-skyz-tower-garden"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family"
+    ],
+    "title": {
+      "ko": "스카이즈, 공용시설 옆 화장실은 쓸 수 있나",
+      "en": "SKYZ: check the accessible toilet on your route",
+      "zh-CN": "SKYZ：先确认公区无障碍厕所能否使用"
+    },
+    "body": {
+      "ko": "스카이즈에서는 2025년 입주자가 1층 남자·다목적 화장실을 쓰지 못해 불편했다고 적었습니다. 지금도 같은 상황인지는 알 수 없으니, 아이와 공용시설을 오갈 때 이용할 화장실을 직접 확인하세요.",
+      "en": "A SKYZ resident reported being unable to use the ground-floor men’s and accessible toilets in 2025. Check what is open now along the route you would use with children.",
+      "zh-CN": "一位SKYZ住户在2025年提到无法使用一层男厕和无障碍厕所。现状未确认，带孩子使用公区时，应实地查看沿途可用的厕所。"
+    },
+    "visitQuestion": {
+      "ko": "1층 다목적 화장실은 현재 이용 가능한가요? 잠겨 있을 때 이용할 다른 화장실과 안내 창구는 어디인가요?",
+      "en": "Is the ground-floor accessible toilet open, and what alternative and help point are available if it is locked?",
+      "zh-CN": "一层无障碍厕所现在能用吗？若上锁，替代厕所和咨询点在哪里？"
+    },
+    "sources": [
+      {
+        "url": "https://www.e-mansion.co.jp/bbs/thread/579983/",
+        "title": "SKYZ TOWER & GARDEN Part12｜住民掲示板",
+        "publishedOn": "2025-03-12",
+        "inspectedOn": "2026-09-14",
+        "context": "Read post 1154, dated 12 Mar 2025, by a self-described resident who moved in the previous year. It reports inability to use the ground-floor men’s and accessible toilets. The poster’s suggested cause is excluded; no present closure or cause verified.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "tokyo-community-symbol-approved-contributions",
+    "marketId": "jp-tokyo",
+    "profileIds": [
+      "jp-city-towers-toyosu-the-symbol"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "도요스 더 심볼, 고지서와 인상안을 구분하세요",
+      "en": "Toyosu The Symbol: separate proposals from the bill",
+      "zh-CN": "丰洲The Symbol：区分征询方案与实际账单"
+    },
+    "body": {
+      "ko": "도요스 더 심볼에서는 2025년 수선적립금 개정 설문을 받았다는 글이 있었습니다. 설문이 곧 확정 인상은 아니므로, 매물에 적힌 월 납부액을 최근 고지서와 의결 자료에 맞춰 보세요.",
+      "en": "A 2025 Toyosu The Symbol post described a survey on reserve contributions. A survey is not an approved increase; compare the listing’s monthly charges with the latest bill and approved decisions.",
+      "zh-CN": "丰洲The Symbol在2025年有帖子提到收到维修储备金调整问卷。问卷不等于已批准涨费，应将房源月费与最新账单和决议核对。"
+    },
+    "visitQuestion": {
+      "ko": "이 집의 최신 수선적립금 고지서와 다음 변경에 관한 총회 의결 자료를 볼 수 있나요?",
+      "en": "Can I see this unit’s latest reserve-contribution bill and approved decisions on future changes?",
+      "zh-CN": "能否查看本套房最新维修储备金账单，以及未来调整的业主大会决议？"
+    },
+    "sources": [
+      {
+        "url": "https://www.e-mansion.co.jp/bbs/thread/420402/",
+        "title": "シティタワーズ豊洲ザ・シンボル Part6｜住民掲示板",
+        "publishedOn": "2025-04-14",
+        "inspectedOn": "2026-09-14",
+        "context": "Read posts 1371 (3 Apr) and 1372 (14 Apr 2025): a reported survey about the following year’s reserve contributions and a reply questioning consistency with earlier explanations. No approved increase, effective date, multiplier or misuse of funds established.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "tokyo-community-twin-unit-intercom",
+    "marketId": "jp-tokyo",
+    "profileIds": [
+      "jp-city-towers-toyosu-the-twin"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "도요스 더 트윈, 대수선에 인터폰도 포함되나",
+      "en": "Toyosu The Twin: does the work include this intercom?",
+      "zh-CN": "丰洲The Twin：大修是否包括这套房的对讲机？"
+    },
+    "body": {
+      "ko": "도요스 더 트윈에서는 공용부 공사 설명과 함께, 내견자가 오래된 세대 인터폰도 교체되는지 물었습니다. 대수선 완료라는 말만으로 집 안 설비까지 새것이라고 판단하기는 어렵습니다.",
+      "en": "At Toyosu The Twin, a viewer asked whether an ageing in-unit intercom was included alongside shared-area works. Check the actual scope before treating a renovated building as a renovated apartment.",
+      "zh-CN": "丰洲The Twin的讨论提到公区施工，也有看房者询问老旧户内对讲机是否更换。大楼完成维修，并不表示目标房源的室内设备也已更新。"
+    },
+    "visitQuestion": {
+      "ko": "공사 완료 목록에 이 집의 인터폰 교체가 포함되나요? 별도로 남은 세대 설비 비용은 무엇인가요?",
+      "en": "Does the completed-work list include this unit’s intercom, and which in-unit costs remain?",
+      "zh-CN": "竣工清单是否包括本套房对讲机？还有哪些户内设备费用需另付？"
+    },
+    "sources": [
+      {
+        "url": "https://www.e-mansion.co.jp/bbs/thread/187631/",
+        "title": "シティタワーズ豊洲ザ・ツイン Part5｜住民掲示板",
+        "publishedOn": "2025-07-21",
+        "inspectedOn": "2026-09-14",
+        "context": "Read posts 1014 (1 Jul) and 1015 (21 Jul 2025): shared corridor/exterior work described by a resident, followed by a viewer’s question about an ageing in-unit intercom. South/North tower and unit are not identified; no building-wide condition or replacement programme inferred.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "tokyo-community-ariake-city-bath-routine",
+    "marketId": "jp-tokyo",
+    "profileIds": [
+      "jp-brillia-ariake-city-tower"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "브릴리아 아리아케 시티, 대욕장을 언제 쓸까",
+      "en": "Brillia Ariake City: try the bath at your usual hour",
+      "zh-CN": "Brillia Ariake City：按自己的作息试用浴场"
+    },
+    "body": {
+      "ko": "브릴리아 아리아케 시티의 대욕장은 평일에 한산했다는 2026년 답글이 있습니다. 주말이나 내 퇴근 시간도 같다는 뜻은 아니니, 실제 이용할 시간에 맞춰 시설을 보세요.",
+      "en": "A 2026 Brillia Ariake City reply described quiet weekday baths. That does not establish weekend or after-work availability; visit at the time you would actually use them.",
+      "zh-CN": "Brillia Ariake City的一则2026年回复称工作日浴场较空。但不能据此判断周末或下班后的情况，应按自己实际使用的时间查看。"
+    },
+    "visitQuestion": {
+      "ko": "내가 이용할 요일과 시간에 대욕장을 볼 수 있나요? 휴무일·청소 시간·가족 이용 규칙도 확인할 수 있나요?",
+      "en": "Can I visit at my intended time and check closure days, cleaning hours and family access rules?",
+      "zh-CN": "能否按计划使用的时段查看，并核对休息日、清洁时间和家庭使用规则？"
+    },
+    "sources": [
+      {
+        "url": "https://www.e-mansion.co.jp/bbs/thread/589987/",
+        "title": "Brillia 有明 City Tower Part13｜住民掲示板",
+        "publishedOn": "2026-02-26",
+        "inspectedOn": "2026-09-14",
+        "context": "Read post 4045 (13 Jan 2026), a bath-crowding question, and reply 4046 (26 Feb), one report that weekdays are quiet. No measured occupancy, peak-hour availability or present access policy established.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "tokyo-community-ariake-sky-parcel-route",
+    "marketId": "jp-tokyo",
+    "profileIds": [
+      "jp-brillia-ariake-sky-tower"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "브릴리아 아리아케 스카이, 무거운 택배는 어디서 받나",
+      "en": "Brillia Ariake Sky: where would a heavy parcel arrive?",
+      "zh-CN": "Brillia Ariake Sky：重包裹会送到哪里？"
+    },
+    "body": {
+      "ko": "브릴리아 아리아케 스카이에서는 문 앞 배송과 택배함 이용을 두고 혼선이 있었고, 무거운 생수 상자를 택배함에서 받았다는 경험도 나왔습니다. 장보기를 배송에 맡긴다면 수령 장소에서 집까지의 이동도 확인하세요.",
+      "en": "Brillia Ariake Sky posts describe uncertainty over doorstep delivery and a heavy drinks order left in a parcel locker. If you rely on deliveries, check the route from collection to your door.",
+      "zh-CN": "Brillia Ariake Sky的讨论对门前配送和快递柜使用有疑问，也有人提到沉重饮料箱被放进快递柜。若依赖配送，应查看取件点到家门的搬运路线。"
+    },
+    "visitQuestion": {
+      "ko": "무거운 장보기 주문은 현관 앞과 택배함 중 어디로 오나요? 현재 규칙과 카트 이용·반납 동선을 볼 수 있나요?",
+      "en": "Where do heavy grocery orders arrive, and can I check the current rules and trolley route?",
+      "zh-CN": "重的生鲜订单会送到门前还是快递柜？能否查看现行规则和推车路线？"
+    },
+    "sources": [
+      {
+        "url": "https://www.e-mansion.co.jp/bbs/thread/327481/",
+        "title": "Brillia 有明 Sky Tower Part11｜住民掲示板",
+        "publishedOn": "2026-02-18",
+        "inspectedOn": "2026-09-14",
+        "context": "Read posts 774 (28 Nov 2025), 776 (4 Feb 2026) and 777 (18 Feb 2026): questions about doorstep-delivery rules, one heavy parcel-locker delivery, and a delivery-preference mismatch. Excluded arguments about individuals and package weight. No current rule or frequency verified.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "tokyo-community-capital-mark-unit-network",
+    "marketId": "jp-tokyo",
+    "profileIds": [
+      "jp-capital-mark-tower"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "캐피털 마크, 단지 회선과 집 안 장비를 따로 보세요",
+      "en": "Capital Mark: check the equipment inside this unit",
+      "zh-CN": "Capital Mark：单独检查户内网络设备"
+    },
+    "body": {
+      "ko": "캐피털 마크의 2022년 회선 개선 후기에서는 단지 설비와 세대 안 허브를 따로 바꿨다고 설명합니다. 당시 속도를 오늘의 약속으로 읽기보다, 이 집에 남은 장비와 실제 업무용 연결을 확인하세요.",
+      "en": "A Capital Mark resident’s 2022 upgrade account distinguished the building connection from the in-unit hub. It is historical, not a current speed promise; check this apartment’s equipment and work connection.",
+      "zh-CN": "Capital Mark一位住户在2022年的升级体验中，将大楼线路和户内交换机分开说明。这不代表今天的网速承诺，应检查目标房源设备及办公连接。"
+    },
+    "visitQuestion": {
+      "ko": "이 집의 허브·공유기는 언제 바꿨나요? 업무용 방에서 연결을 시험하고, 교체가 필요하면 누가 부담하는지 확인할 수 있나요?",
+      "en": "When were this unit’s hub and router replaced, can I test the work room, and who pays for any remaining upgrade?",
+      "zh-CN": "这套房的交换机和路由器何时换过？能否在工作房间测试，并确认后续升级由谁付费？"
+    },
+    "sources": [
+      {
+        "url": "https://www.e-mansion.co.jp/bbs/thread/187634/",
+        "title": "キャピタルマークタワー 住民専用（7）",
+        "publishedOn": "2022-10-26",
+        "inspectedOn": "2026-09-14",
+        "context": "Read post 293, dated 26 Oct 2022: a self-described resident’s detailed network upgrade and separate in-unit hub replacement. Speed results, prices and ownership conclusions are not republished as current facts. The 24 Mar 2026 final post is merely an incoming resident greeting, not a newer equipment report.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "tokyo-community-kachidoki-tower-temporary-parking",
+    "marketId": "jp-tokyo",
+    "profileIds": [
+      "jp-kachidoki-the-tower"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "가치도키 더 타워, 주차장 공사 때 차는 어디에 둘까",
+      "en": "Kachidoki The Tower: check parking during the works",
+      "zh-CN": "Kachidoki The Tower：维修期间车停在哪里？"
+    },
+    "body": {
+      "ko": "가치도키 더 타워의 2026년 9월 글은 기계식 주차장 공사 중 외부 주차로 옮기는 절차를 설명합니다. 차를 매일 쓴다면 주차권 유무뿐 아니라 임시 주차장까지의 거리와 내 주차면의 일정이 중요합니다.",
+      "en": "A September 2026 Kachidoki The Tower post describes temporary off-site parking during mechanical-parking works. For daily drivers, check the temporary location and your space’s schedule alongside the parking entitlement.",
+      "zh-CN": "Kachidoki The Tower在2026年9月的帖子提到机械车位维修期间临时外停。每天开车的人，除了车位资格，还需核对临时地点和自己车位受影响的安排。"
+    },
+    "visitQuestion": {
+      "ko": "내 주차면의 공사 일정, 임시 주차 위치, 이동 지원과 비용 부담을 최신 공사 안내에서 확인할 수 있나요?",
+      "en": "Can I see the latest notice covering my space’s schedule, temporary location, transport support and cost allocation?",
+      "zh-CN": "能否查看最新通知中本车位的工期、临时停车地点、接驳支持及费用分担？"
+    },
+    "sources": [
+      {
+        "url": "https://www.e-mansion.co.jp/bbs/thread/578828/",
+        "title": "KACHIDOKI THE TOWER Part3｜住民掲示板",
+        "publishedOn": "2026-09-03",
+        "inspectedOn": "2026-09-14",
+        "context": "Read posts 13777–13779 (27–28 Aug 2026) and subsequent clarification 13783 (3 Sep), which describes sequential work and temporary off-site parking; also read 13785–13786 (5 Sep) on location/cost questions. Unverified durations, totals, compensation law and contractor allegations are excluded. Current approved notice remains to be checked.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "tokyo-community-tokyo-towers-pet-route",
+    "marketId": "jp-tokyo",
+    "profileIds": [
+      "jp-the-tokyo-towers"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "더 도쿄 타워스, 비 오는 날 반려견 동선을 보세요",
+      "en": "The Tokyo Towers: walk the wet-weather pet route",
+      "zh-CN": "The Tokyo Towers：实走雨天遛狗路线"
+    },
+    "body": {
+      "ko": "더 도쿄 타워스에서는 2025년 지붕 있는 주차장 출구의 반려견 통행을 두고 마찰을 겪었다는 글이 있었습니다. 반려견과 산다면 비를 피할 수 있는 길과 실제 허용된 길이 같은지 직접 보세요.",
+      "en": "A 2025 The Tokyo Towers post describes a dispute over a covered parking-exit pet route. If you have a dog, check whether the sheltered route you would choose is actually permitted today.",
+      "zh-CN": "The Tokyo Towers在2025年有帖子提到带顶棚停车场出口的宠物通行争议。若养狗，应实地确认想走的避雨路线是否符合现行规定。"
+    },
+    "visitQuestion": {
+      "ko": "주차장 출구와 1층 출입구 중 반려견이 통과할 수 있는 길은 어디인가요? 비 오는 날 동선도 안내받을 수 있나요?",
+      "en": "Which parking and ground-floor exits allow pets, and can I walk the permitted rainy-day route?",
+      "zh-CN": "停车场出口和一层出入口中，哪些允许宠物通行？能否走一遍雨天可用路线？"
+    },
+    "sources": [
+      {
+        "url": "https://www.e-mansion.co.jp/bbs/thread/155673/",
+        "title": "THE TOKYO TOWERS Part4｜住民掲示板",
+        "publishedOn": "2025-07-04",
+        "inspectedOn": "2026-09-14",
+        "context": "Read post 450 (4 Jul 2025) about a covered parking exit and an alleged pet-walking restriction; read nearby post 451 for location context. Retained only a current route/rules viewing question. Personal insults, descriptions of people, hygiene accusations and generalizations about residents are excluded; current signage/rules are unverified.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
   }
 ]

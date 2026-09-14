@@ -784,5 +784,43 @@
     ],
     "evidenceKind": "community-anecdote",
     "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-la-classy-school-walk",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-raemian-la-classy"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family"
+    ],
+    "title": {
+      "ko": "라클래시, 역 접근과 통학은 따로 보기",
+      "en": "La Classy: station access and the school walk",
+      "zh-CN": "La Classy：到站方便，上学路线仍要另看"
+    },
+    "body": {
+      "ko": "라클래시를 출퇴근 편의 때문에 고른다면 아이의 통학길도 따로 확인하세요. 부모가 역을 이용하기 편한 집이 아이에게도 걷기 편한 집인지는 다른 문제입니다.",
+      "en": "If La Classy appeals for your commute, check your child’s school walk separately: convenient station access does not settle the school journey.",
+      "zh-CN": "若因通勤便利选择La Classy，还要单独检查孩子上学的步行路线。父母去车站方便，并不意味着孩子上学也同样轻松。"
+    },
+    "visitQuestion": {
+      "ko": "현재 배정 학교를 확인하고, 등교 시간에 해당 동에서 학교 출입구까지 아이와 걸어봤나요?",
+      "en": "After confirming the current school allocation, have you walked from this building to the school entrance with your child at arrival time?",
+      "zh-CN": "核实当前学校分配后，和孩子在上学时段从这栋楼走到学校门口了吗？"
+    },
+    "sources": [
+      {
+        "url": "https://realty.daangn.com/complexes/10691488/topics/noise",
+        "title": "래미안라클래시 공개 후기 목록 — 2025-11-28 후기 문단",
+        "publishedOn": "2025-11-28",
+        "inspectedOn": "2026-09-14",
+        "context": "Read the complete publicly displayed paragraph of the dated review on this topic page; content behind More was not read. Self-reported resident contrasts transit access with the school walk. No school allocation, duration or current quietness verified.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
   }
 ]

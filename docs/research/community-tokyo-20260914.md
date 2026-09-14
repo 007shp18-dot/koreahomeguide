@@ -4,10 +4,10 @@ Actual public posts were opened and read. Search snippets, generated review summ
 
 ## Coverage and evidence boundary
 
-- 18 signals; 18 retained source URLs; 16 of 25 named Tokyo catalogue profiles. All 12 catalogue locality clusters have at least one named-property example.
-- Mapping scope: **18 named-property, 0 area-context, 0 comparable-setting**. Every entry names the discussed property in visible copy. No complaint was copied onto an unmentioned neighbour.
-- 22 public pages with actual community/reviewer text were inspected: the 18 retained sources below plus 4 excluded or expanded pages listed below. Directory/search pages and blocked review pages are excluded from this count.
-- 14 signals use 2024–2026 posts. Four retain older experiences (2020, 2021, 2021 and 2023) only to motivate present-day viewing checks; their age is preserved in source metadata.
+- 27 signals; 27 retained source URLs; all 25 named Tokyo catalogue profiles. All 12 catalogue locality clusters have at least one named-property example.
+- Mapping scope: **27 named-property, 0 area-context, 0 comparable-setting**. Every entry names the discussed property in visible copy. No complaint was copied onto an unmentioned neighbour.
+- 31 public pages with actual community/reviewer text were inspected: the 27 retained sources below plus 4 excluded or expanded pages listed below. Directory/search pages and blocked review pages are excluded from this count.
+- 22 signals use 2024–2026 posts. Five retain older experiences (2020, 2021, 2021, 2022 and 2023) only to motivate present-day viewing checks; their age is preserved in source metadata.
 - All `areaKeys` are empty: these are named examples, not findings about an entire neighbourhood. If an area panel surfaces them through verified property IDs, the property-specific wording must remain intact.
 - Posts are anonymous or self-reported unless identified as a broker-collected tenant review. The inspection did not verify residency, prevalence, causation, current resolution, service hours, schedules or current management decisions.
 - No prices, return forecasts, crime rates, school rankings, crowding measurements or fee estimates were derived from anecdotes. Disagreement was retained where relevant. Allegations about individuals, fraud, wrongdoing and resident demographics were excluded.
@@ -36,16 +36,25 @@ Each row is a named-property mapping. Dates identify the relevant post, not the 
 | `tokyo-community-branz-toyosu-shared-seat` | `jp-branz-tower-toyosu` | 2026-04-12 | [ブランズタワー豊洲｜住民掲示板](https://www.e-mansion.co.jp/bbs/thread/653599/) — Read 6914 (2 Mar), 6915 (5 Apr) and contextual reply 6916 (12 Apr). No claimed typical occupancy or resident demographic asserted. |
 | `tokyo-community-harumi-flag-running-budget` | `jp-harumi-flag` | 2026-08-30 | [HARUMI FLAG｜住民掲示板](https://www.e-mansion.co.jp/bbs/thread/651653/) — Posts 29772 (18 Aug) and 29775 (30 Aug) discuss staffing cost and service choices. Excluded hearsay percentage for another property. |
 | `tokyo-community-cape-tamachi-walk` | `jp-shibaura-island-cape-tower` | 2021-09 (day unspecified) | [芝浦アイランドケープタワー｜居住者口コミ](https://kuramore.jp/trend/building/mansion/12133/review/) — Read resident/owner review by さこじろう, September 2021 (day not provided). Rental duration, current stock and safety ratings excluded. |
+| `tokyo-community-bayz-restaurant-hours` | `jp-bayz-tower-garden` | 2025-02-03 | [BAYZ Part5](https://www.e-mansion.co.jp/bbs/thread/600112/) — Posts 3427, 3429 and 3430 discuss restaurant-opening notices. Shared SKYZ/BAYZ thread; mapped only to BAYZ. Current hours unverified. |
+| `tokyo-community-skyz-accessible-toilet` | `jp-skyz-tower-garden` | 2025-03-12 | [SKYZ Part12](https://www.e-mansion.co.jp/bbs/thread/579983/) — Post 1154 reports inaccessible ground-floor toilets. One past experience; cause and current availability unverified. |
+| `tokyo-community-symbol-approved-contributions` | `jp-city-towers-toyosu-the-symbol` | 2025-04-14 | [Toyosu The Symbol Part6](https://www.e-mansion.co.jp/bbs/thread/420402/) — Posts 1371–1372 discuss a contribution survey. No approved increase, amount or effective date established. |
+| `tokyo-community-twin-unit-intercom` | `jp-city-towers-toyosu-the-twin` | 2025-07-21 | [Toyosu The Twin Part5](https://www.e-mansion.co.jp/bbs/thread/187631/) — Posts 1014–1015 distinguish shared-area work from a viewer’s intercom question. Tower and unit unspecified. |
+| `tokyo-community-ariake-city-bath-routine` | `jp-brillia-ariake-city-tower` | 2026-02-26 | [Brillia Ariake City Part13](https://www.e-mansion.co.jp/bbs/thread/589987/) — Posts 4045–4046: a crowding question and one quiet-weekday reply. No occupancy measurement. |
+| `tokyo-community-ariake-sky-parcel-route` | `jp-brillia-ariake-sky-tower` | 2026-02-18 | [Brillia Ariake Sky Part11](https://www.e-mansion.co.jp/bbs/thread/327481/) — Posts 774, 776–777 concern delivery preferences and a heavy locker delivery. Current rules unverified. |
+| `tokyo-community-capital-mark-unit-network` | `jp-capital-mark-tower` | 2022-10-26 | [Capital Mark Tower Part7](https://www.e-mansion.co.jp/bbs/thread/187634/) — Post 293 is a specific historical in-unit hub account. The 2026 greeting supplies no updated equipment evidence. |
+| `tokyo-community-kachidoki-tower-temporary-parking` | `jp-kachidoki-the-tower` | 2026-09-03 | [Kachidoki The Tower Part3](https://www.e-mansion.co.jp/bbs/thread/578828/) — Post 13783 clarifies earlier parking-work discussion; 13785–13786 query arrangements. Published durations, costs and legal opinions excluded. |
+| `tokyo-community-tokyo-towers-pet-route` | `jp-the-tokyo-towers` | 2025-07-04 | [The Tokyo Towers Part4](https://www.e-mansion.co.jp/bbs/thread/155673/) — Post 450 concerns a covered parking-exit pet route. Insults and resident generalizations excluded; current signage unverified. |
 
 ## Locality coverage
 
 | Locality | Named examples with community checks |
 |---|---|
-| Toyosu | Park City Toyosu; Branz Tower Toyosu |
-| Ariake | Brillia Mare Ariake |
+| Toyosu | Park City Toyosu; Branz Tower Toyosu; BAYZ; SKYZ; City Towers Toyosu The Symbol and The Twin |
+| Ariake | Brillia Mare Ariake; Brillia Ariake City Tower; Brillia Ariake Sky Tower |
 | Harumi | Park Tower Harumi; Deux Tours; Harumi Flag |
-| Kachidoki | Park Tower Kachidoki, with the basement question explicitly limited to Mid |
-| Shibaura | Shibaura Island Grove Tower; Shibaura Island Cape Tower |
+| Kachidoki | Park Tower Kachidoki (basement question limited to Mid); Kachidoki The Tower; The Tokyo Towers |
+| Shibaura | Shibaura Island Grove Tower; Shibaura Island Cape Tower; Capital Mark Tower |
 | Konan | World City Towers; viewing report lacks tower/aspect, explicitly disclosed |
 | Hamamatsucho | Park Court Hamarikyu |
 | Shirokane | Shirokane The Sky |
@@ -54,21 +63,13 @@ Each row is a named-property mapping. Dates identify the relevant post, not the 
 | Udagawacho | Park Court Shibuya |
 | Tomihisacho | Tomihisa Cross Comfort Tower |
 
-## Direct coverage gaps
+## Second-pass coverage check
 
-The following nine profiles have no retained direct community signal in this pass. Related named examples do not fill these gaps:
+The first pass retained 18 checks for 16 profiles. The nine remaining profiles were **not established access failures**; their direct resident threads had not yet supplied retained evidence. A targeted second pass opened all nine public threads and retained one specific check per property. All nine were accessible without login. No named-profile gap remains in this catalogue, but this is not a claim of exhaustive resident research or current-condition verification.
 
-- `jp-bayz-tower-garden` — BAYZ Tower & Garden
-- `jp-brillia-ariake-city-tower` — Brillia Ariake City Tower
-- `jp-brillia-ariake-sky-tower` — Brillia Ariake Sky Tower
-- `jp-capital-mark-tower` — Capital Mark Tower
-- `jp-city-towers-toyosu-the-symbol` — City Towers Toyosu The Symbol
-- `jp-city-towers-toyosu-the-twin` — City Towers Toyosu The Twin
-- `jp-kachidoki-the-tower` — Kachidoki The Tower
-- `jp-skyz-tower-garden` — SKYZ Tower & Garden
-- `jp-the-tokyo-towers` — The Tokyo Towers
+Eight additions use 2025–2026 posts. Capital Mark Tower’s last substantive relevant post is from 2022; its age appears in all three visible translations, and its 2026 greeting was not treated as fresh evidence. The Tokyo Towers entry keeps only a route/rules question from a dated experience and excludes personal accusations. New checks retain `mappingScope: named-property` and empty `areaKeys`; persona relevance is selective, so coverage of a property does not imply a check for every persona.
 
-No sufficiently inspected, useful building-specific post was retained for these nine. In particular, a Skyz architect description, official management sites, building directories and search-only snippets did not qualify as community research. The gap is unknown evidence, not evidence of no problems.
+BAYZ identity and shared restaurant access were additionally checked against the [operator’s public site](https://www.barchetta-toyosu.com/) and [named property address](https://wangan-mansion.jp/property/31). SKYZ was checked against its [official building outline](https://www.skyz1110.com/outline/); Symbol against its [named property address](https://wangan-mansion.jp/property/12). These identity pages are not counted as community evidence or used to assert current service hours. Twin’s shared thread does not identify a South/North tower or unit.
 
 ## Other inspected pages and exclusions
 
