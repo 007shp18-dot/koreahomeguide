@@ -4,6 +4,7 @@ import { localizedMarketCopy } from '../../lib/locale/market-localization';
 import { retainPassportContext } from '../../lib/passport/journey';
 
 import { PassportLink as Link } from '../passport/passport-journey';
+import { DubaiSourceNotice } from './dubai-source-notice';
 import { UiIcon } from '../ui-icon';
 import {
   lazy,
@@ -344,6 +345,7 @@ export function DubaiExplorer({ locale = 'en',
           </li>)}</ul>}
           {comparison.storageError ? <p role="status">{compareCopy.failure}</p> : null}
         </details> : null}
+        <DubaiSourceNotice locale={locale} />
         <div className={layout.results} aria-live="polite" aria-busy={query !== deferredQuery}>
           {visible.map(({ area, segment, sale }) => <article key={area.id} data-selected={area.slug === selectedArea} data-has-photo={Boolean(dubaiAreaPhoto(area.slug))}>
             <DubaiAreaPhoto slug={area.slug} locale={locale} variant="thumbnail" />
@@ -373,7 +375,9 @@ export function DubaiExplorer({ locale = 'en',
               ? <span className={styles.unavailableLink}>{t("Area details unavailable")}</span>
               : <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>{localizedMarketCopy(locale, "Full area analysis", "지역 분석 전체 보기")}</Link>}
             <DubaiAreaPhoto slug={area.slug} locale={locale} variant="credit" />
-            </details></div></div>
+            </details></div>
+            <DubaiSourceNotice locale={locale} compact />
+            </div>
           </article>)}
           {results.length === 0 ? <p className={styles.emptyState}>{t("No areas match these filters. Increase the budget or lower the ratio threshold.")}</p> : null}
         </div>

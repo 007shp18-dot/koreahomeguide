@@ -4,6 +4,7 @@ import { DubaiAreaPhoto } from './dubai-area-photo';
 import { DubaiAreaSummary } from './dubai-area-selection';
 import { DiscoveryReading } from '../discovery/discovery-reading';
 import { PassportLink as Link } from '../passport/passport-journey';
+import { DubaiSourceNotice } from './dubai-source-notice';
 
 import type { DubaiSaleDistribution } from '../../lib/dubai/evidence-contract';
 import type { DubaiAreaModel, DubaiAreaSegmentModel } from '../../lib/dubai/route-types';
@@ -111,7 +112,9 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
             </nav>
           </section>
       </>}
-      rail={<details className={detailStyles.disclosure}>
+      rail={<>
+        <DubaiSourceNotice locale={locale} />
+        <details className={detailStyles.disclosure}>
             <summary>{localizedMarketCopy(locale, "Sources, periods and methodology", "출처·기간·집계 기준")}</summary>
             <dl>
               <div><dt>{t("Comparison window")}</dt><dd>{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}</dd></div>
@@ -123,7 +126,7 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
             <p><a href={marketHref(locale, model.context.sourceUrl)} target="_blank" rel="noreferrer">{t("DLD source page")}</a> {t(" · ")}<a href={marketHref(locale, model.context.licenseUrl)} target="_blank" rel="noreferrer">{t("Dataset licence")}</a></p>
             <p>{t("Gross ratios exclude service charges, vacancy, financing, taxes, acquisition costs, repairs, and management.")}</p>
             <p><Link href={marketHref(locale, "/trust/")}>{t("Method and corrections")}</Link></p>
-        </details>}
+        </details></>}
       />
     </main>
   </DubaiShell>;
