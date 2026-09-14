@@ -1,9 +1,12 @@
+import { emptyQuestions } from './questions-fixture';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import {
   openMarketPagesNavigation,
   openPrimaryNavigation,
 } from './navigation-helpers';
 import { visibleProductNavigation } from './site-header-helpers';
+
+test.beforeEach(async ({page})=>{await emptyQuestions(page);});
 
 function observeRuntimeFailures(page: Page) {
   const consoleErrors: string[] = [];

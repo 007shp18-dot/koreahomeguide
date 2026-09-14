@@ -1,3 +1,4 @@
+import { PlaceQuestions } from '../questions/place-questions';
 import { PropertyDecisionWorkspace } from '../market-ui/property-decision-workspace';
 import { hasPropertyReviewForEntity } from '../../lib/research/property-review-locations';
 import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
@@ -113,7 +114,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
       <RecordPlaceVisit place={{ market: 'singapore', key: model.identity.id, name: displayName, href: `/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${encodeURIComponent(model.identity.id)}/` }} />
       <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext}>
       <MarketDetailShell locale={locale}
-        related={<DiscoveryReading market="singapore" locale={locale} />}
+        related={<><PlaceQuestions locale={locale} market="singapore" path={`/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${encodeURIComponent(model.identity.id)}/`} name={displayName}/><DiscoveryReading market="singapore" locale={locale}/></>}
         sections={[
           { id: 'detail-overview', label: localizedMarketCopy(locale, "Overview", "개요") },
           { id: 'detail-evidence', label: localizedMarketCopy(locale, "Prices & transactions", "가격·실거래") },

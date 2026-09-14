@@ -1,14 +1,4 @@
-import type { Metadata } from 'next';
-
-import { CommunityIndexPage } from '@/components/community/community-index-page';
-import { indexableMetadata } from '@/lib/public-metadata';
-
-export const metadata: Metadata = indexableMetadata({
-  path: '/community/',
-  title: 'Local property communities | signedprice',
-  description: 'Browse the SignedPrice community structure by market, district, neighbourhood and building.',
-});
-
-export default function CommunityPage() {
-  return <CommunityIndexPage />;
-}
+import { QuestionsPage } from '@/components/questions/questions-page';
+import { isCity } from '@/lib/questions/model';
+export const metadata={alternates:{canonical:'https://www.signedprice.com/community/'},title:'Home & neighbourhood questions | SignedPrice',robots:{index:false,follow:true}};
+export default async function Page({searchParams}:{searchParams:Promise<{market?:string}>}) {const {market}=await searchParams;return <QuestionsPage locale="en" market={isCity(market)?market:''}/>;}

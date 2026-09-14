@@ -103,6 +103,7 @@ export function KoreaBuildingEvidenceClient({
   coordinate,
   proximity,
   visual,
+  questions,
   locale = 'en',
 }: Readonly<{
   initialModel: KoreaExplorerBuildingDetailModel;
@@ -110,6 +111,7 @@ export function KoreaBuildingEvidenceClient({
   coordinate?: Coordinate;
   proximity?: ObservedBuildingIdentityModel['proximity'];
   visual?: ReactNode;
+  questions?: ReactNode;
   locale?: ProductLocale;
 }>) {
   const searchParams = useSearchParams();
@@ -157,6 +159,7 @@ export function KoreaBuildingEvidenceClient({
     backHref={backHref}
     locale={locale}
     visual={visual}
+    questions={questions}
     facts={<BuildingOfficialFacts
       districtSlug={model.district.slug}
       buildingId={model.building.buildingId}

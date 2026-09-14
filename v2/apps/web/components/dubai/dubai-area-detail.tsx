@@ -1,3 +1,4 @@
+import { PlaceQuestions } from '../questions/place-questions';
 import { localizedMarketCopy } from '../../lib/locale/market-localization';
 import { dubaiAreaPhoto } from '../../lib/dubai/area-photos';
 import { DubaiAreaPhoto } from './dubai-area-photo';
@@ -95,7 +96,7 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
     <main data-dubai-area-evidence="ready">
       <AreaDecisionWorkspace market="ae-dubai" areaKey={model.identity.slug} name={model.identity.name} priceContext={priceContext} locale={locale}>
       <MarketDetailShell locale={locale}
-      related={<DiscoveryReading market="dubai" locale={locale} />}
+      related={<><PlaceQuestions locale={locale} market="dubai" path={`/ae/dubai/explore/${model.identity.slug}/`} name={model.identity.name}/><DiscoveryReading market="dubai" locale={locale}/></>}
       sections={[
         { id: 'detail-overview', label: localizedMarketCopy(locale, "Area overview", "지역 개요") },
         { id: 'detail-evidence', label: localizedMarketCopy(locale, "Sales", "매매") },
