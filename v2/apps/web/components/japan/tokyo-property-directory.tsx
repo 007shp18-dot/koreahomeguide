@@ -40,7 +40,7 @@ export function TokyoPropertyDirectory({ locale, query = '', city = '' }: { loca
         </>}
         history={<RecentPlaces market="tokyo" locale={locale} />}
         discovery={<>
-          <p className={styles.count}>{t(`${matches.length}개 단지`, `${matches.length} properties`, `${matches.length}个项目`)}</p>
+          <p className={styles.count}>{t(`${matches.length}개 단지`, `${matches.length} ${matches.length === 1 ? 'property' : 'properties'}`, `${matches.length}个项目`)}</p>
           <ul className={styles.list}>{matches.map(property => {
             const overview = propertyOverview(property.reviewId, locale);
             return <li key={property.reviewId}><Link href={actualDetailHref(locale, property.reviewId)!}>

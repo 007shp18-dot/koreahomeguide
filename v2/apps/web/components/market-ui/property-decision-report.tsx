@@ -13,7 +13,7 @@ import { actualDetailHref, allReviewLocations } from '../../lib/research/propert
 import styles from './property-decision-workspace.module.css';
 import { PropertyOverviewCard } from './property-overview-card';
 
-export function PropertyDecisionReport({ review, priceContext, analysisScope = 'property', locale, persona, onPersonaChange }: { review: PropertyReview; priceContext?: DecisionPriceContext; analysisScope?: 'property' | 'area'; locale: MarketLocale; persona: DecisionPersona; onPersonaChange: (persona: DecisionPersona) => void }) {
+export function PropertyDecisionReport({ showOverview = true, review, priceContext, analysisScope = 'property', locale, persona, onPersonaChange }: { showOverview?: boolean; review: PropertyReview; priceContext?: DecisionPriceContext; analysisScope?: 'property' | 'area'; locale: MarketLocale; persona: DecisionPersona; onPersonaChange: (persona: DecisionPersona) => void }) {
   const report = analysisScope === 'area' ? getAreaDecision(review, persona, locale) : getPropertyDecision(review, persona, locale);
   const communityChecks = getCommunitySignals(review, persona, locale, analysisScope);
   const groupId = useId();
@@ -27,7 +27,7 @@ export function PropertyDecisionReport({ review, priceContext, analysisScope = '
   const body = (item: DecisionItem) => <p lang={item.originalLanguage}>{item.body}{item.originalLanguage && locale === 'zh-CN' ? <small className={styles.languageNote}> · 英文资料</small> : null}</p>;
   const items = (values: DecisionItem[]) => <ul className={styles.points}>{values.map(item => <li key={item.id}><h4>{item.title}</h4>{body(item)}</li>)}</ul>;
   return <div className={styles.report} data-property-decision={review.id} data-decision-persona={persona}>
-    {analysisScope === 'property' && <PropertyOverviewCard id={review.id} checkedOn={review.checkedOn} locale={locale} />}
+    {showOverview && analysisScope === 'property' && <PropertyOverviewCard id={review.id} checkedOn={review.checkedOn} locale={locale} />}
     <fieldset className={styles.personas}>
       <legend>{t('누구의 관점으로 볼까요', 'Your perspective', '您的购房目的')}</legend>
       <div>{DECISION_PERSONAS.map(value => <label key={value} className={styles.persona}>

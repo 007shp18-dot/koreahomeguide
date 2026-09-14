@@ -18,7 +18,7 @@ function subscribeCompact(onChange: () => void) {
 }
 const compactSnapshot = () => window.matchMedia(compactQuery).matches;
 const serverSnapshot = () => false;
-type WorkspaceProps = { entity?: string; profileId?: string; profile?: LivingContext; priceContext?: DecisionPriceContext; analysisScope?: 'property' | 'area'; ready?: boolean; locale: MarketLocale; children: ReactNode };
+type WorkspaceProps = { showOverview?: boolean; entity?: string; profileId?: string; profile?: LivingContext; priceContext?: DecisionPriceContext; analysisScope?: 'property' | 'area'; ready?: boolean; locale: MarketLocale; children: ReactNode };
 
 /** Server-rendered data stays mounted while the independently scrolling report changes. */
 export function PropertyDecisionWorkspace(props: WorkspaceProps) {
@@ -29,7 +29,7 @@ export function PropertyDecisionWorkspace(props: WorkspaceProps) {
   return <DecisionSession key={`${props.profileId ?? props.entity ?? props.profile?.id}:${props.locale}`} {...props} />;
 }
 
-function DecisionSession({ entity, profileId, profile, priceContext, analysisScope = 'property', locale, children }: WorkspaceProps) {
+function DecisionSession({ showOverview = true, entity, profileId, profile, priceContext, analysisScope = 'property', locale, children }: WorkspaceProps) {
   const compact = useSyncExternalStore(subscribeCompact, compactSnapshot, serverSnapshot);
   const [opened, setOpened] = useState<boolean | null>(null);
   const [expanded, setExpanded] = useState(false);
@@ -153,7 +153,7 @@ function DecisionSession({ entity, profileId, profile, priceContext, analysisSco
       {!result ? <div role="status" className={styles.loading}><span className={styles.skeleton} /><span className={styles.skeleton} /><p>{t('단지 분석을 불러오고 있어요.', 'Loading the property analysis.', '正在加载项目分析。')}</p></div>
         : result.status === 'failed' ? <div role="status" className={styles.empty}><h3>{t('분석을 불러오지 못했어요', 'The analysis could not be loaded', '暂时无法加载分析')}</h3><p>{t('거래 데이터는 계속 볼 수 있어요.', 'The transaction data is still available.', '您仍可查看成交数据。')}</p><button type="button" className={styles.secondaryButton} onClick={() => { setResult(null); setAttempt(value => value + 1); }}>{t('다시 시도', 'Try again', '重试')}</button></div>
           : !selected?.review ? <div className={styles.empty}><p>{t('이 단지의 판단 리포트가 아직 준비되지 않았어요.', 'A decision report is not yet available for this property.', '该项目的购房报告尚未发布。')}</p></div>
-            : <DecisionReport review={selected.review} priceContext={priceContext} analysisScope={analysisScope} locale={locale} persona={persona} onPersonaChange={setPersona} />}
+            : <DecisionReport showOverview={showOverview} review={selected.review} priceContext={priceContext} analysisScope={analysisScope} locale={locale} persona={persona} onPersonaChange={setPersona} />}
     </div>
   </>;
 
