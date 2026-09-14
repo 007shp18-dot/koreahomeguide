@@ -1,3 +1,5 @@
+import { languageDestinations } from '../lib/navigation/site-navigation';
+import type { EditorialPortfolioRecord } from './portfolio-types';
 import type { PublishedContentArticle } from '../lib/content/content-types';
 
 type ReadingLink = Readonly<{ label: string; href: string }>;
@@ -33,7 +35,7 @@ const readingGroups: readonly Readonly<{
 ];
 
 export function relatedReading(article: Pick<PublishedContentArticle, 'slug' | 'marketId' | 'locale'>): readonly ReadingLink[] {
-  // Keep the existing English destinations for translated articles.
+  // Resolve translated destinations against the published portfolio at rendering.
   const links = readingGroups.find(group => group.slugs.includes(article.slug))?.links
     ?? (article.marketId === 'ae-dubai' ? [
       { label: 'Build a Dubai ready-apartment budget', href: '/guides/dubai-ready-apartment-buying-budget-guide/' },
@@ -52,4 +54,27 @@ export function relatedReading(article: Pick<PublishedContentArticle, 'slug' | '
       { label: 'Read the district price comparison', href: '/news/seoul-district-price-distribution/' },
     ]);
   return links.filter(({ href }) => !href.endsWith(`/${article.slug}/`)).slice(0, 2);
+}
+
+/** Prefer an existing translation; never invent a translated editorial slug. */
+export function localizeReadingLink(
+  item: ReadingLink,
+  locale: PublishedContentArticle['locale'],
+  records: readonly EditorialPortfolioRecord[],
+): ReadingLink {
+  const url = new URL(item.href, 'https://www.signedprice.com');
+  if (url.origin !== 'https://www.signedprice.com') return item;
+  const record = records.find(record => record.canonicalHref.replace(/\/$/, '') === url.pathname.replace(/\/$/, ''));
+  if (record) {
+    const translated = records.find(candidate => candidate.locale === locale && (
+      candidate.id === record.id
+      || (record.translationGroupId !== null && candidate.translationGroupId === record.translationGroupId)
+      || (candidate.slug === record.slug && candidate.type === record.type)
+    ));
+    if (translated) return { href: `${translated.canonicalHref}${url.search}${url.hash}`, label: translated.title };
+    const language = record.locale === 'en' ? (locale === 'ko' ? ' (영문)' : locale === 'zh-CN' ? '（英文）' : '') : '';
+    return { href: item.href, label: `${item.label}${language}` };
+  }
+  const destination = languageDestinations(url.pathname, url.search)[locale];
+  return { href: destination ? `${destination}${url.hash}` : item.href, label: item.label };
 }

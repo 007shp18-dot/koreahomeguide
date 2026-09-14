@@ -1,9 +1,9 @@
 .section { margin-block: 32px; min-width: 0; color: var(--ink, #17212b); }
 .section h2 { margin: 0 0 10px; font-size: 23px; line-height: 1.3; letter-spacing: normal; }
 .section p { margin: 8px 0 18px; max-width: 75ch; color: var(--muted, #5f6b76); font-size: 1rem; line-height: 1.7; }
-.chartWrap { max-width: 100%; overflow-x: auto; }
-/* Keep the 720-unit plot at a readable scale; only this region scrolls on mobile. */
-.chart { display: block; width: 100%; min-width: 34rem; max-width: 960px; height: auto; margin-inline: auto; color: var(--accent, #2363b4); }
+.chartWrap { width: 100%; min-width: 0; max-width: 960px; overflow-x: auto; margin-inline: auto; }
+/* SVG coordinates follow the container width instead of shrinking labels. */
+.chart { display: block; width: 100%; min-width: 0; max-width: 960px; height: auto; margin-inline: auto; color: var(--accent, #2363b4); }
 .chart text { font-variant-numeric: tabular-nums; fill: var(--muted, #5f6b76); font-family: inherit; font-size: 14px; }
 .section .chartHint { font-size: .875rem; line-height: 1.6; }
 .chartWrap:focus-visible, .tableWrap:focus-visible { outline: 2px solid var(--accent, #2363b4); outline-offset: 2px; }
@@ -27,8 +27,21 @@
 
 .chartToolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0; }
 .chartToolbar > div { display: flex; gap: 4px; }
-.chartToolbar button { min-width: 44px; min-height: 44px; padding: 8px 12px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); font: inherit; cursor: pointer; }
-.chartToolbar button[aria-pressed='true'] { color: var(--ink); border-bottom-color: var(--accent); }
+.chartToolbar button { min-width: 44px; min-height: 44px; padding: 8px 12px; border: 0; border: 1px solid transparent; border-radius: var(--radius-control, 8px); background: transparent; color: var(--muted); font: inherit; cursor: pointer; }
+.chartToolbar button[aria-pressed='true'] { color: var(--ink); background: var(--accent-soft); border-color: var(--line); }
 .chartToolbar > span { font-size: .875rem; line-height: 1.6; color: var(--muted); font-variant-numeric: tabular-nums; }
 .section > p a { color: var(--accent); text-underline-offset: 3px; }
 
+
+.recentSummary { margin-block: 20px 28px; padding: 20px 0; border-block: 1px solid var(--line); min-width: 0; }
+.recentSummary dl { display: grid; grid-template-columns: .6fr 1fr 1.4fr; gap: 20px; margin: 0; }
+.recentSummary dl > div { min-width: 0; }
+.recentSummary dt { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+.recentSummary dd { margin: 0; font-size: clamp(16px, 1.5vw, 21px); line-height: 1.5; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.recentSummary p { margin: 16px 0 0; font-size: 13px; line-height: 1.65; color: var(--muted); }
+.priceLine { fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.chartLegend { display: flex; flex-wrap: wrap; gap: 10px 24px; margin: 12px 0; font-size: 13px; color: var(--muted); }
+.chartLegend span { display: inline-flex; align-items: center; gap: 8px; }
+.priceKey { display: inline-block; width: 24px; border-top: 3px solid var(--accent); }
+.volumeKey { display: inline-block; width: 16px; height: 12px; background: var(--accent); opacity: .4; }
+@media (max-width: 600px) { .recentSummary dl { grid-template-columns: 1fr 1fr; gap: 16px; } .recentSummary dl > div:last-child { grid-column: 1 / -1; } }

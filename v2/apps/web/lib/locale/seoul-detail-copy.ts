@@ -1,6 +1,7 @@
 import type { ProductLocale } from './product-copy';
 
 const korean: Readonly<Record<string, string>> = {
+  'Observed filed area': '신고 전용면적 범위',
   'Breadcrumb': '현재 위치', 'Seoul': '서울', 'Overview': '개요', 'Transactions': '거래 내역', 'Source': '출처',
   'Property type': '주택 유형', 'Housing type': '주택 유형', 'Evidence': '거래 자료', 'Period': '집계 기간',
   'Building page sections': '단지 상세 항목', 'Building summary': '가격 요약', 'Price summary': '가격 요약',
@@ -60,6 +61,7 @@ const korean: Readonly<Record<string, string>> = {
 };
 
 const chinese: Readonly<Record<string, string>> = {
+  "Observed filed area": "已申报专有面积范围",
   "Breadcrumb": "当前位置",
   "Seoul": "首尔",
   "Overview": "概览",

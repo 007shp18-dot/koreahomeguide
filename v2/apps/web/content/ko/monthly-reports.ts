@@ -21,7 +21,7 @@ function tables(slug: string): string[] {
     const content = cell.trim();
     if (labels[content]) return cell.replace(content, labels[content]);
     return cell.replace(/\[([^\]]+)\]/g, (match, label: string) => labels[label] ? `[${labels[label]}]` : match);
-  }).join('|')).join('\n'));
+  }).join('|')).join('\n').replaceAll('](/kr/seoul/', '](/ko/kr/seoul/'));
 }
 const seoul = tables('seoul-monthly-2026-09');
 const singapore = tables('singapore-monthly-2026-09');

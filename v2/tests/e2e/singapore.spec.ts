@@ -139,6 +139,15 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
 
   await expect(page.locator('[data-transaction-research="monthly"] svg')).toBeVisible();
   const history = page.locator('[data-transaction-research="monthly"]');
+  const chart = history.locator('svg');
+  await expect.poll(() => chart.evaluate(node => Math.abs((node as SVGSVGElement).viewBox.baseVal.width - node.getBoundingClientRect().width))).toBeLessThanOrEqual(2);
+  expect(await chart.evaluate(node => node.getBoundingClientRect().width <= innerWidth)).toBe(true);
+  expect(await chart.locator('text').evaluateAll(nodes => nodes.every(node => {
+    const bounds = node.getBoundingClientRect();
+    const frame = (node as SVGTextElement).ownerSVGElement!.getBoundingClientRect();
+    return bounds.left >= frame.left - 1 && bounds.right <= frame.right + 1;
+  }))).toBe(true);
+
   await history.getByRole('button', { name: '1Y', exact: true }).click();
   await expect(history.getByRole('button', { name: '1Y', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await history.getByText('Monthly figures and sample sizes', { exact: true }).click();
