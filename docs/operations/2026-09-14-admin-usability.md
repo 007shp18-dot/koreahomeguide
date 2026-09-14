@@ -50,3 +50,7 @@
 - Local browser preview remains blocked by `net::ERR_BLOCKED_BY_CLIENT`. Authenticated visual, click and mobile verification is not complete. Temporary synthetic UI fixture and dependency symlinks are excluded from the commit.
 - No automatic approval policy, database schema changes, article publication, or scheduler changes are included.
 - Final TypeScript check passed. Targeted ESLint check has no errors; existing raw-image warning remains in the editor upload preview.
+
+### CI follow-up
+
+The first full CI run passed lint and types, with 3,468 passing tests and five failures. Two design-token failures came from inherited dashboard CSS declarations (11px text and unsupported radii); these declarations now comply with the existing checks. Three remaining failures were stale expectations from main's already-published contract-price headline and HUG/SGI source changes. Updated those explicit expectations without changing public content or weakening the checks. The seven affected test files now pass all 72 tests locally. The first Vercel preview completed successfully; final-head CI/build checks remain required.

@@ -12,7 +12,8 @@ describe('Korean entry routes', () => {
     const html = renderToStaticMarkup(<KoreanHome />);
     for (const path of ['/ko/kr/seoul/explore', '/ko/sg/singapore/explore', '/ko/ae/dubai/explore', '/jp/tokyo/explore']) expect(html).toMatch(new RegExp(`href="${path}/?"`));
     expect(html).toContain('도시 둘러보기');
-    expect(html).toContain('네 개의 도시,');
+    expect(html).toContain('네 도시.');
+    expect(html).toContain('신고된 계약가격에서 시작합니다.');
     expect(html).toContain('/ko/sg/singapore/explore');
     expect(html).toMatch(/href="\/ko\/tools\/?"/);
     expect(html).toMatch(/href="\/ko\/news\/?"/);
