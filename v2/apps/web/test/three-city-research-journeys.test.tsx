@@ -36,14 +36,14 @@ describe('three-city research journeys', () => {
     });
   });
 
-  it('routes homepage readers to the dedicated insights page without an embedded feed', async () => {
+  it('routes homepage readers from curated analysis to the dedicated insights page', async () => {
     vi.stubEnv('DATABASE_URL', '');
     const markup = renderToStaticMarkup(await Home());
     const start = markup.indexOf('aria-label="Take a closer look"');
     expect(start).toBeGreaterThan(0);
     const section = markup.slice(start, markup.indexOf('</nav>', start));
     expect(section).toContain('href="/news"');
-    expect(markup).not.toContain('data-home-region="analysis"');
+    expect(markup).toContain('data-home-region="analysis"');
   });
 
   it('marks internal tool links while leaving external and unrelated links untracked', () => {

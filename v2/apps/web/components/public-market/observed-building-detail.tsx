@@ -453,7 +453,7 @@ export function KoreaEvidenceBuildingDetail({
 
           {!!model.nearbyBuildings?.length && <><h3>{locale === 'ko' ? '같은 동 · 같은 검색 조건' : locale === 'zh-CN' ? '相同街区与筛选条件' : 'Same neighbourhood and filters'}</h3><ul>{model.nearbyBuildings.map(b => <li key={b.id}><Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${b.id}/?transaction=${model.selection.transaction}&area=${model.selection.areaBand}`,locale)}>{buildingDisplayName(b.name,locale)} · {money(b.median)} · {b.count}{locale === 'ko' ? '건' : locale === 'zh-CN' ? '笔合同' : ' contracts'}</Link></li>)}</ul></>}
         </section>}
-        <DiscoveryReading market="seoul" locale={locale} />
+        <DiscoveryReading market="seoul" locale={locale} context="building" />
       </main>
       </PropertyDecisionWorkspace>
       <SiteFooter locale={locale} copy={locale === 'ko' ? { ...exactEvidenceFooter, descriptor: '서울 실거래가와 집계 기간·거래 건수·출처를 확인하세요.' } : locale === 'zh-CN' ? { ...exactEvidenceFooter, descriptor: '首尔申报交易价格、统计期间、交易笔数与来源。' } : exactEvidenceFooter} />

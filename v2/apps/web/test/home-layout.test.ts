@@ -25,11 +25,11 @@ describe('signedprice public editorial homepage', () => {
     expect(homeCss).not.toMatch(/(?:heroGrid|snapshotGrid|marketGrid|buildingGrid|insightGrid|propertyGrid|bottomGrid)[^{]*\{[^}]*100vw/);
   }, 10_000);
 
-  it('keeps the homepage focused on city discovery', async () => {
+  it('keeps city discovery alongside published market analysis', async () => {
     const markup = renderToStaticMarkup(await Home());
     expect(markup.match(/<h1/g)).toHaveLength(1);
     expect(markup).toContain('data-home-region="markets"');
-    expect(markup).not.toContain('data-home-region="analysis"');
+    expect(markup).toContain('data-home-region="analysis"');
     expect(markup).not.toContain('data-home-region="passport"');
   }, 20_000);
 

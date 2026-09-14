@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { HomeAnalysis } from '../home-analysis';
 import { ExploreLink } from '../market-ui/explore-link';
 import Link from 'next/link';
 import { UiIcon } from '../ui-icon';
@@ -97,6 +98,8 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
       </div>
       <p className={styles.lead}>{copy.lead}</p>
     </header>
+
+    <HomeAnalysis locale={locale} />
 
     <section className={styles.section} data-home-region="markets" aria-label={copy.markets}>
       <nav className={styles.cityIndex} aria-label={copy.markets}>
