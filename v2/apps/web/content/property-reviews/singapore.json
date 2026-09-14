@@ -8359,5 +8359,851 @@
         }
       }
     ]
+  },
+  {
+    "id": "sg-watertown",
+    "marketId": "sg-singapore",
+    "name": {
+      "ko": "워터타운",
+      "en": "Watertown"
+    },
+    "area": {
+      "ko": "풍골 · D19",
+      "en": "Punggol · D19"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "역·쇼핑몰·수로 산책을 한곳에 둔 풍골의 집",
+      "en": "Punggol living with the station, shops and waterway together"
+    },
+    "summary": {
+      "ko": "워터타운은 생활을 집 주변에서 해결하고 싶은 사람에게 잘 맞습니다. 집 아래 워터웨이 포인트에서 장을 보고, 식사를 마친 뒤에는 풍골 수로 쪽으로 산책을 이어가기 좋습니다.",
+      "en": "Watertown suits a routine centred close to home: groceries and dinner at Waterway Point, followed by a walk along the Punggol waterway."
+    },
+    "bestFor": {
+      "ko": "학교와 장보기, 산책을 집 주변에 모으고 싶은 가족에게 어울립니다. 발러 초등학교 입학 조건과 등하굣길을 확인하세요.",
+      "en": "A useful base for families keeping school, errands and outdoor time local. Check Valour Primary eligibility and the route."
+    },
+    "holdFor": {
+      "ko": "역 접근은 편하지만 풍골이라는 위치는 그대로입니다. 도심 직장이라면 환승까지 포함한 출근길이 선택의 기준입니다.",
+      "en": "Easy station access still leaves a commute from Punggol. Include any interchange when comparing a city-centre job."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "집 아래 쇼핑몰, 옆에는 수로",
+          "en": "Shopping below, a waterway beside it"
+        },
+        "body": {
+          "ko": "장보기와 외식은 워터웨이 포인트에서, 산책은 풍골 수로를 따라 해결하기 좋은 집입니다.",
+          "en": "Waterway Point handles groceries and meals, while the Punggol waterway gives you somewhere to walk afterwards."
+        },
+        "sourceIds": [
+          "mall",
+          "park"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "역으로 이어지는 보행로",
+          "en": "A pedestrian connection to the station"
+        },
+        "body": {
+          "ko": "건물과 쇼핑몰, 풍골역을 잇는 보행 통로가 있어 이동을 한데 묶기 좋습니다.",
+          "en": "A pedestrian corridor connects the homes, mall and Punggol station, keeping everyday journeys together."
+        },
+        "sourceIds": [
+          "rsp"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "도심 출근은 노선부터",
+          "en": "Match the line to your workplace"
+        },
+        "body": {
+          "ko": "역 접근은 편하지만 풍골이라는 위치는 그대로입니다. 도심 직장이라면 환승까지 포함한 출근길이 선택의 기준입니다.",
+          "en": "Easy station access still leaves a commute from Punggol. Include any interchange when comparing a city-centre job."
+        },
+        "sourceIds": [
+          "mall"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "수로 전망은 집마다",
+          "en": "Waterway views vary by apartment"
+        },
+        "body": {
+          "ko": "수로 옆 단지라도 모든 창이 물을 향하지는 않습니다. 수영장·상가·이웃 동과의 관계를 실제 창 앞에서 보세요.",
+          "en": "A waterside address does not give every window a water view. Check the pool, retail podium and neighbouring blocks from the apartment."
+        },
+        "sourceIds": [
+          "rsp"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "풍골 MRT·LRT 연결",
+            "en": "Punggol MRT and LRT connections"
+          },
+          "body": {
+            "ko": "워터웨이 포인트를 통해 풍골 MRT·LRT와 버스 환승시설을 함께 이용할 수 있습니다.",
+            "en": "Waterway Point connects to Punggol MRT, the LRT and the bus interchange."
+          },
+          "sourceIds": [
+            "mall"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "동마다 다른 출입구",
+            "en": "Your block changes the walk"
+          },
+          "body": {
+            "ko": "집에서 나와 쇼핑몰 통로를 지나 승강장에 도착하는 길까지 걸어보면 출퇴근 편의가 더 분명해집니다.",
+            "en": "Walk from the apartment through the retail links to the platform to judge the actual daily journey."
+          },
+          "sourceIds": [
+            "rsp"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "발러 초등학교가 인근에",
+            "en": "Valour Primary nearby"
+          },
+          "body": {
+            "ko": "발러 초등학교는 같은 풍골 센트럴에 있습니다. 아이가 걷는 출입구와 횡단보도를 기준으로 집을 고르기 좋습니다.",
+            "en": "Valour Primary is on Punggol Central. The school gate and road crossings help narrow down the right block for a family."
+          },
+          "sourceIds": [
+            "school"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "입학은 주소와 신청 조건에 따라",
+            "en": "Admission depends on more than proximity"
+          },
+          "body": {
+            "ko": "가까운 학교가 있다는 점과 입학 가능성은 다릅니다. 신청 자격과 해당 주소의 거리 구간을 따로 확인하세요.",
+            "en": "A nearby school is useful; eligibility and the distance band for your exact address determine the registration options."
+          },
+          "sourceIds": [
+            "moe-distance"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "산책과 자전거를 일상으로",
+            "en": "Walking and cycling close to home"
+          },
+          "body": {
+            "ko": "풍골 워터웨이 파크의 수로변 길은 주말에 멀리 나가지 않고 몸을 움직이기 좋은 환경입니다.",
+            "en": "Punggol Waterway Park provides waterside routes for walking and cycling without planning a separate outing."
+          },
+          "sourceIds": [
+            "park"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "장을 본 뒤 바로 귀가",
+            "en": "A short trip home with groceries"
+          },
+          "body": {
+            "ko": "워터웨이 포인트의 상점과 식당을 집 가까이에서 이용하는 편리함이 이 단지의 핵심입니다.",
+            "en": "The main attraction is having Waterway Point’s shops and restaurants close enough for everyday use."
+          },
+          "sourceIds": [
+            "mall"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "992세대 안에서도 평면 차이",
+            "en": "Different layouts within a large estate"
+          },
+          "body": {
+            "ko": "같은 단지의 작은 집과 가족용 집을 한 가격대로 묶으면 비교가 흐려집니다. 실제 침실과 수납에 맞춰 비교하세요.",
+            "en": "Small apartments and family homes serve different needs. Compare usable bedrooms and storage, rather than a single estate-wide price."
+          },
+          "sourceIds": [
+            "rsp"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "공용시설도 보유비의 일부",
+            "en": "Shared facilities are part of ownership costs"
+          },
+          "body": {
+            "ko": "수영장과 조경을 자주 쓰는지 생각해 보세요. 매수할 집의 관리비 고지서와 수선기금 잔액을 함께 받아두는 편이 좋습니다.",
+            "en": "Consider how often you would use the pools and landscaped areas, then obtain the apartment’s maintenance bill and sinking-fund information."
+          },
+          "sourceIds": [
+            "rsp"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "노스 파크 레지던스",
+          "en": "North Park Residences"
+        },
+        "reason": {
+          "ko": "다른 노선의 역·쇼핑몰 복합단지입니다.",
+          "en": "Another rail-and-mall integrated development."
+        },
+        "condition": {
+          "ko": "풍골과 이슌에서 실제 출근길을 비교하세요.",
+          "en": "Compare the actual commute from Punggol and Yishun."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "rsp",
+        "title": "RSP — Watertown & Waterway Point",
+        "url": "https://rsp.design/project/watertown-waterway-point/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "설계사 자료의 992세대·보행 통로·수변 배치. 일부 포털의 1,001세대 표기는 채택하지 않음.",
+          "en": "Architect’s 992-home count, pedestrian links and waterside design; conflicting portal totals excluded."
+        }
+      },
+      {
+        "id": "mall",
+        "title": "Frasers Centrepoint Trust — Waterway Point",
+        "url": "https://www.frasersproperty.com/reits/fct/our-portfolio/waterway-point",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "쇼핑몰과 현재 대중교통 연결. 매장 수나 매출은 주거 성과로 환산하지 않음.",
+          "en": "Retail and transport connections; no conversion of mall performance into housing returns."
+        }
+      },
+      {
+        "id": "park",
+        "title": "NParks — Punggol Waterway Park",
+        "url": "https://www.nparks.gov.sg/visit/parks/park-detail/punggol-waterway-park",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "공공 공원의 수로변 여가 환경.",
+          "en": "Public waterside recreation."
+        }
+      },
+      {
+        "id": "school",
+        "title": "MOE — Valour Primary School",
+        "url": "https://www.moe.gov.sg/schoolfinder/schooldetail/valour-primary-school",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "49 Punggol Central의 학교 위치. 입학 보장이나 거리 인증은 아님.",
+          "en": "School at 49 Punggol Central; no admission or distance certification."
+        }
+      },
+      {
+        "id": "moe-distance",
+        "title": "MOE — P1 distance and admission priority",
+        "url": "https://www.moe.gov.sg/primary/p1-registration/distance",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "초등 입학 거리 우선순위 제도. 이번 확인은 검색 색인에 한정하며 개별 주소의 거리 구간은 확정하지 않음.",
+          "en": "P1 distance priority. This check used the search index; no individual address distance band is certified."
+        }
+      }
+    ]
+  },
+  {
+    "id": "sg-north-park-residences",
+    "marketId": "sg-singapore",
+    "name": {
+      "ko": "노스 파크 레지던스",
+      "en": "North Park Residences"
+    },
+    "area": {
+      "ko": "이슌 · D27",
+      "en": "Yishun · D27"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "이슌의 전철·버스·장보기를 한곳에서",
+      "en": "Yishun’s rail, buses and shopping in one place"
+    },
+    "summary": {
+      "ko": "노스 파크 레지던스는 노스포인트 시티를 생활의 중심으로 쓰는 집입니다. 장보기와 외식, 전철·버스 이동을 가까이에서 해결하고 싶은 사람에게 장점이 분명합니다.",
+      "en": "North Park Residences makes Northpoint City part of everyday life. It suits people who want shopping, meals, trains and buses close together."
+    },
+    "bestFor": {
+      "ko": "장보기와 시산 초등학교 주변 생활을 함께 보는 가족에게 어울립니다. 아침 등하굣길과 쇼핑몰 출입 동선을 나눠 보세요.",
+      "en": "Useful for families considering Xishan Primary and local errands. Compare the morning school route with retail access."
+    },
+    "holdFor": {
+      "ko": "이슌 생활에는 편하지만 매일 도심으로 출근한다면 전철을 타는 시간이 중요합니다.",
+      "en": "It works well for a Yishun routine, while daily city commuters need to be comfortable with the train journey."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "노스포인트 시티 위의 집",
+          "en": "A home above Northpoint City"
+        },
+        "body": {
+          "ko": "큰 쇼핑몰과 식당을 생활권 안에 두고, 주거용 로비와 진입로는 따로 쓰는 구성입니다.",
+          "en": "The development combines major retail and dining with separate residential lift lobbies and a private driveway."
+        },
+        "sourceIds": [
+          "developer"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "이슌에서 버스와 전철을 함께",
+          "en": "Rail and buses at Yishun"
+        },
+        "body": {
+          "ko": "이슌 MRT와 버스 환승센터가 쇼핑몰에 연결돼 출근과 동네 이동을 함께 처리하기 좋습니다.",
+          "en": "The mall connects to Yishun MRT and the bus interchange, useful for both commuting and local trips."
+        },
+        "sourceIds": [
+          "mall"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "역이 가까워도 도심은 별도 이동",
+          "en": "The city remains a train journey away"
+        },
+        "body": {
+          "ko": "이슌 생활에는 편하지만 매일 도심으로 출근한다면 전철을 타는 시간이 중요합니다.",
+          "en": "It works well for a Yishun routine, while daily city commuters need to be comfortable with the train journey."
+        },
+        "sourceIds": [
+          "mall"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "상업시설과 주거의 경계",
+          "en": "Where the home meets the mall"
+        },
+        "body": {
+          "ko": "별도 로비가 있어도 주변은 이용객이 많은 상권입니다. 침실 쪽 소리와 차량 진입 시간을 현장에서 살펴보세요.",
+          "en": "Private lobbies sit within a busy retail setting. Check bedroom noise and driveway access at the times you would use them."
+        },
+        "sourceIds": [
+          "developer",
+          "mall"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "남북선 이슌역 연결",
+            "en": "A connection to the North–South Line"
+          },
+          "body": {
+            "ko": "노스포인트 시티의 북쪽·남쪽 윙으로 이어지는 이슌역 출구를 사용할 수 있습니다.",
+            "en": "Yishun station has exits serving both wings of Northpoint City."
+          },
+          "sourceIds": [
+            "mall"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "버스로 이어지는 동네 생활",
+            "en": "Local journeys by bus"
+          },
+          "body": {
+            "ko": "이슌 버스 환승센터를 함께 이용할 수 있어 전철역에서 떨어진 목적지로 갈 때도 선택지가 있습니다.",
+            "en": "The adjoining bus interchange adds options for destinations away from the rail line."
+          },
+          "sourceIds": [
+            "mall"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "시산 초등학교가 주변에",
+            "en": "Xishan Primary in the neighbourhood"
+          },
+          "body": {
+            "ko": "시산 초등학교는 이슌 스트리트 21에 있습니다. 집과 역, 학교를 매일 어떤 순서로 오갈지 그려보기 좋습니다.",
+            "en": "Xishan Primary is on Yishun Street 21. Consider how home, station and school would fit into the morning routine."
+          },
+          "sourceIds": [
+            "school"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "학교까지 길과 입학은 별개",
+            "en": "The school route and admission are separate"
+          },
+          "body": {
+            "ko": "학교가 가까워도 자리가 보장되지는 않습니다. 등록 자격과 주소별 거리 구간을 확인해야 합니다.",
+            "en": "Proximity does not guarantee a place. Check registration eligibility and the distance band of the exact address."
+          },
+          "sourceIds": [
+            "moe-distance"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "외식과 생필품을 가까이",
+            "en": "Meals and essentials close at hand"
+          },
+          "body": {
+            "ko": "노스포인트 시티의 식당과 생활 매장을 자주 이용한다면 복합단지의 편리함을 체감하기 쉽습니다.",
+            "en": "Frequent use of Northpoint City’s food and everyday shops makes the integrated setting worthwhile."
+          },
+          "sourceIds": [
+            "mall"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "집으로 들어갈 때는 전용 로비",
+            "en": "Dedicated residential lobbies"
+          },
+          "body": {
+            "ko": "주거 전용 승강기 로비와 차량 진입로가 있어 쇼핑객과 집으로 들어가는 경로를 구분합니다.",
+            "en": "Dedicated lift lobbies and a private driveway separate residential access from retail circulation."
+          },
+          "sourceIds": [
+            "developer"
+          ],
+          "status": "documented"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "집 크기에 맞는 관리비",
+            "en": "Maintenance costs for the actual apartment"
+          },
+          "body": {
+            "ko": "920세대라는 규모만 보고 관리비가 낮다고 생각하기는 어렵습니다. 선택한 세대의 고지서로 비교하세요.",
+            "en": "A 920-home estate does not establish a low maintenance bill. Use the charges for the actual apartment."
+          },
+          "sourceIds": [
+            "developer"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "쇼핑몰 프리미엄을 따로 비교",
+            "en": "Assess the value of the mall connection"
+          },
+          "body": {
+            "ko": "이슌 주변의 비슷한 크기 콘도와 비교하면 역·상가 연결에 얼마를 더 지불하는지 판단하기 쉬워집니다.",
+            "en": "Comparing similarly sized Yishun homes helps show how much extra you would pay for the retail and station connections."
+          },
+          "sourceIds": [
+            "developer",
+            "mall"
+          ],
+          "status": "interpretation"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "워터타운",
+          "en": "Watertown"
+        },
+        "reason": {
+          "ko": "역·쇼핑몰에 수로 생활을 더한 대안입니다.",
+          "en": "Adds a waterway setting to integrated retail and rail."
+        },
+        "condition": {
+          "ko": "남북선과 풍골의 출근 노선을 비교하세요.",
+          "en": "Compare the North–South Line with your route from Punggol."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "developer",
+        "title": "Frasers Property — North Park Residences",
+        "url": "https://www.frasersproperty.com/sg/our-portfolio/residential/north-park-residences",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "920세대·주거 전용 로비와 진입로. 과거 입주예정 문구는 현재 일정으로 사용하지 않음.",
+          "en": "920 homes and separate residential access; historical anticipated occupation wording is not a current schedule."
+        }
+      },
+      {
+        "id": "mall",
+        "title": "Northpoint City — Visit",
+        "url": "https://www.northpointcity.com.sg/visit",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "현재 역 출구와 버스 연결·상권. 상가 주차비를 주민 주차비로 쓰지 않음.",
+          "en": "Current station exits, buses and retail; shopper parking tariffs are not resident parking costs."
+        }
+      },
+      {
+        "id": "school",
+        "title": "Xishan Primary School — Contact",
+        "url": "https://www.xishanpri.moe.edu.sg/contact-us/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "8 Yishun Street 21의 학교 주소. 역에서의 도보시간을 집에서의 시간으로 바꾸지 않음.",
+          "en": "School address at 8 Yishun Street 21; station walking estimates are not apartment walking times."
+        }
+      },
+      {
+        "id": "moe-distance",
+        "title": "MOE — P1 distance and admission priority",
+        "url": "https://www.moe.gov.sg/primary/p1-registration/distance",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "초등 입학 거리 우선순위 제도. 이번 확인은 검색 색인에 한정하며 개별 주소의 거리 구간은 확정하지 않음.",
+          "en": "P1 distance priority. This check used the search index; no individual address distance band is certified."
+        }
+      }
+    ]
+  },
+  {
+    "id": "sg-bedok-residences",
+    "marketId": "sg-singapore",
+    "name": {
+      "ko": "베독 레지던스",
+      "en": "Bedok Residences"
+    },
+    "area": {
+      "ko": "베독 · D16",
+      "en": "Bedok · D16"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "베독몰과 전철을 집 가까이 두는 동부 생활",
+      "en": "Eastern Singapore with Bedok Mall and rail close to home"
+    },
+    "summary": {
+      "ko": "베독 레지던스는 평일 생활을 단순하게 만들기 좋은 집입니다. 베독몰과 전철·버스를 가까이 두고 있어 퇴근길 장보기나 외식을 별도 일정으로 만들 필요가 적습니다.",
+      "en": "Bedok Residences makes everyday logistics simple. With the mall, rail and buses together, groceries or dinner can fit into the journey home."
+    },
+    "bestFor": {
+      "ko": "학교와 장보기를 동부 생활권에 모으려는 가족에게 맞습니다. 교문까지의 길과 실제 침실 크기를 비교하세요.",
+      "en": "Suits families keeping school and errands in the east. Compare school routes and usable bedroom space."
+    },
+    "holdFor": {
+      "ko": "조용한 주택가를 원한다면 맞지 않을 수 있습니다. 침실 방향과 차량 출입구 주변을 실제로 살펴보세요.",
+      "en": "A busy town-centre setting may not suit a quiet-street preference. Inspect the bedroom aspect and vehicle entrances."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "베독 중심지에서 짧은 심부름",
+          "en": "Short errands in Bedok town centre"
+        },
+        "body": {
+          "ko": "베독몰 위에 있어 식료품과 생활용품을 사려고 따로 멀리 나갈 일이 줄어듭니다.",
+          "en": "Living above Bedok Mall keeps groceries and everyday shopping close to home."
+        },
+        "sourceIds": [
+          "mall"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "전철과 버스를 함께",
+          "en": "Both rail and buses"
+        },
+        "body": {
+          "ko": "베독 MRT와 버스 환승센터가 결합된 입지여서 차 없이 동부 생활권을 오가기 좋습니다.",
+          "en": "The MRT and bus interchange make a useful base for moving around the east without a car."
+        },
+        "sourceIds": [
+          "transport"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "활기 있는 상권 한가운데",
+          "en": "In the middle of an active town centre"
+        },
+        "body": {
+          "ko": "조용한 주택가를 원한다면 맞지 않을 수 있습니다. 침실 방향과 차량 출입구 주변을 실제로 살펴보세요.",
+          "en": "A busy town-centre setting may not suit a quiet-street preference. Inspect the bedroom aspect and vehicle entrances."
+        },
+        "sourceIds": [
+          "mall"
+        ],
+        "status": "needs-check"
+      },
+      {
+        "title": {
+          "ko": "2015년 입주 단지의 관리 상태",
+          "en": "Condition matters in a 2015 development"
+        },
+        "body": {
+          "ko": "연식만으로 좋고 나쁨을 정하기보다 실내 설비와 공용시설의 관리 상태를 함께 보는 편이 좋습니다.",
+          "en": "Look at apartment systems and shared facilities together when judging condition, rather than age alone."
+        },
+        "sourceIds": [
+          "developer"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "베독몰 지하에서 MRT로",
+            "en": "MRT access through the mall basement"
+          },
+          "body": {
+            "ko": "쇼핑몰 지하 2층은 베독 MRT, 2층은 버스 환승센터와 연결됩니다.",
+            "en": "The mall’s Basement 2 links to Bedok MRT, while Level 2 connects to the bus interchange."
+          },
+          "sourceIds": [
+            "transport"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "버스가 필요한 목적지도 함께",
+            "en": "Include the bus leg"
+          },
+          "body": {
+            "ko": "동부의 학교나 직장이 전철역에서 멀다면 베독 버스 환승센터에서 이어지는 노선까지 비교하세요.",
+            "en": "For an eastern school or workplace away from rail, include the connecting bus route from Bedok interchange."
+          },
+          "sourceIds": [
+            "transport"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "펑산·레드 스와스티카 주변",
+            "en": "Fengshan and Red Swastika in the area"
+          },
+          "body": {
+            "ko": "주변 학교로 펑산 초등학교와 레드 스와스티카 학교를 검토할 수 있습니다. 집에서 교문까지의 길은 각각 다릅니다.",
+            "en": "Fengshan Primary and Red Swastika are schools to consider in the area, with different routes from home to the gates."
+          },
+          "sourceIds": [
+            "developer"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "가깝다는 말보다 주소별 조건",
+            "en": "Check the exact address"
+          },
+          "body": {
+            "ko": "특정 학교의 1km 구역이라고 단정하지 않습니다. 입학을 염두에 둔다면 해당 주소와 신청 자격을 확인하세요.",
+            "en": "Check your exact address and eligibility before relying on any claimed one-kilometre priority."
+          },
+          "sourceIds": [
+            "moe-distance"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "외식과 장보기는 베독몰에서",
+            "en": "Food and shopping at Bedok Mall"
+          },
+          "body": {
+            "ko": "다양한 상점과 식당을 같은 건물권에서 이용할 수 있어 평일 저녁 시간을 아끼기 좋습니다.",
+            "en": "Shops and restaurants within the same development can simplify weekday evenings."
+          },
+          "sourceIds": [
+            "mall"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "수영장과 테니스 코트",
+            "en": "A pool and tennis court"
+          },
+          "body": {
+            "ko": "단지 안에는 수영장·테니스 코트·운동시설이 있습니다. 집 가까이에서 운동을 계속하고 싶은 사람에게 유용합니다.",
+            "en": "The estate includes a pool, tennis court and exercise facilities for residents who want to stay active close to home."
+          },
+          "sourceIds": [
+            "developer"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "남은 임대기간을 기준으로",
+            "en": "Use the remaining land lease"
+          },
+          "body": {
+            "ko": "99년 임대권 단지입니다. 준공연도와 토지 임대 시작일은 다르므로 남은 기간은 매수 서류에서 확인하세요.",
+            "en": "This is a 99-year leasehold development. Completion and lease commencement differ; establish the remaining term from the purchase documents."
+          },
+          "sourceIds": [
+            "developer"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "주민 주차 조건은 별도",
+            "en": "Resident parking has its own terms"
+          },
+          "body": {
+            "ko": "쇼핑몰 주차요금을 주거용 주차비로 계산하지 마세요. 매물에 포함된 주차 권리와 관리비를 따로 받아보세요.",
+            "en": "Obtain resident parking rights and maintenance charges for the apartment; mall tariffs do not establish those costs."
+          },
+          "sourceIds": [
+            "mall"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "파크 플레이스 레지던스 앳 PLQ",
+          "en": "Park Place Residences at PLQ"
+        },
+        "reason": {
+          "ko": "파야레바의 복합단지와 비교할 수 있습니다.",
+          "en": "Compare integrated living at Paya Lebar."
+        },
+        "condition": {
+          "ko": "통근 노선과 집 크기를 맞춰 비교하세요.",
+          "en": "Match commute needs and apartment size."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "developer",
+        "title": "CapitaLand Development — Bedok Residences",
+        "url": "https://www.capitaland.com/en/development/our-portfolio/residential/bedok-residences.html",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "583세대·99년 임대권·2015년 TOP·시설과 주변 학교. 과거 학교 캠퍼스나 차량 소요시간 문구는 사용하지 않음.",
+          "en": "583 homes, 99-year tenure, 2015 TOP, facilities and nearby primary schools; historical campus and driving-time claims excluded."
+        }
+      },
+      {
+        "id": "mall",
+        "title": "CapitaLand — Bedok Mall visitor information",
+        "url": "https://www.capitaland.com/sg/malls/bedokmall/en/concierge.html",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "쇼핑몰 위치와 주거부 관계·상권.",
+          "en": "Mall location, relationship to the homes and retail."
+        }
+      },
+      {
+        "id": "transport",
+        "title": "CapitaLand — Bedok integrated development, 14 July 2015",
+        "url": "https://links.sgx.com/1.0.0/corporate-announcements/TXDEPPXSWNV2X5E9/360177_CL.NewsRelease_Bedok%20Mall.14Jul2015.pdf",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "MRT 지하 2층·버스 2층의 물리적 연결만 활용. 거래가격이나 소유권 이력을 투자 성과로 사용하지 않음.",
+          "en": "Physical MRT and bus links only; no investment-return inference from the mall transaction."
+        }
+      },
+      {
+        "id": "moe-distance",
+        "title": "MOE — P1 distance and admission priority",
+        "url": "https://www.moe.gov.sg/primary/p1-registration/distance",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "초등 입학 거리 우선순위 제도. 이번 확인은 검색 색인에 한정하며 개별 주소의 거리 구간은 확정하지 않음.",
+          "en": "P1 distance priority. This check used the search index; no individual address distance band is certified."
+        }
+      }
+    ]
   }
 ]

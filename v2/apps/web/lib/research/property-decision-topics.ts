@@ -17,6 +17,22 @@ type Topic = {
 /** Editorial lenses, not measurements or an inferred score. Each is paired with
  * a specific review point; the original point and provenance stay on the report. */
 export const decisionTopics = {
+  layout: {
+    title: decisionText('침실과 공간 구성', 'Bedrooms and layout', '卧室与空间配置'),
+    family: decisionText('아이 방과 어른의 침실, 수납이 충분한지 도면에 가구를 놓아보세요. 방 하나가 부족하면 공용시설이 많아도 생활의 불편을 메우기 어렵습니다.', 'Place the household’s furniture on the plan and check bedrooms and storage. Shared amenities cannot make up for a missing room.', '可在户型图上摆放家具，确认卧室与收纳。公共设施无法弥补少一间房的日常不便。'),
+    couple: decisionText('재택근무 공간과 두 사람의 생활 시간이 맞는지 보세요. 침실 수가 같아도 책상과 수납을 놓고 나면 쓸 수 있는 공간이 달라집니다.', 'Check space for home working and different daily schedules. The same bedroom count can leave different amounts of usable space after desks and storage.', '需考虑居家办公及双方作息，同样卧室数量在放入书桌和收纳后，可用空间仍会不同。'),
+    investor: decisionText('목표 임차인이 필요한 침실 수와 방 크기를 기준으로 비교하세요. 면적이 같아도 공간을 나누는 방식에 따라 맞는 가구가 달라집니다.', 'Compare the bedrooms and room sizes your intended tenant would need. Equal floor area can suit different households depending on the layout.', '按目标租客需要的卧室数量和房间大小比较，同面积的不同布局可能适合不同家庭。'),
+    question: decisionText('필요한 침실·책상·수납이 실제 평면에 들어가나요?', 'Does the actual plan fit the bedrooms, desks and storage you need?', '实际户型能否容纳所需卧室、书桌及收纳？'),
+    reversal: decisionText('가족이 늘거나 재택근무 공간이 필요해지면 현재의 방 구성으로 충분한지 다시 봐야 합니다.', 'A larger household or a need for home-working space can change whether the layout is sufficient.', '家庭人数增加或需要居家办公空间时，应重新判断现有布局是否足够。'),
+  },
+  nursery: {
+    title: decisionText('유아교육과 등원', 'Early-years care and drop-off', '幼儿教育与接送'),
+    family: decisionText('아이의 연령과 등원·하원 시간이 가족 일정에 맞는지 보세요. 가까운 시설이라도 자리가 없거나 운영시간이 맞지 않으면 다른 선택지가 필요합니다.', 'Check the child’s age, available places and drop-off and pickup hours against the family schedule. A nearby nursery only helps if those fit.', '核对儿童年龄、名额及接送时间是否符合家庭安排，附近托育园也需条件合适才方便。'),
+    couple: decisionText('향후 보육이 필요하다면 두 사람의 출근길과 등원 동선을 함께 그려보세요. 시설의 대상 연령과 이용시간도 선택에 영향을 줍니다.', 'If childcare is part of future plans, compare drop-off with both commutes and check the ages and hours the provider serves.', '若未来需要托育，应结合双方通勤比较接送路线，并核实适用年龄和服务时段。'),
+    investor: decisionText('주변 보육시설은 어린 자녀가 있는 임차인에게 유용할 수 있습니다. 현재 자리와 운영시간을 확인하기 전에는 모든 가족에게 맞는 조건으로 보기는 어렵습니다.', 'Local childcare may be useful to tenants with young children. Available places and operating hours determine which households it can actually serve.', '周边托育可能方便有幼儿的租客，但可用名额及开放时间决定实际适合哪些家庭。'),
+    question: decisionText('대상 연령·빈자리·등원 시간·보육료를 확인했나요?', 'Have you checked eligible ages, available places, hours and childcare fees?', '是否核实适用年龄、名额、时段及托育费用？'),
+    reversal: decisionText('아이의 연령이나 가족 일정이 시설 조건과 맞지 않으면 다른 보육시설까지의 이동을 다시 비교해야 합니다.', 'If the child’s age or family schedule does not fit, compare the journey to another childcare provider.', '儿童年龄或家庭作息不符合条件时，需要重新比较其他托育机构的路线。'),
+  },
   school: {
     title: decisionText('학교 배정과 입학', 'School admission', '学区与入学条件'),
     family: decisionText('가까운 학교에 실제로 다닐 수 있어야 이 입지에 더 내는 돈이 의미가 있습니다. 입주 연도와 매물 주소의 배정이 어긋나면 다른 동이나 단지를 먼저 비교하세요.', 'Paying extra for a nearby school only makes sense if your child can attend. If the address or entry year rules it out, compare another building before paying the premium.', '只有孩子确实能够入读，才值得为附近的学校多付钱。若房屋地址或入学年份不符合条件，应先比较其他楼栋或小区。'),

@@ -1450,5 +1450,107 @@
       "en": "Station access, outlook and railway orientation vary within the estate. Start with matched floor-area records and keep separate rental-estate records distinct.",
       "zh-CN": "车站路线、景观及铁路朝向有差异，应匹配面积并区分独立租赁房源记录。"
     }
+  },
+  "sg-watertown": {
+    "family": {
+      "ko": "학교와 장보기, 산책을 집 주변에 모으고 싶은 가족에게 어울립니다. 발러 초등학교 입학 조건과 등하굣길을 확인하세요.",
+      "en": "A useful base for families keeping school, errands and outdoor time local. Check Valour Primary eligibility and the route.",
+      "zh-CN": "适合希望就近上学、购物和散步的家庭，需确认Valour小学资格与路线。"
+    },
+    "couple": {
+      "ko": "풍골역에서 두 사람의 출근 노선이 맞으면 차 없이 생활하기 편합니다. 쇼핑몰과 가까운 동의 실제 소음도 들어보세요.",
+      "en": "Convenient without a car if Punggol works for both commutes. Listen to the apartment’s surroundings near the mall.",
+      "zh-CN": "两人的通勤若适合榜鹅站，无车生活便利；看房时留意靠近商场的声音。"
+    },
+    "investor": {
+      "ko": "작은 평형과 가족용 평형의 수요를 나눠 보세요. 같은 단지라도 침실 구성과 전망이 달라 비교 대상이 달라집니다.",
+      "en": "Separate compact apartments from family layouts when assessing demand; bedroom configuration and outlook change the comparable set.",
+      "zh-CN": "小户型与家庭户型应分开比较，卧室配置和景观影响可比房源。"
+    }
+  },
+  "sg-north-park-residences": {
+    "family": {
+      "ko": "장보기와 시산 초등학교 주변 생활을 함께 보는 가족에게 어울립니다. 아침 등하굣길과 쇼핑몰 출입 동선을 나눠 보세요.",
+      "en": "Useful for families considering Xishan Primary and local errands. Compare the morning school route with retail access.",
+      "zh-CN": "适合兼顾西山小学与日常购物的家庭，需比较上学及商场出入路线。"
+    },
+    "couple": {
+      "ko": "이슌역이 두 사람의 직장과 잘 이어지면 생활이 간단해집니다. 도심까지의 긴 이동이 괜찮은지 먼저 보세요.",
+      "en": "A simple daily base if Yishun station works for both jobs. Decide whether the city journey suits your routine.",
+      "zh-CN": "若义顺站适合双方工作地点，生活便利；先判断进城距离是否合适。"
+    },
+    "investor": {
+      "ko": "복합단지라는 이유만으로 주변보다 높은 가격을 당연하게 보지 마세요. 같은 크기 집의 거래와 관리비를 비교하세요.",
+      "en": "Assess the premium for integrated living against similarly sized homes and their maintenance costs.",
+      "zh-CN": "综合体溢价应结合相同面积住宅的成交及管理费用判断。"
+    }
+  },
+  "sg-bedok-residences": {
+    "family": {
+      "ko": "학교와 장보기를 동부 생활권에 모으려는 가족에게 맞습니다. 교문까지의 길과 실제 침실 크기를 비교하세요.",
+      "en": "Suits families keeping school and errands in the east. Compare school routes and usable bedroom space.",
+      "zh-CN": "适合学校与日常活动集中在东部的家庭，比较上学路线与卧室实用面积。"
+    },
+    "couple": {
+      "ko": "베독에서 출근 노선이 맞는다면 전철·외식·장보기를 한곳에서 해결하기 편합니다. 침실 방향은 따로 고르세요.",
+      "en": "Convenient if Bedok fits your commute, with trains, dinner and shopping together. Choose the bedroom aspect separately.",
+      "zh-CN": "若勿洛适合通勤，交通、餐饮和购物方便；卧室朝向仍需单独选择。"
+    },
+    "investor": {
+      "ko": "복합단지의 편리함과 남은 토지 임대기간을 함께 보세요. 같은 크기 세대의 거래와 실제 관리비가 비교 기준입니다.",
+      "en": "Weigh integrated convenience alongside the remaining lease. Use matched apartment transactions and actual maintenance charges.",
+      "zh-CN": "综合体便利性需结合剩余地契年期、同面积成交与实际管理费判断。"
+    }
+  },
+  "kr-dmc-park-view-xi-1": {
+    "family": {
+      "ko": "아이의 학교와 바깥 활동을 가까이 두고 싶은 가족에게 맞습니다. 교문으로 나가기 편한 동부터 살펴보세요.",
+      "en": "Suits families keeping school and outdoor time close. Start with blocks convenient for the school gate.",
+      "zh-CN": "适合希望就近上学和户外活动的家庭，可先看靠近校门路线的楼栋。"
+    },
+    "couple": {
+      "ko": "가좌역에서 두 사람의 출근길이 맞는지가 핵심입니다. 단지 안 보행 거리도 포함하세요.",
+      "en": "The key is whether Gajwa works for both commutes, including the walk within the estate.",
+      "zh-CN": "关键是加佐站是否适合双方通勤，并计入小区内部步行。"
+    },
+    "investor": {
+      "ko": "1단지의 같은 면적·동 위치를 맞춰 비교하세요. 다른 차수나 임대동의 가격을 섞으면 판단이 흐려집니다.",
+      "en": "Compare matched sizes and positions within Complex 1, keeping other phases and rental blocks separate.",
+      "zh-CN": "比较一期同面积及相近位置，勿混入其他期数或租赁楼栋。"
+    }
+  },
+  "kr-raemian-mapo-wellstream": {
+    "family": {
+      "ko": "아이와 강변을 자주 걷는 가족에게 어울립니다. 학교로 나가는 길과 필요한 침실 구성을 함께 보세요.",
+      "en": "Suits families who often walk by the river. Compare the school route and usable bedrooms.",
+      "zh-CN": "适合常与孩子江边散步的家庭，需比较上学路线及卧室配置。"
+    },
+    "couple": {
+      "ko": "6호선 출근이 맞고 퇴근 후 산책을 즐긴다면 매력이 분명합니다. 역까지 걷는 길도 직접 경험해 보세요.",
+      "en": "Appealing if Line 6 fits work and you enjoy evening walks. Try the station route yourself.",
+      "zh-CN": "若6号线适合通勤且喜欢晚间散步，值得考虑，并亲自走一遍到站路线。"
+    },
+    "investor": {
+      "ko": "분리형 공간이 있는 집은 일반 평면과 별도로 비교하세요. 임대 가능 여부와 실제 비용은 해당 세대 기준입니다.",
+      "en": "Assess apartments with independent space separately; rental permissions and costs belong to the specific unit.",
+      "zh-CN": "带独立空间的户型应单独比较，出租条件及费用需按具体房源核实。"
+    }
+  },
+  "kr-gongdeok-xi": {
+    "family": {
+      "ko": "초등 통학과 전철 출근을 함께 줄이고 싶은 가족에게 맞습니다. 학교 쪽 동과 출입구부터 살펴보세요.",
+      "en": "Suits families seeking shorter school and rail journeys. Start with blocks and exits facing the school route.",
+      "zh-CN": "适合希望兼顾小学接送及轨交通勤的家庭，先比较朝向上学路线的楼栋与出口。"
+    },
+    "couple": {
+      "ko": "5호선이나 2호선이 두 사람의 직장에 맞으면 편리합니다. 역마다 실제 걷는 길을 비교하세요.",
+      "en": "Convenient when Lines 5 or 2 fit both workplaces. Compare the actual walk to each station.",
+      "zh-CN": "若5号线或2号线适合双方工作地点较方便，需比较实际到站路线。"
+    },
+    "investor": {
+      "ko": "공덕파크자이와 다른 단지입니다. 같은 면적과 동별 접근, 실제 수선비를 맞춰 비교하세요.",
+      "en": "This is separate from Gongdeok Park Xi. Match apartment size, block access and actual maintenance costs.",
+      "zh-CN": "与Gongdeok Park Xi是不同小区，需匹配面积、楼栋出入及实际维修费用。"
+    }
   }
 }

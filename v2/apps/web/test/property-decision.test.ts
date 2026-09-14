@@ -16,7 +16,7 @@ const evidencePoint = (review: PropertyReview, item: DecisionItem) => {
 
 describe('property decisions preserve the boundary between evidence and interpretation', () => {
   it('keeps every priority tied to its exact profile evidence, without inventing numerical ratings', () => {
-    expect(reviews).toHaveLength(112);
+    expect(reviews).toHaveLength(124);
     for (const review of reviews) {
       const before = JSON.stringify(review);
       const sourceIds = new Set(review.sources.map(source => source.id));
@@ -91,6 +91,30 @@ describe('property decisions preserve the boundary between evidence and interpre
       const branz = getPropertyDecision(byId('jp-branz-tower-shibaura'), persona, 'en');
       expect(branz.checklist.some(item => /parking|car registration/i.test(item.title))).toBe(false);
     }
+  });
+
+  it('keeps bedroom, nursery, outdoor commute and pool questions relevant to the property', () => {
+    for (const persona of DECISION_PERSONAS) {
+      const greens = getPropertyDecision(byId('ae-al-thayyal'), persona, 'en');
+      const bedroom = greens.checklist.find(item => item.evidence?.pointId === 'tradeoffs:0');
+      if (bedroom) {
+        expect(bedroom.title).toContain('bedrooms');
+        expect(bedroom.body).not.toMatch(/booking|opening hours/);
+      }
+      for (const question of greens.checklist) {
+        if (question.evidence?.pointId === 'transport:0') expect(question.title).toContain('door-to-door');
+        if (question.evidence?.pointId === 'daily:0') expect(question.title).toContain('facilities');
+        if (question.evidence?.pointId === 'costs:0') expect(question.title).toContain('bills');
+      }
+      const chrono = getPropertyDecision(byId('jp-harumi-chrono-residence'), persona, 'en');
+      const nursery = chrono.checklist.find(item => item.evidence?.pointId === 'schools:0');
+      if (nursery) {
+        expect(nursery.title).toContain('childcare');
+        expect(nursery.body).not.toMatch(/address|catchment|allocation/);
+      }
+    }
+    expect(getPropertyDecision(byId('ae-al-thayyal'), 'family', 'en').checklist.some(item => item.title.includes('bedrooms'))).toBe(true);
+    expect(getPropertyDecision(byId('jp-harumi-chrono-residence'), 'family', 'en').checklist.some(item => item.title.includes('childcare'))).toBe(true);
   });
 
   it('provides genuinely Chinese authored summaries and controls without an unlabelled English paragraph fallback', () => {
