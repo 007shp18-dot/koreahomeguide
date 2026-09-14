@@ -159,9 +159,9 @@ function DecisionSession({ entity, profileId, profile, priceContext, analysisSco
 
   return <div ref={root} className={styles.workspace} data-decision-workspace="true">
     <div id="property-review" className={styles.toolbar}>
-      <span>{t('실거래와 매수 판단', 'Transactions & buying decision', '成交与购房判断')}</span>
+      <span>{analysisScope === 'area' ? t('지역 실거래와 생활·투자 분석', 'Area transactions & living / investment analysis', '区域成交与生活·投资分析') : t('실거래와 매수 판단', 'Transactions & buying decision', '成交与购房判断')}</span>
       <button type="button" ref={trigger} className={styles.openButton} aria-expanded={visible} aria-controls={panelId} aria-haspopup={compact ? 'dialog' : undefined} onClick={() => visible ? closePanel() : openPanel()}>
-        {visible ? t('판단 패널 닫기', 'Close analysis', '关闭分析') : t('매수 판단 보기', 'View buying decision', '查看购房判断')}
+        {visible ? t('판단 패널 닫기', 'Close analysis', '关闭分析') : analysisScope === 'area' ? t('지역 분석 보기', 'View area analysis', '查看区域分析') : t('매수 판단 보기', 'View buying decision', '查看购房判断')}
       </button>
     </div>
     <div className={styles.grid} data-panel-open={visible && !modal}>
