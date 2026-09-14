@@ -73,3 +73,14 @@
 }
 
 .hero .search { width: 100%; border-color: var(--line); box-shadow: 0 4px 20px rgb(15 40 40 / 5%); border-radius: 12px; }
+
+/* Compact search, retaining touch targets and mobile input legibility. */
+.hero .search { grid-template-columns: 112px minmax(0, 1fr) 44px; padding: 6px; border-radius: 10px; box-shadow: none; }
+.hero .search label { padding-inline: 12px; }
+.hero .search label > span { font-size: 12px; margin-bottom: 0; }
+.hero .search input,.hero .search select { min-height: 32px; }
+.hero .search button { width: 44px; height: 44px; }
+.heroCities { margin-top: 10px; gap: 6px; }
+.heroCities a { min-height: 36px; padding: 4px 12px; font-size: 13px; }
+@media(max-width:700px) { .heroCities a { min-height: 44px; }.hero .search label { padding-inline: 8px; } }
+@media(max-width:380px) { .hero .search { grid-template-columns: minmax(0,1fr) 44px; row-gap: 6px; } }

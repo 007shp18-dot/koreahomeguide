@@ -3745,14 +3745,14 @@ h1 {
 
 /* SignedPrice product system: shared with home, discovery and community. */
 :root {
-  --accent: #087f73; --accent-soft: #e8f5f2; --focus-ring: #087f73;
-  --brand-orange: #087f73; --ink: #172b2a; --muted: #637370;
-  --canvas: #ffffff; --surface: #f4f7f6; --surface-strong: #ffffff;
-  --line: #e3ebe8; --divider: #d4dfda; --control-selected-border: #a8d4c9;
-  --control-hover: #f0f6f3; --navy: #153d38; --petrol: #153d38;
+  --accent: #2563d8; --accent-soft: #eaf2ff; --focus-ring: #2563d8;
+  --brand-orange: #2563d8; --ink: #111827; --muted: #5f6d84;
+  --canvas: #ffffff; --surface: #f7f8fa; --surface-strong: #ffffff;
+  --line: #e2e8f0; --divider: #cbd5e1; --control-selected-border: #b9cdf4;
+  --control-hover: #eef5ff; --navy: #0f1e38; --petrol: #0f1e38;
   --radius-control: 10px; --radius-card: 14px; --radius-panel: 16px;
-  --shadow-sm: 0 3px 12px rgb(18 58 48 / 4%);
-  --shadow-md: 0 14px 40px rgb(18 58 48 / 10%);
+  --shadow-sm: 0 3px 12px rgb(15 30 56 / 4%);
+  --shadow-md: 0 14px 40px rgb(15 30 56 / 10%);
   --content-frame: 1200px; --workspace-frame: 1360px;
 }
 body { background: var(--canvas); }

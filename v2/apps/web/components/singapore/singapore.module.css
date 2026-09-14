@@ -1021,3 +1021,9 @@
 .projectList > div[data-selected="true"] { background: var(--accent-soft); box-shadow: inset 3px 0 var(--accent); }
 .projectList > div > button { padding-block: 12px; }
 .exploreMap { border: 1px solid var(--line); border-radius: var(--radius-panel); overflow: hidden; }
+
+/* Compact explorer filters with consistent inset spacing. */
+.exploreFilters { padding: 12px 16px; margin-bottom: 20px; border-radius: 10px; }
+.exploreFilters form { gap: 10px; }
+.exploreFilters label { gap: 4px; font-size: 13px; }
+.exploreFilters :is(input,select,button) { min-height: 44px; padding: 8px 12px; border-radius: 8px; }
