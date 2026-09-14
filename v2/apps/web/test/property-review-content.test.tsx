@@ -27,9 +27,9 @@ it('renders every published review in English without leaking Korean body copy',
   }
 });
 
-it('covers all 112 reviews in both languages without changing evidence or its check date', () => {
+it('covers all 124 reviews in both languages without changing evidence or its check date', () => {
   const values = [...seoul, ...singapore, ...dubai, ...tokyo];
-  expect(values).toHaveLength(112);
+  expect(values).toHaveLength(124);
   for (const value of values) {
     const original = propertyReviewSchema.parse(value);
     const review = withPropertyEditorial(original);

@@ -1200,5 +1200,107 @@
       "en": "Future malls and rail do not establish today’s rent. Compare tower and outlook, approved charges and the actual parking terms.",
       "zh-CN": "未来商场铁路不能证明当前租金，应比较塔楼景观、核准管理费与实际车位条件。"
     }
+  },
+  "ae-marina-quays": {
+    "family": {
+      "ko": "물가 산책과 수영을 자주 즐기는 가족에게 맞습니다. 학교 차량 이동이 평일에 무리가 없는지 함께 보세요.",
+      "en": "Suits families who enjoy walks and swimming; check that the school journey works on weekdays.",
+      "zh-CN": "适合喜欢水边散步及游泳的家庭，需确认工作日通学安排。"
+    },
+    "couple": {
+      "ko": "식당과 산책로를 가까이 두고 싶은 커플에게 매력이 있습니다. 두 사람의 실제 출근길과 침실 소리를 확인하세요.",
+      "en": "Appealing for couples who want dining and walks close by. Check both commutes and bedroom noise.",
+      "zh-CN": "适合希望就近用餐和散步的伴侣，需核实双方通勤与卧室声音。"
+    },
+    "investor": {
+      "ko": "East·West·North와 전망을 구분해 비교하세요. 마리나 지역 가격은 이 단지의 실거래로 볼 수 없습니다.",
+      "en": "Separate East, West and North and match outlooks. Marina-wide prices are not transactions at this development.",
+      "zh-CN": "应区分三座楼并匹配景观，码头区域价格不等于本项目成交。"
+    }
+  },
+  "ae-29-boulevard": {
+    "family": {
+      "ko": "도심 생활과 단지 시설을 함께 쓰고 싶은 가족에게 맞습니다. 등원·통학 이동부터 일과에 맞춰보세요.",
+      "en": "Suits families wanting city life and resident facilities. Fit nursery and school travel into the daily schedule first.",
+      "zh-CN": "适合希望兼顾市中心生活与小区设施的家庭，先安排托育和通学。"
+    },
+    "couple": {
+      "ko": "외식과 도심 산책이 잦다면 위치가 잘 맞습니다. 귀가 시간의 소리와 메트로 접근을 함께 보세요.",
+      "en": "A useful location for frequent dining and city walks. Check evening noise and metro access.",
+      "zh-CN": "常外出用餐和城市散步较合适，需留意夜间声音及地铁路线。"
+    },
+    "investor": {
+      "ko": "타워·침실 수·방향이 같은 집끼리 비교하세요. 다운타운 지역 중간가격을 이 단지 가격으로 바꾸지 마세요.",
+      "en": "Compare matched towers, bedrooms and aspects. A Downtown median is not a price for this development.",
+      "zh-CN": "按楼座、卧室及朝向匹配比较，区域中位价不等于本项目价格。"
+    }
+  },
+  "ae-al-thayyal": {
+    "family": {
+      "ko": "리젠트 스쿨과 녹지 생활을 함께 생각하는 가족에게 맞습니다. 최대 2베드룸 구성이 충분한지 먼저 보세요.",
+      "en": "Suits families considering Regent and a greener routine. First check whether a two-bedroom home is enough.",
+      "zh-CN": "适合考虑Regent学校和绿地生活的家庭，先确认两卧是否足够。"
+    },
+    "couple": {
+      "ko": "집 주변 산책과 수영을 즐긴다면 어울립니다. 두 사람의 출근은 역까지의 이동부터 맞춰보세요.",
+      "en": "A good fit for walks and swimming near home. Compare both commutes from the first leg to the station.",
+      "zh-CN": "适合喜欢家附近散步及游泳的伴侣，双方通勤需从到站路程算起。"
+    },
+    "investor": {
+      "ko": "스튜디오와 2베드룸의 수요를 나눠 비교하세요. 지역 가격과 해당 세대 관리비는 별도로 봐야 합니다.",
+      "en": "Separate studio and two-bedroom demand, and distinguish area prices from unit-specific ownership costs.",
+      "zh-CN": "应区分开间与两卧需求，区域价格与具体房源持有费用需分开看。"
+    }
+  },
+  "jp-city-tower-oimachi": {
+    "family": {
+      "ko": "학교와 장보기, 여러 방향의 출근을 함께 고려하는 가족에게 맞습니다. 필요한 방 크기와 교문까지의 길을 보세요.",
+      "en": "Suits families balancing school, groceries and different commutes. Compare usable bedrooms and the school route.",
+      "zh-CN": "适合兼顾学校、购物及不同方向通勤的家庭，需比较卧室及校门路线。"
+    },
+    "couple": {
+      "ko": "두 사람의 직장이 서로 다른 노선에 있다면 오이마치의 선택지가 유용합니다. 각 승강장까지 직접 걸어보세요.",
+      "en": "Oimachi’s options are useful when workplaces lie on different lines. Try the walk to each platform.",
+      "zh-CN": "双方工作地点在不同线路上时较方便，应亲自走到各自站台。"
+    },
+    "investor": {
+      "ko": "역세권이라는 말보다 평면·층·실제 관리비를 맞춰 비교하세요. 시나가와구 가격은 이 건물 거래와 다릅니다.",
+      "en": "Match layout, floor and actual charges, and keep Shinagawa-wide prices separate from this building’s transactions.",
+      "zh-CN": "需匹配户型、楼层及实际费用，品川区价格不同于本楼成交。"
+    }
+  },
+  "jp-park-homes-toyosu-the-residence": {
+    "family": {
+      "ko": "학교와 공원, 실내 놀이 공간을 자주 쓸 가족에게 어울립니다. 실제 교문과 집 사이 길을 보세요.",
+      "en": "Suits families who regularly use school, park and indoor play space. Compare the actual gate-to-home route.",
+      "zh-CN": "适合常用学校、公园及室内游乐空间的家庭，需比较实际校门至家的路线。"
+    },
+    "couple": {
+      "ko": "도요스에서 출근이 맞고 주말에는 주변을 걷고 싶다면 편리합니다. 가족용 공용시설을 얼마나 쓸지도 생각하세요.",
+      "en": "Convenient if Toyosu fits work and you like local walks. Consider how much use you would make of family-oriented shared facilities.",
+      "zh-CN": "若丰洲适合通勤且喜欢附近散步较方便，也需考虑家庭类设施的使用频率。"
+    },
+    "investor": {
+      "ko": "같은 면적과 방향의 집을 비교하고 수선적립금 계획을 확인하세요. 고토구 중간가격은 단지 거래가 아닙니다.",
+      "en": "Compare matched size and aspect and check reserve plans. A Koto median is not a transaction at this estate.",
+      "zh-CN": "比较同面积及朝向并查看维修储备计划，江东区中位价不等于本小区成交。"
+    }
+  },
+  "jp-harumi-chrono-residence": {
+    "family": {
+      "ko": "수변에서 바깥 활동을 자주 하는 가족에게 맞습니다. 유아교육과 초등 이후의 통학은 각각 계획하세요.",
+      "en": "Suits families who spend time outdoors by the water. Plan early-years and later school journeys separately.",
+      "zh-CN": "适合常在水边户外活动的家庭，幼儿教育与之后的通学需分别安排。"
+    },
+    "couple": {
+      "ko": "산책과 운동을 좋아하고 버스 목적지가 출근지와 맞으면 매력이 있습니다. 철도만 쓸 때의 길도 비교하세요.",
+      "en": "Appealing if you enjoy walks and exercise and the bus fits work. Compare the journey when relying on rail alone.",
+      "zh-CN": "喜欢散步运动且巴士适合工作地点时较合适，也需比较仅用铁路的通勤。"
+    },
+    "investor": {
+      "ko": "크로노의 같은 면적·방향과 수선 계획을 기준으로 비교하세요. 티아로와 주오구 지역 가격은 별도입니다.",
+      "en": "Compare matched Chrono layouts and aspects with its repair plans. Keep Tiaro and Chuo area prices separate.",
+      "zh-CN": "按Chrono同面积、朝向及维修计划比较，Tiaro与中央区价格需分开。"
+    }
   }
 }

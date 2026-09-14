@@ -26,7 +26,7 @@ function dependencies(overrides: Partial<Dependencies> = {}): Dependencies {
 }
 
 describe('decision prices retain their published source scope', () => {
-  it('resolves the installed Dubai catalogue as 24 exact projects and four explicitly identified area references', async () => {
+  it('resolves the installed Dubai catalogue as 24 exact projects and seven explicitly identified area references', async () => {
     const serialized = gunzipSync(readFileSync(new URL('../data/dubai-area-evidence.json.gz', import.meta.url))).toString('utf8');
     const repository = await createDubaiEvidenceRepository({ serialized,
       expectedDigest: createHash('sha256').update(serialized).digest('hex') });
@@ -35,7 +35,7 @@ describe('decision prices retain their published source scope', () => {
       dubaiRepository: () => repository,
     }))));
     expect(results.filter(result => result.scope === 'property')).toHaveLength(24);
-    expect(results.filter(result => result.scope === 'area')).toHaveLength(4);
+    expect(results.filter(result => result.scope === 'area')).toHaveLength(7);
     for (const result of results) {
       expect(result.currency).toBe('AED');
       expect(result.amount).toBeGreaterThan(0);
@@ -54,6 +54,9 @@ describe('decision prices retain their published source scope', () => {
       ['ae-park-ridge', 'hadaeq-sheikh-mohammed-bin-rashid'],
       ['ae-creek-horizon', 'al-khairan-first'],
       ['ae-creekside-18', 'al-khairan-first'],
+      ['ae-marina-quays', 'marsa-dubai'],
+      ['ae-29-boulevard', 'burj-khalifa'],
+      ['ae-al-thayyal', 'al-thanyah-third'],
     ]) {
       const result = results[profiles.findIndex(profile => profile.id === id)]!;
       const area = repository.getArea(areaSlug!)!;

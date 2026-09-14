@@ -16,7 +16,7 @@ const evidencePoint = (review: PropertyReview, item: DecisionItem) => {
 
 describe('property decisions preserve the boundary between evidence and interpretation', () => {
   it('keeps every priority tied to its exact profile evidence, without inventing numerical ratings', () => {
-    expect(reviews).toHaveLength(112);
+    expect(reviews).toHaveLength(124);
     for (const review of reviews) {
       const before = JSON.stringify(review);
       const sourceIds = new Set(review.sources.map(source => source.id));

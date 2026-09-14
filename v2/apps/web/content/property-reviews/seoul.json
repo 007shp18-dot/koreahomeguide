@@ -8153,5 +8153,555 @@
         }
       }
     ]
+  },
+  {
+    "id": "kr-dmc-park-view-xi-1",
+    "marketId": "kr-seoul",
+    "name": {
+      "ko": "DMC파크뷰자이1단지",
+      "en": "DMC Park View Xi Complex 1"
+    },
+    "area": {
+      "ko": "서대문구 · 남가좌동",
+      "en": "Namgajwa-dong · Seodaemun-gu"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "학교와 공원을 중심으로 생활하는 가재울의 가족형 단지",
+      "en": "Family life around school and parks in Gajaeul"
+    },
+    "summary": {
+      "ko": "DMC파크뷰자이1단지는 아이와 함께 동네 안에서 생활하는 집을 찾을 때 눈여겨볼 만합니다. 큰 주거단지 안의 학교와 가까운 어린이공원이 일상의 중심이 되는 곳입니다.",
+      "en": "DMC Park View Xi Complex 1 suits a family routine centred on the neighbourhood. A school within the wider development and a nearby children’s park give everyday life a local focus."
+    },
+    "bestFor": {
+      "ko": "아이의 학교와 바깥 활동을 가까이 두고 싶은 가족에게 맞습니다. 교문으로 나가기 편한 동부터 살펴보세요.",
+      "en": "Suits families keeping school and outdoor time close. Start with blocks convenient for the school gate."
+    },
+    "holdFor": {
+      "ko": "학교 쪽 동과 역으로 나가기 편한 동의 장점이 다릅니다. 현관에서 출입구까지의 길부터 비교하세요.",
+      "en": "A block convenient for school may differ from one convenient for the station. Start with the walk from your door to the estate exit."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "학교와 공원을 가까이",
+          "en": "School and park close to home"
+        },
+        "body": {
+          "ko": "가재울초와 어린이공원을 중심으로 아이와 보내는 일상을 꾸리기 좋은 주거지입니다.",
+          "en": "A useful setting for family routines around Gajaeul Elementary and the local children’s park."
+        },
+        "sourceIds": [
+          "context"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "큰 단지에서는 동 위치가 중요",
+          "en": "The block matters in a large development"
+        },
+        "body": {
+          "ko": "학교 쪽 동과 역으로 나가기 편한 동의 장점이 다릅니다. 현관에서 출입구까지의 길부터 비교하세요.",
+          "en": "A block convenient for school may differ from one convenient for the station. Start with the walk from your door to the estate exit."
+        },
+        "sourceIds": [
+          "context"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "가좌역 경의중앙선 이용",
+            "en": "Gajwa on the Gyeongui–Jungang Line"
+          },
+          "body": {
+            "ko": "철도 이용의 출발점은 가좌역입니다. 배차 간격과 환승을 포함해 평일 출근 시간에 맞는지 보는 편이 좋습니다.",
+            "en": "Gajwa is the local rail starting point. Include service intervals and transfers when judging your weekday commute."
+          },
+          "sourceIds": [
+            "context"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "가재울초가 단지 생활권 안에",
+            "en": "Gajaeul Elementary within the development setting"
+          },
+          "body": {
+            "ko": "전체 DMC파크뷰자이 안에 가재울초가 자리합니다. 1단지에서도 동에 따라 교문까지 걷는 길은 달라집니다.",
+            "en": "Gajaeul Elementary sits within the wider DMC Park View Xi development. The route to its gate varies across Complex 1."
+          },
+          "sourceIds": [
+            "context"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "가까운 곳에서 아이와 바깥 활동",
+            "en": "Outdoor time without a separate trip"
+          },
+          "body": {
+            "ko": "가재울어린이공원이 주변에 있어 방과 후 잠깐 놀거나 집 주변을 걷는 생활에 어울립니다.",
+            "en": "Gajaeul Children’s Park adds an option for after-school play and short walks near home."
+          },
+          "sourceIds": [
+            "context"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "겨울 생활비까지 비교",
+            "en": "Include winter running costs"
+          },
+          "body": {
+            "ko": "지역난방을 쓰는 집입니다. 같은 전용면적의 겨울 고지서를 보면 난방비와 공용 관리비를 함께 가늠하기 쉽습니다.",
+            "en": "The development uses district heating. Winter bills for the same usable floor area help put heating and shared charges in context."
+          },
+          "sourceIds": [
+            "context"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "1단지 안에서 같은 조건끼리",
+            "en": "Compare like for like within Complex 1"
+          },
+          "body": {
+            "ko": "면적이 같아도 학교 쪽 동과 역으로 나가기 편한 동의 선호가 다를 수 있습니다. 1단지 안에서 층과 방향까지 맞춰 비교하세요.",
+            "en": "Even at the same size, convenience for school and rail can appeal to different buyers. Match floor and aspect within Complex 1."
+          },
+          "sourceIds": [
+            "context"
+          ],
+          "status": "interpretation"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "공덕자이",
+          "en": "Gongdeok Xi"
+        },
+        "reason": {
+          "ko": "5호선 접근을 우선하는 생활과 비교하기 좋습니다.",
+          "en": "A contrast for a commute based on Line 5."
+        },
+        "condition": {
+          "ko": "직장 위치와 필요한 면적을 먼저 맞추세요.",
+          "en": "Match workplace and space requirements first."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "context",
+        "title": "Hogangnono — DMC Park View Xi",
+        "url": "https://hogangnono.com/apt/9YLdc",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "학교·가좌역·공원·난방의 전체 단지 맥락. 1단지 연결은 별도 단지 식별자로 고정하며 전체 4,300세대와 통합 가격은 1단지 수치로 사용하지 않음.",
+          "en": "Whole-development school, station, park and heating context. Complex 1 has its own identity; the combined 4,300-home total and prices are not assigned to it."
+        }
+      }
+    ]
+  },
+  {
+    "id": "kr-raemian-mapo-wellstream",
+    "marketId": "kr-seoul",
+    "name": {
+      "ko": "래미안 마포 웰스트림",
+      "en": "Raemian Mapo Wellstream"
+    },
+    "area": {
+      "ko": "마포구 · 현석동",
+      "en": "Hyeonseok-dong · Mapo-gu"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "한강 산책을 평일 생활에 넣기 좋은 현석동의 집",
+      "en": "A Hyeonseok-dong home for everyday Han River walks"
+    },
+    "summary": {
+      "ko": "래미안 마포 웰스트림은 집 근처에서 강변을 걷는 생활에 무게를 둔 단지입니다. 밖에 나가 운동하거나 아이와 산책하는 시간이 많다면 공원으로 이어지는 길이 반가운 장점입니다.",
+      "en": "Raemian Mapo Wellstream puts riverside walking within an everyday routine. Its park connections appeal to people who regularly head outdoors for exercise or time with children."
+    },
+    "bestFor": {
+      "ko": "아이와 강변을 자주 걷는 가족에게 어울립니다. 학교로 나가는 길과 필요한 침실 구성을 함께 보세요.",
+      "en": "Suits families who often walk by the river. Compare the school route and usable bedrooms."
+    },
+    "holdFor": {
+      "ko": "강 가까운 생활이 장점이지만 역 바로 앞의 편리함과는 다릅니다. 출근길에 걷는 구간을 직접 비교하세요.",
+      "en": "The riverside setting has appeal, while the station still requires a walk. Compare that part of the commute in person."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "집 근처에서 한강 산책",
+          "en": "Han River walks near home"
+        },
+        "body": {
+          "ko": "한강공원으로 이어지는 보행 동선이 이 집의 매력입니다. 퇴근 후 바깥에서 시간을 보내는 생활에 잘 맞습니다.",
+          "en": "Pedestrian access towards Hangang Park is a defining attraction for people who like spending time outdoors after work."
+        },
+        "sourceIds": [
+          "design"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "역과 강 중 어디에 무게를 둘까",
+          "en": "Weigh station access against riverside life"
+        },
+        "body": {
+          "ko": "강 가까운 생활이 장점이지만 역 바로 앞의 편리함과는 다릅니다. 출근길에 걷는 구간을 직접 비교하세요.",
+          "en": "The riverside setting has appeal, while the station still requires a walk. Compare that part of the commute in person."
+        },
+        "sourceIds": [
+          "design"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "광흥창역 6호선 생활권",
+            "en": "Gwangheungchang on Line 6"
+          },
+          "body": {
+            "ko": "출퇴근은 광흥창역 6호선을 기준으로 잡기 좋습니다. 집에서 역 출구까지의 길을 평일 일정에 넣어보세요.",
+            "en": "Gwangheungchang on Line 6 is the natural starting point for a rail commute. Include the journey from home to its entrance."
+          },
+          "sourceIds": [
+            "developer"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "신석초와 등하굣길",
+            "en": "Sinseok Elementary and the school run"
+          },
+          "body": {
+            "ko": "주변 신석초등학교까지의 길을 살펴볼 수 있습니다. 아이가 혼자 다닌다면 큰길을 건너는 위치와 출입구가 중요합니다.",
+            "en": "Sinseok Elementary is a nearby school to consider. For an independent school run, the estate exit and road crossings matter."
+          },
+          "sourceIds": [
+            "kapt"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "지상 보행과 공원 연결",
+            "en": "Walking through the grounds to the park"
+          },
+          "body": {
+            "ko": "지하 주차장과 지상 보행 공간을 나눈 배치라 산책을 생활에 넣기 좋습니다. 실제로 쓸 공원 쪽 출입구를 함께 보세요.",
+            "en": "Underground parking leaves the grounds focused on pedestrians. Check the park-side exit you would use most often."
+          },
+          "sourceIds": [
+            "design"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "같은 84㎡라도 방 구성이 다름",
+            "en": "Not every 84 m² layout works the same way"
+          },
+          "body": {
+            "ko": "일부 84.98E형은 별도 출입구와 주방·욕실을 둔 공간이 있습니다. 가족 침실이 필요한지, 분리된 공간이 필요한지에 따라 선호가 갈립니다.",
+            "en": "Some 84.98E layouts include a separate entrance, kitchen and bathroom. Decide whether you need conventional family bedrooms or a more independent space."
+          },
+          "sourceIds": [
+            "design"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "강이 보이는 창은 호실별로",
+            "en": "A river outlook belongs to the apartment"
+          },
+          "body": {
+            "ko": "한강 가까운 입지와 거실에서 보이는 전망은 별개입니다. 전망에 더 지불하기 전에 실제 창밖과 이웃 건물의 위치를 확인하세요.",
+            "en": "Proximity to the river and a view from the living room are separate advantages. Check the actual outlook and neighbouring buildings before paying extra for a view."
+          },
+          "sourceIds": [
+            "design"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "공덕자이",
+          "en": "Gongdeok Xi"
+        },
+        "reason": {
+          "ko": "한강 접근과 5호선 접근의 우선순위를 비교할 수 있습니다.",
+          "en": "Compare the value of riverside access with a Line 5 location."
+        },
+        "condition": {
+          "ko": "출근지와 면적을 맞춰 판단하세요.",
+          "en": "Match your commute and space needs."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "design",
+        "title": "Raemian — Mapo Wellstream site design",
+        "url": "https://www.raemian.co.kr/sales/sub/hyunsuk2/?menuSeq=3114",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "개발사의 보행·공원 연결, 지하주차, 일부 84.98E 평면. 계획 자료이며 현 운영 상태나 임대수익을 보장하지 않음.",
+          "en": "Developer pedestrian and park connections, underground parking and selected 84.98E layouts; plans do not establish current operations or rental returns."
+        }
+      },
+      {
+        "id": "developer",
+        "title": "Raemian — Mapo Wellstream",
+        "url": "https://www.raemian.co.kr/sales/s/hyunsuk2",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "광흥창역 6호선의 위치 맥락.",
+          "en": "Location context for Gwangheungchang on Line 6."
+        }
+      },
+      {
+        "id": "kapt",
+        "title": "K-apt — A10027714",
+        "url": "https://www.k-apt.go.kr/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "2026-09-04 설치 자료의 A10027714: 773세대와 신석초. 상충하는 도로명·중학교·준공월은 제외.",
+          "en": "Installed 2026-09-04 record A10027714: 773 homes and Sinseok Elementary. Conflicting road address, middle-school and completion-month fields excluded."
+        }
+      }
+    ]
+  },
+  {
+    "id": "kr-gongdeok-xi",
+    "marketId": "kr-seoul",
+    "name": {
+      "ko": "공덕자이",
+      "en": "Gongdeok Xi"
+    },
+    "area": {
+      "ko": "마포구 · 아현동",
+      "en": "Ahyeon-dong · Mapo-gu"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "소의초와 애오개역을 가까이 둔 아현동의 집",
+      "en": "An Ahyeon-dong base near Soui Elementary and Aeogae"
+    },
+    "summary": {
+      "ko": "공덕자이는 아이의 학교와 어른의 전철 출근을 함께 생각할 때 장점이 잘 보입니다. 소의초와 애오개역이 가까운 아현동 주거지라 평일에 반복하는 이동을 줄이는 쪽에 무게가 실립니다.",
+      "en": "Gongdeok Xi makes sense when school and rail commuting both shape the day. Its Ahyeon-dong setting near Soui Elementary and Aeogae puts routine journeys at the centre of the choice."
+    },
+    "bestFor": {
+      "ko": "초등 통학과 전철 출근을 함께 줄이고 싶은 가족에게 맞습니다. 학교 쪽 동과 출입구부터 살펴보세요.",
+      "en": "Suits families seeking shorter school and rail journeys. Start with blocks and exits facing the school route."
+    },
+    "holdFor": {
+      "ko": "출입구와 동 위치에 따라 매일 걷는 길이 달라집니다. 유모차나 짐을 들고 다니는 생활이라면 보행 경사도 함께 살펴보세요.",
+      "en": "Daily routes vary with the block and exit. If you use a stroller or carry shopping, check gradients along the path as well."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "학교와 전철을 가까이",
+          "en": "School and rail close by"
+        },
+        "body": {
+          "ko": "소의초와 애오개역을 가까이 두고 등하교와 출근을 함께 생각하기 좋은 집입니다.",
+          "en": "Nearby Soui Elementary and Aeogae station make this a useful starting point for combining school and work routines."
+        },
+        "sourceIds": [
+          "local"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "동에서 큰길까지의 길",
+          "en": "The route from your block to the main road"
+        },
+        "body": {
+          "ko": "출입구와 동 위치에 따라 매일 걷는 길이 달라집니다. 유모차나 짐을 들고 다니는 생활이라면 보행 경사도 함께 살펴보세요.",
+          "en": "Daily routes vary with the block and exit. If you use a stroller or carry shopping, check gradients along the path as well."
+        },
+        "sourceIds": [
+          "local"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "애오개 5호선, 아현 2호선",
+            "en": "Aeogae Line 5 and Ahyeon Line 2"
+          },
+          "body": {
+            "ko": "가까운 애오개역이 주된 철도 선택지이고 아현역도 비교할 수 있습니다. 두 역까지의 길이 같은 편의성을 주지는 않습니다.",
+            "en": "Aeogae is the closer rail option, with Ahyeon also worth comparing. The two station walks offer different levels of convenience."
+          },
+          "sourceIds": [
+            "local"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "출입구부터 역까지 걸어보기",
+            "en": "Walk from your entrance to the station"
+          },
+          "body": {
+            "ko": "애오개와 아현 중 어느 역을 쓸지 정했다면 출입구부터 승강장까지 이어서 걸어보세요. 아이를 데려다준 뒤 출근하는 날의 경로도 달라집니다.",
+            "en": "Once you choose Aeogae or Ahyeon, try the full route from the estate exit to the platform, including any school drop-off on the way."
+          },
+          "sourceIds": [
+            "local"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "소의초등학교 인근",
+            "en": "Soui Elementary nearby"
+          },
+          "body": {
+            "ko": "소의초가 가까워 초등 자녀의 생활을 그려보기 쉽습니다. 입학 전에는 해당 주소의 배정과 교문까지의 길을 확인하세요.",
+            "en": "Soui Elementary is close enough to make the school run a useful part of the comparison. Confirm address-based assignment before enrolment."
+          },
+          "sourceIds": [
+            "local"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "일상 심부름은 주변 상권에서",
+            "en": "Everyday errands in the neighbourhood"
+          },
+          "body": {
+            "ko": "주변의 음식점·편의점·의원 등을 이용하는 동네 생활에 가깝습니다. 대형 쇼핑몰보다 평일에 자주 들르는 가게가 맞는지 보세요.",
+            "en": "Daily life draws on nearby food shops, convenience stores and clinics. Focus on the places you would actually use during the week."
+          },
+          "sourceIds": [
+            "local"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "2015년 단지, 관리 이력까지",
+            "en": "A 2015 estate: look at its maintenance history"
+          },
+          "body": {
+            "ko": "실내 상태와 공용부 수선 계획을 함께 보면 앞으로의 부담을 가늠하기 쉽습니다. 수영장 같은 시설은 이용 조건과 별도 요금도 받아보세요.",
+            "en": "Apartment condition and planned common-area work help put future costs in perspective. Obtain the current access terms and extra charges for facilities such as the pool."
+          },
+          "sourceIds": [
+            "public",
+            "local"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "래미안 마포 웰스트림",
+          "en": "Raemian Mapo Wellstream"
+        },
+        "reason": {
+          "ko": "한강 산책을 우선하는 생활과 비교할 수 있습니다.",
+          "en": "A contrast for a routine that prioritises riverside walking."
+        },
+        "condition": {
+          "ko": "전철 노선과 필요한 면적을 맞추세요.",
+          "en": "Match rail needs and usable space."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "local",
+        "title": "Zippoom — Gongdeok Xi neighbourhood",
+        "url": "https://apt.zippoom.com/부동산/서울-마포구-아현동-공덕자이/cl4m9u/주변정보",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "소의초·애오개·아현과 생활시설의 위치. 포털 예상 도보시간·시설 개수·평점은 사용하지 않음.",
+          "en": "Locations of Soui Elementary, Aeogae, Ahyeon and everyday facilities; portal walk estimates, facility counts and ratings excluded."
+        }
+      },
+      {
+        "id": "public",
+        "title": "Seoul Open Apartment — Gongdeok Xi A10027906",
+        "url": "https://openapt.seoul.go.kr/openApt/index.do?aptCode=A10027906",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "963세대·16개 동과 관리 공고. 공고를 공사 완료 또는 현재 시설 운영의 증거로 사용하지 않음.",
+          "en": "963 homes, 16 blocks and management notices. A notice does not establish completed works or current facility operations."
+        }
+      }
+    ]
   }
 ]

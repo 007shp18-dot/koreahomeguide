@@ -2798,5 +2798,305 @@
         "zh-CN": "王十里购物餐饮及社区游乐运动空间"
       }
     }
+  },
+  "sg-watertown": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "장보기·전철·수로 산책을 가까이 두는 풍골 생활. 도심 출근 시간과 동별 전망 차이가 선택을 가릅니다.",
+      "en": "A Punggol home with shops, trains and waterside walks close by. The city commute and your block’s outlook are the main trade-offs.",
+      "zh-CN": "购物、轨道交通与水道散步集中在榜鹅家门附近；进城通勤及各栋景观差异是取舍重点。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "풍골 MRT·LRT와 보행 연결",
+        "en": "Pedestrian links to Punggol MRT and LRT",
+        "zh-CN": "步行通道连接榜鹅地铁与轻轨"
+      },
+      "schools": {
+        "ko": "발러 초등학교 인근 · 입학 조건 별도",
+        "en": "Valour Primary nearby; admission checked separately",
+        "zh-CN": "邻近Valour小学，入学条件另行确认"
+      },
+      "daily": {
+        "ko": "워터웨이 포인트와 풍골 수로",
+        "en": "Waterway Point and the Punggol waterway",
+        "zh-CN": "Waterway Point商场与榜鹅水道"
+      }
+    }
+  },
+  "sg-north-park-residences": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "이슌의 전철·버스·쇼핑을 가까이 쓰는 집. 도심 출근 거리와 상권의 활기를 받아들일 수 있는지가 관건입니다.",
+      "en": "An integrated base for Yishun’s trains, buses and shops. The city commute and busy town-centre setting are the main considerations.",
+      "zh-CN": "义顺地铁、巴士和购物集中的住宅，需权衡进城通勤及商圈的热闹程度。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "이슌 MRT와 버스 환승센터 연결",
+        "en": "Connections to Yishun MRT and bus interchange",
+        "zh-CN": "连接义顺地铁与巴士转换站"
+      },
+      "schools": {
+        "ko": "시산 초등학교 주변 · 등록 조건 확인",
+        "en": "Xishan Primary nearby; check registration eligibility",
+        "zh-CN": "邻近西山小学，需确认注册资格"
+      },
+      "daily": {
+        "ko": "노스포인트 시티 위 · 주거 출입 별도",
+        "en": "Above Northpoint City with separate residential access",
+        "zh-CN": "位于Northpoint City上方，住宅出入口独立"
+      }
+    }
+  },
+  "sg-bedok-residences": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "베독몰·MRT·버스를 한곳에 두는 동부의 생활형 단지. 상권의 활기와 집 안의 조용함을 함께 비교하세요.",
+      "en": "An everyday base in the east, combining Bedok Mall, MRT and buses. Compare town-centre convenience with the apartment’s quietness.",
+      "zh-CN": "勿洛商场、地铁和巴士集中的东部住宅，需兼顾商圈便利与室内安静程度。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "베독 MRT·버스 환승센터와 연결",
+        "en": "Links to Bedok MRT and bus interchange",
+        "zh-CN": "连接勿洛地铁与巴士转换站"
+      },
+      "schools": {
+        "ko": "펑산·레드 스와스티카 학교 주변",
+        "en": "Fengshan Primary and Red Swastika in the area",
+        "zh-CN": "周边有凤山小学与卍慈学校"
+      },
+      "daily": {
+        "ko": "베독몰 위 · 단지 내 수영장·테니스",
+        "en": "Above Bedok Mall; pool and tennis on site",
+        "zh-CN": "位于勿洛商场上方，设泳池与网球场"
+      }
+    }
+  },
+  "kr-dmc-park-view-xi-1": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "학교·공원 중심의 가족 생활에 어울리는 가재울 단지. 동별 등하교와 가좌역 접근을 함께 비교하세요.",
+      "en": "A Gajaeul base for school and park life; compare school and Gajwa station routes by block.",
+      "zh-CN": "适合围绕学校与公园生活的家庭，需按楼栋比较上学及前往加佐站的路线。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "가좌역 경의중앙선 · 동별 접근 차이",
+        "en": "Gajwa rail access varies by block",
+        "zh-CN": "可利用加佐站，各栋到站路线不同"
+      },
+      "schools": {
+        "ko": "전체 단지 안 가재울초",
+        "en": "Gajaeul Elementary within the wider estate",
+        "zh-CN": "大型社区内有加才蔚小学"
+      },
+      "daily": {
+        "ko": "가재울어린이공원 가까이",
+        "en": "Gajaeul Children’s Park nearby",
+        "zh-CN": "邻近加才蔚儿童公园"
+      }
+    }
+  },
+  "kr-raemian-mapo-wellstream": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "한강 산책과 지상 보행 공간이 매력인 현석동 단지. 광흥창역까지의 길과 평면을 함께 고르세요.",
+      "en": "A Hyeonseok-dong setting for riverside walks; weigh the station route and apartment layout.",
+      "zh-CN": "玄石洞的江边散步生活，需同时考虑到广兴仓站的路线与户型。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "광흥창역 6호선 · 역까지 도보 이동",
+        "en": "Line 6 at Gwangheungchang; a walk to the station",
+        "zh-CN": "步行前往广兴仓站乘6号线"
+      },
+      "schools": {
+        "ko": "신석초 인근",
+        "en": "Sinseok Elementary nearby",
+        "zh-CN": "邻近新石小学"
+      },
+      "daily": {
+        "ko": "한강공원 보행 연결",
+        "en": "Pedestrian connection towards Hangang Park",
+        "zh-CN": "步行路线通往汉江公园"
+      }
+    }
+  },
+  "kr-gongdeok-xi": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "소의초와 애오개역 중심의 실용적인 가족 생활. 동별 보행 동선과 2015년 단지의 관리 상태가 중요합니다.",
+      "en": "Practical family life around Soui Elementary and Aeogae; compare block access and maintenance condition.",
+      "zh-CN": "围绕昭义小学与儿岭站的实用家庭生活，需比较楼栋步行路线及维护状态。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "애오개역 5호선 · 아현역 2호선도 비교",
+        "en": "Aeogae Line 5; compare Ahyeon Line 2 as well",
+        "zh-CN": "主要利用儿岭站5号线，也可比较阿岘站2号线"
+      },
+      "schools": {
+        "ko": "소의초등학교 가까이",
+        "en": "Soui Elementary close by",
+        "zh-CN": "靠近昭义小学"
+      },
+      "daily": {
+        "ko": "주변 음식점·편의점·의원",
+        "en": "Neighbourhood food shops, convenience stores and clinics",
+        "zh-CN": "周边餐饮、便利店及诊所"
+      }
+    }
+  },
+  "ae-marina-quays": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "산책과 외식을 즐기는 마리나 수변 생활. 동별 전망·소음과 자녀의 학교 이동이 선택을 가릅니다.",
+      "en": "Waterside marina living for walks and dining; tower aspect and the school journey shape the choice.",
+      "zh-CN": "适合散步与外出用餐的码头滨水生活，楼栋朝向和上学路线是重点。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "JBR 트램·DMCC 메트로 경로 비교",
+        "en": "Compare JBR tram and DMCC metro routes",
+        "zh-CN": "比较JBR电车与DMCC地铁路线"
+      },
+      "schools": {
+        "ko": "JBR 어린이집 · 학령기 학교는 별도 이동",
+        "en": "JBR nurseries; separate journeys for school-age children",
+        "zh-CN": "JBR有托育选择，学龄儿童需另行安排通学"
+      },
+      "daily": {
+        "ko": "마리나 산책로·식당·단지 수영장",
+        "en": "Marina promenade, dining and resident pools",
+        "zh-CN": "码头步道、餐饮及住户泳池"
+      }
+    }
+  },
+  "ae-29-boulevard": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "외식과 도심 산책을 즐기는 다운타운 생활. 역까지 이동과 침실 방향을 함께 고르세요.",
+      "en": "Downtown living for dining and city walks; weigh the station journey and bedroom aspect.",
+      "zh-CN": "适合外出用餐与城市散步的市中心生活，需兼顾到站路线及卧室朝向。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Burj Khalifa/Dubai Mall역까지 별도 이동",
+        "en": "A separate journey to Burj Khalifa/Dubai Mall metro",
+        "zh-CN": "前往Burj Khalifa/Dubai Mall地铁站需另行步行或接驳"
+      },
+      "schools": {
+        "ko": "사우스 리지의 JINS 어린이집",
+        "en": "JINS nursery at South Ridge",
+        "zh-CN": "South Ridge设有JINS托育园"
+      },
+      "daily": {
+        "ko": "주변 식당 · 주민 수영장·놀이 공간",
+        "en": "Nearby dining; resident pools and play spaces",
+        "zh-CN": "周边餐饮及住户泳池、游乐空间"
+      }
+    }
+  },
+  "ae-al-thayyal": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "산책·수영과 동네 생활 중심의 더 그린스 단지. 학교 접근, 침실 수, 메트로 이동을 함께 보세요.",
+      "en": "A Greens base for walks and swimming; weigh school access, bedroom needs and the metro journey.",
+      "zh-CN": "以散步、游泳和社区生活为主，需兼顾学校、卧室数量及地铁接驳。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Dubai Internet City역까지 별도 이동",
+        "en": "Separate access to Dubai Internet City metro",
+        "zh-CN": "需另行前往Dubai Internet City地铁站"
+      },
+      "schools": {
+        "ko": "더 그린스 안 리젠트 인터내셔널 스쿨",
+        "en": "Regent International School in The Greens",
+        "zh-CN": "The Greens内有Regent国际学校"
+      },
+      "daily": {
+        "ko": "동네 호수 산책길 · 주민 수영장",
+        "en": "Community lakeside paths and resident pools",
+        "zh-CN": "社区湖边步道及住户泳池"
+      }
+    }
+  },
+  "jp-city-tower-oimachi": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "여러 철도 노선과 장보기를 가까이 쓰는 오이마치 생활. 학교와 실제 승강장까지의 길을 함께 보세요.",
+      "en": "Practical Oimachi living with rail options and local shopping; compare school and platform routes.",
+      "zh-CN": "大井町多条铁路与日常购物便利，需同时比较学校及站台路线。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "오이마치 JR·린카이선·도큐선",
+        "en": "JR, Rinkai and Tokyu services at Oimachi",
+        "zh-CN": "大井町可利用JR、临海线及东急线"
+      },
+      "schools": {
+        "ko": "야마나카초등학교 인근",
+        "en": "Yamanaka Elementary nearby",
+        "zh-CN": "邻近山中小学"
+      },
+      "daily": {
+        "ko": "동네 식료품점·오이추오공원",
+        "en": "Local grocery shops and Oi Chuo Park",
+        "zh-CN": "附近食品店与大井中央公园"
+      }
+    }
+  },
+  "jp-park-homes-toyosu-the-residence": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "학교·공원·전철을 가까이 두는 도요스 가족 생활. 동별 창밖과 침실·수납을 함께 보세요.",
+      "en": "A Toyosu family base near school, park and rail; compare outlook, bedrooms and storage.",
+      "zh-CN": "丰洲学校、公园及轨道交通相近的家庭生活，需比较景观、卧室及收纳。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "도요스역 도보 생활권",
+        "en": "Within walking distance of Toyosu station",
+        "zh-CN": "步行可利用丰洲站"
+      },
+      "schools": {
+        "ko": "도요스니시초등학교 가까이",
+        "en": "Toyosu Nishi Elementary close by",
+        "zh-CN": "靠近丰洲西小学"
+      },
+      "daily": {
+        "ko": "도요스공원 · 키즈 공간·라운지",
+        "en": "Toyosu Park, children’s space and lounges",
+        "zh-CN": "丰洲公园、儿童空间及休息室"
+      }
+    }
+  },
+  "jp-harumi-chrono-residence": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "수변 산책과 단지 여가를 즐기는 하루미 생활. 역까지 걷는 길과 하루미 라이너를 함께 비교하세요.",
+      "en": "Harumi living for waterfront walks and resident leisure; compare station walks with the Harumi Liner.",
+      "zh-CN": "享受晴海滨水散步与住户休闲，需比较步行到站与Harumi Liner巴士。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "가치도키·쓰키시마 도보 · 건물 앞 공도 버스",
+        "en": "Walk to Kachidoki or Tsukishima; public-road bus outside",
+        "zh-CN": "可步行至胜哄或月岛，楼前公共道路有巴士"
+      },
+      "schools": {
+        "ko": "트리톤 스퀘어의 아오바 프리스쿨",
+        "en": "Aoba Preschool at Triton Square",
+        "zh-CN": "Triton Square设有Aoba学前教育"
+      },
+      "daily": {
+        "ko": "수변 보행 공간 · 키즈·운동시설",
+        "en": "Waterfront pedestrian space, play and exercise facilities",
+        "zh-CN": "滨水步行空间、儿童及运动设施"
+      }
+    }
   }
 }

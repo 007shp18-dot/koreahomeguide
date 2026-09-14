@@ -5956,5 +5956,347 @@
       }
     ],
     "photo": null
+  },
+  {
+    "reviewId": "sg-watertown",
+    "name": {
+      "ko": "워터타운",
+      "en": "Watertown"
+    },
+    "area": {
+      "ko": "풍골 · D19",
+      "en": "Punggol · D19"
+    },
+    "address": "Punggol Central, Singapore",
+    "detailPath": "/sg/singapore/explore/ocr/82655b4687e2a006371c2c02ed5cfef3ae31de2e8deb1177c1e62963ffb5ada6/",
+    "entityIds": [
+      "sg-singapore:project:82655b4687e2a006371c2c02ed5cfef3ae31de2e8deb1177c1e62963ffb5ada6"
+    ],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 992,
+        "unit": "homes",
+        "sourceId": "rsp",
+        "basis": {
+          "ko": "설계사 기준 전체 주거부",
+          "en": "Architect’s total residential count"
+        }
+      }
+    ],
+    "photo": null,
+    "segment": "OCR"
+  },
+  {
+    "reviewId": "sg-north-park-residences",
+    "name": {
+      "ko": "노스 파크 레지던스",
+      "en": "North Park Residences"
+    },
+    "area": {
+      "ko": "이슌 · D27",
+      "en": "Yishun · D27"
+    },
+    "address": "Yishun Central 1, Singapore",
+    "detailPath": "/sg/singapore/explore/ocr/01e1639d2debd12cd5f551ec1639eb0edd5a8d50e4392ab84af376490a9cd176/",
+    "entityIds": [
+      "sg-singapore:project:01e1639d2debd12cd5f551ec1639eb0edd5a8d50e4392ab84af376490a9cd176"
+    ],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 920,
+        "unit": "homes",
+        "sourceId": "developer",
+        "basis": {
+          "ko": "전체 주거부",
+          "en": "Total residential count"
+        }
+      }
+    ],
+    "photo": null,
+    "segment": "OCR"
+  },
+  {
+    "reviewId": "sg-bedok-residences",
+    "name": {
+      "ko": "베독 레지던스",
+      "en": "Bedok Residences"
+    },
+    "area": {
+      "ko": "베독 · D16",
+      "en": "Bedok · D16"
+    },
+    "address": "Bedok North Drive, Singapore",
+    "detailPath": "/sg/singapore/explore/ocr/8f45a3f93fd236ae5b7b301c4f8f096d08a7548dfc3c4f2d22fe80617f710183/",
+    "entityIds": [
+      "sg-singapore:project:8f45a3f93fd236ae5b7b301c4f8f096d08a7548dfc3c4f2d22fe80617f710183"
+    ],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 583,
+        "unit": "homes",
+        "sourceId": "developer",
+        "basis": {
+          "ko": "전체 주거부",
+          "en": "Total residential count"
+        }
+      }
+    ],
+    "photo": null,
+    "segment": "OCR"
+  },
+  {
+    "reviewId": "kr-dmc-park-view-xi-1",
+    "name": {
+      "ko": "DMC파크뷰자이1단지",
+      "en": "DMC Park View Xi Complex 1"
+    },
+    "area": {
+      "ko": "서대문구 · 남가좌동",
+      "en": "Namgajwa-dong · Seodaemun-gu"
+    },
+    "address": "서울 서대문구 남가좌동 385",
+    "detailPath": "/kr/seoul/explore/seodaemun-gu/seodaemun-gu-ugwbdv/",
+    "entityIds": [
+      "kr-seoul:estate:seodaemun-gu-ugwbdv"
+    ],
+    "metrics": [],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-raemian-mapo-wellstream",
+    "name": {
+      "ko": "래미안 마포 웰스트림",
+      "en": "Raemian Mapo Wellstream"
+    },
+    "area": {
+      "ko": "마포구 · 현석동",
+      "en": "Hyeonseok-dong · Mapo-gu"
+    },
+    "address": "서울 마포구 현석동 225",
+    "detailPath": "/kr/seoul/explore/mapo-gu/mapo-gu-kcj19f/",
+    "entityIds": [
+      "kr-seoul:estate:mapo-gu-kcj19f"
+    ],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 773,
+        "unit": "homes",
+        "sourceId": "kapt",
+        "basis": {
+          "ko": "A10027714 전체 단지",
+          "en": "Whole estate A10027714"
+        }
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-gongdeok-xi",
+    "name": {
+      "ko": "공덕자이",
+      "en": "Gongdeok Xi"
+    },
+    "area": {
+      "ko": "마포구 · 아현동",
+      "en": "Ahyeon-dong · Mapo-gu"
+    },
+    "address": "서울 마포구 마포대로24길 16",
+    "detailPath": "/kr/seoul/explore/mapo-gu/mapo-gu-ppd9to/",
+    "entityIds": [
+      "kr-seoul:estate:mapo-gu-ppd9to"
+    ],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 963,
+        "unit": "homes",
+        "sourceId": "public",
+        "basis": {
+          "ko": "A10027906 전체 단지",
+          "en": "Whole estate A10027906"
+        }
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "ae-marina-quays",
+    "name": {
+      "ko": "마리나 키스",
+      "en": "Marina Quays"
+    },
+    "area": {
+      "ko": "두바이 마리나",
+      "en": "Dubai Marina"
+    },
+    "address": "Marina Quays, Dubai Marina, Dubai, UAE",
+    "detailPath": "/ae/dubai/explore/projects/ae-marina-quays/",
+    "entityIds": [],
+    "metrics": [],
+    "photo": null,
+    "projectId": null,
+    "areaSlug": "marsa-dubai"
+  },
+  {
+    "reviewId": "ae-29-boulevard",
+    "name": {
+      "ko": "29 불러바드",
+      "en": "29 Boulevard"
+    },
+    "area": {
+      "ko": "다운타운 두바이",
+      "en": "Downtown Dubai"
+    },
+    "address": "29 Boulevard, Downtown Dubai, Dubai, UAE",
+    "detailPath": "/ae/dubai/explore/projects/ae-29-boulevard/",
+    "entityIds": [],
+    "metrics": [],
+    "photo": null,
+    "projectId": null,
+    "areaSlug": "burj-khalifa"
+  },
+  {
+    "reviewId": "ae-al-thayyal",
+    "name": {
+      "ko": "알 타얄",
+      "en": "Al Thayyal"
+    },
+    "area": {
+      "ko": "더 그린스",
+      "en": "The Greens"
+    },
+    "address": "Al Thayyal, Streets 4 and 5, The Greens, Dubai, UAE",
+    "detailPath": "/ae/dubai/explore/projects/ae-al-thayyal/",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 452,
+        "unit": "homes",
+        "sourceId": "ecm",
+        "basis": {
+          "ko": "Al Thayyal 전체",
+          "en": "Whole Al Thayyal development"
+        }
+      }
+    ],
+    "photo": null,
+    "projectId": null,
+    "areaSlug": "al-thanyah-third"
+  },
+  {
+    "reviewId": "jp-city-tower-oimachi",
+    "name": {
+      "ko": "시티 타워 오이마치",
+      "en": "City Tower Oimachi"
+    },
+    "area": {
+      "ko": "오이 · 시나가와구",
+      "en": "Oi · Shinagawa"
+    },
+    "address": "1-31-1 Oi, Shinagawa, Tokyo",
+    "detailPath": "/jp/tokyo/explore/properties/jp-city-tower-oimachi/",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 646,
+        "unit": "homes",
+        "sourceId": "building",
+        "basis": {
+          "ko": "City Tower Oimachi 전체",
+          "en": "Whole City Tower Oimachi development"
+        }
+      }
+    ],
+    "photo": null,
+    "wardCode": "13109"
+  },
+  {
+    "reviewId": "jp-park-homes-toyosu-the-residence",
+    "name": {
+      "ko": "파크 홈즈 도요스 더 레지던스",
+      "en": "Park Homes Toyosu The Residence"
+    },
+    "area": {
+      "ko": "도요스5초메 · 고토구",
+      "en": "Toyosu 5-chome · Koto"
+    },
+    "address": "5-6-29 Toyosu, Koto, Tokyo",
+    "detailPath": "/jp/tokyo/explore/properties/jp-park-homes-toyosu-the-residence/",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 693,
+        "unit": "homes",
+        "sourceId": "outline",
+        "basis": {
+          "ko": "전체 단지",
+          "en": "Whole development"
+        }
+      }
+    ],
+    "photo": null,
+    "wardCode": "13108"
+  },
+  {
+    "reviewId": "jp-harumi-chrono-residence",
+    "name": {
+      "ko": "하루미 타워스 크로노 레지던스",
+      "en": "The Parkhouse Harumi Towers Chrono Residence"
+    },
+    "area": {
+      "ko": "하루미2초메 · 주오구",
+      "en": "Harumi 2-chome · Chuo"
+    },
+    "address": "2-3-30 Harumi, Chuo, Tokyo",
+    "detailPath": "/jp/tokyo/explore/properties/jp-harumi-chrono-residence/",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 883,
+        "unit": "homes",
+        "sourceId": "building",
+        "basis": {
+          "ko": "Chrono 단독 · Tiaro 제외",
+          "en": "Chrono only; excludes Tiaro"
+        }
+      }
+    ],
+    "photo": null,
+    "wardCode": "13102"
   }
 ]
