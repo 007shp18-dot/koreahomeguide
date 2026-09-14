@@ -66,6 +66,7 @@ test('desktop report opens beside the property data and all three perspectives c
   expect(geometry.dataRight).toBeLessThanOrEqual(geometry.panelLeft);
   expect(geometry.panelRight).toBeLessThanOrEqual(1366);
   expect(Math.abs(geometry.dataTop - geometry.panelTop)).toBeLessThan(40);
+  await test.info().attach('property-decision-desktop', { body: await page.screenshot(), contentType: 'image/png' });
 
   const originalData = await mainEvidence(page);
   const originalUrl = page.url();
@@ -150,6 +151,7 @@ test('mobile report opens on demand, traps focus, locks the background and retai
   expect(bounds!.height).toBe(844);
   expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).toBe('hidden');
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflow)).toBe('hidden');
+  await test.info().attach('property-decision-mobile', { body: await page.screenshot(), contentType: 'image/png' });
 
   const close = dialog.getByRole('button', { name: 'Close decision panel', exact: true });
   const last = dialog.getByRole('link', { name: 'Compare alternatives', exact: true });

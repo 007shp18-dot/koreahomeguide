@@ -1,0 +1,889 @@
+[
+  {
+    "id": "ae-community-majan-exit",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-skyflame-1"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "Majan은 출입구부터 출근해 보기",
+      "en": "Start the Majan commute at the actual exit",
+      "zh-CN": "Majan 通勤先从实际出口测试"
+    },
+    "body": {
+      "ko": "고속도로가 가까워도 내부도로를 빠져나가는 길이 맞아야 차량 입지의 장점이 남습니다.",
+      "en": "Nearby highways help only if the route out of the neighbourhood works for your schedule.",
+      "zh-CN": "高速公路近，也要社区内部驶出路线符合日程，才能形成便利。"
+    },
+    "visitQuestion": {
+      "ko": "평일 출근 시간에 계약 타워 쪽 도로부터 직장 주차장까지 왕복할 수 있나요?",
+      "en": "Can you trial both directions between the tower-side road and workplace parking at your usual hours?",
+      "zh-CN": "能否按平日时间，从合同楼栋一侧道路往返工作地停车场？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubairealestate/comments/1om971u/thoughts_on_majan_area_dubailand_for_enduse_and/",
+        "title": "Thoughts on Majan area (Dubailand) for end-use and investment? Also seeing the premium project The Wilds by Aldar — will this add value?",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened post and replies. Displayed 10mo/9mo ago; absolute date unavailable. Prospective apartment buyer names Majan and nearby The Wilds. Replies disagree over exits and metro; one self-described resident is also an agent. Use as route-verification questions only; no appreciation, vacancy or metro claim adopted.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-majan-current-transit",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-skyflame-1",
+      "ae-the-wilds-residences"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "미래 역보다 입주 첫날의 이동",
+      "en": "Plan the first day before the future metro",
+      "zh-CN": "先安排入住首日，再看未来地铁"
+    },
+    "body": {
+      "ko": "Majan·The Wilds를 볼 때는 미래 교통 기대와 입주 직후 이용할 정류장·택시비를 분리해야 합니다.",
+      "en": "For Majan and The Wilds, separate future transport expectations from the stops and taxis available when you move.",
+      "zh-CN": "考察 Majan 与 The Wilds，应把未来交通期待和入住时可用站点、出租车费用分开。"
+    },
+    "visitQuestion": {
+      "ko": "개통 예정 노선을 빼도 출근과 자녀 픽업을 감당할 수 있나요?",
+      "en": "Does the commute and school pickup still work without a proposed rail line?",
+      "zh-CN": "不计规划地铁，通勤和接孩子仍能安排吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubairealestate/comments/1om971u/thoughts_on_majan_area_dubailand_for_enduse_and/",
+        "title": "Thoughts on Majan area (Dubailand) for end-use and investment? Also seeing the premium project The Wilds by Aldar — will this add value?",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened post and replies. Displayed 10mo/9mo ago; absolute date unavailable. Prospective apartment buyer names Majan and nearby The Wilds. Replies disagree over exits and metro; one self-described resident is also an agent. Use as route-verification questions only; no appreciation, vacancy or metro claim adopted.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "comparable-setting"
+  },
+  {
+    "id": "ae-community-motor-event-noise",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-skyterraces"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "조용한 방문 한 번으로는 부족",
+      "en": "Visit when the Autodrome is active",
+      "zh-CN": "赛车场有活动时再看一次"
+    },
+    "body": {
+      "ko": "Motor City의 생활이 마음에 들어도 경기 시간과 침실 방향이 맞아야 휴식까지 편해집니다.",
+      "en": "Motor City can suit the rest of your routine while race timing and bedroom orientation still change the fit.",
+      "zh-CN": "即使喜欢 Motor City 的日常，赛事时段与卧室朝向仍会改变居住适配。"
+    },
+    "visitQuestion": {
+      "ko": "행사 시간에 후보 방향에서 소리를 듣고, 계약 창호 사양도 함께 비교했나요?",
+      "en": "Have you listened from the proposed orientation during an event and compared the contracted window specification?",
+      "zh-CN": "是否在赛事期间按候选朝向听过声音，并比较合同窗户规格？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1ckqdqd/motor_city_living_seeking_feedback/",
+        "title": "Motor City living - Seeking feedback",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened post and replies, displayed 2y ago. Prospective resident heard little during several visits; self-described eight-year family resident and others distinguish event timing, orientation and insulation. Existing Motor City experience, not delivered Skyterraces evidence. No decibels or claimed universal disturbance adopted.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-creek-night-light",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-valia",
+      "ae-creek-bay",
+      "ae-creek-haven"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "조망은 밤의 조명까지 포함",
+      "en": "A view includes the lighting after dark",
+      "zh-CN": "景观也包括入夜后的灯光"
+    },
+    "body": {
+      "ko": "Creek Harbour의 전망에 값을 더 얹기 전, 외벽 조명이 발코니와 침실에 어떻게 들어오는지 확인하세요.",
+      "en": "Before paying for a Creek Harbour outlook, check how facade lighting reaches the balcony and bedroom.",
+      "zh-CN": "为 Creek Harbour 的景观支付溢价前，先看外墙灯光会怎样照进阳台和卧室。"
+    },
+    "visitQuestion": {
+      "ko": "후보 층·방향에서 밤 조명을 볼 수 없다면 조명 위치 도면을 받을 수 있나요?",
+      "en": "If a night viewing is impossible, can you obtain lighting locations for the chosen floor and orientation?",
+      "zh-CN": "若无法夜间看房，能否取得所选楼层和朝向的灯具位置图？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1thd0m1/bestworst_of_dubai_creek_harbour/",
+        "title": "Best/worst of Dubai Creek Harbour",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened resident replies, displayed 3mo ago. One describes decorative facade light reaching a terrace; another likes nearby grocery walks but distinguishes summer conditions. Buildings unnamed; mapped only as Creek Harbour viewing questions, never as defects at Valia, Creek Bay or Creek Haven.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-creek-return-route",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-valia",
+      "ae-creek-bay",
+      "ae-creek-haven"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "산책길과 차량 귀가를 따로 보기",
+      "en": "Test the drive home as well as the promenade",
+      "zh-CN": "散步路线与开车回家分开看"
+    },
+    "body": {
+      "ko": "수변 산책이 편해도 Creek Harbour 진입과 주차장 귀가는 다른 이동입니다. 퇴근 시간 경로가 맞아야 합니다.",
+      "en": "A pleasant promenade does not settle the drive into Creek Harbour and back to the garage at your return time.",
+      "zh-CN": "水岸散步舒适，不代表下班时驶入 Creek Harbour 并回到车库同样方便。"
+    },
+    "visitQuestion": {
+      "ko": "평일 저녁에 실제 진입로·횡단 구간·주차장 접근을 한 번에 시험했나요?",
+      "en": "Have you tested the approach road, crossings and garage access together on a weekday evening?",
+      "zh-CN": "是否在工作日傍晚连贯测试过进区道路、过街点和车库入口？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubairealestate/comments/1of543t/thoughts_on_dubai_creek_harbour/",
+        "title": "Thoughts on Dubai Creek Harbour",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened comments, displayed 1y ago. A respondent describes increased weekday access traffic and OP recalls a recent visit. Investment predictions, rents, prices and new-build quality claims excluded. Older area observation supports a present-day route trial only.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-creek-summer-errands",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-valia",
+      "ae-creek-bay",
+      "ae-creek-haven"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "Creek Harbour 장보기는 더운 시간에도 걸어보기",
+      "en": "Walk the Creek Harbour grocery route in hotter hours",
+      "zh-CN": "在较热时段走一遍 Creek Harbour 买菜路线"
+    },
+    "body": {
+      "ko": "몰이 아니라 반복해서 갈 식료품점까지 그늘과 귀가 동선이 이어질 때 수변 보행의 이점이 커집니다.",
+      "en": "Waterfront walkability earns more value when shade and a usable return route reach your everyday grocery shop.",
+      "zh-CN": "遮阴和可行回程延续至常用食品店时，滨水步行的价值才更大。"
+    },
+    "visitQuestion": {
+      "ko": "장을 들고 돌아올 시간에 그늘이 끊기는 구간과 택시 대안을 봤나요?",
+      "en": "At grocery-return time, have you checked gaps in shade and a taxi alternative?",
+      "zh-CN": "按拎菜回家时间，检查过无遮挡路段和出租车替代方案吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1thd0m1/bestworst_of_dubai_creek_harbour/",
+        "title": "Best/worst of Dubai Creek Harbour",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened resident replies, displayed 3mo ago. One describes decorative facade light reaching a terrace; another likes nearby grocery walks but distinguishes summer conditions. Buildings unnamed; mapped only as Creek Harbour viewing questions, never as defects at Valia, Creek Bay or Creek Haven.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-business-bay-metro",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-peninsula-three",
+      "ae-the-edge",
+      "ae-regalia",
+      "ae-one-by-binghatti",
+      "ae-binghatti-aquarise"
+    ],
+    "areaKeys": [
+      "business-bay"
+    ],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "운하 산책이 지하철 통근은 아님",
+      "en": "Trace the route beyond the canal",
+      "zh-CN": "从运河继续走到实际车站"
+    },
+    "body": {
+      "ko": "Business Bay에서는 산책로가 마음에 들어도 집에서 역으로 이어지는 횡단·보행 구간이 별도로 맞아야 합니다.",
+      "en": "In Business Bay, liking the canal still leaves the home-to-station crossings and walking links to resolve.",
+      "zh-CN": "喜欢 Business Bay 运河步道，仍需单独解决家门至车站的过街和步行连接。"
+    },
+    "visitQuestion": {
+      "ko": "직접 쓸 역 입구까지 걸은 뒤 늦은 귀가 때의 교통편도 확인했나요?",
+      "en": "Have you walked to the entrance you will use and checked the late-return alternative?",
+      "zh-CN": "是否走到实际使用的车站入口，并核对晚归替代交通？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/riojmn/business_bay_living/",
+        "title": "Business Bay Living",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened resident discussion, displayed 5y ago. Resident separates canal walking, main-road corridors and actual metro reach. Construction and transport conditions are historical and not assigned as current facts to any reviewed tower.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-business-bay-garage",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-peninsula-three",
+      "ae-the-edge",
+      "ae-regalia",
+      "ae-one-by-binghatti",
+      "ae-binghatti-aquarise"
+    ],
+    "areaKeys": [
+      "business-bay"
+    ],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "Business Bay 출근은 건물 출입 시간까지",
+      "en": "Include building access in the Business Bay commute",
+      "zh-CN": "Business Bay 通勤也要计入进出大楼的时间"
+    },
+    "body": {
+      "ko": "Business Bay의 사무실을 오갈 때는 도로 이동에 엘리베이터와 주차장 출입을 더해야 합니다. 후보 주택과 직장 양쪽에서 이 구간을 재보세요.",
+      "en": "For a Business Bay office trip, add lifts and garage access to the road journey. Time those steps at both the candidate home and workplace.",
+      "zh-CN": "往返 Business Bay 办公室，要在路上时间之外加上电梯和车库出入。候选住宅和工作地两端都应实际计时。"
+    },
+    "visitQuestion": {
+      "ko": "주차 위치에서 일반도로에 나올 때까지를 통근시간에 넣었나요?",
+      "en": "Does your commute estimate start at the parking space and include reaching the public road?",
+      "zh-CN": "通勤估算是否从车位起算，并包含驶入公共道路的时间？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/15ma4qa/what_is_up_with_business_bay/",
+        "title": "What is up with Business Bay",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened OP and replies, displayed 3y ago. Office worker separates time inside an unnamed parking building from the later drive; commenters discuss lifts and signals. Not a residential tower measurement. Numerical waits excluded; route decomposition only.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "comparable-setting"
+  },
+  {
+    "id": "ae-community-business-bay-cooling",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-peninsula-three",
+      "ae-the-edge",
+      "ae-regalia",
+      "ae-one-by-binghatti",
+      "ae-binghatti-aquarise"
+    ],
+    "areaKeys": [
+      "business-bay"
+    ],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "같은 임대료라도 냉방비는 별도",
+      "en": "Compare rent with its cooling terms",
+      "zh-CN": "租金相同，冷气条款可能不同"
+    },
+    "body": {
+      "ko": "Business Bay의 작은 집을 비교할 때도 냉방 포함 여부와 사업자가 다르면 월 지출이 달라질 수 있습니다.",
+      "en": "Even compact Business Bay homes need matching cooling inclusion and provider terms before comparing monthly costs.",
+      "zh-CN": "比较 Business Bay 小户型月成本，也需对齐冷气是否包含及供应商条款。"
+    },
+    "visitQuestion": {
+      "ko": "해당 세대의 여름 고지서나 미입주 시 적용될 냉방 요금표를 받을 수 있나요?",
+      "en": "Can you obtain the unit’s summer bill, or the applicable cooling tariff before occupation?",
+      "zh-CN": "能否取得该房源夏季账单，或入住前适用的冷气收费表？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1sm1fal/coste_del_chiller_en_estudios_en_business_bay/",
+        "title": "Coste del chiller en estudios en Business Bay?",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened studio renter budget question and replies, displayed 4mo ago. Cooling is excluded from proposed rent and a reply says provider matters. Numerical bill estimates discarded. Does not establish the cooling provider, tariff or bill at any reviewed project.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-islands-access",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-eltiera-views",
+      "ae-serenia-district-east"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "Jumeirah Islands 방문 동선과 입주민 이용 범위",
+      "en": "Clarify resident access around Jumeirah Islands",
+      "zh-CN": "厘清 Jumeirah Islands 的住户使用范围"
+    },
+    "body": {
+      "ko": "Jumeirah Islands의 식당이나 클럽하우스를 방문할 수 있다는 사실만으로 신축 타워의 시설 이용권과 주거 동선이 확인되지는 않습니다.",
+      "en": "A visit to Jumeirah Islands restaurants or a clubhouse does not establish a new tower’s amenity rights or residential routes.",
+      "zh-CN": "可以到访 Jumeirah Islands 的餐厅或会所，并不能确定新塔楼住户的设施使用权和住宅出入路线。"
+    },
+    "visitQuestion": {
+      "ko": "계약 세대가 이용할 출입구·클럽하우스·다른 동 시설을 도면과 규칙으로 구분했나요?",
+      "en": "Do the plans and rules distinguish your contracted entrance, clubhouse access and facilities in other buildings?",
+      "zh-CN": "图纸和规则是否区分合同入口、会所权限及其他楼栋设施？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1ca6jya/entering_jumeirah_islands_other_gated_communities/",
+        "title": "Entering Jumeirah Islands & other gated communities",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened full question and contrasting replies, displayed 2y ago. Discussion distinguishes public restaurants/clubhouse visits from residential access; OP later reports restaurants described a different gate setup. Current rules unresolved. Used only to request actual access rights for new Islands towers; no gated-status assertion or access-bypass advice.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "comparable-setting"
+  },
+  {
+    "id": "ae-community-islands-cooling",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-eltiera-views",
+      "ae-serenia-district-east"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "Jumeirah Heights와 신축 타워의 냉방 계약 구분",
+      "en": "Separate new-tower cooling terms from Jumeirah Heights",
+      "zh-CN": "分别核对 Jumeirah Heights 与新塔楼的制冷条款"
+    },
+    "body": {
+      "ko": "인근 Jumeirah Heights 아파트의 냉방비를 신축 타워 예산에 그대로 넣을 수는 없습니다. 냉방 제공업체와 기본요금·사용료의 청구 범위를 먼저 맞춰야 합니다.",
+      "en": "An older Jumeirah Heights apartment’s bill cannot price a new tower. Match the cooling provider and the scope of fixed and usage charges first.",
+      "zh-CN": "附近 Jumeirah Heights 旧公寓的账单不能直接用于新塔楼预算，应先核对制冷供应商以及固定费和用量费的计费范围。"
+    },
+    "visitQuestion": {
+      "ko": "냉방 비용은 누구에게 내며 관리비와 중복되는 항목은 없는지 설명을 받았나요?",
+      "en": "Who bills for cooling, and is the boundary with the service charge explained in writing?",
+      "zh-CN": "冷气由谁收费，与管理费的边界是否有书面说明？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/11vg0xy/jumeirah_heights_apartments_in_jumeirah_islands/",
+        "title": "Jumeirah Heights apartments in Jumeirah Islands",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened post and replies, displayed 3y ago. A commenter advises checking external cooling versus electricity billing. Historical Jumeirah Heights experience is not evidence of Eltiera Views or Serenia East quality; only the contract/bill question is transferred within the surrounding comparison area.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "comparable-setting"
+  },
+  {
+    "id": "ae-community-wasl-comparable-space",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-boulevard-park-1"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "Nook와 비교할 때는 실내 면적부터",
+      "en": "Match usable space before comparing with Nook",
+      "zh-CN": "和 Nook 比价先对齐实用面积"
+    },
+    "body": {
+      "ko": "Wasl Gate의 같은 침실 수라도 실내 크기와 입주 시점이 다르면 다른 상품입니다. 새 단지가 생긴다는 이유만으로 가격 차이가 정당화되지는 않습니다.",
+      "en": "Equal bedroom counts around Wasl Gate can hide different interiors and delivery dates; nearby launches alone do not justify a premium.",
+      "zh-CN": "Wasl Gate 相同卧室数可能隐藏室内面积和交付日期差异；附近新盘本身不能证明溢价合理。"
+    },
+    "visitQuestion": {
+      "ko": "Boulevard Park 1과 기존 Nook를 같은 실내 면적·인도 조건으로 나란히 비교했나요?",
+      "en": "Have you compared Boulevard Park 1 and existing Nook homes on usable interior and possession terms?",
+      "zh-CN": "是否把 Boulevard Park 1 与现有 Nook 按实用室内面积和交付条件并列比较？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubairealestate/comments/1r3n9eu/the_nook_jebel_ali_village_wasl_gate/",
+        "title": "The Nook (Jebel Ali Village / Wasl Gate)",
+        "publishedOn": "2026-02-13",
+        "inspectedOn": "2026-09-14",
+        "context": "Search result exposed 13 February 2026; opened post and replies displayed 7mo ago. Discussion contrasts smaller existing Nook homes with new surrounding supply. Not a verified supply count, rent forecast or Boulevard Park valuation; a prompt to match size and completion timing.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-jebel-workplace-gate",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-sobha-central",
+      "ae-boulevard-park-1",
+      "ae-raw-district-r"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "Jebel Ali역보다 실제 직장 입구",
+      "en": "Match the actual Jebel Ali workplace entrance",
+      "zh-CN": "先匹配杰贝阿里实际工作地入口"
+    },
+    "body": {
+      "ko": "Jebel Ali에서 일한다는 정보만으로 메트로 생활을 정하기 어렵습니다. 역에서 사무실·사업장까지 마지막 이동이 남습니다.",
+      "en": "A Jebel Ali job title does not establish a metro commute; the final trip from station to the actual office or worksite remains.",
+      "zh-CN": "只知道在杰贝阿里工作，不能确定能否地铁通勤；车站至实际办公室或厂区还有最后一程。"
+    },
+    "visitQuestion": {
+      "ko": "직장의 정확한 입구와 교대 시간에 맞춰 마지막 버스·도보·택시 구간을 정했나요?",
+      "en": "Have you matched the last bus, walk or taxi leg to the exact work entrance and shift?",
+      "zh-CN": "是否按确切工作入口和班次安排最后一段公交、步行或出租车？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1qtrzyb/moving_to_dubai_rental_suggestions_near_jebel_ali/",
+        "title": "Moving to Dubai – rental suggestions near Jebel Ali",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened job-relocation discussion, displayed 6mo ago. OP and respondents disagree about metro access to an unspecified Jebel Ali FZE office. No route claim adopted; motivates matching the actual workplace entrance and final transfer, not the district label.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "comparable-setting"
+  },
+  {
+    "id": "ae-community-industrial-daily-route",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-raw-district-r"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "Jebel Ali Industrial Area 2에서 퇴근 후 동선까지",
+      "en": "Trace after-work errands in Jebel Ali Industrial Area 2",
+      "zh-CN": "走一遍 Jebel Ali Industrial Area 2 下班后的生活路线"
+    },
+    "body": {
+      "ko": "Industrial Second 근무에는 맞아도 장보기·산책까지 편한지는 별도입니다. RAW의 출입구에서 실제 생활 목적지로 이어지는 길을 봐야 합니다.",
+      "en": "Industrial Second may suit work while groceries and walks remain separate; trace the actual daily destinations from RAW’s entrance.",
+      "zh-CN": "Industrial Second 可能适合工作，采购和散步仍是另一回事；应从 RAW 入口追踪实际日常目的地。"
+    },
+    "visitQuestion": {
+      "ko": "퇴근 후 시간에 식료품점과 보행 경로를 보고 작업 차량 동선과 겹치는지 확인했나요?",
+      "en": "Have you checked evening groceries and walking routes against working-vehicle access?",
+      "zh-CN": "是否在下班后检查食品店和步行路线，并查看是否与作业车辆动线交叉？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1olnfm4/why_so_less_properties_in_jebel_ali_industrial/",
+        "title": "Why so less properties in Jebel Ali Industrial Area 2?",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened OP and replies, displayed 10mo ago. Self-described owner values nearby employment while others question living among industrial uses. Counts, yields, broad tenant preferences and abandonment claims excluded. RAW District R shares verified Industrial Second context, but no RAW resident account was found.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-south-specific-location",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-golf-fields",
+      "ae-terra-woods",
+      "ae-hayat-1",
+      "ae-azizi-venice-6"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "Dubai South라는 이름보다 실제 위치",
+      "en": "Choose the location within Dubai South",
+      "zh-CN": "先选 Dubai South 内的具体位置"
+    },
+    "body": {
+      "ko": "Emaar South·Expo·Pulse 쪽의 생활을 한 동네 후기처럼 묶으면 통근과 시설 접근을 잘못 읽을 수 있습니다.",
+      "en": "Treating Emaar South, Expo and the Pulse side as one neighbourhood can misread commuting and access to daily services.",
+      "zh-CN": "把 Emaar South、Expo 与 Pulse 一侧当成同一个小区，可能误判通勤和日常服务。"
+    },
+    "visitQuestion": {
+      "ko": "선택한 프로젝트 출입구를 기준으로 직장·학교·마트 세 경로를 따로 그렸나요?",
+      "en": "Have you mapped work, school and groceries separately from the selected project entrance?",
+      "zh-CN": "是否从所选项目入口分别画出工作、学校和超市三条路线？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1qa4eki/life_in_dubai_south/",
+        "title": "Life in Dubai South",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened post and contrasting replies, displayed 7mo ago with some 2mo replies. Contributors distinguish Emaar South and Pulse; self-described residents disagree about isolation, deliveries and amenities. No journey times or retail coverage carried over to new projects.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-south-delivery-address",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-golf-fields",
+      "ae-terra-woods",
+      "ae-hayat-1",
+      "ae-azizi-venice-6"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "The Pulse의 배달 범위와 내 주소를 구분",
+      "en": "Check your address separately from The Pulse delivery area",
+      "zh-CN": "另查候选地址，别沿用 The Pulse 的配送范围"
+    },
+    "body": {
+      "ko": "Dubai South에서 재택근무하거나 늦게 귀가한다면 식료품 배달이 생활을 바꿀 수 있습니다. The Pulse나 다른 단지의 사례 대신 후보 주소를 직접 조회하세요.",
+      "en": "For remote work or late returns in Dubai South, grocery delivery can change the routine. Check the candidate address separately from The Pulse and other estates.",
+      "zh-CN": "在 Dubai South 居家办公或晚归时，买菜配送会影响日常安排。应单独查询候选地址，不能沿用 The Pulse 或其他社区的情况。"
+    },
+    "visitQuestion": {
+      "ko": "평소 주문할 시간에 후보 주소를 넣고 가능한 가게·최소주문·도착 시간을 확인했나요?",
+      "en": "At your usual ordering hour, have you checked shops, minimum orders and delivery windows for that address?",
+      "zh-CN": "是否在平时下单时段输入候选地址，核对店铺、最低订单和送达时段？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1mcl31e/whats_it_like_living_in_the_pulse_dubai_south_2025/",
+        "title": "What’s it like living in The Pulse Dubai south 2025",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened post and replies, displayed 1y and 9mo ago. One commenter reports limited app delivery; other inspected South thread reports adequate service. Pulse conditions do not establish coverage at Venice 6, Hayat, Golf Fields or Terra Woods. Conflicting odour claims excluded entirely.",
+        "scope": "public-discussion"
+      },
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1qa4eki/life_in_dubai_south/",
+        "title": "Life in Dubai South",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened post and contrasting replies, displayed 7mo ago with some 2mo replies. Contributors distinguish Emaar South and Pulse; self-described residents disagree about isolation, deliveries and amenities. No journey times or retail coverage carried over to new projects.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "comparable-setting"
+  },
+  {
+    "id": "ae-community-south-demand-horizon",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-golf-fields",
+      "ae-terra-woods",
+      "ae-hayat-1",
+      "ae-azizi-venice-6"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "investor"
+    ],
+    "title": {
+      "ko": "Dubai South 공항 기대와 임대 시점을 따로 보기",
+      "en": "Separate Dubai South airport expectations from rental timing",
+      "zh-CN": "分开判断 Dubai South 机场预期与出租时点"
+    },
+    "body": {
+      "ko": "공항 관련 수요를 기다려야 하는 집이라면 새 공급과 내 잔금 시점을 함께 봐야 합니다. 주변 개발 기대만으로 초기 임대 공백이 채워지지는 않습니다.",
+      "en": "If the rental case waits for airport-related demand, compare incoming supply with your completion balance; development expectations do not fill an initial vacancy.",
+      "zh-CN": "若出租逻辑依赖未来机场需求，应把新增供应与尾款时间一起看；开发期待不能填补初期空置。"
+    },
+    "visitQuestion": {
+      "ko": "현재 출근할 임차인의 생활 조건으로도 계산이 맞고, 입주 지연·공실 기간을 감당할 수 있나요?",
+      "en": "Does the case work for tenants with jobs there today, and can you fund delayed occupation or vacancy?",
+      "zh-CN": "按目前在当地工作的租客条件，计算仍成立吗？能承担延迟入住或空置吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1dde8dd/is_buying_an_apartment_in_dubai_south_a_good_idea/",
+        "title": "Is Buying an apartment in Dubai South a Good Idea?",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened OP and replies, displayed 2y ago. Prospective short-hold buyer asks whether new supply may outpace airport-related demand. Adopted the timing question only, excluding appreciation promises, airport dates, flight-path claims and sales solicitations.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-palm-crescent-exit",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-passo"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "Palm Crescent 해변 이용과 섬 밖 이동을 함께",
+      "en": "Balance Palm Crescent beach use with trips off the island",
+      "zh-CN": "一起衡量 Palm Crescent 海滩生活和出岛行程"
+    },
+    "body": {
+      "ko": "Passo의 West Crescent 위치는 해변을 자주 쓸 때 의미가 큽니다. 학교·장보기로 섬 밖과 Trunk를 자주 오가면 그 이동도 주거 조건입니다.",
+      "en": "Passo’s West Crescent setting matters most with frequent beach use; repeated school or shopping trips toward the Trunk and mainland are part of the cost.",
+      "zh-CN": "经常使用海滩时，Passo 的 West Crescent 区位价值更大；频繁往 Trunk 或本土上学、采购，也是居住代价。"
+    },
+    "visitQuestion": {
+      "ko": "해변 산책만 하지 말고 평소 등교·출근 시간에 Trunk와 본토까지 왕복해 봤나요?",
+      "en": "Beyond a beach visit, have you tried the round trip to the Trunk and mainland at school or work hours?",
+      "zh-CN": "除参观海滩，是否在上学或上班时段往返试过 Trunk 与本土？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/p4rv53/anybody_who_lived_on_palm_jumeirah_can_you_share/",
+        "title": "Anybody who lived on Palm Jumeirah - can you share your experience?",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened Crescent-specific buyer question and replies, displayed 5y ago. Discusses the extra island leg against beach use; not a current congestion measure or Passo resident account. Claimed times, safety and sinking discussion excluded.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "ae-community-palm-guest-parking",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-passo"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "Palm Crescent 방문객 주차는 건물별로 확인",
+      "en": "Check Palm Crescent visitor parking building by building",
+      "zh-CN": "逐栋核对 Palm Crescent 访客停车规则"
+    },
+    "body": {
+      "ko": "방문객이 잦다면 입주민 주차와 방문객 요금의 경계가 중요합니다. Palm Crescent의 Kempinski 방문 주차 사례를 Passo의 요금이나 규칙으로 옮겨 읽어서는 안 됩니다.",
+      "en": "Frequent visitors make the boundary between resident parking and guest charges important. Parking arrangements at Kempinski on Palm Crescent do not establish Passo’s terms.",
+      "zh-CN": "访客较多时，住户车位与访客收费的划分很重要。Palm Crescent 上 Kempinski 的停车安排不能确定 Passo 的规则。"
+    },
+    "visitQuestion": {
+      "ko": "거주자·방문객 차량 등록과 외부 주차 요금 적용 구간을 서면으로 받을 수 있나요?",
+      "en": "Can you obtain written resident/visitor registration rules and the boundary of externally billed parking?",
+      "zh-CN": "能否取得住户、访客车辆登记规则及外部收费停车范围的书面说明？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubai/comments/1uek86x/people_who_live_on_palm_crescent_or_visited_it/",
+        "title": "People who live on Palm Crescent or visited it since February - Check your Salik spending",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened public post. Search index says published/crawled two months ago while rendered text says 3d ago; exact date intentionally null. OP describes charges during repeated Kempinski visits. Billing allegations are unverified and not attributed to Passo; retained only a written guest-parking and billing-boundary question.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "comparable-setting"
+  },
+  {
+    "id": "ae-community-reportage-cash-conditions",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-taormina-village-1",
+      "ae-reportage-hills",
+      "ae-reportage-village-1"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "현금 할인과 분납 가격은 다른 조건",
+      "en": "A cash discount changes the comparison",
+      "zh-CN": "现金折扣改变比较条件"
+    },
+    "body": {
+      "ko": "Taormina·R. Hills·Reportage Village의 낮은 광고가는 납부 방식부터 맞춰야 합니다. 일시납 가격을 분납 대안과 비교하면 당장 묶이는 돈을 놓칠 수 있습니다.",
+      "en": "For Taormina, R. Hills and Reportage Village, match payment terms before comparing advertised prices; upfront cash and instalments tie up money differently.",
+      "zh-CN": "比较 Taormina、R. Hills、Reportage Village 宣传价，先对齐付款条件；一次付清与分期占用资金不同。"
+    },
+    "visitQuestion": {
+      "ko": "같은 세대의 현금·분납 총액과 지급일을 받고, 현재 집의 임대료까지 함께 계산했나요?",
+      "en": "Have you obtained cash and instalment totals and dates for the same unit, including rent on your current home?",
+      "zh-CN": "是否取得同套房现金、分期总额与日期，并计入现住房租金？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubairealestate/comments/1mw3gvn/is_reportage_worth_investing_in/",
+        "title": "Is Reportage worth investing in?",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened Taormina Village-specific question, displayed 1y ago. OP identifies as an agent asking about full-cash discounts and total-area pricing. No transaction, delivery failure or quality allegation verified; used only for matching price and cash-payment conditions. Village 1 registration is not established by the post.",
+        "scope": "public-discussion"
+      },
+      {
+        "url": "https://www.reddit.com/r/dubairealestate/comments/1mc5t0c/opinion_needed_3_bed_villa_in_reportage_hill/",
+        "title": "Opinion needed 3 bed villa in reportage hill",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened named Reportage Hill buyer discussion and replies, displayed 1y with 8mo reply. Cash pricing is compared with differently specified neighbouring projects. Legal/escrow, tenure, quality and expected resale claims conflict or lack verification, so all are excluded; current written payment conditions are the only derived check.",
+        "scope": "public-discussion"
+      },
+      {
+        "url": "https://www.reddit.com/r/dubairealestate/comments/1htjo69/reportage_developers/",
+        "title": "Reportage developers",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened thread explicitly discussing Dubailand Reportage Village, displayed 2y ago. OP acknowledges apparent low instalment pricing may be a full-cash plan after a reply challenges comparability. No rate, metro claim, delivery status or specific registered phase is adopted.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "comparable-setting"
+  },
+  {
+    "id": "ae-community-athlon-rent-overlap",
+    "marketId": "ae-dubai",
+    "profileIds": [
+      "ae-rise-by-athlon-1"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "새 단지를 기다리는 동안의 임대료",
+      "en": "Price the rent while waiting for Athlon",
+      "zh-CN": "等待 Athlon 期间的租金也要算"
+    },
+    "body": {
+      "ko": "Athlon의 아파트를 기다리는 동안에도 현재 집의 월세는 계속 나갑니다. Rise를 입주 가능한 집과 비교할 때는 계약상 대기 기간의 임대료까지 더해보세요.",
+      "en": "An Athlon apartment purchase can leave rent running elsewhere during the wait. Compare Rise with a ready home after adding rent over the contractual waiting period.",
+      "zh-CN": "购买 Athlon 的期房公寓，等待期间仍可能要为现住房付租金。将 Rise 与现房比较时，应计入合同等待期内的租金。"
+    },
+    "visitQuestion": {
+      "ko": "계약상 인도일까지의 임대료·분납·이사 비용이 한 현금흐름표에서 감당되나요?",
+      "en": "Can one cash-flow schedule cover rent, instalments and moving costs until contractual delivery?",
+      "zh-CN": "同一份现金流表能覆盖合同交付前的租金、分期和搬家费用吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/dubairealestate/comments/1t8w8i4/athlon/",
+        "title": "Athlon",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Opened family end-user question and replies, displayed 4mo ago. OP compares a ready home against Athlon apartment instalments plus continued rent. Apartment/master-community relevance is explicit, but exact Rise 1 phase and quoted handover are not verified. Other-city anecdotes, supply claims and price forecasts excluded.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  }
+]

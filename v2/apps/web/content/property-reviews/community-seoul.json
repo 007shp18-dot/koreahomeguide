@@ -1,0 +1,788 @@
+[
+  {
+    "id": "seoul-helio-daily-facilities",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-helio-city"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "헬리오시티, 시설을 쓰는 날의 동선",
+      "en": "Helio City: a day using the facilities",
+      "zh-CN": "Helio City：使用配套的一天"
+    },
+    "body": {
+      "ko": "헬리오시티의 시설이 끌린다면 집·상가·역을 함께 돌아보세요. 자주 쓰는 시설의 편의가 단지 안 이동과 출근 환승 부담을 상쇄하는지가 관건입니다.",
+      "en": "At Helio City, test whether the facilities you would actually use compensate for the internal walk and your commute transfers.",
+      "zh-CN": "看中Helio City的配套，就把家、商铺和车站串起来走。实际使用频率能否抵消小区内步行和通勤换乘的负担，才是关键。"
+    },
+    "visitQuestion": {
+      "ko": "고를 동에서 이용역과 자주 쓸 시설을 거쳐 집으로 돌아오는 길이 평일에도 편한가요?",
+      "en": "Does the loop from your building to your station and preferred facilities work on a weekday?",
+      "zh-CN": "从所选楼栋经过常用车站和配套再回家，这条路线适合平日生活吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=3761102",
+        "title": "파크리오 vs 헬리오",
+        "publishedOn": "2024-01-06",
+        "inspectedOn": "2026-09-14",
+        "context": "Helio/Parkrio comparison, including self-described Helio residents; facility use and walking/transfer tradeoffs. Conflicting impressions retained as a question. Duplicate comments are not independent evidence.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-parkrio-open-window",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-parkrio"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "파크리오, 공원 조망과 열린 창문",
+      "en": "Parkrio: park views with the window open",
+      "zh-CN": "Parkrio：公园景观与开窗生活"
+    },
+    "body": {
+      "ko": "파크리오에서 공원 쪽 집을 본다면 전망과 환기를 함께 확인하세요. 창을 열고 지낼 수 있어야 조망의 장점도 일상에 남습니다.",
+      "en": "For a park-facing Parkrio home, inspect ventilation alongside the view: the outlook matters less if opening the windows disrupts daily life.",
+      "zh-CN": "看Parkrio朝公园的房子时，也要检查通风。若开窗影响日常生活，景观的吸引力就要重新衡量。"
+    },
+    "visitQuestion": {
+      "ko": "거실과 침실의 창을 열었을 때 소리와 바람이 생활에 맞나요?",
+      "en": "With living-room and bedroom windows open, do sound and airflow suit you?",
+      "zh-CN": "打开客厅和卧室窗户后，声音和气流适合你的生活吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=11&num=197315",
+        "title": "신천동 잠실 파크리오 살기 어떤가요? 초등남자아이있구요.^^",
+        "publishedOn": "2011-01-27",
+        "inspectedOn": "2026-09-14",
+        "context": "Historical prompt only: a self-described resident comment dated 2011-02-01 discusses a park-facing home, open-window noise and ventilation. No present-day acoustic or layout finding.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-ricenz-school-move",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-jamsil-ricenz",
+      "kr-parkrio"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family"
+    ],
+    "title": {
+      "ko": "리센츠·파크리오, 학교 때문에 옮긴다면",
+      "en": "Ricenz or Parkrio: moving for school",
+      "zh-CN": "Ricenz与Parkrio：为了学校搬家"
+    },
+    "body": {
+      "ko": "파크리오에서 리센츠로 옮길 이유가 학교라면, 아이의 다음 학년까지 놓고 비교하세요. 지금 만족하는 생활을 바꿀 만큼 통학과 주거비의 차이가 분명해야 합니다.",
+      "en": "For a Parkrio-to-Ricenz school move, compare the next school stage as well as today: weigh the changed routine against the extra housing cost.",
+      "zh-CN": "若因学校从Parkrio搬到Ricenz，应连同孩子下一学段一起比较。通学变化是否值得增加住房支出，也要算清。"
+    },
+    "visitQuestion": {
+      "ko": "현재 배정과 다음 학교의 귀가길을 확인한 뒤에도 추가 주거비를 감수할 이유가 남나요?",
+      "en": "After checking current allocation and the next school route, is the additional housing cost still worthwhile?",
+      "zh-CN": "核实当前学区分配和下一所学校的回家路线后，增加的住房支出仍值得吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=1779713",
+        "title": "잠실 리센츠 vs 파크리오",
+        "publishedOn": "2014-03-27",
+        "inspectedOn": "2026-09-14",
+        "context": "Historical Parkrio resident dilemma about moving to Ricenz for school continuity. Old prices and school-allocation claims excluded; no current financial or admissions conclusion.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-jamsil-academy-door",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-jamsil-els",
+      "kr-jamsil-trizium"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family"
+    ],
+    "title": {
+      "ko": "엘스·트리지움, 학원가에서 집 문까지",
+      "en": "ELS and Trizium: from academy to front door",
+      "zh-CN": "ELS与Trizium：从补习班到家门"
+    },
+    "body": {
+      "ko": "잠실새내 학원가를 이용하려고 엘스·트리지움을 본다면, 상권 중심까지의 거리로 끝내지 마세요. 실제 학원에서 고를 동까지 혼자 돌아오는 길을 확인해야 합니다.",
+      "en": "For ELS or Trizium near Jamsilsaenae academies, assess the return from the actual classroom to your building, beyond access to the shopping district.",
+      "zh-CN": "为了蚕室新川站一带的补习班看ELS或Trizium时，应检查从具体教室回到所选楼栋的路线，不能只看商圈距离。"
+    },
+    "visitQuestion": {
+      "ko": "수업이 끝나는 시간에 학원 출입구부터 해당 동까지 아이와 걸어봤나요?",
+      "en": "Have you walked from the academy entrance to the building with your child at dismissal time?",
+      "zh-CN": "在下课时段，你和孩子从补习班门口走回过所选楼栋吗？"
+    },
+    "sources": [
+      {
+        "url": "https://moringcalm.tistory.com/12",
+        "title": "잠실동 임장후기",
+        "publishedOn": "2023-12-06",
+        "inspectedOn": "2026-09-14",
+        "context": "Dated personal group visit explicitly mentions academies serving ELS/Ricenz/Trizium; ELS visited, Trizium passed. Publication date differs from an unspecified hot-weather visit. No resident verification.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-mapo-raemian-lift-route",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-mapo-raemian-prugio"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "마래푸, 언덕을 피하는 길이 내 동에도 있나",
+      "en": "Mapo Raemian Prugio: the route around the slope",
+      "zh-CN": "Mapo Raemian Prugio：避坡路线适合这栋吗"
+    },
+    "body": {
+      "ko": "마포래미안푸르지오는 이용역뿐 아니라 고를 동에서 그 역까지 가는 방법을 봐야 합니다. 승강기를 거치는 길이 있다면 평소에도 쓸 수 있는지 확인하세요.",
+      "en": "At Mapo Raemian Prugio, compare routes from your building to the station, including whether any lift-assisted alternative is available when you need it.",
+      "zh-CN": "看Mapo Raemian Prugio，要从所选楼栋比较到站路线。若有借助电梯绕过坡道的走法，也要核实日常能否使用。"
+    },
+    "visitQuestion": {
+      "ko": "아현·애오개 방향을 각각 걸어보고, 승강기를 쓰는 경로의 출입 조건도 확인했나요?",
+      "en": "Have you walked toward Ahyeon and Aeogae and checked access conditions on any lift-assisted route?",
+      "zh-CN": "去阿岘和儿岭两个方向都走过了吗？借道电梯的通行条件也确认了吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=3024187",
+        "title": "마포 래미안 푸르지오 살기 좋은가요?",
+        "publishedOn": "2020-06-13",
+        "inspectedOn": "2026-09-14",
+        "context": "Historical precinct-specific resident discussion of slopes, Ahyeon/Aeogae routes and a lift alternative. Current access must be checked; alleged incidents and social judgments excluded.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-mapo-prestige-everyday-gates",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-mapo-prestige-xi"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "마포프레스티지자이, 학원과 시설의 출입구",
+      "en": "Mapo Prestige Xi: gates for the daily routine",
+      "zh-CN": "Mapo Prestige Xi：日常要走哪个门"
+    },
+    "body": {
+      "ko": "마포프레스티지자이에서 학원과 커뮤니티를 자주 쓴다면 두 곳을 함께 돌아보세요. 고를 동에 따라 경사를 피하는 길과 시설 접근의 편의가 달라질 수 있습니다.",
+      "en": "At Mapo Prestige Xi, connect the academy and facilities in one walk; the convenient route may depend on your building and the slope you avoid.",
+      "zh-CN": "看Mapo Prestige Xi时，把补习班和常用配套连成一条路线。所选楼栋和绕坡走法，可能改变日常便利程度。"
+    },
+    "visitQuestion": {
+      "ko": "대흥역 학원 귀가와 내가 쓸 커뮤니티 동선을 해당 동에서 함께 걸어봤나요?",
+      "en": "Have you tested both the Daeheung academy return and your facility route from this building?",
+      "zh-CN": "从这栋楼出发，大兴站补习班的回家路线和常用配套路线都走过了吗？"
+    },
+    "sources": [
+      {
+        "url": "https://realty.daangn.com/complexes/10890196/reviews/453906",
+        "title": "마포프레스티지자이 살아본 후기 — 채광이 좋고 지하로 다 이어져 있어 편리했어요",
+        "publishedOn": "2026-07-19",
+        "inspectedOn": "2026-09-14",
+        "context": "Public review page inspected with dated related reviews of 2026-07-27 and 2026-07-30. Conflicting slope/facility/academy experiences motivate a route check, not a consensus claim.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-oksu-outside-grounds",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-oksu-park-hills"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "옥수파크힐스, 산책 뒤 장보기 길",
+      "en": "Oksu Park Hills: beyond the landscaped grounds",
+      "zh-CN": "Oksu Park Hills：园景之外的买菜路线"
+    },
+    "body": {
+      "ko": "옥수파크힐스의 단지 안 산책이 마음에 들어도 바깥 생활은 따로 걸어보세요. 장을 들고 돌아오는 오르막을 감당할 수 있어야 차 없는 날도 편합니다.",
+      "en": "For Oksu Park Hills, test the grocery return as well as the grounds: an uphill trip with bags can change a car-free day.",
+      "zh-CN": "看Oksu Park Hills时，园内散步之外，也要试走买菜回家的路。提着购物袋上坡，会改变不开车时的生活感受。"
+    },
+    "visitQuestion": {
+      "ko": "자주 갈 가게에서 장을 들고 해당 동까지 돌아오는 경로가 생활에 맞나요?",
+      "en": "Does the route home from your regular shops work when carrying groceries?",
+      "zh-CN": "从常去店铺提着东西回到这栋楼，这条路线适合你吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=3102054",
+        "title": "옥수동.왜 좋아하나요?",
+        "publishedOn": "2020-10-26",
+        "inspectedOn": "2026-09-14",
+        "context": "Historical Oksu neighbourhood discussion explicitly includes Park Hills: internal grounds versus outside slopes. No current accessibility measurement; school rankings and class judgments excluded.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-centras-retail-lift",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-centras"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "센트라스, 상가 연결을 해당 동에서 확인",
+      "en": "Centras: test the retail link from your building",
+      "zh-CN": "Centras：从这栋楼核实商铺通道"
+    },
+    "body": {
+      "ko": "센트라스에서 상가 연결을 장점으로 본다면 해당 동의 경로를 확인하세요. 밖으로 나가거나 계단을 거쳐야 하는지에 따라 비 오는 날의 편의가 달라집니다.",
+      "en": "If Centras appeals for its retail link, trace it from the exact building: outdoor sections or stairs change its usefulness in the rain.",
+      "zh-CN": "若看中Centras与商铺相连，应从具体楼栋核实通道。是否要出室外或走楼梯，会影响雨天使用体验。"
+    },
+    "visitQuestion": {
+      "ko": "장보기 짐이나 유모차를 가지고 집에서 상가까지 계단 없이 갈 수 있나요?",
+      "en": "Can you reach the shops from the apartment without stairs when carrying bags or using a stroller?",
+      "zh-CN": "提购物袋或推婴儿车时，从家到商铺能全程避开楼梯吗？"
+    },
+    "sources": [
+      {
+        "url": "https://realty.daangn.com/complexes/11131526/reviews/475405",
+        "title": "센트라스 살아본 후기 — 103동 입주후 실거주하면서 느낀점을 공유해 봅니다",
+        "publishedOn": "2026-07-26",
+        "inspectedOn": "2026-09-14",
+        "context": "Self-described building 103 resident describes lift transfers and different routes for other buildings. Individual report, not verified universal connectivity; school rumours and travel-time estimates excluded.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-tenz-hill-size-refurbishment",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-tenz-hill-1"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "investor"
+    ],
+    "title": {
+      "ko": "왕십리 텐즈힐, 넓히고도 수리 예산이 남나",
+      "en": "Wangsimni Tenz Hill: leave room for refurbishment",
+      "zh-CN": "往十里Tenz Hill：换大房后还留得出装修预算吗"
+    },
+    "body": {
+      "ko": "왕십리 텐즈힐에서 더 넓은 집을 고른다면 면적 증가만 계산하지 마세요. 소음 확인과 필요한 실내 공사까지 포함한 총예산으로 비교해야 합니다.",
+      "en": "For a larger Wangsimni Tenz Hill home, compare the total budget after inspecting noise exposure and necessary refurbishment, alongside the added space.",
+      "zh-CN": "在往十里Tenz Hill换更大住房时，除了面积，还要检查噪声暴露及必要装修，再比较总预算。"
+    },
+    "visitQuestion": {
+      "ko": "넓은 집으로 바꾼 뒤에도 필요한 수리와 창호 공사 예산이 남나요?",
+      "en": "After choosing the larger home, is there enough budget for necessary repairs and window work?",
+      "zh-CN": "选了更大的房子后，必要维修和窗户工程还有预算吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=2849358",
+        "title": "왕십리 텐즈힐 33평/48평 고민입니다",
+        "publishedOn": "2019-09-16",
+        "inspectedOn": "2026-09-14",
+        "context": "Historical owner dilemma about space, road exposure and refurbishment budget. Numbered phase unspecified: Phase 1 mapping is a Tenz Hill neighbourhood question, not evidence about its layouts.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "seoul-godeok-quiet-commute",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-godeok-gracium",
+      "kr-godeok-arteon"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "고덕 그라시움·아르테온, 한적함과 출근길",
+      "en": "Godeok Gracium and Arteon: quiet versus the commute",
+      "zh-CN": "Godeok Gracium与Arteon：清静与通勤"
+    },
+    "body": {
+      "ko": "그라시움·아르테온 일대의 한적함이 끌린다면 강남 출근길도 같은 비중으로 보세요. 집 주변의 인상만으로 차량 이동까지 편하다고 판단하기는 어렵습니다.",
+      "en": "If the Gracium–Arteon area appeals for its quiet setting, give the actual Gangnam commute equal weight rather than judging driving from the surroundings.",
+      "zh-CN": "若喜欢Gracium、Arteon一带的清静，也要同等重视实际去江南的通勤，不能由住宅周边印象推断开车便利。"
+    },
+    "visitQuestion": {
+      "ko": "출근 시간에 실제 차량 진출로부터 직장까지 이동하고, 귀가 중 장보기 길도 확인했나요?",
+      "en": "Have you tested the drive from the actual exit at rush hour, including the grocery stop on your return?",
+      "zh-CN": "试过高峰时段从实际车行出口到单位的路线，并检查下班买菜的走法了吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=3615755",
+        "title": "강동구쪽 조용한 동네를 돌아보려면 어디를 가야할까요",
+        "publishedOn": "2023-03-14",
+        "inspectedOn": "2026-09-14",
+        "context": "Neighbourhood discussion explicitly names Gracium/Arteon and contrasts quiet surroundings with a Gangnam driving commute. No current congestion measure; future openings and air-quality assertions excluded.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-foreon-facility-loop",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-olympic-park-foreon"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "포레온, 시설을 쓰러 또 이동한다면",
+      "en": "Foreon: the journey to use the facilities",
+      "zh-CN": "Foreon：为了用配套还要走多远"
+    },
+    "body": {
+      "ko": "포레온의 시설이 선택 이유라면 수영장·식당·이용역을 한 번에 돌아보세요. 집에서 멀어 자주 쓰지 못한다면 시설 규모가 생활의 이점으로 이어지지 않습니다.",
+      "en": "At Foreon, combine the pool, dining facilities and your station in one visit; facilities too far from your home to use regularly add less value.",
+      "zh-CN": "看Foreon时，把泳池、餐饮设施和常用车站一起走一遍。若离家太远而少用，配套规模就难以转成日常好处。"
+    },
+    "visitQuestion": {
+      "ko": "평일 저녁에 쓸 시설을 거쳐 해당 동까지 돌아오는 길이 무리 없나요?",
+      "en": "Does the return to your building via your evening facilities feel manageable on a weekday?",
+      "zh-CN": "平日傍晚经过常用配套再回到这栋楼，路线是否轻松可行？"
+    },
+    "sources": [
+      {
+        "url": "https://realty.daangn.com/complexes/10650271/reviews/537118",
+        "title": "올림픽파크포레온 살아본 후기 — 커뮤니티 질 되어 있고 9호선 전철역 가까워서 너무 좋아요",
+        "publishedOn": null,
+        "inspectedOn": "2026-09-14",
+        "context": "Main public review shows a relative date only; exact publication date unavailable. Individual comments describe differing internal travel and facility use. No estate-wide distance, noise or defect claim.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-gyeonghuigung-grocery-return",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-gyeonghuigung-xi-3"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "경희궁자이 3단지, 시장과 마트의 귀가길",
+      "en": "Gyeonghuigung Xi 3: two kinds of grocery trip",
+      "zh-CN": "庆熙宫Xi 3期：市场和大超市的回家路线"
+    },
+    "body": {
+      "ko": "경희궁자이 3단지에서 시장 장보기와 대형마트 이용은 따로 계획하세요. 가까운 곳에서 자주 사는 생활인지, 한 번에 많이 사서 옮기는 생활인지에 따라 편의가 달라집니다.",
+      "en": "For Gyeonghuigung Xi 3, compare frequent market trips with larger supermarket shops; carrying purchases home matters as much as the shopping choice.",
+      "zh-CN": "看庆熙宫Xi 3期时，要分别考虑市场少量常买和大超市集中采购。怎么买，也决定了搬运回家的负担。"
+    },
+    "visitQuestion": {
+      "ko": "영천시장과 실제 쓸 대형마트에서 3단지까지 장을 들고 돌아오는 길을 각각 확인했나요?",
+      "en": "Have you checked the return to Phase 3 from Yeongcheon Market and your chosen large supermarket?",
+      "zh-CN": "从迎泉市场和你实际会去的大超市回3期，两条路线都确认了吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=2777047",
+        "title": "경희궁자이는 살기 어떤가요?",
+        "publishedOn": "2019-05-31",
+        "inspectedOn": "2026-09-14",
+        "context": "Historical discussion explicitly mentions phases 2 and 3, market shopping and separate supermarket trips. A shopping-pattern question only; no claim that old shop listings remain current.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-forest-weekday-errands",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-acro-seoul-forest"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "서울숲 생활권, 공원 밖의 평일 동선",
+      "en": "Seoul Forest area: weekdays beyond the park",
+      "zh-CN": "首尔林生活圈：公园之外的工作日"
+    },
+    "body": {
+      "ko": "서울숲 생활권을 고를 때는 공원 방문 뒤 평일 동선도 돌아보세요. 식료품·약국·아이 진료를 해결하는 길이 맞아야 나들이의 만족이 일상으로 이어집니다.",
+      "en": "In the Seoul Forest area, follow the park visit with weekday errands: groceries, pharmacy access and child healthcare need to fit the same routine.",
+      "zh-CN": "选首尔林生活圈时，逛完公园也要检查平日路线。买食品、去药店和带孩子就诊都合适，才适合长期生活。"
+    },
+    "visitQuestion": {
+      "ko": "서울숲을 빼고 보아도 자주 쓸 가게와 진료 동선이 이 집에 맞나요?",
+      "en": "Leaving the park aside, do your regular shops and healthcare trips work from this home?",
+      "zh-CN": "先不考虑公园，从这套房去常用店铺和就诊地点仍方便吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=2367261",
+        "title": "서울) 성수동 vs 자양동 - 어디가 더 살기 좋을까요...",
+        "publishedOn": "2017-06-16",
+        "inspectedOn": "2026-09-14",
+        "context": "Historical Seoul Forest/Seongsu neighbourhood comparison predates Acro Seoul Forest. Regional viewing prompt only, not an Acro resident review or evidence of current amenity shortages.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "seoul-heukseok-return-slope",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-heukseok-xi"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "흑석자이, 역에서 집으로 돌아오는 길",
+      "en": "Heukseok Xi: the uphill return home",
+      "zh-CN": "黑石Xi：从车站回家的上坡路"
+    },
+    "body": {
+      "ko": "흑석자이는 내려가는 출근길뿐 아니라 집으로 돌아오는 길을 보세요. 유모차나 장보기 짐이 있을 때 쓸 경로가 정해져야 도보 생활을 판단할 수 있습니다.",
+      "en": "For Heukseok Xi, test the return home as well as the downhill departure, using the route you would take with a stroller or groceries.",
+      "zh-CN": "看黑石Xi，除了下坡出门，也要试走回家路线，按推婴儿车或提购物袋时真正会走的路来判断。"
+    },
+    "visitQuestion": {
+      "ko": "역에서 해당 동까지 돌아올 때 승강기를 거치는 길과 오르막 중 어떤 경로를 쓸 수 있나요?",
+      "en": "Returning from the station, which uphill or lift-assisted route is available to your building?",
+      "zh-CN": "从车站回来，去这栋楼能走哪条上坡路线，或借助哪些电梯？"
+    },
+    "sources": [
+      {
+        "url": "https://moringcalm.tistory.com/11",
+        "title": "반포, 동작구 임장후기",
+        "publishedOn": "2023-12-06",
+        "inspectedOn": "2026-09-14",
+        "context": "Personal group visitor describes Heukseok Xi approaches and a rear lift. Publication date is known; visit date unspecified. Historical route prompt, not current lift-access verification.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-banpo-riche-real-walk",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-banpo-riche",
+      "kr-raemian-firstige",
+      "kr-acro-river-park"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "반포리체와 강변 쪽 단지, 같은 도보권인가",
+      "en": "Banpo Riche and riverside blocks: compare the walk",
+      "zh-CN": "Banpo Riche与江边住宅：步行生活圈相同吗"
+    },
+    "body": {
+      "ko": "반포리체와 퍼스티지·아크로리버파크를 비교한다면 실제 목적지를 정하고 걸어보세요. 역·병원·한강 중 무엇을 자주 쓰느냐에 따라 경사와 횡단의 부담이 달라집니다.",
+      "en": "Comparing Banpo Riche with Firstige or Acro River Park, choose real destinations first: slopes and crossings matter differently for station, clinic and river trips.",
+      "zh-CN": "比较Banpo Riche、Firstige和Acro River Park时，先选实际目的地。去车站、医院还是汉江，会改变坡道与过街的负担。"
+    },
+    "visitQuestion": {
+      "ko": "고를 동에서 가장 자주 갈 곳까지 오르막과 횡단 대기를 포함해 걸어봤나요?",
+      "en": "Have you walked from the chosen building to your most frequent destination, including slopes and crossing waits?",
+      "zh-CN": "从所选楼栋到最常去的地方，连同坡道和等红灯的过程走过了吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=3027777",
+        "title": "반포 아파트 추천해 주세요.",
+        "publishedOn": "2020-06-19",
+        "inspectedOn": "2026-09-14",
+        "context": "Historical Banpo comparison with disagreement over Riche walking effort. Firstige/Acro mappings are regional comparisons, not direct resident reports. Pre-occupancy One Bailey expectations excluded.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "seoul-banpo-terminal-commute",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-banpo-xi",
+      "kr-raemian-firstige"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "반포자이·퍼스티지, 논현 출근길을 먼저",
+      "en": "Banpo Xi and Firstige: test the Nonhyeon commute",
+      "zh-CN": "Banpo Xi与Firstige：先试去论岘的通勤"
+    },
+    "body": {
+      "ko": "논현으로 출근하며 반포자이·퍼스티지를 비교한다면 지도상 거리보다 실제 경로를 보세요. 터미널 주변을 통과하는지에 따라 집에서 직장까지의 체감이 달라질 수 있습니다.",
+      "en": "For a Nonhyeon commute from Banpo Xi or Firstige, test the actual route: passing the terminal area may matter more than map distance.",
+      "zh-CN": "从Banpo Xi或Firstige去论岘上班，应试走实际路线。是否经过客运站一带，可能比地图距离更影响通勤感受。"
+    },
+    "visitQuestion": {
+      "ko": "출근 시간에 매물 주차장부터 직장까지, 터미널 통과 여부가 다른 경로를 비교했나요?",
+      "en": "At rush hour, have you compared routes from the apartment garage that pass or avoid the terminal?",
+      "zh-CN": "高峰时段，从这套房的车库出发，经过与绕开客运站的路线比较过了吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=3997305",
+        "title": "반포 살기 어떠세요?",
+        "publishedOn": "2025-03-31",
+        "inspectedOn": "2026-09-14",
+        "context": "Live comments 2, 6 and 14 support route/priorities comparison. Deleted comments excluded even where cached text remains. No measured congestion or property superiority claim.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-one-bailey-view-quiet",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-raemian-one-bailey"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "원베일리, 조망과 밤의 정숙성을 함께",
+      "en": "One Bailey: the view and a quiet night",
+      "zh-CN": "One Bailey：景观与夜间安静程度"
+    },
+    "body": {
+      "ko": "원베일리의 한강 조망을 고른다면 해당 동·층에서 창을 열고 닫아보세요. 조망, 실내 정숙성, 이용할 역 출구의 편의를 한 집에서 함께 판단해야 합니다.",
+      "en": "For a river-view One Bailey home, compare windows open and closed, then test the station exit you would use; assess all three from the same unit.",
+      "zh-CN": "看One Bailey江景房时，在具体楼层比较开窗与关窗，再走常用地铁出口。景观、安静程度和出行要在同一套房上判断。"
+    },
+    "visitQuestion": {
+      "ko": "밤에 창을 열고 닫은 소리를 비교하고 실제 이용역 출구까지 걸어봤나요?",
+      "en": "Have you compared nighttime sound with windows open and closed, then walked to your station exit?",
+      "zh-CN": "夜间开窗、关窗的声音比较过吗？常用地铁出口也走过了吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=4087098",
+        "title": "밑에 적당한 아파트 단지 크기를 보다가.. 원베일리.",
+        "publishedOn": "2025-09-18",
+        "inspectedOn": "2026-09-14",
+        "context": "Public discussion, not verified residents; at least one contributor reports a visit. Contrasting preferences about view, sound and exits support a unit-level question only.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-eunma-beyond-refurbished-interior",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-eunma"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "investor"
+    ],
+    "title": {
+      "ko": "은마, 실내 수리와 밤의 귀가길은 별개",
+      "en": "Eunma: beyond a refurbished interior",
+      "zh-CN": "银马：装修后的室内之外"
+    },
+    "body": {
+      "ko": "은마를 학원 접근성 때문에 고른다면 수리된 실내만 보고 결정하지 마세요. 아이의 수업이 끝나는 시간에 주차부터 현관까지 실제로 이용할 길을 확인해야 합니다.",
+      "en": "If academy access draws you to Eunma, inspect beyond the refurbished interior: test parking and the route to the entrance at your child’s dismissal time.",
+      "zh-CN": "若因补习班近而选择银马，别只看装修后的室内。孩子下课时段，从停车到楼门的实际路线也要检查。"
+    },
+    "visitQuestion": {
+      "ko": "학원 마치는 밤에 해당 동 주변 주차와 승강기·공용 복도까지 확인했나요?",
+      "en": "At evening dismissal, have you checked parking near this building, the lift and shared corridors?",
+      "zh-CN": "晚间下课时，检查过这栋周边停车、电梯和公共走廊了吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=3587349",
+        "title": "은마 살아보신 분께 의견 구합니다.",
+        "publishedOn": "2023-01-21",
+        "inspectedOn": "2026-09-14",
+        "context": "Mixed former-resident, visitor and anonymous discussion through 2023-01-28. Interior versus shared-space/parking tradeoff only; unverified outage, pest and defect allegations excluded.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-daechi-actual-academy",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-dogok-rexle",
+      "kr-raemian-daechi-palace"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family"
+    ],
+    "title": {
+      "ko": "렉슬·래대팰, 같은 학원까지 직접 걸어보기",
+      "en": "Rexle and Daechi Palace: which academy, which door?",
+      "zh-CN": "Rexle与Daechi Palace：哪栋楼，到哪家补习班"
+    },
+    "body": {
+      "ko": "렉슬·래대팰에서 학원 도보 생활을 기대한다면 단지 이름보다 출발 동과 학원 위치를 맞춰보세요. 다른 가족에게 편한 길이 아이에게도 맞는지는 직접 확인해야 합니다.",
+      "en": "For walking to academies from Rexle or Daechi Palace, match the building to the actual classroom; another family’s easy route may not suit your child.",
+      "zh-CN": "期待从Rexle或Daechi Palace步行上补习班，就要把楼栋与具体教室配对。其他家庭觉得方便的路，未必适合你的孩子。"
+    },
+    "visitQuestion": {
+      "ko": "계약하려는 동 현관에서 실제 다닐 학원 문까지 저녁 수업 시간대에 함께 걸어봤나요?",
+      "en": "Have you walked from the proposed building entrance to the actual academy with your child at evening class time?",
+      "zh-CN": "晚间上课时段，和孩子从拟选楼栋门口走到实际补习班门口了吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=15&num=3033151",
+        "title": "도곡동 대치동 여아 키우기 좋은 아파트.",
+        "publishedOn": "2020-06-29",
+        "inspectedOn": "2026-09-14",
+        "context": "Historical comparison includes someone claiming residence in both complexes; walking effort disputed. No current distance, school allocation, rental demand or price ranking inferred.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "seoul-rexle-play-deliveries",
+    "marketId": "kr-seoul",
+    "profileIds": [
+      "kr-dogok-rexle"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family"
+    ],
+    "title": {
+      "ko": "도곡렉슬, 놀이터에서 집으로 오는 길",
+      "en": "Dogok Rexle: from playground to home",
+      "zh-CN": "Dogok Rexle：从游乐场回家"
+    },
+    "body": {
+      "ko": "도곡렉슬의 단지 안 놀이 공간이 마음에 든다면 집까지 돌아오는 길도 보세요. 아이가 뛰노는 경로와 배송차가 드나드는 곳이 겹치는지 현장에서 확인할 일입니다.",
+      "en": "If Dogok Rexle’s play spaces appeal, trace the return home and inspect where children’s routes meet delivery movements.",
+      "zh-CN": "若喜欢Dogok Rexle的儿童活动空间，也要检查回家路线，看看孩子的活动路线是否与配送车辆交叉。"
+    },
+    "visitQuestion": {
+      "ko": "놀이터에서 해당 동까지 아이와 걸을 때 배송차를 피해야 하는 곳이 있나요?",
+      "en": "Walking from the playground to this building, where would your child need to avoid delivery vehicles?",
+      "zh-CN": "和孩子从游乐场走到这栋楼，哪些地方需要避让配送车辆？"
+    },
+    "sources": [
+      {
+        "url": "https://www.82cook.com/entiz/read.php?bn=35&num=738176",
+        "title": "도곡렉슬.",
+        "publishedOn": "2009-06-25",
+        "inspectedOn": "2026-09-14",
+        "context": "Historical prompt only: self-described residents discussed play and ground-level deliveries in 2009. Current vehicle rules, parking, management costs and safety conditions are not established.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  }
+]

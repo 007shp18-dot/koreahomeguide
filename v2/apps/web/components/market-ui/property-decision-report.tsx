@@ -8,11 +8,13 @@ import type { PropertyReview } from '../../lib/research/property-review';
 import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
 import { DECISION_PERSONAS, getPropertyDecision, type DecisionPersona, type DecisionItem } from '../../lib/research/property-decision';
 import { getAreaDecision } from '../../lib/research/area-decision';
+import { getCommunitySignals } from '../../lib/research/community-signals';
 import { actualDetailHref, allReviewLocations } from '../../lib/research/property-review-locations';
 import styles from './property-decision-workspace.module.css';
 
 export function PropertyDecisionReport({ review, priceContext, analysisScope = 'property', locale, persona, onPersonaChange }: { review: PropertyReview; priceContext?: DecisionPriceContext; analysisScope?: 'property' | 'area'; locale: MarketLocale; persona: DecisionPersona; onPersonaChange: (persona: DecisionPersona) => void }) {
   const report = analysisScope === 'area' ? getAreaDecision(review, persona, locale) : getPropertyDecision(review, persona, locale);
+  const communityChecks = getCommunitySignals(review, persona, locale, analysisScope);
   const groupId = useId();
   const t = (ko: string, en: string, zh: string) => locale === 'ko' ? ko : locale === 'zh-CN' ? zh : en;
   const personaLabels: Record<DecisionPersona, string> = { family: t('자녀 있는 실거주', 'With children', '有子女自住'), couple: t('신혼·1인', 'Couple / solo', '夫妻 · 单身'), investor: t('임대·투자', 'Rental / investment', '出租 · 投资') };
@@ -41,6 +43,16 @@ export function PropertyDecisionReport({ review, priceContext, analysisScope = '
       <div className={styles.sectionHeading}><h3>{t(`먼저 볼 ${report.priorities.length}가지`, `${report.priorities.length} priorities for this ${analysisScope === 'area' ? 'area' : 'property'}`, `优先考虑的 ${report.priorities.length} 个问题`)}</h3></div>
       <ol className={styles.priorities}>{report.priorities.map((item, index) => <li key={item.id}><span className={styles.number}>{String(index + 1).padStart(2, '0')}</span><div><h4>{item.title}</h4>{body(item)}</div></li>)}</ol>
     </section>
+    {communityChecks.length > 0 && <section className={styles.section} data-community-checks={review.id}>
+      <h3>{t('방문 때 확인할 생활 조건', 'Everyday conditions to test at a viewing', '看房时要验证的生活条件')}</h3>
+      <p className={styles.scopeNote}>{analysisScope === 'area'
+        ? t('개별 생활 경험에서 찾은 질문입니다. 이 지역에서도 위치와 시간대에 따라 달라질 수 있습니다.', 'Questions from individual experiences; conditions within this area can vary by location and time.', '这些问题来自个别生活经验，同一区域内也会因位置和时段而不同。')
+        : t('개별 생활 경험에서 찾은 질문입니다. 위치와 시간대에 따라 달라질 수 있어 방문 때 확인하세요.', 'Questions from individual experiences; test them at a viewing as conditions vary by location and time.', '这些问题来自个别生活经验，请在看房时验证，具体情况会因位置和时段而不同。')}</p>
+      <ul className={styles.points}>{communityChecks.map(check => <li key={check.id} data-community-signal={check.id}>
+        <h4>{check.title}</h4><p>{check.body}</p>
+        <p><strong>{t('현장 질문', 'At the viewing', '现场要问')} · </strong>{check.question}</p>
+      </li>)}</ul>
+    </section>}
     <div className={styles.tradeoffs}>
       <section><h3>{t('살 이유', 'Reasons to buy', '购买理由')}</h3>{items(report.pros)}</section>
       <section><h3>{t('망설일 이유', 'Reasons to pause', '犹豫之处')}</h3>{items(report.cons)}</section>

@@ -18,7 +18,15 @@ Buyers need interpretation beside the selected price data. The previous disclosu
 - Dubai verified installed snapshot: 24 project prices and one area comparison. Period: 8 June–5 September 2026.
 - Tokyo read-only production aggregate: 24 neighbourhood references and one Shibuya-ward reference, all activated 2026 Q1 publications. Anonymous transactions remain area prices.
 
-## Validation
+## Public community research
+
+The follow-up adds 76 localized viewing checks from 73 retained public discussion, user-review and resident-interview URLs. They are relevant to 90 reviewed profiles: Seoul 24, Singapore 25, Dubai 25 and Tokyo 16. This is relevance coverage, not a claim of 90 verified resident testimonies. The 100 price references above are a separate coverage measure.
+
+Each check retains its inspected source, date, limitations and mapping scope: 46 named-property discussions, 20 area-context checks and 10 comparable-setting checks. Named-property means the property is explicitly discussed; it does not verify the commenter's identity. Dubai evidence remains area/comparison context for the reviewed projects. Seoul La Classy and nine Tokyo properties have no supported community check in this release.
+
+Community questions appear immediately after the five priorities, adapt to the selected perspective and retain the existing financial assessment. Current defects, prices, yields and consensus are never inferred from anecdotes. The city audit files under `docs/research/community-*-20260914.md` document direct evidence, regional applications, older sources and exclusions.
+
+## Release verification
 
 Model checks cover persona differences, evidence identities and qualifications, area versus property scope, unavailable prices, and actual Dubai catalogue coverage. Browser scenarios cover desktop layout, all three locales, report-only scrolling, close/expand/Escape focus handling, mobile modality and retry without losing data.
 

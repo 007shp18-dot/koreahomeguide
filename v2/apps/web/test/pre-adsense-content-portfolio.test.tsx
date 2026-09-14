@@ -20,9 +20,11 @@ const primarySourceHosts = new Set([
   'www.fsc.go.kr', 'www.iras.gov.sg', 'www.hdb.gov.sg', 'www.ura.gov.sg',
   'www.mitsuifudosan.co.jp', 'www.cbre.ae', 'easylaw.go.kr', 'www.gov.kr', 'www.hf.go.kr',
   'www.roots.gov.sg', 'www.gotokyo.org', 'www.bhomes.com',
+  'www.junggu.seoul.kr', 'museum.seoul.go.kr', 'www.seoul.go.kr', 'golmok.seoul.go.kr',
+  'www.emirates.com', 'www.visitdubai.com', 'www.emiratesnbd.com',
 ]);
 
-const secondaryHosts = new Set(['kbthink.com', 'www.ajunews.com', 'v.daum.net', 'news.nate.com', 'www.guocoland.com.sg', 'stackedhomes.com', 'www.thenationalnews.com']);
+const secondaryHosts = new Set(['kbthink.com', 'www.ajunews.com', 'v.daum.net', 'news.nate.com', 'www.guocoland.com.sg', 'stackedhomes.com', 'www.thenationalnews.com', 'mediahub.seoul.go.kr']);
 
 function sectionCount(body: string): number {
   return body.match(/^## /gmu)?.length ?? 0;
@@ -31,8 +33,8 @@ function sectionCount(body: string): number {
 describe('pre-AdSense reviewed launch portfolio', () => {
   it('keeps the active portfolio and public English parameters after guide consolidation', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(99);
-    expect(english).toHaveLength(43);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(107);
+    expect(english).toHaveLength(47);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'news-brief' || type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));
@@ -49,7 +51,7 @@ describe('pre-AdSense reviewed launch portfolio', () => {
         const url = new URL(source.href);
         expect(url.protocol).toBe('https:');
         expect(primarySourceHosts.has(url.hostname)
-          || (source.kind === 'secondary' && secondaryHosts.has(url.hostname))).toBe(true);
+          || (source.kind === 'secondary' && secondaryHosts.has(url.hostname)), `${article.slug}: ${source.href}`).toBe(true);
         expect(source.checkedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/u);
         const checkedDate = new Date(`${source.checkedAt}T00:00:00.000Z`);
         expect(Number.isNaN(checkedDate.valueOf())).toBe(false);
