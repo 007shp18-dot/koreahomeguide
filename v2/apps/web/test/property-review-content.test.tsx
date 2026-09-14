@@ -57,3 +57,21 @@ it('gives a selected review its own canonical URL and English/Korean alternative
   expect(metadata.openGraph?.url).toBe(canonical);
   expect(metadata.title).toContain('Marina One');
 });
+
+it('applies reader copy to matching stored evidence without overwriting newer or changed evidence', () => {
+  const original = propertyReviewSchema.parse(seoul.find(review => review.id === 'kr-helio-city'));
+  const stored = structuredClone(original);
+  const point = stored.sections.costs.find(point => point.body.ko.includes('지역난방'))!;
+  const originalText = point.body.ko;
+  point.body.ko = '매물 자료는 지역난방과 열병합 방식을 안내합니다.';
+  const revised = withPropertyEditorial(stored);
+  expect(revised.sections.costs.find(point => point.body.ko.includes('지역난방'))?.body.ko).toBe(originalText);
+  expect(revised.sources).toEqual(stored.sources);
+  expect(revised.checkedOn).toBe(stored.checkedOn);
+  expect(point.body.ko).toContain('안내합니다');
+  const newer = structuredClone(stored);
+  newer.checkedOn = '2026-09-15';
+  expect(withPropertyEditorial(newer).sections).toEqual(newer.sections);
+  point.body.en = 'A corrected heating specification from a newer inspection.';
+  expect(withPropertyEditorial(stored).sections.costs).toEqual(stored.sections.costs);
+});

@@ -7,7 +7,7 @@ import type { Ref } from 'react';
 import { createDubaiCheckHref } from '../../lib/dubai/check-model';
 import type { DubaiExploreResult } from '../../lib/dubai/explore-model';
 import type { DubaiProjectEvidence } from '../../lib/dubai/project-evidence';
-import { actualDetailHref, reviewLocationForProject } from '../../lib/research/property-review-locations';
+import { actualDetailHref, allReviewLocations, reviewLocationForProject } from '../../lib/research/property-review-locations';
 import { marketHref, marketText, type MarketLocale } from '../../lib/locale/market-localization';
 import { PassportLink as Link } from '../passport/passport-journey';
 import styles from './dubai-research.module.css';
@@ -36,6 +36,10 @@ export function DubaiExploreSelection({
   const { area, segment, sale } = selected;
   const propertyReview = selectedProject ? reviewLocationForProject(selectedProject.id) : undefined;
   const propertyDetailHref = propertyReview ? actualDetailHref(locale, propertyReview.reviewId) : null;
+  // Editorial coverage is independent of the transaction cohort's 30-sale gate
+  // and ready/off-plan filter. Keep these named projects separate from its totals.
+  const reviewedProperties = allReviewLocations().filter(property => property.areaSlug === area.slug
+    || (area.slug === 'wadi-al-safa-3' && property.areaSlug === 'majan'));
   return <section id="dubai-selected-area" className={styles.selectedArea} ref={panelRef}
     aria-labelledby="dubai-selected-area-title" data-dubai-area-selection={area.slug}>
     <header className={styles.selectionHeader}>
@@ -63,6 +67,11 @@ export function DubaiExploreSelection({
         {localizedMarketCopy(locale, "Full area analysis", "지역 분석 전체 보기")}
       </Link> : null}
     </nav>
+    {reviewedProperties.length > 0 && <section className={styles.selectionProjects} aria-label={locale === 'ko' ? '이 지역의 단지 분석' : locale === 'zh-CN' ? '本区域项目分析' : 'Property analysis in this area'}>
+      <h3>{locale === 'ko' ? '이 지역의 단지 분석' : locale === 'zh-CN' ? '本区域项目分析' : 'Property analysis in this area'}</h3>
+      <p>{locale === 'ko' ? '생활 조건·매입 비용·주의점을 정리했습니다. 분양 중인 단지도 포함하며, 위 거래 집계와 범위가 다릅니다.' : locale === 'zh-CN' ? '了解生活条件、购房成本及注意事项。包含期房项目，与上方成交汇总范围不同。' : 'Living conditions, buying costs and tradeoffs. Includes off-plan properties; coverage differs from the transaction totals above.'}</p>
+      <nav className={styles.selectionActions}>{reviewedProperties.map(property => <Link key={property.reviewId} href={actualDetailHref(locale, property.reviewId)!}>{property.name?.[locale === 'ko' ? 'ko' : 'en']} →</Link>)}</nav>
+    </section>}
     <section className={styles.selectionProjects} aria-labelledby="dubai-selected-projects">
       <h3 id="dubai-selected-projects">{localizedMarketCopy(locale, "Project sales summaries", "프로젝트별 거래 요약")} <span>{projects.length}</span></h3>
       {projects.length > 0 ? <>

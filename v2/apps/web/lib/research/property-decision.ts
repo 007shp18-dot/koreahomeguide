@@ -126,17 +126,7 @@ function titleFor(value: Candidate, review: PropertyReview, locale: MarketLocale
 function evidenceProse(value: Candidate, locale: Exclude<MarketLocale, 'zh-CN'>): string {
   // Keep the full evidence sentence group: cutting after a number can drop its
   // period, estimate qualification or an explicit limit in the next sentence.
-  // Remove only familiar attribution wording; never relabel a portal estimate
-  // as a measured fact or an old observation as a current operating condition.
-  const prose = value.point.body[locale];
-  if (locale === 'ko') return prose
-    .replaceAll('이번 조사에서는 ', '')
-    .replaceAll('이번 조사에서 ', '')
-    .replaceAll('이번 리뷰는 ', '이 자료로는 ')
-    .replaceAll('포털에는 ', '주변 시설 목록에는 ')
-    .replaceAll('집품은 ', '한 경로 안내에는 ')
-    .replaceAll('아보카도는 ', '다른 경로 안내에는 ');
-  return prose.replaceAll('in this review', 'here').replaceAll('in this research', 'here');
+  return value.point.body[locale];
 }
 
 function item(value: Candidate, review: PropertyReview, persona: DecisionPersona, locale: MarketLocale, kind: 'priority' | 'pro' | 'con' | 'reversal' | 'check' = 'priority'): DecisionItem {
@@ -144,7 +134,9 @@ function item(value: Candidate, review: PropertyReview, persona: DecisionPersona
   const title = titleFor(value, review, locale);
   const interpretation = copy[persona][locale];
   const fact = locale === 'zh-CN' ? title : evidenceProse(value, locale);
-  const groundedBody = locale === 'zh-CN' ? `${fact}。${interpretation}` : `${fact} ${interpretation}`;
+  // Property descriptions already explain their practical implications. Keep
+  // general persona advice in the checklist instead of appending it to every fact.
+  const groundedBody = locale === 'zh-CN' ? `${fact}。${interpretation}` : fact;
   return {
     id: `${kind}:${value.id}`,
     title: kind === 'check' ? copy.question[locale] : locale === 'zh-CN' ? copy.title[locale] : title,

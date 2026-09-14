@@ -11,6 +11,7 @@ import { getAreaDecision } from '../../lib/research/area-decision';
 import { getCommunitySignals } from '../../lib/research/community-signals';
 import { actualDetailHref, allReviewLocations } from '../../lib/research/property-review-locations';
 import styles from './property-decision-workspace.module.css';
+import { PropertyOverviewCard } from './property-overview-card';
 
 export function PropertyDecisionReport({ review, priceContext, analysisScope = 'property', locale, persona, onPersonaChange }: { review: PropertyReview; priceContext?: DecisionPriceContext; analysisScope?: 'property' | 'area'; locale: MarketLocale; persona: DecisionPersona; onPersonaChange: (persona: DecisionPersona) => void }) {
   const report = analysisScope === 'area' ? getAreaDecision(review, persona, locale) : getPropertyDecision(review, persona, locale);
@@ -26,6 +27,7 @@ export function PropertyDecisionReport({ review, priceContext, analysisScope = '
   const body = (item: DecisionItem) => <p lang={item.originalLanguage}>{item.body}{item.originalLanguage && locale === 'zh-CN' ? <small className={styles.languageNote}> · 英文资料</small> : null}</p>;
   const items = (values: DecisionItem[]) => <ul className={styles.points}>{values.map(item => <li key={item.id}><h4>{item.title}</h4>{body(item)}</li>)}</ul>;
   return <div className={styles.report} data-property-decision={review.id} data-decision-persona={persona}>
+    {analysisScope === 'property' && <PropertyOverviewCard id={review.id} checkedOn={review.checkedOn} locale={locale} />}
     <fieldset className={styles.personas}>
       <legend>{t('누구의 관점으로 볼까요', 'Your perspective', '您的购房目的')}</legend>
       <div>{DECISION_PERSONAS.map(value => <label key={value} className={styles.persona}>
@@ -34,7 +36,7 @@ export function PropertyDecisionReport({ review, priceContext, analysisScope = '
       </label>)}</div>
     </fieldset>
     <section className={styles.verdict} aria-live="polite" aria-atomic="true">
-      <p className={styles.eyebrow}>{t('종합 판단', 'At a glance', '综合判断')}</p>
+      <p className={styles.eyebrow}>{t('내 상황에 맞춰 보기', 'For your situation', '结合您的情况')}</p>
       <h3>{report.verdict.label}</h3>
       <p>{report.summary}</p>
     </section>
@@ -78,6 +80,13 @@ export function PropertyDecisionReport({ review, priceContext, analysisScope = '
     <section className={styles.section}><h3>{t('판단이 바뀌는 조건', 'What would change the decision', '什么会改变判断')}</h3>{items(report.reversals)}</section>
     <section className={styles.checklist}><h3>{t('계약 전에 물어볼 것', 'Before signing', '签约前的问题')}</h3>{items(report.checklist)}</section>
     <p className={styles.method}>{t('자료 확인', 'Evidence checked', '资料核查')} {date} · {t('개별 세대의 적정가·수익률을 산정한 보고서는 아닙니다.', 'This report does not estimate a unit’s fair value or rental yield.', '本报告不估算单套住宅的合理价格或租金收益率。')}</p>
+    <details className={styles.sources} data-report-sources>
+      <summary>{t('자료 출처', 'Sources', '资料来源')}</summary>
+      <ul>{review.sources.map(source => <li key={source.id}>
+        <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a>
+        <p>{source.note[locale === 'ko' ? 'ko' : 'en']}</p>
+      </li>)}</ul>
+    </details>
     <footer className={styles.reportFooter}><Link className={styles.primaryButton} href={marketHref(locale, `${marketBase}/shortlist/`)}>{analysisScope === 'area' ? t('다른 후보와 비교', 'Compare alternatives', '比较其他选择') : t('다른 단지와 비교', 'Compare alternatives', '比较其他项目')} <span aria-hidden="true">→</span></Link></footer>
   </div>;
 }

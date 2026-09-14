@@ -34,8 +34,8 @@
           "en": "A location suited to road-based routines"
         },
         "body": {
-          "ko": "개발사와 지역 가이드는 E311 접근을 공통으로 설명합니다. 직장이 이 도로축과 맞는 운전자에게 검토 가치가 있지만, 이를 시내까지 일정한 통근시간으로 환산할 근거는 없습니다.",
-          "en": "The developer and a local area guide both identify access to E311. This merits consideration for drivers whose workplace suits that corridor, but it does not establish a dependable journey time into central Dubai."
+          "ko": "E311을 이용하는 차량 이동이 이 지역의 교통상 장점입니다. 직장이 이 도로축과 맞는 운전자에게 검토 가치가 있지만, 이를 시내까지 일정한 통근시간으로 환산할 근거는 없습니다.",
+          "en": "E311 is a main road connection for the area. This merits consideration for drivers whose workplace suits that corridor, but it does not establish a dependable journey time into central Dubai."
         },
         "sourceIds": [
           "skyflame",
@@ -66,8 +66,8 @@
           "en": "Tower selection and delivery still need a match"
         },
         "body": {
-          "ko": "공식 자료는 두 타워를 소개하고, 2027년 12월 31일을 예정 완료일로 기재합니다. 이는 계약상 인도 보장이나 타워1의 DLD 공정 확인 결과가 아니므로, 실제 계약 대상과 날짜를 일치시켜야 합니다.",
-          "en": "Official material describes two towers and lists 31 December 2027 as the scheduled completion date. This is neither guaranteed contractual delivery nor a verified DLD completion result for Tower 1; the actual contract and project identity must match."
+          "ko": "두 타워로 구성되며, 예정 완료일은 2027년 12월 31일입니다. 이는 계약상 인도 보장이나 타워1의 DLD 공정 확인 결과가 아니므로, 실제 계약 대상과 날짜를 일치시켜야 합니다.",
+          "en": "Two towers are planned, with completion scheduled for 31 December 2027. This is neither guaranteed contractual delivery nor a verified DLD completion result for Tower 1; the actual contract and project identity must match."
         },
         "sourceIds": [
           "skyflame",
@@ -82,7 +82,7 @@
         },
         "body": {
           "ko": "Betterhomes는 Majan 주변의 진행 중인 공사를 지역 변수로 설명하고, DXB Properties도 공사 소음·먼지를 지적합니다. 단지에서 측정한 피해 수준은 없으므로 결함으로 단정하지 않되, 맞은편 필지와 공사차량 동선을 먼저 살펴볼 이유가 됩니다.",
-          "en": "Betterhomes describes ongoing construction around Majan, while DXB Properties also flags construction noise and dust. There are no measurements at Skyflame, so these are reasons to examine facing plots and construction access, not findings of a building defect."
+          "en": "Construction is ongoing around Majan, with noise and dust noted in local accounts. There are no measurements at Skyflame, so these are reasons to examine facing plots and construction access, not findings of a building defect."
         },
         "sourceIds": [
           "majan-guide",
@@ -114,8 +114,8 @@
             "en": "Do not base the shortlist on walking to a metro"
           },
           "body": {
-            "ko": "지역 가이드는 Majan 내부의 메트로·트램 부재와 제한적인 대중교통을 설명합니다. 무차량 가구라면 택시비를 일상 비용에 넣고, 이용 가능한 정류장까지의 보행·환승 대기를 먼저 확인해야 합니다.",
-            "en": "The area guide describes no metro or tram inside Majan and limited public transport. A household without a car should budget for taxis and establish the walk to a usable bus stop and the transfer wait before choosing the location."
+            "ko": "Majan 안에는 메트로·트램이 없고 대중교통 선택지도 제한적입니다. 무차량 가구라면 택시비를 일상 비용에 넣고, 이용 가능한 정류장까지의 보행·환승 대기를 먼저 확인해야 합니다.",
+            "en": "Majan has no metro or tram within the district, and public transport is limited. A household without a car should budget for taxis and establish the walk to a usable bus stop and the transfer wait before choosing the location."
           },
           "sourceIds": [
             "majan-guide"
@@ -130,8 +130,8 @@
             "en": "Winchester: British curriculum through Year 13"
           },
           "body": {
-            "ko": "GEMS Winchester Dubai는 Dubailand의 IMG Worlds of Adventure 인근에서 Foundation Stage부터 Year 13까지 교육한다고 안내합니다. 학교가 지역 후보라는 점은 확인되지만, Skyflame 출입구에서 교문까지의 통학 거리·통학버스 정차·학년별 자리는 확인되지 않았습니다.",
-            "en": "GEMS Winchester Dubai lists its campus near IMG Worlds of Adventure in Dubailand and offers Foundation Stage through Year 13. It is an identified area option; the route from Skyflame, a school-bus pickup and places in the required year remain unverified."
+            "ko": "GEMS Winchester Dubai는 Dubailand의 IMG Worlds of Adventure 인근에 있으며, Foundation Stage부터 Year 13까지 교육합니다. 학교가 지역 후보라는 점은 확인되지만, Skyflame 출입구에서 교문까지의 통학 거리·통학버스 정차·학년별 자리는 확인되지 않았습니다.",
+            "en": "GEMS Winchester Dubai is near IMG Worlds of Adventure in Dubailand, with classes from Foundation Stage to Year 13. It is an identified area option; the route from Skyflame, a school-bus pickup and places in the required year remain unverified."
           },
           "sourceIds": [
             "winchester-school",
@@ -162,8 +162,8 @@
             "en": "Separate an operating grocery destination from planned retail"
           },
           "body": {
-            "ko": "Cityland Mall의 공식 매장 목록에는 Carrefour와 Organic Foods & Cafe가 올라 있습니다. 이 몰은 Global Village 옆 Wadi Al Safa 4의 별도 목적지이므로, 단지 상가가 열리기 전 장보기 후보가 될 수는 있어도 Skyflame의 도보상권으로 표시하지 않습니다.",
-            "en": "Cityland Mall’s official directory lists Carrefour and Organic Foods & Cafe. It is a separate destination beside Global Village in Wadi Al Safa 4: a grocery option to evaluate before on-site retail opens, not verified walkable retail at Skyflame."
+            "ko": "Cityland Mall의 공식 매장 목록에는 Carrefour와 Organic Foods & Cafe가 올라 있습니다. 이 몰은 Global Village 옆 Wadi Al Safa 4에 있습니다. 단지 상가가 열리기 전 장보기 대안은 될 수 있지만, Skyflame에서 걸어갈 수 있는 상권인지는 확인되지 않았습니다.",
+            "en": "Cityland Mall has Carrefour and Organic Foods & Cafe. It is a separate destination beside Global Village in Wadi Al Safa 4: a grocery option to evaluate before on-site retail opens, not verified walkable retail at Skyflame."
           },
           "sourceIds": [
             "cityland-stores"
@@ -393,7 +393,7 @@
         },
         "body": {
           "ko": "지역 가이드는 First Avenue Mall과 Spinneys·Carrefour Market을 생활시설로 소개합니다. 따라서 단지 리테일의 입점을 기다리는 동안 이용할 주변 후보는 있지만, 각 세대에서의 편한 보행을 뜻하지는 않습니다.",
-          "en": "The area guide identifies First Avenue Mall, Spinneys and Carrefour Market as everyday destinations. These give prospective residents options to examine while on-site retail fills, without proving a comfortable walk from each unit."
+          "en": "First Avenue Mall, Spinneys and Carrefour Market are local options for everyday errands. These give prospective residents options to examine while on-site retail fills, without proving a comfortable walk from each unit."
         },
         "sourceIds": [
           "motor-guide"
@@ -406,7 +406,7 @@
           "en": "An identifiable British-school pathway"
         },
         "body": {
-          "ko": "GEMS Metropole Motor City는 Honsho Road에 있으며 FS1부터 Year 13까지 영국식 과정을 안내합니다. 선호 학교가 이곳이라면 지역 선택의 이유가 구체적이지만, 실제 학년의 입학 가능 여부가 먼저 맞아야 합니다.",
+          "ko": "GEMS Metropole Motor City는 Honsho Road에 있는 영국식 교육과정 학교로, FS1부터 Year 13까지 운영합니다. 선호 학교가 이곳이라면 지역 선택의 이유가 구체적이지만, 실제 학년의 입학 가능 여부가 먼저 맞아야 합니다.",
           "en": "GEMS Metropole Motor City is on Honsho Road and offers a British curriculum from FS1 to Year 13. It provides a concrete location rationale if it is your preferred school, provided the required year has an available place."
         },
         "sourceIds": [
@@ -423,7 +423,7 @@
         },
         "body": {
           "ko": "Dubai Autodrome의 공식 일정에는 2026년 1월 17–18일 24시간 내구 레이스가 포함됩니다. 운영 중인 경기장이라는 사실은 확인되지만 Skyterraces에서의 소음 크기는 측정되지 않았으므로, 경기 시간대와 주거 방향을 함께 확인해야 합니다.",
-          "en": "Dubai Autodrome’s official calendar lists the 24-hour endurance race on 17–18 January 2026. The active circuit is documented, but noise at Skyterraces has not been measured; assess race periods together with the unit’s orientation."
+          "en": "Dubai Autodrome scheduled its 24-hour endurance race for 17–18 January 2026. The active circuit is documented, but noise at Skyterraces has not been measured; assess race periods together with the unit’s orientation."
         },
         "sourceIds": [
           "autodrome"
@@ -436,8 +436,8 @@
           "en": "Height does not settle the unit choice"
         },
         "body": {
-          "ko": "개발사는 주거 40개 층과 스튜디오부터 3베드까지의 구성을 안내합니다. 조망 프리미엄을 평가하려면 실제 층·방향·앞동 계획과 실내면적을 맞춰야 하며, 건물 전체 홍보 이미지를 특정 세대의 전망으로 대입할 수 없습니다.",
-          "en": "The developer describes 40 residential floors and studio-to-three-bedroom layouts. A view premium needs the actual floor, orientation, facing development and internal area; project imagery cannot establish the outlook of a particular apartment."
+          "ko": "개발사 계획상 주거층은 40개 층이며, 스튜디오부터 3베드룸까지 구성됩니다. 조망 프리미엄을 평가하려면 실제 층·방향·앞동 계획과 실내면적을 맞춰야 하며, 건물 전체 홍보 이미지를 특정 세대의 전망으로 대입할 수 없습니다.",
+          "en": "Plans include 40 residential floors, with studios through three-bedroom homes. A view premium needs the actual floor, orientation, facing development and internal area; project imagery cannot establish the outlook of a particular apartment."
         },
         "sourceIds": [
           "skyterraces"
@@ -454,7 +454,7 @@
           },
           "body": {
             "ko": "개발사는 Emirates Road, Sheikh Mohammed Bin Zayed Road, Al Qudra Road 접근을 소개합니다. 실제 근무지를 기준으로 단지 출구부터 연결 교차로까지를 포함해 조사해야 하며, 광고의 Dubai Marina 17분은 출퇴근 실측으로 채택하지 않았습니다.",
-            "en": "The developer identifies Emirates Road, Sheikh Mohammed Bin Zayed Road and Al Qudra Road access. Assess the garage exit and connecting junctions against the actual workplace; the advertised 17 minutes to Dubai Marina was not adopted as measured peak-hour travel."
+            "en": "Main road options include Emirates Road, Sheikh Mohammed Bin Zayed Road and Al Qudra Road. Assess the garage exit and connecting junctions against the actual workplace; the advertised 17 minutes to Dubai Marina was not adopted as measured peak-hour travel."
           },
           "sourceIds": [
             "skyterraces"
@@ -467,8 +467,8 @@
             "en": "A bus option with an unresolved first leg"
           },
           "body": {
-            "ko": "Betterhomes는 Autodrome·Business Park 주변 정류장의 F37 이용을 설명하고, Moovit은 First Avenue Mall 인근 Spinneys Market 정류장을 안내합니다. Skyterraces 출입구에서 그 정류장까지의 연속 보도·횡단·대기시간은 확인하지 않아 무차량 통근의 충분한 대안으로 확정하지 않습니다.",
-            "en": "Betterhomes describes F37 stops around the Autodrome and Business Park; Moovit lists a Spinneys Market stop near First Avenue Mall. The continuous footpath, crossings and wait from Skyterraces remain unchecked, so this is not yet a validated car-free commute."
+            "ko": "지역·교통 가이드 기준으로 Autodrome·Business Park 주변에서 F37을 이용할 수 있고, First Avenue Mall 인근에는 Spinneys Market 정류장이 있습니다. 다만 Skyterraces 출입구에서 정류장까지 보도가 이어지는지, 횡단과 대기에 얼마나 걸리는지는 확인되지 않았습니다. 차 없이 출퇴근할 계획이라면 이 구간을 먼저 살펴보세요.",
+            "en": "F37 stops serve the Autodrome and Business Park area, and a Spinneys Market stop is near First Avenue Mall. The continuous footpath, crossings and wait from Skyterraces remain unchecked, so this is not yet a validated car-free commute."
           },
           "sourceIds": [
             "motor-guide",
@@ -515,8 +515,8 @@
             "en": "Check First Avenue Mall as an errands hub"
           },
           "body": {
-            "ko": "지역 자료는 First Avenue Mall의 식음·장보기·의료시설을 설명합니다. 단지 안 상가보다 이 거점까지의 차량 진입·주차·그늘 있는 보행 경로가 편한지 먼저 보면, 분양 후 실제 생활 편의를 더 구체적으로 판단할 수 있습니다.",
-            "en": "Area material describes dining, groceries and healthcare at First Avenue Mall. Checking its vehicle access, parking and shaded walking approach first provides a more concrete picture of daily convenience than assuming the new project’s own shops will be ready."
+            "ko": "First Avenue Mall에는 식음·장보기·의료시설이 있습니다. 단지 안 상가보다 이 거점까지의 차량 진입·주차·그늘 있는 보행 경로가 편한지 먼저 보면, 분양 후 실제 생활 편의를 더 구체적으로 판단할 수 있습니다.",
+            "en": "First Avenue Mall offers dining, groceries and healthcare. Checking its vehicle access, parking and shaded walking approach first provides a more concrete picture of daily convenience than assuming the new project’s own shops will be ready."
           },
           "sourceIds": [
             "motor-guide"
@@ -758,8 +758,8 @@
           "en": "A waterfront setting you can visit before deciding"
         },
         "body": {
-          "ko": "Dubai 관광청은 Creek Harbour의 The Viewing Point를 방문지로 안내합니다. 프로젝트 조감도에만 의존하지 않고 지역의 수변 경험을 직접 확인할 수 있다는 장점이 있지만, 그 전망이 Valia 세대에서 재현된다는 뜻은 아닙니다.",
-          "en": "Dubai’s tourism authority lists The Viewing Point in Creek Harbour. You can experience the wider waterfront before deciding instead of relying solely on project imagery, although that view is not evidence of the outlook from a Valia apartment."
+          "ko": "Creek Harbour의 The Viewing Point에서 지역의 수변 풍경을 직접 살펴볼 수 있습니다. 프로젝트 조감도에만 의존하지 않고 지역의 수변 경험을 직접 확인할 수 있다는 장점이 있지만, 그 전망이 Valia 세대에서 재현된다는 뜻은 아닙니다.",
+          "en": "The Viewing Point is a place to visit on the Creek Harbour waterfront. You can experience the wider waterfront before deciding instead of relying solely on project imagery, although that view is not evidence of the outlook from a Valia apartment."
         },
         "sourceIds": [
           "viewing-point"
@@ -772,8 +772,8 @@
           "en": "The transport plan has evidence of implementation"
         },
         "body": {
-          "ko": "2026년 5월 3일 정부 발표는 Blue Line 터널 공사 착수와 2029년 9월 9일 개통 목표를 설명합니다. 장기 거주 관점에서 검토할 변화이지만, 미래 수혜를 현재의 역 접근성이나 확정 가격 상승으로 계산하지 않습니다.",
-          "en": "The government’s 3 May 2026 announcement describes Blue Line tunnelling and a target opening of 9 September 2029. This is a change to consider for a longer stay, without treating it as current station access or assured price appreciation."
+          "ko": "2026년 5월 3일 정부 발표 기준으로 Blue Line은 터널 공사에 착수했으며, 개통 목표는 2029년 9월 9일입니다. 장기 거주 관점에서 검토할 변화이지만, 미래 수혜를 현재의 역 접근성이나 확정 가격 상승으로 계산하지 않습니다.",
+          "en": "Blue Line tunnelling was announced on 3 May 2026, with opening targeted for 9 September 2029. This is a change to consider for a longer stay, without treating it as current station access or assured price appreciation."
         },
         "sourceIds": [
           "blue-line-2026"
@@ -788,8 +788,8 @@
           "en": "Creek, skyline and park views are different products"
         },
         "body": {
-          "ko": "Emaar는 Creek·도시 스카이라인·커뮤니티 공원 방향의 조망을 구분해 설명합니다. 원하는 조망의 방향·층·앞 필지 계획을 특정하지 못하면, 수변 주소라는 이유만으로 추가 가격을 지불할 근거가 약합니다.",
-          "en": "Emaar describes Creek, skyline and community-park outlooks as alternatives. Without the unit’s orientation, floor and facing-plot plans, a waterfront address alone is a weak basis for paying a view premium."
+          "ko": "개발사 소개에서도 Creek·도시 스카이라인·커뮤니티 공원 조망이 방향별로 나뉩니다. 원하는 조망의 방향·층·앞 필지 계획을 특정하지 못하면, 수변 주소라는 이유만으로 추가 가격을 지불할 근거가 약합니다.",
+          "en": "Outlooks are marketed separately toward the Creek, skyline and community park. Without the unit’s orientation, floor and facing-plot plans, a waterfront address alone is a weak basis for paying a view premium."
         },
         "sourceIds": [
           "valia"
@@ -866,7 +866,7 @@
           },
           "body": {
             "ko": "학교의 2026–27 수업료표는 FS1·FS2 AED 44,616, Year 1–5 AED 58,034, Year 12·13 AED 89,889를 제시합니다. 교복·급식·통학은 제외되어 있고, 학교가 게시한 KHDA Outstanding 설명도 개별 자녀의 입학이나 향후 학비를 보장하지 않습니다.",
-            "en": "The school’s 2026–27 table lists AED 44,616 for FS1/FS2, AED 58,034 for Years 1–5 and AED 89,889 for Years 12/13. Uniform, meals and transport are excluded; the school’s posted KHDA Outstanding description guarantees neither a place nor future fees."
+            "en": "Published 2026–27 tuition is AED 44,616 for FS1/FS2, AED 58,034 for Years 1–5 and AED 89,889 for Years 12/13. Uniform, meals and transport are excluded; the school’s posted KHDA Outstanding description guarantees neither a place nor future fees."
           },
           "sourceIds": [
             "dis-fees",
@@ -882,8 +882,8 @@
             "en": "Separate an operating mall from planned retail"
           },
           "body": {
-            "ko": "Dubai Festival City Mall 운영사는 Carrefour·LuLu 및 IKEA를 현재 쇼핑시설로 안내합니다. 이는 Creek Harbour와 별도의 개발사업에 있는 목적지로, Valia 바로 앞 상가나 걸어서 가능한 장보기로 확대해 설명하지 않습니다.",
-            "en": "Dubai Festival City Mall’s operator lists Carrefour, LuLu and IKEA among its shopping options. This is a destination in a separate development, not proof of shops at Valia’s doorstep or a walkable grocery trip."
+            "ko": "Dubai Festival City Mall에서 Carrefour·LuLu·IKEA를 이용할 수 있습니다. 이는 Creek Harbour와 별도의 개발사업에 있는 목적지로, Valia 바로 앞 상가나 걸어서 가능한 장보기로 확대해 설명하지 않습니다.",
+            "en": "Dubai Festival City Mall has Carrefour, LuLu and IKEA. This is a destination in a separate development, not proof of shops at Valia’s doorstep or a walkable grocery trip."
           },
           "sourceIds": [
             "festival-mall"
@@ -912,8 +912,8 @@
             "en": "Establish delivery and the funding horizon first"
           },
           "body": {
-            "ko": "공식 페이지는 1~4베드룸 구성을 확인합니다. 공개 집계의 프로젝트 연결과 별개로 관심 세대의 계약상 인도·납부 일정은 확보하지 못했습니다. 메트로 목표 연도만으로 임대 시작 시점이나 보유 기간을 정하지 않습니다.",
-            "en": "The official page confirms one-to-four-bedroom plans. Separately from the published project mapping, the chosen unit’s contractual handover and payment schedule were not obtained. The metro target alone cannot establish rental commencement or the holding period."
+            "ko": "1~4베드룸으로 구성됩니다. 공개 집계의 프로젝트 연결과 별개로 관심 세대의 계약상 인도·납부 일정은 확보하지 못했습니다. 메트로 목표 연도만으로 임대 시작 시점이나 보유 기간을 정하지 않습니다.",
+            "en": "Plans range from one to four bedrooms. Separately from the published project mapping, the chosen unit’s contractual handover and payment schedule were not obtained. The metro target alone cannot establish rental commencement or the holding period."
           },
           "sourceIds": [
             "valia",
@@ -1121,7 +1121,7 @@
     },
     "summary": {
       "ko": "개발사는 현재 준공 완료로 분류하며, 49층·스튜디오~2베드룸 구성입니다. 기존 오프플랜 소개가 검색에 남아 있어 준공 표기와 실제 세대 인도·시설 운영을 나눠 봤습니다. 운동시설이 풍부한 도심 거주라는 장점과, 학교·메트로까지 별도 이동이 필요한 조건을 함께 판단해야 합니다.",
-      "en": "The developer now classifies this 49-storey studio-to-two-bedroom tower as completed. Older off-plan descriptions remain online, so completion status is separated from a particular unit’s handover and amenity operation. The attraction is an active urban base; school and metro trips still require a separate route."
+      "en": "This 49-storey tower, with studios through two-bedroom homes, is now classified as completed. Older off-plan descriptions remain online, so completion status is separated from a particular unit’s handover and amenity operation. The attraction is an active urban base; school and metro trips still require a separate route."
     },
     "bestFor": {
       "ko": "1~2인이 도심 생활을 중시하고, 실제 세대를 보고 일조·소음·가구 배치를 확인할 수 있는 경우.",
@@ -1152,8 +1152,8 @@
           "en": "A broader exercise routine outside the apartment"
         },
         "body": {
-          "ko": "개발사는 러닝트랙·요가데크·수영장·테니스·패들 시설을 설명합니다. 매일 운동하는 사람에게는 유용한 구성이나, 타워 전용과 커뮤니티 공용 시설의 예약·이용권은 따로 구분해야 합니다.",
-          "en": "The developer describes running, yoga, swimming, tennis and padel facilities. This suits a regular exercise routine; separate tower-only facilities from community facilities with booking or access conditions."
+          "ko": "개발사 소개에 포함된 시설은 러닝트랙·요가데크·수영장·테니스·패들 코트입니다. 매일 운동하는 사람에게는 유용한 구성이나, 타워 전용과 커뮤니티 공용 시설의 예약·이용권은 따로 구분해야 합니다.",
+          "en": "Planned amenities include running, yoga, swimming, tennis and padel facilities. This suits a regular exercise routine; separate tower-only facilities from community facilities with booking or access conditions."
         },
         "sourceIds": [
           "project"
@@ -1169,7 +1169,7 @@
         },
         "body": {
           "ko": "공식 대표 면적은 스튜디오410sqft~2베드룸1,061sqft입니다. 방 개수만 보고 고르기보다 재택 책상·유모차·식탁을 놓은 뒤 통로가 남는지 평면에서 확인할 필요가 있습니다.",
-          "en": "The developer’s representative sizes run from 410 sqft studios to 1,061 sqft two-bedroom homes. Test a desk, pushchair and dining table on the actual plan before treating bedroom count as enough space."
+          "en": "Advertised examples range from 410 sqft studios to 1,061 sqft two-bedroom homes. Test a desk, pushchair and dining table on the actual plan before treating bedroom count as enough space."
         },
         "sourceIds": [
           "project"
@@ -1182,8 +1182,8 @@
           "en": "Older guides can misstate the delivery stage"
         },
         "body": {
-          "ko": "부동산 가이드는 여전히 오프플랜·2025년 예정 인도로 설명합니다. 이보다 최신인 개발사의 준공 표시를 우선했지만 세대의 하자 처리·키 인도까지 확인한 것은 아닙니다.",
-          "en": "A property guide still describes an off-plan project and a 2025 expected delivery. The developer’s current completion label takes precedence, but this does not verify snagging or key release for a specific apartment."
+          "ko": "부동산 가이드에는 아직 오프플랜·2025년 인도 예정으로 남아 있어 현재 상태를 확인해야 합니다. 이보다 최신인 개발사의 준공 표시를 우선했지만 세대의 하자 처리·키 인도까지 확인한 것은 아닙니다.",
+          "en": "The listing still shows the project as off-plan with expected delivery in 2025, so its current handover status needs checking. The current status is completed, but snagging and key release still need confirmation for the individual apartment."
         },
         "sourceIds": [
           "project",
@@ -1200,7 +1200,7 @@
             "en": "Test the route from the entrance to the metro"
           },
           "body": {
-            "ko": "가이드는 Business Bay역을 차량 약5분으로 설명합니다. 이 수치는 도보5분이 아니며, 실제로는 로비→도로 횡단→역 입구→승강장까지 따로 확인해야 합니다.",
+            "ko": "가이드에 나온 Business Bay역까지의 시간은 차량 약 5분입니다. 이 수치는 도보5분이 아니며, 실제로는 로비→도로 횡단→역 입구→승강장까지 따로 확인해야 합니다.",
             "en": "The guide places Business Bay station about five minutes away by car. That is not a five-minute walk; check lobby, road crossings, station entrance and platform as separate parts of the journey."
           },
           "sourceIds": [
@@ -1216,7 +1216,7 @@
           },
           "body": {
             "ko": "가이드는 Lillian Tower1정류장과26·F14·F19A·X22노선을 제시합니다. 노선 운행 여부와 반대편 귀가 정류장은 RTA에서 다시 확인할 항목이며, 이번에는 기다리는 시간까지 측정하지 않았습니다.",
-            "en": "The guide identifies Lillian Tower 1 and routes 26, F14, F19A and X22. Recheck service and the return-direction stop with RTA; waiting time was not measured."
+            "en": "Lillian Tower 1 is a nearby stop, with routes 26, F14, F19A and X22. Recheck service and the return-direction stop with RTA; waiting time was not measured."
           },
           "sourceIds": [
             "guide",
@@ -1264,7 +1264,7 @@
           },
           "body": {
             "ko": "주변 가이드에는Fmart·Allday·W Mart가 나옵니다. 상점 이름을 확보한 단계이지 단지 바로 아래 입점 확인은 아니므로, 우유를 사는 짧은 동선과Dubai Mall방문을 같은 편의로 계산하지 않습니다.",
-            "en": "The guide lists Fmart, Allday and W Mart as area options. These are identified stores, not confirmed shops beneath the tower; do not equate a quick grocery errand with a Dubai Mall trip."
+            "en": "Grocery options in the area include Fmart, Allday and W Mart. These are identified stores, not confirmed shops beneath the tower; do not equate a quick grocery errand with a Dubai Mall trip."
           },
           "sourceIds": [
             "guide"
@@ -1278,7 +1278,7 @@
           },
           "body": {
             "ko": "개발사는 운하와도심 조망을 소개합니다. 같은 타워 안에서도 창 정면의 건물·대낮 눈부심·발코니 사용성이 달라지므로 사진 한 장보다 세대별 방향을 맞춰 비교하는 편이 유효합니다.",
-            "en": "The developer markets canal and city outlooks. Facing buildings, daytime glare and balcony usability can vary within the tower, so compare the actual stack and orientation rather than one hero photograph."
+            "en": "Apartments are marketed with canal and city outlooks. Facing buildings, daytime glare and balcony usability can vary within the tower, so compare the actual stack and orientation rather than one hero photograph."
           },
           "sourceIds": [
             "project"
@@ -1307,7 +1307,7 @@
             "en": "Inspect charges alongside cooling bills"
           },
           "body": {
-            "ko": "준공된 후보인 만큼 해당 세대의 최근 관리비 명세·냉방 계정·수선 이력을 요청할 수 있습니다. 승인 관리비 금액은 아직 확보하지 못했으므로 매매가와 예상 임대료만으로 순수익률을 확정하지 않습니다.",
+            "ko": "준공된 후보인 만큼 해당 세대의 최근 관리비 명세·냉방 계정·수선 이력을 요청할 수 있습니다. 승인된 관리비 금액이 확인되지 않아 실제 비용을 뺀 임대수익률은 아직 계산하기 어렵습니다.",
             "en": "For a completed candidate, request the unit’s recent service-charge statement, cooling account and repair history. Approved charges were not obtained, so purchase price and an expected rent alone cannot establish net yield."
           },
           "sourceIds": [
@@ -1458,7 +1458,7 @@
           "en": "A 61,000 sqft podium leisure deck"
         },
         "body": {
-          "ko": "공식 자료는 수영장·패들·피클볼/농구·실외 체육시설을 포함한 데크를 제시합니다. 실제로 이용할 시설을 고른 뒤 관리비 부담과 비교하는 것이 시설 개수를 세는 것보다 유용합니다.",
+          "ko": "데크에 수영장·패들·피클볼/농구·야외 체육시설이 계획돼 있습니다. 실제로 이용할 시설을 고른 뒤 관리비 부담과 비교하는 것이 시설 개수를 세는 것보다 유용합니다.",
           "en": "Official material specifies a deck with swimming, padel, pickleball/basketball and outdoor exercise. Choose the facilities you would actually use before weighing their upkeep against the housing budget."
         },
         "sourceIds": [
@@ -1475,7 +1475,7 @@
         },
         "body": {
           "ko": "가이드의2베드룸 면적 범위는837~909sqft입니다. 약78~84㎡라는 단순 환산에는 발코니 등 포함 범위 문제가 남으므로 한국의전용면적과 바로 비교하지 않습니다.",
-          "en": "The guide reports two-bedroom sizes of 837–909 sqft. A simple conversion is about 78–84 m², but balcony and measurement conventions prevent a direct comparison with Korean exclusive interior area."
+          "en": "Advertised two-bedroom layouts range from 837 to 909 sqft. A simple conversion is about 78–84 m², but balcony and measurement conventions prevent a direct comparison with Korean exclusive interior area."
         },
         "sourceIds": [
           "guide"
@@ -1506,8 +1506,8 @@
             "en": "The Clover Bay stop is the useful first leg"
           },
           "body": {
-            "ko": "가이드는Clover Bay Tower1정류장을 도보 약1분,F14·F19A노선으로 설명합니다. 개발예정 출입구 기준 실측이 아니므로 가까운 정류장 후보로만 보고 횡단·그늘·귀가 방향을 확인해야 합니다.",
-            "en": "The guide describes Clover Bay Tower 1 as roughly a one-minute walk with F14/F19A services. This is not a measured route from the delivered entrance; check crossing, shade and the homeward direction."
+            "ko": "가이드 기준 Clover Bay Tower 1 정류장은 도보 약 1분 거리이며, F14·F19A 노선을 이용할 수 있습니다. 개발예정 출입구 기준 실측이 아니므로 가까운 정류장 후보로만 보고 횡단·그늘·귀가 방향을 확인해야 합니다.",
+            "en": "Clover Bay Tower 1 is advertised at roughly a one-minute walk, with F14/F19A services. This is not a measured route from the delivered entrance; check crossing, shade and the homeward direction."
           },
           "sourceIds": [
             "guide",
@@ -1570,7 +1570,7 @@
           },
           "body": {
             "ko": "가이드에WISO MiniMart·WestZone Fresh·FMart가 주변 후보로등장합니다. 가이드의차량2~3분은 체감보행 확인이아니므로, 단지 출입구에서 왕복 장보기동선을 먼저 살펴볼 필요가있습니다.",
-            "en": "The guide identifies WISO Mini Mart, West Zone Fresh and F Mart. Its two-to-three-minute driving estimates do not establish a comfortable walk; test a return grocery trip from the actual entrance."
+            "en": "Nearby options include WISO Mini Mart, West Zone Fresh and F Mart. Its two-to-three-minute driving estimates do not establish a comfortable walk; test a return grocery trip from the actual entrance."
           },
           "sourceIds": [
             "guide"
@@ -1599,8 +1599,8 @@
             "en": "The published 40/60 plan concentrates the completion bill"
           },
           "body": {
-            "ko": "공식FAQ는예약 후14일내20%,6개월내20%,완공시60%를설명합니다. 재매도는40%납부후가능하다고안내하나,현재재판매매물의승계조건과실제미납잔액은계약으로다시확인해야합니다.",
-            "en": "The official FAQ describes 20% within 14 days, 20% within six months and 60% at completion, with resale after 40% payment. A current resale’s assignment conditions and outstanding balance still depend on its contract."
+            "ko": "공식 FAQ의 납부 일정은 예약 후 14일 이내 20%, 6개월 이내 20%, 완공 시 60%입니다. 재매도는40%납부후가능하다고안내하나,현재재판매매물의승계조건과실제미납잔액은계약으로다시확인해야합니다.",
+            "en": "The published payment plan is 20% within 14 days, 20% within six months and 60% at completion, with resale after 40% has been paid. A current resale’s assignment conditions and outstanding balance still depend on its contract."
           },
           "sourceIds": [
             "project"
@@ -1750,8 +1750,8 @@
           "en": "A broader choice than a compact-only tower"
         },
         "body": {
-          "ko": "공식 자료는 스튜디오·1·2·3베드룸을 소개합니다. 더 엣지의 1·2베드룸 중심 구성에서 공간이 부족하다면 같은 Business Bay 안에서 비교할 이유가 있습니다.",
-          "en": "Official material lists studios and one-, two- and three-bedroom homes. It gives buyers who outgrow The EDGE’s one/two-bedroom focus a reason to compare within Business Bay."
+          "ko": "스튜디오와 1·2·3베드룸으로 구성됩니다. 더 엣지의 1·2베드룸 중심 구성에서 공간이 부족하다면 같은 Business Bay 안에서 비교할 이유가 있습니다.",
+          "en": "Plans include studios and one-, two- and three-bedroom homes. It gives buyers who outgrow The EDGE’s one/two-bedroom focus a reason to compare within Business Bay."
         },
         "sourceIds": [
           "project"
@@ -1765,7 +1765,7 @@
         },
         "body": {
           "ko": "Deyaar는 피트니스·요가·수영장·정원 테라스 등을 소개합니다. 실내 운동과 외부 공간을 함께 쓰려는 사람에게 맞지만, 현재 실제 운영 범위와 출입 자격을 확인한 뒤 생활상의 장점으로 계산해야 합니다.",
-          "en": "Deyaar lists fitness, yoga, pools and garden terraces. The combination may suit residents mixing indoor and outdoor activity, once current operation and access rights are established."
+          "en": "Planned amenities include fitness and yoga spaces, pools and garden terraces. The combination may suit residents mixing indoor and outdoor activity, once current operation and access rights are established."
         },
         "sourceIds": [
           "project"
@@ -1780,8 +1780,8 @@
           "en": "The page’s end date is not a handover certificate"
         },
         "body": {
-          "ko": "공식 진행 표에는 종료일이 2026-03-31로 표시됩니다. 이 날짜와 거래자료의 오프플랜 분류가 함께 남아 있어, 계약 세대의 키 인도·완공 서류 확인 전에는 즉시 입주라고 설명하지 않습니다.",
-          "en": "The official progress section shows an end date of 31 March 2026. With the transaction data still classified off-plan, immediate occupancy is not established until the unit’s key release and completion documents are checked."
+          "ko": "공개된 공정표의 종료일은 2026년 3월 31일입니다. 이 날짜가 지났어도 거래에는 오프플랜으로 남아 있습니다. 즉시 입주할 수 있는지는 해당 세대의 열쇠 인도와 완공 서류를 확인해야 합니다.",
+          "en": "The published progress schedule has an end date of 31 March 2026. With the transaction data still classified off-plan, immediate occupancy is not established until the unit’s key release and completion documents are checked."
         },
         "sourceIds": [
           "project",
@@ -1795,7 +1795,7 @@
           "en": "A 70-storey scale makes lift checks worthwhile"
         },
         "body": {
-          "ko": "공식 보도자료의 70층 규모는 조망 선택의 폭과 함께 수직 이동을 뜻합니다. 출근 시간 대기·주차층 이동·택배 동선의 실측은 없으므로 혼잡을 단정하지 않되, 현장 방문의 우선 항목으로 삼을 만합니다.",
+          "ko": "70층 규모라 전망 선택지가 다양한 만큼 엘리베이터 이동도 길어질 수 있습니다. 출근 시간 대기·주차층 이동·택배 동선의 실측은 없으므로 혼잡을 단정하지 않되, 현장 방문의 우선 항목으로 삼을 만합니다.",
           "en": "The official release’s 70-storey scale brings both outlook choices and vertical travel. Peak lift waits, parking access and deliveries were not measured; inspect them without presuming congestion."
         },
         "sourceIds": [
@@ -1812,8 +1812,8 @@
             "en": "The last leg to the station is described by car"
           },
           "body": {
-            "ko": "가이드는 Business Bay·Burj Khalifa/Dubai Mall역을 차량 약 8~10분으로 설명합니다. 따라서 역 이름이 가까운 지역에 속한다는 것과 매일 걸어서 쓸 수 있다는 것은 다른 판단입니다.",
-            "en": "The guide describes Business Bay and Burj Khalifa/Dubai Mall stations as about eight to ten minutes away by car. Being in a district served by these stations does not establish a daily walk to them."
+            "ko": "가이드 기준 Business Bay·Burj Khalifa/Dubai Mall역까지는 차량으로 약 8~10분입니다. 따라서 역 이름이 가까운 지역에 속한다는 것과 매일 걸어서 쓸 수 있다는 것은 다른 판단입니다.",
+            "en": "Business Bay and Burj Khalifa/Dubai Mall stations are advertised at about eight to ten minutes by car. Being in a district served by these stations does not establish a daily walk to them."
           },
           "sourceIds": [
             "guide",
@@ -1828,7 +1828,7 @@
           },
           "body": {
             "ko": "주변 가이드는 Al Khail Road와 Sheikh Zayed Road 접근을 제시합니다. 지도에서는 빠르게 보여도 실제 직장 방향에 따라 진입로·우회전·귀가 회차가 달라지므로 출퇴근 양방향을 따져야 합니다.",
-            "en": "The area guide identifies Al Khail Road and Sheikh Zayed Road access. Workplace direction changes ramps, turns and the return approach, so test both directions rather than a single advertised travel time."
+            "en": "Al Khail Road and Sheikh Zayed Road are the main road connections. Workplace direction changes ramps, turns and the return approach, so test both directions rather than a single advertised travel time."
           },
           "sourceIds": [
             "guide"
@@ -1843,8 +1843,8 @@
             "en": "Hartland is a separate British-school journey"
           },
           "body": {
-            "ko": "학교는 MBR City의 Sobha Hartland 캠퍼스에서 영국식 과정을 운영한다고 안내합니다. Regalia의 배정 학교나 도보 통학권으로 확인한 것은 아니므로 학년 자리와 실제 버스 픽업을 함께 확인해야 합니다.",
-            "en": "The school describes a British curriculum at its Sobha Hartland campus in MBR City. It is not a confirmed assigned or walkable school for Regalia; establish year-group places and a real bus pickup."
+            "ko": "이 학교는 MBR City의 Sobha Hartland 캠퍼스에서 영국식 교육과정을 운영합니다. Regalia의 배정 학교나 도보 통학권으로 확인한 것은 아니므로 학년 자리와 실제 버스 픽업을 함께 확인해야 합니다.",
+            "en": "The school follows a British curriculum at its Sobha Hartland campus in MBR City. It is not a confirmed assigned or walkable school for Regalia; establish year-group places and a real bus pickup."
           },
           "sourceIds": [
             "hartland-location"
@@ -1858,7 +1858,7 @@
           },
           "body": {
             "ko": "Hartland의 신규 일반 가정 Year 1 수업료는 AED 59,251, Year 7은 AED 83,285입니다. 같은 페이지의 이전 입학생 할인표를 신규 전입 가정의 예산으로 쓰면 교육비를 과소계상할 수 있습니다.",
-            "en": "Hartland lists general new-family tuition of AED 59,251 for Year 1 and AED 83,285 for Year 7 in 2026–27. The separate legacy-family table should not be used to understate a newcomer’s budget."
+            "en": "Hartland's published 2026–27 tuition for general new families is AED 59,251 for Year 1 and AED 83,285 for Year 7. The separate legacy-family table should not be used to understate a newcomer’s budget."
           },
           "sourceIds": [
             "hartland"
@@ -1874,7 +1874,7 @@
           },
           "body": {
             "ko": "개발사는 Organic Grocery를 편의시설 목록에 넣습니다. 매장 운영자·영업시간·입점 완료는 별도 확인이 필요하며, 주변 가이드의 Alrayhan Mini Mart·Bestmart도 실제 출입구 기준 동선을 점검할 후보입니다.",
-            "en": "The developer lists an Organic Grocery amenity. Operator, opening hours and delivery need separate confirmation; the guide’s Alrayhan Mini Mart and Bestmart are alternative route checks from the actual entrance."
+            "en": "An Organic Grocery amenity is part of the advertised offering. Operator, opening hours and delivery need separate confirmation; the guide’s Alrayhan Mini Mart and Bestmart are alternative route checks from the actual entrance."
           },
           "sourceIds": [
             "project",
@@ -1888,8 +1888,8 @@
             "en": "In-home usability sits beyond the photographs"
           },
           "body": {
-            "ko": "출시 자료는 스마트홈 설비를 소개합니다. 입주 후 사용할 앱·수동 조작·수리 연락처와 계정 인계가 정리돼야 편의가 되며, 해당 세대에서 작동을 시험한 것은 아닙니다.",
-            "en": "Launch material describes smart-home systems. Useful ownership requires app access, manual controls, repair contacts and account transfer; operation in the chosen unit has not been tested."
+            "ko": "출시 당시 스마트홈 설비가 포함된 구성으로 소개됐습니다. 입주 후 사용할 앱·수동 조작·수리 연락처와 계정 인계가 정리돼야 편의가 되며, 해당 세대에서 작동을 시험한 것은 아닙니다.",
+            "en": "Smart-home systems were part of the launch specification. Useful ownership requires app access, manual controls, repair contacts and account transfer; operation in the chosen unit has not been tested."
           },
           "sourceIds": [
             "launch"
@@ -2061,8 +2061,8 @@
       "en": "A candidate for a canal-side high-rise if you can wait for delivery. Separate the view premium from unit-specific costs before committing."
     },
     "summary": {
-      "ko": "공식 자료는 스튜디오~3베드룸, 주거 61개 층과 2026년 4분기 예상 완공을 제시합니다. 층수 집계 방식이 다른 외부 소개보다 개발사 구성표를 우선했습니다. Business Bay의 업무·외식 생활을 원하는 사람에게 맞을 수 있지만, 광고의 목적지별 5분 이동은 실측 통근이나 메트로 도보 접근으로 쓰지 않았습니다.",
-      "en": "Official material lists studios through three-bedroom homes, 61 residential floors and expected Q4 2026 completion. The developer’s floor breakdown takes precedence over portal counts using different conventions. It may suit Business Bay work and dining, but advertised five-minute destination trips were not adopted as measured commutes or walks to a metro."
+      "ko": "스튜디오~3베드룸, 주거 61개 층으로 구성되며 예상 완공은 2026년 4분기입니다. 층수 집계 방식이 다른 외부 소개보다 개발사 구성표를 우선했습니다. Business Bay에서 일하고 외식을 즐기는 생활에는 맞을 수 있습니다. 다만 광고에 나온 목적지별 5분은 실제 통근 시간이나 메트로까지의 도보 시간을 뜻하지 않습니다.",
+      "en": "Plans include studios through three-bedroom homes across 61 residential floors, with completion expected in Q4 2026. The floor breakdown separates residential and other levels; totals using different counting conventions are not directly comparable. It may suit Business Bay work and dining, but advertised five-minute destination trips were not adopted as measured commutes or walks to a metro."
     },
     "bestFor": {
       "ko": "Business Bay 생활권을 선호하고 세대 방향·평면·주차 조건을 구체적으로 맞춰 고를 수 있는 사람.",
@@ -2080,7 +2080,7 @@
         },
         "body": {
           "ko": "개발사는 수변의 Business Bay 입지를 제시합니다. 해변 리조트형 Passo와 달리 도심 업무·외식 생활을 중심에 두는 구매자에게 비교 가치가 생깁니다.",
-          "en": "The developer identifies a waterfront Business Bay location. Compared with a beach-resort option such as Passo, its appeal is to buyers prioritising city work and dining."
+          "en": "The site is on the Business Bay waterfront. Compared with a beach-resort option such as Passo, its appeal is to buyers prioritising city work and dining."
         },
         "sourceIds": [
           "project"
@@ -2124,7 +2124,7 @@
         },
         "body": {
           "ko": "개발사는 주거 61층과 지하 3개층·포디엄 2개층·편의시설층을 구분합니다. 출근 시간 엘리베이터 대기와 지하주차장 동선은 측정하지 않아, 높은 층의 조망 가치와 별도로 확인할 항목입니다.",
-          "en": "The developer distinguishes 61 residential floors, three basements, two podiums and an amenity floor. Lift waits and basement-parking access were not measured and should be checked separately from a high-floor view premium."
+          "en": "The published breakdown is 61 residential floors, three basements, two podiums and an amenity floor. Lift waits and basement-parking access were not measured and should be checked separately from a high-floor view premium."
         },
         "sourceIds": [
           "project"
@@ -2140,8 +2140,8 @@
             "en": "Begin with the Marasi Drive approach"
           },
           "body": {
-            "ko": "프로젝트 가이드는 Marasi Drive 입지를 설명합니다. 실제 근무지까지는 단지 출구→Marasi Drive→연결 교량·간선도로를 따져야 하며, 수변이라는 말만으로 보행 친화적 통근을 판단하지 않습니다.",
-            "en": "The project guide identifies Marasi Drive. Trace the entrance, Marasi Drive and relevant bridge/arterial to the actual workplace; a waterfront label alone does not establish a walkable commute."
+            "ko": "프로젝트 가이드 기준으로 Marasi Drive에 위치합니다. 실제 근무지까지는 단지 출구→Marasi Drive→연결 교량·간선도로를 따져야 하며, 수변이라는 말만으로 보행 친화적 통근을 판단하지 않습니다.",
+            "en": "The project is on Marasi Drive. Trace the entrance, Marasi Drive and relevant bridge/arterial to the actual workplace; a waterfront label alone does not establish a walkable commute."
           },
           "sourceIds": [
             "guide"
@@ -2155,7 +2155,7 @@
           },
           "body": {
             "ko": "개발사 페이지의 Dubai Mall·Opera 등 목적지별 짧은 시간에는 측정 조건이 제시되지 않습니다. 역 접근은 RTA 노선과 실제 출입구를 연결해 별도로 검토하고, 검증 전에는 역세권 점수를 만들지 않습니다.",
-            "en": "The developer’s short times to Dubai Mall and the Opera lack measurement conditions. Connect the real entrance to the RTA network separately; no station-access score is manufactured before verification."
+            "en": "Short advertised times to Dubai Mall and the Opera do not state how they were measured. Connect the real entrance to the RTA network separately; no station-access score is manufactured before verification."
           },
           "sourceIds": [
             "project",
@@ -2201,7 +2201,7 @@
             "en": "A canal walk and a grocery trip are different routes"
           },
           "body": {
-            "ko": "수변 입지 자체는 공식적으로 확인되지만, 이 리뷰에서는 단지 하부에 현재 영업하는 슈퍼마켓을 확인하지 못했습니다. 매장까지의 왕복 동선과 배달 차량 정차를 확보해야 매일의 편의성을 평가할 수 있습니다.",
+            "ko": "수변에 위치하지만, 단지 아래에서 현재 영업 중인 슈퍼마켓은 확인되지 않았습니다. 매장까지의 왕복 동선과 배달 차량 정차를 확보해야 매일의 편의성을 평가할 수 있습니다.",
             "en": "The waterfront setting is documented, but an operating supermarket beneath this project was not verified. Establish the return grocery route and delivery stopping arrangements before rating everyday convenience."
           },
           "sourceIds": [
@@ -2231,7 +2231,7 @@
             "en": "The published 20/50/30 funding structure"
           },
           "body": {
-            "ko": "공식 안내는 계약 20%·공사 중 50%·완료 시 30%입니다. 현재 재판매 매물은 원계약의 납부 이력이 다를 수 있으므로, 광고 비율을 그대로 대출 필요 금액으로 쓰지 않습니다.",
+            "ko": "공식 안내는 계약 20%·공사 중 50%·완료 시 30%입니다. 재판매 매물은 이미 납부한 금액이 서로 다를 수 있습니다. 광고의 분납 비율보다 해당 매물의 잔여 납부액을 기준으로 필요한 자금을 계산하세요.",
             "en": "The official indicative plan is 20% on contract, 50% during construction and 30% on completion. A current resale may have a different payment history, so advertised percentages do not directly determine the mortgage required."
           },
           "sourceIds": [
@@ -2394,7 +2394,7 @@
           "en": "A home organised around shared space"
         },
         "body": {
-          "ko": "공식 소개는 4개 층 클럽하우스를 단지 중심으로 설명합니다. 집 안 면적을 늘리는 대신 공용시설을 적극 활용하려는 사람에게 의미가 있지만 예약·운영 조건이 실제 가치를 좌우합니다.",
+          "ko": "공식 소개 기준으로 단지 중심에 4개 층 규모의 클럽하우스가 있습니다. 집 안 면적을 늘리는 대신 공용시설을 적극 활용하려는 사람에게 의미가 있지만 예약·운영 조건이 실제 가치를 좌우합니다.",
           "en": "The official concept places a four-level clubhouse at the centre. It may suit residents who use shared facilities instead of buying more internal space, but booking and operating conditions determine the real benefit."
         },
         "sourceIds": [
@@ -2408,8 +2408,8 @@
           "en": "A lake setting beside urban work districts"
         },
         "body": {
-          "ko": "개발사는 Jumeirah Islands의 호수와 JLT·Uptown 인접성을 설명합니다. Marina의 관광·해변 활동보다 호수와 주거 분위기를 선호한다면 비교 후보가 됩니다.",
-          "en": "The developer identifies the Jumeirah Islands lakes and proximity to JLT/Uptown. It merits comparison if a residential lake setting matters more than Marina tourism and beach activity."
+          "ko": "Jumeirah Islands의 호수, JLT·Uptown과 가까운 입지입니다. Marina의 관광·해변 활동보다 호수와 주거 분위기를 선호한다면 비교 후보가 됩니다.",
+          "en": "The site is near the Jumeirah Islands lakes, JLT and Uptown. It merits comparison if a residential lake setting matters more than Marina tourism and beach activity."
         },
         "sourceIds": [
           "project"
@@ -2425,7 +2425,7 @@
         },
         "body": {
           "ko": "개발사는 Eltiera Views를 Eltiera Heights 이후의 별도 프로젝트로 소개합니다. 검색에 섞이는 2028년 Heights 인도·평면·가격을 Views 계약 판단에 옮기면 안 됩니다.",
-          "en": "The developer presents Eltiera Views as a separate project following Eltiera Heights. Do not transfer Heights delivery dates, floor plans or pricing into a Views decision."
+          "en": "Eltiera Views is a separate project following Eltiera Heights. Do not transfer Heights delivery dates, floor plans or pricing into a Views decision."
         },
         "sourceIds": [
           "project",
@@ -2457,7 +2457,7 @@
           },
           "body": {
             "ko": "개발사 목적지 표는 JLT·Pavilion에 짧은 이동시간을 표시하지만 출입구·수단·측정 조건을 명시하지 않습니다. DMCC역을 이용할 계획이라면 로비에서 역 입구까지 실제 횡단 구간을 따로 확인해야 합니다.",
-            "en": "The developer’s destination table shows short trips to JLT/Pavilion without entrance, mode or measurement conditions. A DMCC-station routine needs a separate check of actual crossings from the lobby."
+            "en": "Advertised short trips to JLT and Pavilion do not specify entrances, travel mode or measurement conditions. A DMCC-station routine needs a separate check of actual crossings from the lobby."
           },
           "sourceIds": [
             "project",
@@ -2707,7 +2707,7 @@
     },
     "summary": {
       "ko": "공식 2026년 3월 설명은 East Residence 2·3·4를 별도 주거군으로 구분합니다. 6월에는 East의 파일링·흙막이 공사 계약과 West의 기초 완료를 각각 발표했습니다. 따라서 생활환경 평가는 완성된 커뮤니티 체험이 아니라 타워군 배치와 운영 계획, 주변 기존 학교·업무권을 함께 읽는 단계입니다.",
-      "en": "Official March 2026 material identifies East Residences 2, 3 and 4 as a separate cluster. June reporting distinguishes an East piling/shoring appointment from completed West foundations. This is therefore an assessment of cluster planning and existing surrounding schools/work districts, not an account of living in a completed community."
+      "en": "As of the March 2026 plans, East Residences 2, 3 and 4 form a separate cluster. June reporting distinguishes an East piling/shoring appointment from completed West foundations. This is therefore an assessment of cluster planning and existing surrounding schools/work districts, not an account of living in a completed community."
     },
     "bestFor": {
       "ko": "JLT·Uptown 업무권과 호수 주거 환경을 원하며 장기 자금 일정을 맞출 수 있는 가구.",
@@ -2725,7 +2725,7 @@
         },
         "body": {
           "ko": "개발사는 East Residence 2·3·4를 공식적으로 구분합니다. 단지명만 보는 것보다 실제 계약 타워와 평면을 맞출 수 있는 출발점이며 이 리뷰도 East 범위로 제한합니다.",
-          "en": "The developer explicitly distinguishes East Residences 2, 3 and 4. This supports matching a contract to a real tower and plan; this review remains scoped to East."
+          "en": "East Residences 2, 3 and 4 are separate parts of the development. This supports matching a contract to a real tower and plan; this review remains scoped to East."
         },
         "sourceIds": [
           "east"
@@ -2739,7 +2739,7 @@
         },
         "body": {
           "ko": "공식 설명은 JLT·Uptown·Marina와 Jumeirah Islands의 관계를 제시합니다. 관광지 중심 생활보다 업무권 접근과 주거 분위기를 함께 원하는 사람에게 비교 의미가 있습니다.",
-          "en": "Official material describes the relationship to JLT, Uptown, Marina and Jumeirah Islands. The comparison is relevant for buyers prioritising access to work and residential surroundings over a tourism-centred routine."
+          "en": "The surrounding districts include JLT, Uptown, Marina and Jumeirah Islands. The comparison is relevant for buyers prioritising access to work and residential surroundings over a tourism-centred routine."
         },
         "sourceIds": [
           "east"
@@ -2786,7 +2786,7 @@
             "en": "The actual connection to DMCC station is separate"
           },
           "body": {
-            "ko": "공식 자료는 DMCC 업무권 접근을 언급하지만 단지 로비→역 입구 보행 측정치는 없습니다. 도보 우선 가구라면 Meadows Drive 쪽 출입구와 횡단 위치를 먼저 확정해야 합니다.",
+            "ko": "DMCC 업무권과 가깝지만, 단지 로비에서 역 입구까지의 실제 보행 시간은 확인되지 않았습니다. 도보 우선 가구라면 Meadows Drive 쪽 출입구와 횡단 위치를 먼저 확정해야 합니다.",
             "en": "Official material mentions access to the DMCC work district but supplies no measured lobby-to-station walk. A walking-first household should establish the actual entrance and crossings before relying on the location label."
           },
           "sourceIds": [
@@ -2802,7 +2802,7 @@
           },
           "body": {
             "ko": "개발사의 단지 보행로 계획은 산책·공용공간 이동에 유리한 방향입니다. 직장·학교까지 연속 보행이 가능한지는 별도여서 커뮤니티 산책 길이를 통근 편의 점수로 전환하지 않습니다.",
-            "en": "The developer’s internal path plan supports walking between shared spaces. Continuous access to work or school is separate; path length is not converted into a commute score."
+            "en": "Planned internal paths connect the shared spaces on foot. Continuous access to work or school is separate; path length is not converted into a commute score."
           },
           "sourceIds": [
             "progress"
@@ -2877,7 +2877,7 @@
             "en": "Review East’s balance and shared-charge scope"
           },
           "body": {
-            "ko": "해당 타워 계약의 납부 일정과 전체 District 공용시설의 관리비 분담을 받아야 합니다. 승인 관리비·실제 임대는 확보하지 못했으며 West의 광고 분납률을 복사해 쓰지 않습니다.",
+            "ko": "해당 타워 계약의 납부 일정과 전체 District 공용시설의 관리비 분담을 받아야 합니다. 승인 관리비와 실제 임대 계약 자료는 확인되지 않았습니다. 분납 조건도 West와 같다고 가정하지 말고 해당 계약서로 확인하세요.",
             "en": "Obtain the chosen East tower’s instalment schedule and its share of district amenity charges. Approved fees and real leases were not obtained; West advertising terms are not copied across."
           },
           "sourceIds": [
@@ -3145,7 +3145,7 @@
           },
           "body": {
             "ko": "The Gardens의 The Winchester School은 2026–27 Year 1~5 연 AED 18,688을 게시합니다. Majan의 GEMS Winchester Dubai와 다른 학교이며 입학 자리는 별도입니다.",
-            "en": "The Winchester School in The Gardens lists AED 18,688 annually for Years 1–5 in 2026–27. It is distinct from GEMS Winchester Dubai in Majan; a place is separate."
+            "en": "Published 2026–27 annual tuition at The Winchester School in The Gardens is AED 18,688 for Years 1–5. It is distinct from GEMS Winchester Dubai in Majan; a place is separate."
           },
           "sourceIds": [
             "win"
@@ -3386,7 +3386,7 @@
         },
         "body": {
           "ko": "Emaar South의 골프 구상은 입지 설명입니다. 현재 코스 운영·입주민 요금·회원권 포함은 확인하지 않았으므로 집값에 무료 골프를 포함해 계산하지 않습니다.",
-          "en": "The Emaar South golf concept describes the setting. Current course operation, resident pricing and included membership were not established; free golf is not assumed in the purchase price."
+          "en": "The planned setting centres on golf at Emaar South. Current course operation, resident pricing and included membership were not established; free golf is not assumed in the purchase price."
         },
         "sourceIds": [
           "project"
@@ -3400,7 +3400,7 @@
         },
         "body": {
           "ko": "개발사가 제시하는 DWC·Expo City 연계는 남부 업무권 가구에게 의미가 있습니다. 반대로 DIFC·Downtown 매일 왕복은 별도 검토가 필요해 같은 면적의 도심 집과 생활 시간을 함께 비교해야 합니다.",
-          "en": "The developer’s DWC/Expo City positioning is relevant to southern work destinations. Daily DIFC/Downtown travel needs a separate assessment against a smaller central home and its time budget."
+          "en": "The DWC/Expo City location is most relevant to people working in the southern districts. Daily DIFC/Downtown travel needs a separate assessment against a smaller central home and its time budget."
         },
         "sourceIds": [
           "project"
@@ -3417,7 +3417,7 @@
           },
           "body": {
             "ko": "RTA 노선은 Expo 방면 철도 연결을 보여 주지만 Golf Fields 출입구까지 이어지는 직결 경로는 확인하지 않았습니다. 집→역 접근 비용과 본선 시간을 나눠야 합니다.",
-            "en": "The RTA network shows rail toward Expo, but a direct connection to the Golf Fields entrance was not verified. Separate station access cost from the main rail journey."
+            "en": "Rail serves Expo, but a direct connection to the Golf Fields entrance has not been verified. Separate station access cost from the main rail journey."
           },
           "sourceIds": [
             "rail"
@@ -3447,7 +3447,7 @@
           },
           "body": {
             "ko": "GEMS Founders Dubai South의 2026–27 Year 1은 승인 AED 43,400, 10% 할인 표시는 AED 39,060입니다. 미래 입주 연도 할인까지 보장하는 예산으로 사용하지 않습니다.",
-            "en": "GEMS Founders Dubai South lists 2026–27 Year 1 at AED 43,400 approved and AED 39,060 with its advertised 10% discount. This does not guarantee a discount at future move-in."
+            "en": "GEMS Founders Dubai South's approved 2026–27 Year 1 tuition is AED 43,400, or AED 39,060 with the advertised 10% discount. This does not guarantee a discount at future move-in."
           },
           "sourceIds": [
             "gfd-fees"
@@ -3460,8 +3460,8 @@
             "en": "An STS school route is not automatic"
           },
           "body": {
-            "ko": "학교는 STS가 통학을 맡으며 요청 노선을 모두 보장하지 않는다고 명시합니다. 해당 단지의 픽업 여부·승차 시간을 확인해야 가족 적합도가 확정됩니다.",
-            "en": "The school identifies STS as its transport operator and says requested routes are not guaranteed. Building pickup and ride time are necessary to establish family suitability."
+            "ko": "통학버스는 STS가 운영하며, 요청한 노선이 모두 제공되는 것은 아닙니다. 해당 단지의 픽업 여부·승차 시간을 확인해야 가족 적합도가 확정됩니다.",
+            "en": "STS operates the school transport, and requested routes are not guaranteed. Building pickup and ride time are necessary to establish family suitability."
           },
           "sourceIds": [
             "gfd-bus"
@@ -3658,7 +3658,7 @@
         },
         "body": {
           "ko": "개발사는 여러 중층 동이 중정을 이루는 배치를 제시합니다. 고층 조망보다 집과 공용 녹지의 관계를 중시한다면 비교 이유가 됩니다.",
-          "en": "The developer shows mid-rise blocks organised around courtyards. This is a reason to compare it if the relationship between home and shared greenery matters more than a high-floor skyline."
+          "en": "Plans arrange mid-rise blocks around courtyards. This is a reason to compare it if the relationship between home and shared greenery matters more than a high-floor skyline."
         },
         "sourceIds": [
           "project"
@@ -3671,7 +3671,7 @@
           "en": "A location tied to the Expo district"
         },
         "body": {
-          "ko": "Dubai Exhibition Centre는 운영 중인 행사 목적지와 교통 접근을 안내합니다. 이 권역에 자주 가는 사람에게 입지 논리가 있으나 건물까지 마지막 구간은 따로 봐야 합니다.",
+          "ko": "Dubai Exhibition Centre는 현재 운영 중인 행사 시설입니다. 이 권역에 자주 가는 사람에게 입지 논리가 있으나 건물까지 마지막 구간은 따로 봐야 합니다.",
           "en": "Dubai Exhibition Centre provides an operating event destination and transport information. Frequent visitors to this district have a concrete location rationale, with the last leg to the building assessed separately."
         },
         "sourceIds": [
@@ -3718,7 +3718,7 @@
             "en": "Separate the rail network from the building walk"
           },
           "body": {
-            "ko": "RTA 노선과 DEC의 교통 안내는 Expo 방향 대중교통을 확인하는 출발점입니다. 미래 로비에서 역까지 신호·횡단·그늘을 포함한 시간은 이번 조사에서 측정하지 않았습니다.",
+            "ko": "RTA 노선과 DEC의 교통 안내는 Expo 방향 대중교통을 확인하는 출발점입니다. 완공 후 로비에서 역까지 신호·횡단·그늘을 고려한 실제 보행 시간은 아직 확인할 수 없습니다.",
             "en": "The RTA map and DEC directions establish the Expo transport context. A future lobby-to-station time including crossings, signals and shade was not measured."
           },
           "sourceIds": [
@@ -3750,7 +3750,7 @@
           },
           "body": {
             "ko": "GEMS Founders Dubai South의 2026–27 Year 7 승인 학비는 AED 47,600, 게시 할인가는 AED 42,840입니다. 미래 학비·정원 보장 없이 현재 가족 예산 비교에만 사용합니다.",
-            "en": "GEMS Founders Dubai South lists 2026–27 Year 7 at AED 47,600 approved and AED 42,840 discounted. These are current comparison figures without a future fee or place guarantee."
+            "en": "GEMS Founders Dubai South's approved 2026–27 Year 7 tuition is AED 47,600, with an advertised discounted fee of AED 42,840. These are current comparison figures without a future fee or place guarantee."
           },
           "sourceIds": [
             "gfd-fees"
@@ -3973,7 +3973,7 @@
         },
         "body": {
           "ko": "개발사는 Creek 수변과 스카이라인 전망을 핵심으로 제시합니다. 그 가치를 쓰려면 관심 세대의 실제 조망 각도와 거실 배치를 맞추는 것이 브랜드명보다 중요합니다.",
-          "en": "The developer places the creek frontage and skyline outlook at the centre. To use that value, align the actual viewing angle and living-room arrangement of the chosen apartment."
+          "en": "Creek frontage and skyline views are central to the advertised setting. To use that value, align the actual viewing angle and living-room arrangement of the chosen apartment."
         },
         "sourceIds": [
           "project"
@@ -3987,7 +3987,7 @@
         },
         "body": {
           "ko": "관광청이 소개하는 Viewing Point는 Creek Harbour의 구체적 여가 목적지입니다. 단지 안 미개장 시설과 달리 현재 지역을 방문해 주변 분위기를 판단할 기준점으로 쓸 수 있습니다.",
-          "en": "The tourism authority identifies the Viewing Point in Creek Harbour. It offers a concrete place to assess the surrounding atmosphere, separate from unopened project facilities."
+          "en": "Creek Harbour's Viewing Point offers a way to experience the waterfront. It offers a concrete place to assess the surrounding atmosphere, separate from unopened project facilities."
         },
         "sourceIds": [
           "viewing-point"
@@ -4017,7 +4017,7 @@
         },
         "body": {
           "ko": "정부 발표의 Blue Line은 2029년 개통 구상입니다. 개발 지역 철도 기대는 장기 입지 요소지만 오늘의 통근 시간이나 확정된 집 앞 출입구를 뜻하지 않습니다.",
-          "en": "The government describes Blue Line opening in 2029. This is a longer-term location factor, not today’s commute or a confirmed station entrance outside the home."
+          "en": "Blue Line opening is planned for 2029. This is a longer-term location factor, not today’s commute or a confirmed station entrance outside the home."
         },
         "sourceIds": [
           "blue-line-route"
@@ -4079,7 +4079,7 @@
           },
           "body": {
             "ko": "DIS의 2026–27 Year 1~5 수업료는 AED 58,034입니다. 교복·급식·통학은 포함되지 않아 방 하나를 늘리는 비용과 학교 전체 비용을 함께 비교해야 합니다.",
-            "en": "DIS lists AED 58,034 tuition for Years 1–5 in 2026–27. Uniform, meals and transport are additional, relevant when balancing another bedroom against the full family budget."
+            "en": "DIS's published 2026–27 tuition for Years 1–5 is AED 58,034. Uniform, meals and transport are additional, relevant when balancing another bedroom against the full family budget."
           },
           "sourceIds": [
             "dis-fees"
@@ -4126,7 +4126,7 @@
           },
           "body": {
             "ko": "개발사 시작 가격은 호가이며 아래 거래 중앙값은 여러 면적·층이 섞인 표본입니다. 관리비·냉방·인도 잔금을 확인하기 전 순수익률로 바꾸지 않습니다.",
-            "en": "The developer’s starting price is an asking level; the transaction median mixes sizes and floors. Neither establishes net yield without charges, cooling and completion funding."
+            "en": "The advertised starting price is an asking price, while the transaction median combines different sizes and floors. Neither establishes net yield without charges, cooling and completion funding."
           },
           "sourceIds": [
             "project",
@@ -4401,11 +4401,11 @@
         {
           "title": {
             "ko": "DIS 통학 운영사는 Maverick",
-            "en": "DIS identifies Maverick for school transport"
+            "en": "Maverick operates DIS school transport"
           },
           "body": {
-            "ko": "학교 FAQ는 통학을 Maverick이 제공한다고 명시합니다. 새 단지 픽업을 보장한다는 뜻은 아니므로 매수 전 Creek Haven 정차 여부를 확인할 구체적 운영사가 생긴 정도입니다.",
-            "en": "The school FAQ identifies Maverick as its transport provider. This does not guarantee new-building pickup, but identifies the operator whose Creek Haven coverage needs checking."
+            "ko": "학교 FAQ 기준으로 통학버스 운영사는 Maverick입니다. 새 단지 픽업을 보장한다는 뜻은 아니므로 매수 전 Creek Haven 정차 여부를 확인할 구체적 운영사가 생긴 정도입니다.",
+            "en": "Maverick operates the school transport. This does not guarantee new-building pickup, but identifies the operator whose Creek Haven coverage needs checking."
           },
           "sourceIds": [
             "dis-faq"
@@ -4419,7 +4419,7 @@
           },
           "body": {
             "ko": "DIS는 월·수·목 FS 13:00, 초등 14:30, 중등 15:30 하교를 게시합니다. 형제자매 학년이 다르면 같은 차 한 번으로 끝나는 통학이 아닐 수 있습니다.",
-            "en": "DIS lists Monday/Wednesday/Thursday dismissal at 13:00 for FS, 14:30 for primary and 15:30 for secondary. Siblings in different stages may require more than one collection."
+            "en": "DIS's Monday, Wednesday and Thursday dismissal times are 13:00 for FS, 14:30 for primary and 15:30 for secondary. Siblings in different stages may require more than one collection."
           },
           "sourceIds": [
             "dis-faq"
@@ -4598,7 +4598,7 @@
     },
     "summary": {
       "ko": "Aldar의 2026년 발표는 6개 중층 동, 740개 아파트·복층을 별도 Residences로 구분합니다. 기존 Cassia·Ravenna 빌라와 같은 집이 아니며, 공용 자연 공간을 이용하는 아파트라는 점이 핵심입니다. 현재 거주 후기는 확보하지 못했습니다.",
-      "en": "Aldar’s 2026 announcement identifies six mid-rise buildings with 740 apartments and duplexes as the Residences release. These are distinct from Cassia and Ravenna villas: the proposition is apartment living with access to wider natural spaces. Resident experience in completed homes was not available."
+      "en": "The 2026 Residences release plans six mid-rise buildings with 740 apartments and duplexes. These are distinct from Cassia and Ravenna villas: the proposition is apartment living with access to wider natural spaces. Resident experience in completed homes was not available."
     },
     "bestFor": {
       "ko": "자동차 생활을 받아들이며 자녀·취미·공원 활동이 주거 선택의 중심인 가구.",
@@ -4676,8 +4676,8 @@
             "en": "A road-based district opposite Global Village"
           },
           "body": {
-            "ko": "공식 발표는 Sheikh Mohammed bin Zayed Road와 Global Village 맞은편 위치를 특정합니다. 가까운 레저 목적지와 매일 직장까지 도달하는 시간은 별도 판단입니다.",
-            "en": "The release locates the community along Sheikh Mohammed bin Zayed Road opposite Global Village. A nearby leisure destination and daily access to work are different considerations."
+            "ko": "Sheikh Mohammed bin Zayed Road 인근, Global Village 맞은편에 자리합니다. 레저시설 접근이 편리해도 매일 직장까지 걸리는 시간은 실제 출퇴근 경로로 따져봐야 합니다.",
+            "en": "The location is near Sheikh Mohammed bin Zayed Road, opposite Global Village. Convenient access to leisure facilities does not establish the journey time to your workplace."
           },
           "sourceIds": [
             "launch"
@@ -4707,8 +4707,8 @@
             "en": "The international school and nursery are planned"
           },
           "body": {
-            "ko": "발표는 포디엄 보육시설과 전체 마스터플랜 국제학교를 구분합니다. 교과과정·운영사·개장·학비를 확보하지 못해 현재 통학을 해결하는 근거로 사용하지 않습니다.",
-            "en": "The release distinguishes a podium nursery from a wider-masterplan international school. Curriculum, operator, opening and fees were not established as a current schooling solution."
+            "ko": "포디엄 보육시설과 전체 개발구역의 국제학교가 각각 계획돼 있습니다. 교육과정·운영사·개장일·학비는 확인되지 않아 당장 필요한 통학을 맡길 수는 없습니다.",
+            "en": "Childcare in the podium and an international school in the wider development are separate plans. The curriculum, operator, opening date and fees are unconfirmed, so they cannot yet meet an immediate schooling need."
           },
           "sourceIds": [
             "launch"
@@ -4767,7 +4767,7 @@
             "en": "Include master-community charges in the apartment budget"
           },
           "body": {
-            "ko": "넓은 공원 접근을 아파트의 장점으로 본다면 해당 공간 관리비 분담도 확인해야 합니다. 실제 승인 관리비·임대 계약 자료 없이 순수익을 확정하지 않습니다.",
+            "ko": "넓은 공원 접근을 아파트의 장점으로 본다면 해당 공간 관리비 분담도 확인해야 합니다. 실제로 남는 임대수입을 계산하려면 승인 관리비와 임대 계약 자료가 필요합니다.",
             "en": "If access to extensive parks is an apartment benefit, establish its share of their upkeep. Approved charges and actual leases were not obtained for a net-return calculation."
           },
           "sourceIds": [
@@ -4888,8 +4888,8 @@
       "en": "Worth considering for a larger household valuing en-suite bedrooms. It is a townhouse scheme dominated by three-bedroom homes, with road-based living and a 2028 target delivery as conditions."
     },
     "summary": {
-      "ko": "공식 R. Hills 자료는 902개 타운하우스 중 744개가 3베드룸이라고 밝힙니다. 4·5베드룸은 합쳐 158개입니다. 단지의 고급스러운 이미지보다 실제 연속주택 배치·전용 주차·층간 이동·방별 욕실이 생활 판단에 더 구체적인 기준이 됩니다.",
-      "en": "Official R. Hills material lists 744 three-bedroom homes within 902 townhouses, with 158 four/five-bedroom homes combined. The practical decision rests on the attached-home arrangement, parking, stairs and en-suite bedrooms rather than the luxury branding."
+      "ko": "공식 R. 902개 타운하우스 중 744개가 3베드룸으로 계획돼 있습니다. 4·5베드룸은 합쳐 158개입니다. 단지의 고급스러운 이미지보다 실제 연속주택 배치·전용 주차·층간 이동·방별 욕실이 생활 판단에 더 구체적인 기준이 됩니다.",
+      "en": "Official R. Of the 902 planned townhouses, 744 have three bedrooms and 158 have four or five bedrooms. The practical decision rests on the attached-home arrangement, parking, stairs and en-suite bedrooms rather than the luxury branding."
     },
     "bestFor": {
       "ko": "여러 침실·욕실과 전용 주차를 중시하며 학교 차량 이동을 감수할 가구.",
@@ -5059,8 +5059,8 @@
             "en": "Illustrated furniture may not be part of delivery"
           },
           "body": {
-            "ko": "공식 평면 책자는 가구·장식 등이 표준 제공품에 포함되지 않는다고 명시합니다. 주방 기기·조명·커튼 비용을 완성 이미지에 포함된 것으로 간주하지 않습니다.",
-            "en": "The official plan booklet states that illustrated furniture and accessories are not standard inclusions. Do not assume appliances, lighting and curtains are supplied because they appear in images."
+            "ko": "공식 평면 책자의 가구와 장식 등은 기본 제공 품목이 아닙니다. 주방 기기·조명·커튼 비용을 완성 이미지에 포함된 것으로 간주하지 않습니다.",
+            "en": "Furniture and accessories shown in the plans are not standard inclusions. Do not assume appliances, lighting and curtains are supplied because they appear in images."
           },
           "sourceIds": [
             "plans"
@@ -5203,8 +5203,8 @@
       "en": "Suited to families seeking a larger home and parking who will compare the exact unit type. Do not assume every home has a lift, maid’s room or detached-garden arrangement."
     },
     "summary": {
-      "ko": "공식 Taormina 자료는 타운하우스와 빌라가 섞인 838개 주택 구상을 제시합니다. 3베드룸 G+2 타운하우스 392개를 비롯해 4·5베드룸의 다양한 형태가 있어 같은 방수도 생활 동선이 다릅니다. 이 리뷰 거래 연결은 Village 1 번호 3108에 한정합니다.",
-      "en": "Official Taormina material describes 838 homes combining townhouses and villas, including 392 three-bedroom G+2 townhouses and several four/five-bedroom forms. Equal bedroom counts can mean different routines. The transaction link here is limited to Village 1 project 3108."
+      "ko": "타운하우스와 빌라가 섞인 838개 주택이 계획돼 있습니다. 3베드룸 G+2 타운하우스 392개를 비롯해 4·5베드룸의 다양한 형태가 있어 같은 방수도 생활 동선이 다릅니다. 이 리뷰 거래 연결은 Village 1 번호 3108에 한정합니다.",
+      "en": "Plans combine 838 townhouses and villas, including 392 three-bedroom G+2 townhouses and several four- and five-bedroom types. Equal bedroom counts can mean different routines. The transaction link here is limited to Village 1 project 3108."
     },
     "bestFor": {
       "ko": "계단·주차·가사 동선을 실제 평면으로 맞출 수 있는 가족.",
@@ -5236,7 +5236,7 @@
         },
         "body": {
           "ko": "3베드룸 타운하우스 392개는 G+2로 표시됩니다. 세 층을 사용하는 생활이 재택 분리에는 유리할 수 있지만 어린이·노부모의 밤 이동에는 부담일 수 있습니다.",
-          "en": "The factsheet identifies 392 three-bedroom townhouses as G+2. Three-level living may separate work well while complicating night-time movement for children or older relatives."
+          "en": "The plans include 392 three-bedroom G+2 townhouses. Three-level living may separate work well while complicating night-time movement for children or older relatives."
         },
         "sourceIds": [
           "facts"
@@ -5265,7 +5265,7 @@
           "en": "Utility rooms and en-suites also vary"
         },
         "body": {
-          "ko": "세탁·메이드룸과 전용 욕실은 일부 유형에만 적용된다고 설명합니다. 가족 인원만 보고 방수를 고르기보다 매일 세탁과 가사 동선이 해결되는지 확인하세요.",
+          "ko": "세탁·메이드룸과 전용 욕실은 일부 유형에만 포함됩니다. 가족 인원만 보고 방수를 고르기보다 매일 세탁과 가사 동선이 해결되는지 확인하세요.",
           "en": "Laundry/maid rooms and en-suite arrangements are described as applying to some types. Check daily household circulation instead of choosing from bedroom count alone."
         },
         "sourceIds": [
@@ -5283,7 +5283,7 @@
           },
           "body": {
             "ko": "개발사 팩트시트는 Al Barari·IMG를 주변 차량 목적지로 특정합니다. 광고 이동 분수를 실제 출퇴근으로 채택하지 않았으며 정확한 게이트와 목적지 입구 기준으로 다시 맞춰야 합니다.",
-            "en": "The factsheet names Al Barari and IMG as surrounding driving destinations. Advertised minutes were not adopted as a commute; match the actual gate and destination entrance."
+            "en": "Al Barari and IMG are nearby driving destinations. Advertised minutes were not adopted as a commute; match the actual gate and destination entrance."
           },
           "sourceIds": [
             "facts"
@@ -5343,7 +5343,7 @@
           },
           "body": {
             "ko": "Cityland Mall의 상점 목록은 기존 주변 쇼핑 대안을 확인하는 자료입니다. 타오르미나 내부 리테일의 입점·개장과는 별개여서 장보기 왕복을 구분해야 합니다.",
-            "en": "Cityland Mall’s directory identifies existing surrounding shopping options. It is separate from tenant opening in Taormina’s own retail, with a different grocery round trip."
+            "en": "Cityland Mall offers existing shops in the wider area. It is separate from tenant opening in Taormina’s own retail, with a different grocery round trip."
           },
           "sourceIds": [
             "cityland-stores",
@@ -5374,7 +5374,7 @@
           },
           "body": {
             "ko": "공식 페이지에는 19.4% 완료가 보이지만 그 수치의 기준일은 본문에서 확보하지 못했습니다. 이를 오늘의 공정률 그래프로 쓰거나 예정 인도를 보장하는 근거로 사용하지 않습니다.",
-            "en": "The official page shows 19.4% completion without an established reporting date in the visible text. It is not charted as today’s progress or used to guarantee delivery."
+            "en": "Published construction progress is 19.4%, but its reporting date is not clear. It is not charted as today’s progress or used to guarantee delivery."
           },
           "sourceIds": [
             "project"
@@ -5524,7 +5524,7 @@
         },
         "body": {
           "ko": "공식 위치 설명은 DWC·JAFZA·Dubai South Free Zone을 특정합니다. 이 권역에 일터가 있다면 다른 지역의 더 작은 집과 비교할 구체적 이유가 있습니다.",
-          "en": "Official location material identifies DWC, JAFZA and Dubai South Free Zone. Work in these districts provides a concrete reason to compare it with a smaller home elsewhere."
+          "en": "DWC, JAFZA and Dubai South Free Zone are the surrounding employment destinations. Work in these districts provides a concrete reason to compare it with a smaller home elsewhere."
         },
         "sourceIds": [
           "launch"
@@ -5599,7 +5599,7 @@
           },
           "body": {
             "ko": "2026년 정부 발표는 Dubai South의 Expo Metro 연결 공공버스를 언급합니다. Hayat 1 정문 정차나 배차 간격을 확인한 것은 아니므로 단지 직결로 표현하지 않습니다.",
-            "en": "The 2026 government release identifies a Dubai South public bus connection to Expo Metro. Hayat 1 gate pickup and frequency were not verified as a direct building service."
+            "en": "A public bus connection from Dubai South to Expo Metro was confirmed in 2026. Hayat 1 gate pickup and frequency were not verified as a direct building service."
           },
           "sourceIds": [
             "progress"
@@ -5645,7 +5645,7 @@
             "en": "The district hypermarket and future mall are separate"
           },
           "body": {
-            "ko": "정부는 Dubai South의 기존 50,000sqft 하이퍼마켓과 건설 중 몰을 나눠 설명합니다. 이를 모두 Hayat 내부 영업 시설로 표시하지 않고 초기 장보기 목적지를 따로 맞춥니다.",
+            "ko": "Dubai South에는 기존 50,000sqft 하이퍼마켓과 건설 중인 몰이 각각 있습니다. 모두 Hayat 안에서 이용할 수 있는 시설은 아닙니다. 입주 초기에 장을 볼 곳까지의 경로를 따로 확인하세요.",
             "en": "The government distinguishes an existing 50,000sqft district hypermarket from a mall under development. Neither is automatically an operating shop inside Hayat."
           },
           "sourceIds": [
@@ -5807,8 +5807,8 @@
       "en": "A candidate for combining parks with existing Jebel Ali retail and rail. The advertised one minute to Energy station was not verified as a measured walk."
     },
     "summary": {
-      "ko": "Wasl은 Boulevard Park 전체를 2개 필지·6개 동·1,248개 주택으로 설명합니다. 이 리뷰의 거래는 Park 1 프로젝트 4184만이며 Park 2를 합치지 않습니다. 공원 쪽과 불러바드 쪽의 생활 차이, 역 출입구, 기존 몰 접근이 선택의 핵심입니다.",
-      "en": "Wasl describes the full Boulevard Park scheme as two plots, six buildings and 1,248 homes. This review’s transactions cover Park 1 project 4184 only, without Park 2. The key choices are park versus boulevard orientation, station access and existing mall trips."
+      "ko": "Boulevard Park 전체 규모는 2개 필지, 6개 동, 1,248개 주택입니다. 이 리뷰의 거래는 Park 1 프로젝트 4184만이며 Park 2를 합치지 않습니다. 공원 쪽과 불러바드 쪽의 생활 차이, 역 출입구, 기존 몰 접근이 선택의 핵심입니다.",
+      "en": "The full Boulevard Park scheme covers two plots, six buildings and 1,248 homes. This review’s transactions cover Park 1 project 4184 only, without Park 2. The key choices are park versus boulevard orientation, station access and existing mall trips."
     },
     "bestFor": {
       "ko": "Jebel Ali 생활권에서 공원·메트로 후보를 함께 비교할 1~3베드룸 가구.",
@@ -5839,8 +5839,8 @@
           "en": "Existing shopping destinations are identified"
         },
         "body": {
-          "ko": "Wasl은 Festival Plaza와 Ibn Battuta Mall을 주변 목적지로 명시합니다. 아직 운영사를 모르는 신축 내부 상가에만 생활 편의를 의존하는 경우보다 검토할 실체가 있습니다.",
-          "en": "Wasl identifies Festival Plaza and Ibn Battuta Mall as surrounding destinations. This gives the shopping assessment concrete options beyond future on-site tenants."
+          "ko": "주변 쇼핑시설로 Festival Plaza와 Ibn Battuta Mall이 있습니다. 아직 운영사를 모르는 신축 내부 상가에만 생활 편의를 의존하는 경우보다 검토할 실체가 있습니다.",
+          "en": "Festival Plaza and Ibn Battuta Mall are nearby shopping destinations. This gives the shopping assessment concrete options beyond future on-site tenants."
         },
         "sourceIds": [
           "project"
@@ -5856,7 +5856,7 @@
         },
         "body": {
           "ko": "개발사 수치는 두 필지·여섯 동 전체입니다. Park 1의 거래·계약 타워와 Park 2를 섞으면 표본 규모와 공용시설 부담을 잘못 읽을 수 있습니다.",
-          "en": "The developer total covers both plots and all six buildings. Mixing Park 1 transactions or tower contracts with Park 2 misstates sample scope and potentially shared charges."
+          "en": "The total covers both plots and all six buildings. Mixing Park 1 transactions or tower contracts with Park 2 misstates sample scope and potentially shared charges."
         },
         "sourceIds": [
           "project",
@@ -5902,7 +5902,7 @@
             "en": "An existing line still has a new-building last leg"
           },
           "body": {
-            "ko": "Wasl은 Ibn Battuta와 Energy역 사이 Sheikh Zayed Road 인근으로 위치를 설명합니다. 어떤 역 입구로 갈지 먼저 정한 뒤 귀가 방향과 짐을 들고 오는 동선을 비교하세요.",
+            "ko": "Ibn Battuta역과 Energy역 사이, Sheikh Zayed Road 인근에 위치합니다. 어떤 역 입구로 갈지 먼저 정한 뒤 귀가 방향과 짐을 들고 오는 동선을 비교하세요.",
             "en": "Wasl locates the scheme near Sheikh Zayed Road between Ibn Battuta and Energy stations. Choose the station entrance first, then assess the return direction and travel with bags."
           },
           "sourceIds": [
@@ -5919,8 +5919,8 @@
             "en": "Move from a school list to the actual campus"
           },
           "body": {
-            "ko": "개발사가 Winchester를 후보로 제시하며 The Gardens의 학교 운영 자료를 대조했습니다. 학교가 가깝다는 표현보다 자녀 학년의 자리와 픽업 가능 여부가 결정적입니다.",
-            "en": "The developer lists Winchester and the school material for The Gardens was cross-checked. Year-group places and pickup availability matter more than a general nearby-school label."
+            "ko": "The Gardens의 Winchester School이 주변 학교 후보입니다. 자녀 학년의 빈자리와 단지에서의 픽업 가능 여부를 함께 확인해야 실제 통학이 가능한지 알 수 있습니다.",
+            "en": "Winchester School in The Gardens is a nearby option. A place in the child's year group and a workable pickup arrangement are both needed for the school journey to work."
           },
           "sourceIds": [
             "project",
@@ -5935,7 +5935,7 @@
           },
           "body": {
             "ko": "The Winchester School Jebel Ali의 2026–27 FS1·FS2 학비는 AED 14,950입니다. 단지 내부 보육시설 또는 입주 연도 자리·학비 보장은 아닙니다.",
-            "en": "The Winchester School Jebel Ali lists AED 14,950 for FS1/FS2 in 2026–27. This is not on-site childcare or a future fee/place guarantee."
+            "en": "Published 2026–27 tuition at The Winchester School Jebel Ali is AED 14,950 for FS1/FS2. This is not on-site childcare or a future fee/place guarantee."
           },
           "sourceIds": [
             "win"
@@ -6102,7 +6102,7 @@
     },
     "summary": {
       "ko": "공식 Dubai 팩트시트는 1,767개 중 1,321개가 2베드룸 G+1이라고 밝힙니다. 큰 빌라 중심 단지와 성격이 다릅니다. 같은 이름의 Abu Dhabi Village와 구분하며 이 페이지 거래는 Wadi Al Safa 7의 프로젝트 2784만입니다.",
-      "en": "The official Dubai factsheet lists 1,321 two-bedroom G+1 homes out of 1,767, a different profile from a large-villa scheme. This is separate from the similarly named Abu Dhabi Village; transactions here cover Wadi Al Safa 7 project 2784 only."
+      "en": "Of the 1,767 planned homes, 1,321 are two-bedroom G+1 homes, giving the development a different mix from a large-villa scheme. This is separate from the similarly named Abu Dhabi Village; transactions here cover Wadi Al Safa 7 project 2784 only."
     },
     "bestFor": {
       "ko": "소형 아파트 대신 별도 출입과 위아래 생활 분리를 원하는 2~3인 가구.",
@@ -6133,7 +6133,7 @@
           "en": "Two/three-bedroom types are G+1"
         },
         "body": {
-          "ko": "공식 자료는 2·3베드룸을 G+1, 4베드룸을 G+2로 구분합니다. 필요한 방수와 함께 하루 계단 이동량을 선택할 수 있다는 점이 구체적 장점입니다.",
+          "ko": "2·3베드룸은 지상 2개 층(G+1), 4베드룸은 지상 3개 층(G+2) 구성입니다. 필요한 방수와 함께 하루 계단 이동량을 선택할 수 있다는 점이 구체적 장점입니다.",
           "en": "The factsheet distinguishes G+1 two/three-bedroom homes from G+2 four-bedroom homes. Bedroom needs can be considered alongside the amount of daily stair travel."
         },
         "sourceIds": [
@@ -6149,7 +6149,7 @@
           "en": "Separate the similarly named Abu Dhabi project"
         },
         "body": {
-          "ko": "Dubai 공식 지역 페이지는 Arabian Ranches 옆 Dubailand로 설명합니다. Khalifa City의 Reportage Village 가격·평면·인도 자료를 이 단지에 옮기지 않습니다.",
+          "ko": "Arabian Ranches 옆 Dubailand에 위치한 지역입니다. Khalifa City의 Reportage Village 가격·평면·인도 자료를 이 단지에 옮기지 않습니다.",
           "en": "The Dubai regional page places this scheme in Dubailand beside Arabian Ranches. Khalifa City Reportage Village pricing, plans and delivery material are not transferred here."
         },
         "sourceIds": [
@@ -6210,8 +6210,8 @@
             "en": "Use the existing Winchester campus as an option"
           },
           "body": {
-            "ko": "GEMS Winchester Dubai는 IMG Worlds 인근에 실제 캠퍼스를 안내합니다. 단지 안 학교는 아니므로 매수 전 통학버스 정차와 자녀 학년을 맞춰야 합니다.",
-            "en": "GEMS Winchester Dubai identifies an existing campus near IMG Worlds. It is off-site and needs a bus-pickup and year-group check before purchase."
+            "ko": "GEMS Winchester Dubai 캠퍼스는 IMG Worlds 인근에 있습니다. 단지 안 학교는 아니므로 매수 전 통학버스 정차와 자녀 학년을 맞춰야 합니다.",
+            "en": "GEMS Winchester Dubai has an existing campus near IMG Worlds. It is off-site and needs a bus-pickup and year-group check before purchase."
           },
           "sourceIds": [
             "winchester-school"
@@ -6242,7 +6242,7 @@
           },
           "body": {
             "ko": "공식 팩트시트는 대형·어린이 수영장을 공용 시설로 제시합니다. 개별 집 수영장이 필수라면 유형별 계약 도면에서 확인하기 전 포함된 것으로 보지 않습니다.",
-            "en": "The factsheet lists large and children’s pools among shared amenities. A private unit pool needs confirmation in the exact contract plan before it is counted."
+            "en": "Shared amenities in the plans include large pools and children's pools. A private unit pool needs confirmation in the exact contract plan before it is counted."
           },
           "sourceIds": [
             "facts"
@@ -6404,8 +6404,8 @@
       "en": "A candidate for professionals combining work, exercise and social activity close to home. The industrial-district address, station route and mixed residential/work operation must fit first."
     },
     "summary": {
-      "ko": "Imtiaz는 RAW District를 주거·업무·코워킹·여가가 섞인 개발로 설명합니다. 이 리뷰는 공개 주거 아파트 프로젝트 4500에 연결하며 RAW District II의 4526과 구분합니다. 활기 있는 공용 생활이 장점일 수 있지만 가족의 조용한 독립 주거와 같은 상품은 아닙니다.",
-      "en": "Imtiaz describes RAW District as a mix of homes, offices, coworking and leisure. This review links to published residential apartment project 4500, separate from RAW District II project 4526. Active shared living can be an advantage, with a different routine from a quiet, separated family home."
+      "ko": "RAW District는 주거·업무·코워킹·여가 공간을 함께 조성하는 개발사업입니다. 이 리뷰는 공개 주거 아파트 프로젝트 4500에 연결하며 RAW District II의 4526과 구분합니다. 활기 있는 공용 생활이 장점일 수 있지만 가족의 조용한 독립 주거와 같은 상품은 아닙니다.",
+      "en": "RAW District is planned as a mix of homes, offices, coworking and leisure. This review links to published residential apartment project 4500, separate from RAW District II project 4526. Active shared living can be an advantage, with a different routine from a quiet, separated family home."
     },
     "bestFor": {
       "ko": "Jebel Ali 쪽 업무와 공용 작업·운동 시설 사용 빈도가 높은 직장인.",
@@ -6437,7 +6437,7 @@
         },
         "body": {
           "ko": "공식 목록은 패들·반코트 농구·야외 코워킹·시네마 잔디를 특정합니다. 본인이 주중에 사용할 두세 가지를 골라 면적·관리비와 비교하면 시설 개수보다 유용합니다.",
-          "en": "The official list identifies padel, half-court basketball, outdoor coworking and a cinema lawn. Pick the facilities you would use each week before weighing size and upkeep."
+          "en": "Planned facilities include padel, half-court basketball, outdoor coworking and a cinema lawn. Pick the facilities you would use each week before weighing size and upkeep."
         },
         "sourceIds": [
           "project"
@@ -6453,7 +6453,7 @@
         },
         "body": {
           "ko": "개발사는 RAW District와 RAW District II를 별도 페이지와 발표로 구분합니다. II의 납부·인도·평면을 R의 거래 표본에 적용하지 않습니다.",
-          "en": "The developer separates RAW District and RAW District II in its pages and announcements. II’s payment, delivery and plans are not applied to the R transaction sample."
+          "en": "RAW District and RAW District II are separate developments. II’s payment, delivery and plans are not applied to the R transaction sample."
         },
         "sourceIds": [
           "launch"
@@ -6483,7 +6483,7 @@
             "en": "A station premium needs the first leg checked"
           },
           "body": {
-            "ko": "온라인 논의에서도 메트로 접근이 관심사지만 이번에는 R 로비에서 운영 역 입구까지 실측하지 못했습니다. 횡단·보행로·야간 귀가가 맞기 전 역세권 할증을 확정하지 않습니다.",
+            "ko": "온라인 논의에서도 메트로 접근이 관심사지만 이번에는 R 로비에서 운영 역 입구까지 실측하지 못했습니다. 역과 가깝다는 이유로 더 지불하기 전에 횡단 구간, 보행로, 야간 귀가 환경을 확인하세요.",
             "en": "Metro access appears in public discussion, but a measured R-lobby-to-operating-station route was not obtained. Crossings, pavement and night-time return need checking before accepting a station premium."
           },
           "sourceIds": [
@@ -6575,7 +6575,7 @@
           },
           "body": {
             "ko": "개발사는 가구 포함 주거를 소개하지만 정확한 품목·교체 책임·서비스 요금은 개별 계약 범위입니다. 매매가에서 가구 비용을 무조건 전액 절감으로 보지 않습니다.",
-            "en": "The developer advertises furnished homes, while inventory, replacement responsibility and service fees remain contract-specific. Furniture should not automatically be treated as a full saving from the price."
+            "en": "Homes are advertised as furnished. The included inventory, replacement responsibilities and service fees depend on the contract. Furniture should not automatically be treated as a full saving from the price."
           },
           "sourceIds": [
             "launch",
@@ -6763,7 +6763,7 @@
           "en": "Water facilities provide a reason to compare"
         },
         "body": {
-          "ko": "공식 자료는 인피니티풀과 인공 해변 구상을 보여 줍니다. 자주 수영하는 사람에게는 의미가 있으나 실제 개장·운영시간·입주민 이용 범위를 확인해야 합니다.",
+          "ko": "인피니티풀과 인공 해변이 계획돼 있습니다. 자주 수영하는 사람에게는 의미가 있으나 실제 개장·운영시간·입주민 이용 범위를 확인해야 합니다.",
           "en": "Official material presents an infinity pool and artificial-beach concept. Frequent swimmers have a reason to compare it, with opening, hours and resident access still to establish."
         },
         "sourceIds": [
@@ -6825,8 +6825,8 @@
             "en": "Include parking access and vertical travel"
           },
           "body": {
-            "ko": "공식 자료는 지하 3개 층과 주거 25개 층을 제시합니다. 집→엘리베이터→차량→공공도로 이동이 반복되므로 광고 도심 이동시간만으로 출퇴근을 비교하지 않습니다.",
-            "en": "Official material identifies three basement levels and 25 residential floors. Home, lift, vehicle and public-road travel recur daily beyond an advertised drive to a destination."
+            "ko": "지하 3개 층과 주거 25개 층으로 계획돼 있습니다. 집→엘리베이터→차량→공공도로 이동이 반복되므로 광고 도심 이동시간만으로 출퇴근을 비교하지 않습니다.",
+            "en": "Plans include three basement levels and 25 residential floors. Home, lift, vehicle and public-road travel recur daily beyond an advertised drive to a destination."
           },
           "sourceIds": [
             "project"
@@ -6856,7 +6856,7 @@
           },
           "body": {
             "ko": "Hartland의 2026–27 일반 신규 가정 Year 1~2 수업료는 AED 59,251입니다. 기존 가족 할인과 구분하며 미래 학비·자리까지 확보한 의미는 아닙니다.",
-            "en": "Hartland lists AED 59,251 for Years 1–2 for general new families in 2026–27. Distinguish legacy discounts; future fees and a place are not secured."
+            "en": "Hartland's published 2026–27 tuition for general new families is AED 59,251 for Years 1–2. Distinguish legacy discounts; future fees and a place are not secured."
           },
           "sourceIds": [
             "hartland"
@@ -6885,8 +6885,8 @@
             "en": "Check the inventory behind furnished status"
           },
           "body": {
-            "ko": "공식 FAQ는 일반적으로 가구 포함이라고 설명합니다. 임차인에게 그대로 제공할 생각이라면 가전 모델·보증·교체 비용과 본인이 원하는 책상·침대 배치도 확인하세요.",
-            "en": "The FAQ generally describes furnished delivery. For later letting, check appliance models, warranties and replacement cost alongside the desk/bed layout you need."
+            "ko": "공식 FAQ 기준으로는 대체로 가구가 포함됩니다. 임차인에게 그대로 제공할 생각이라면 가전 모델·보증·교체 비용과 본인이 원하는 책상·침대 배치도 확인하세요.",
+            "en": "Homes are generally advertised for furnished handover. For later letting, check appliance models, warranties and replacement cost alongside the desk/bed layout you need."
           },
           "sourceIds": [
             "project"
@@ -7052,7 +7052,7 @@
         },
         "body": {
           "ko": "개발사는 자전거 정비 공간과 운동 후 회복 공간을 특정합니다. 시설 이름보다 자전거를 집에서 꺼내고 다시 보관하는 동선이 쉬운지가 실제 이용을 좌우합니다.",
-          "en": "The developer identifies bike-maintenance and recovery spaces. Ease of taking out and storing a bicycle matters more to regular use than the amenity name."
+          "en": "Plans include bike-maintenance and recovery spaces. Ease of taking out and storing a bicycle matters more to regular use than the amenity name."
         },
         "sourceIds": [
           "launch"
@@ -7113,7 +7113,7 @@
             "en": "Highway connections anchor the location"
           },
           "body": {
-            "ko": "공식 위치는 Global Village 인근 E311·E611 접근을 중심으로 설명합니다. 도심 목적지 광고 시간 대신 출근 방향의 실제 진출입로와 직장 주차를 함께 확인해야 합니다.",
+            "ko": "Global Village 인근으로, 주요 차량 이동 경로는 E311·E611입니다. 도심 목적지 광고 시간 대신 출근 방향의 실제 진출입로와 직장 주차를 함께 확인해야 합니다.",
             "en": "The location is framed around Global Village and E311/E611 access. Assess the actual outbound junction and workplace parking rather than adopting a destination’s advertised minutes."
           },
           "sourceIds": [
@@ -7337,7 +7337,7 @@
     },
     "summary": {
       "ko": "공식 발표는 West Crescent의 Avita·Bella 두 타워와 2029년 예정 완공을 제시합니다. Wellness·Elite·펜트하우스·맨션은 서로 다른 상품입니다. 해변 접근과 실제 장보기·보육 동선, 개인 풀 유지 책임을 함께 맞춰야 합니다.",
-      "en": "Official material identifies Avita and Bella on the West Crescent and a 2029 completion target. Wellness, Elite, penthouse and mansion collections offer different products. Align beach access with shopping, childcare trips and private-pool responsibilities."
+      "en": "Avita and Bella are planned on the West Crescent, with completion targeted for 2029. Wellness, Elite, penthouse and mansion collections offer different products. Align beach access with shopping, childcare trips and private-pool responsibilities."
     },
     "bestFor": {
       "ko": "차량 이동을 수용하며 실제 해변 이용 빈도와 선택 컬렉션이 명확한 가구.",
@@ -7432,7 +7432,7 @@
           },
           "body": {
             "ko": "공식 페이지의 Marina·Downtown 이동시간은 교통·출입구 조건이 명시된 실측이 아닙니다. 차 없는 생활 적합도나 역 도보 시간으로 바꾸지 않았습니다.",
-            "en": "The developer’s Marina/Downtown times lack a measured traffic and entrance methodology. They were not converted into car-free suitability or station-walking times."
+            "en": "Advertised Marina/Downtown travel times do not specify traffic conditions or starting and arrival entrances. They were not converted into car-free suitability or station-walking times."
           },
           "sourceIds": [
             "project"
@@ -7462,7 +7462,7 @@
           },
           "body": {
             "ko": "Regent International의 2026–27 Year 1~6 학비는 AED 57,254입니다. 별도 통학비·입학 가능성과 실제 캠퍼스 경로가 맞을 때 후보이며 배정 학교가 아닙니다.",
-            "en": "Regent International lists AED 57,254 for Years 1–6 in 2026–27. It is an unassigned option requiring separate transport costs, admission availability and a workable campus route."
+            "en": "Regent International's published 2026–27 tuition is AED 57,254 for Years 1–6. It is an unassigned option requiring separate transport costs, admission availability and a workable campus route."
           },
           "sourceIds": [
             "school-fees"
@@ -7477,8 +7477,8 @@
             "en": "Waitrose is in Palm Jumeirah Mall"
           },
           "body": {
-            "ko": "몰 운영사는 Waitrose를 지상층 매장으로 안내합니다. 같은 Palm에 있다는 이유로 Passo 아래 슈퍼로 표시하지 않고, 주간 장보기와 늦은 배달 수령을 나눠 봅니다.",
-            "en": "The mall operator lists Waitrose on the ground floor. It is not a supermarket under Passo; assess weekly shopping separately from late deliveries."
+            "ko": "몰 지상층에 Waitrose가 있습니다. 같은 Palm에 있어도 Passo 건물 아래 슈퍼는 아닙니다. 주말에 장을 보러 가는 경로와 늦은 시간 배달을 받는 방법을 따로 살펴보세요.",
+            "en": "Waitrose is on the mall's ground floor. It is not a supermarket under Passo; assess weekly shopping separately from late deliveries."
           },
           "sourceIds": [
             "waitrose"
@@ -7745,8 +7745,8 @@
             "en": "A district bus does not establish a Venice 6 stop"
           },
           "body": {
-            "ko": "정부는 Dubai South의 Expo 메트로 연계 버스를 소개합니다. Venice 6 출입구의 정차·시간표·첫 구간을 검증한 자료는 아니므로 단지 직결로 표시하지 않습니다.",
-            "en": "Government material describes Dubai South buses connecting to Expo metro. It does not verify a Venice 6 entrance stop, timetable or first leg."
+            "ko": "정부는 Dubai South의 Expo 메트로 연계 버스를 소개합니다. Venice 6 출입구의 정차 여부와 시간표, 정류장까지의 경로는 확인되지 않았습니다. 단지에서 바로 탈 수 있다고 가정하기는 어렵습니다.",
+            "en": "Dubai South bus services connect to Expo Metro. It does not verify a Venice 6 entrance stop, timetable or first leg."
           },
           "sourceIds": [
             "district"
@@ -7791,8 +7791,8 @@
             "en": "The opera/cultural district is a future attraction"
           },
           "body": {
-            "ko": "개발사 발표를 인용한 보도는 오페라·극장·전시·교육 공간을 계획으로 설명합니다. 현재 공연 수요·상가 매출·유동인구를 측정한 자료는 아닙니다.",
-            "en": "The report describes planned opera, theatre, exhibition and educational facilities. It is not measured current performance demand, store sales or footfall."
+            "ko": "개발사 발표를 인용한 보도 기준으로 오페라·극장·전시·교육 공간은 조성 계획에 포함돼 있습니다. 현재 공연 수요·상가 매출·유동인구를 측정한 자료는 아닙니다.",
+            "en": "Opera, theatre, exhibition and education facilities are planned. It is not measured current performance demand, store sales or footfall."
           },
           "sourceIds": [
             "progress"
@@ -7806,7 +7806,7 @@
           },
           "body": {
             "ko": "정부가 확인한 Dubai South 기존 하이퍼마켓은 지구 차원의 목적지입니다. Venice 6 바로 아래 영업 상점으로 보지 않고 실제 배송·장보기 대안을 따로 확인해야 합니다.",
-            "en": "The government identifies an existing district hypermarket. It is not an operating shop beneath Venice 6; establish the actual delivery and grocery alternatives."
+            "en": "There is an existing hypermarket in the district. It is not an operating shop beneath Venice 6; establish the actual delivery and grocery alternatives."
           },
           "sourceIds": [
             "district"

@@ -186,6 +186,8 @@
   border-top: 1px solid var(--divider);
 }
 .projectList > div[data-selected='true'] { background: #edf2ff; }
+.projectOverview { grid-column: 1 / -1; min-width: 0; padding-bottom: 12px; }
+.projectOverview > a { display: inline-flex; align-items: center; min-height: var(--control-min); margin-left: 12px; color: var(--accent); font-size: 14px; }
 .projectList > div > button {
   min-width: 0;
   padding: 11px 8px 11px 2px;

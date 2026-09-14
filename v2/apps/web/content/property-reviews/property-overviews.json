@@ -1,0 +1,2502 @@
+{
+  "kr-acro-river-park": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "한강 산책과 반포 생활을 함께 누리는 강변 단지. 북쪽 세대는 강 조망과 도로 소음을 함께 봐야 합니다.",
+      "en": "A riverside estate with easy access to Han River walks and Banpo's amenities. North-facing homes combine river views with exposure to road noise.",
+      "zh-CN": "经常沿江散步、使用小区阅读和运动设施的家庭，可以把这里列入备选。但仍须落实Jamwon小学分配及所选楼栋的上学路线；附近私立Gyeseong小学另有招生程序。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "신반포역 9호선, 도보 약 6~9분",
+        "en": "Sinbanpo Line 9; advertised walk 6–9 minutes",
+        "zh-CN": "新盘浦站：平台步行估计为6或9分钟"
+      },
+      "schools": {
+        "ko": "잠원초 표기 631m·14분, 배정은 주소별 확인",
+        "en": "Jamwon Elementary: advertised 631 m / 14 minutes; allocation varies by address",
+        "zh-CN": "从所选楼栋走到Jamwon小学校门"
+      },
+      "daily": {
+        "ko": "한강 보행로와 단지 수영장·독서시설",
+        "en": "Riverside paths, pool and reading facilities",
+        "zh-CN": "找到实际进入汉江公园的通道"
+      }
+    }
+  },
+  "kr-acro-seoul-forest": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "서울숲과 문화·외식시설이 가까운 고층 주거입니다. 가족 통학보다 공원과 도심 생활의 장점이 먼저 눈에 띕니다.",
+      "en": "High-rise homes close to Seoul Forest, restaurants and cultural venues. The main appeal is park access and city life; school journeys need a separate look.",
+      "zh-CN": "若经常带孩子去首尔林，紧邻公园确有生活价值。但公园近不能替代上学条件：还要落实Gyeongil小学分配，以及住宅入口至校门的路线。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "서울숲역과 D Tower 연결, 주거동 경로는 별도",
+        "en": "Seoul Forest Station connects to D Tower; residential access is separate",
+        "zh-CN": "从车站连接通道一路核对至住宅大堂"
+      },
+      "schools": {
+        "ko": "경일초 인근, 해당 연도 배정 확인 필요",
+        "en": "Gyeongil nearby; confirm entry-year allocation",
+        "zh-CN": "Gyeongil小学仍须核对地址分配"
+      },
+      "daily": {
+        "ko": "서울숲·아트센터·저층 상가",
+        "en": "Seoul Forest, art centre, shops and dining",
+        "zh-CN": "文化设施与日常采购是不同需求"
+      }
+    }
+  },
+  "kr-mapo-raemian-prugio": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "2·5호선 출근과 학교·동네 상권을 함께 이용하기 좋은 대단지입니다. 1~4단지 중 위치에 따라 체감 거리가 달라집니다.",
+      "en": "A large estate that brings together Lines 2 and 5, schools and neighbourhood shops. Walking distances vary across its four sections.",
+      "zh-CN": "应挑选能把孩子学校与父母常用车站串成日常路线的组团。Hanseo或Ahyeon小学分配及坡度因楼栋而异，只看小区名称不足以判断是否适合家庭。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "애오개역·아현역 이용, 도보 약 6·9분",
+        "en": "Aeogae and Ahyeon; advertised walks 6 and 9 minutes",
+        "zh-CN": "平台估计：Aeogae6分钟、阿岘9分钟"
+      },
+      "schools": {
+        "ko": "한서초 290m·아현초 454m 공시, 배정 별도",
+        "en": "Hanseo 290 m and Ahyeon 454 m advertised; allocation separate",
+        "zh-CN": "Hanseo 290米、Ahyeon 454米仅作位置参考"
+      },
+      "daily": {
+        "ko": "주변 약국·의원·상가, 단지별 경로 차이",
+        "en": "Pharmacies, clinics and shops; routes vary by block",
+        "zh-CN": "核对药房等日常服务的营业时间"
+      }
+    }
+  },
+  "kr-helio-city": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "학교와 생활시설을 단지 가까이에서 이용하기 좋은 9,510세대 대단지입니다. 동에 따라 역과 상가까지의 거리가 크게 달라집니다.",
+      "en": "A 9,510-home estate with schools and everyday facilities close at hand. The walk to stations and shops varies considerably by building.",
+      "zh-CN": "以Haenuri小学、初中一体化学校为目标的家庭，应先落实学位分配和所选楼栋到校门的路线。一体化管理不保证连续入学，条件成立后才能评价小区内生活的便利。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "송파역 8호선, 잠실까지 두 정거장",
+        "en": "Songpa Line 8; two stops to Jamsil",
+        "zh-CN": "松坡站提供8号线接驳"
+      },
+      "schools": {
+        "ko": "단지 안 해누리 초·중학교, 배정은 주소별 확인",
+        "en": "Haenuri elementary and middle schools inside the estate; allocation separate",
+        "zh-CN": "Haenuri采用小学、初中一体化管理"
+      },
+      "daily": {
+        "ko": "정문·후문 상권이 달라 동 선택이 중요",
+        "en": "Different shopping options at front and rear gates",
+        "zh-CN": "前门与后门的购物路线不同"
+      }
+    }
+  },
+  "kr-parkrio": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "2호선과 공원 생활을 함께 누리는 가족형 대단지입니다. 잠실나루역 쪽 세대는 철도 소음도 살펴볼 필요가 있습니다.",
+      "en": "A large family-oriented estate combining Line 2 access with nearby parks. Homes near Jamsillaru station may also face railway noise.",
+      "zh-CN": "家庭是否适合这里，取决于分配到Jamsil还是Jamhyeon小学，以及目前的班级安排。附近有两所学校并不够，分配学校和所选楼栋到校门的路线都要合适。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "잠실나루역 2호선, 지상 철도 방향 주의",
+        "en": "Jamsillaru Line 2; elevated tracks can affect nearby homes",
+        "zh-CN": "蚕室渡站为高架车站"
+      },
+      "schools": {
+        "ko": "잠실초·잠현초 분산 배정, 동별 구역 확인",
+        "en": "Jamsil and Jamhyeon primary catchments vary by address",
+        "zh-CN": "分别核对Jamsil与Jamhyeon小学分配"
+      },
+      "daily": {
+        "ko": "공원 생활과 아산병원 접근",
+        "en": "Parks and access to Asan Medical Center",
+        "zh-CN": "落实前往Asan医院的实际路线"
+      }
+    }
+  },
+  "kr-jamsil-ricenz": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "잠실새내역과 잠신학교 주변 생활이 중심인 가족형 단지입니다. 2008년 입주한 만큼 세대별 수리 상태의 차이가 있습니다.",
+      "en": "Family living centred on Jamsilsaenae station and the Jamsin schools. Completed in 2008, the estate has apartments with differing levels of renovation.",
+      "zh-CN": "若Jamsin小学、课外班和家之间能形成顺畅的晚间路线，这里的位置更适合家庭。学校集中不代表可连续升学，仍须核对分配条件及所选楼栋沿途的车行出入口。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "잠실새내역 2호선 이용이 중심",
+        "en": "Jamsilsaenae Line 2 is the main rail option",
+        "zh-CN": "直接接驳2号线是主要便利"
+      },
+      "schools": {
+        "ko": "잠신초 인근, 중·고교 입학 조건은 별도",
+        "en": "Jamsin Elementary nearby; secondary admission is separate",
+        "zh-CN": "附近Jamsin小学不等于已获分配"
+      },
+      "daily": {
+        "ko": "역 앞 상권과 단지 상가",
+        "en": "Station-area businesses and estate shops",
+        "zh-CN": "适合常用蚕室新川商圈的生活"
+      }
+    }
+  },
+  "kr-jamsil-els": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "2·9호선을 골라 탈 수 있고 학교가 단지 안에 있는 대단지입니다. 출근 노선에 따라 편한 동이 달라집니다.",
+      "en": "A large estate with schools inside the grounds and a choice of Lines 2 and 9. The most convenient building depends on your commute.",
+      "zh-CN": "优先看能兼顾Jamil小学上学路线与父母到站路线的楼栋。学校近只有在校门、车行出入口和孩子独自行走路线都合适时，才构成实际便利。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "잠실새내역 2호선·종합운동장역 2·9호선",
+        "en": "Jamsilsaenae Line 2 or Sports Complex Lines 2/9",
+        "zh-CN": "分别规划蚕室新川与综合运动场路线"
+      },
+      "schools": {
+        "ko": "단지 안 잠일초·신천중·잠일고, 배정 별도",
+        "en": "Jamil, Sincheon and Jamil High within the estate; admission separate",
+        "zh-CN": "学校位置与实际入学条件"
+      },
+      "daily": {
+        "ko": "잠실새내 상권, 동별 장보기 경로 차이",
+        "en": "Jamsilsaenae shops; grocery routes vary by building",
+        "zh-CN": "从所选楼栋评估采购路线"
+      }
+    }
+  },
+  "kr-raemian-daechi-palace": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "대치동 교육·생활권과 비교적 최근의 주거시설을 함께 원하는 가구에 맞습니다. 1·2단지의 위치와 이용 조건은 나눠 봐야 합니다.",
+      "en": "Relatively modern homes within Daechi's established education and shopping area. The two sections have different locations and access arrangements.",
+      "zh-CN": "即使经常使用大峙洞补习机构的家庭，也应先落实小学分配和回家路线。现有管理资料不能确认分配学校，补习方便不能替代上学方便。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "대치역 3호선 생활권, 동별 접근 차이",
+        "en": "Daechi Line 3; approach varies by building",
+        "zh-CN": "5分钟内的类别不是实测步行时间"
+      },
+      "schools": {
+        "ko": "주변 학교·학원가 이용, 초등 배정 별도 확인",
+        "en": "Daechi schools and tutoring; primary allocation needs checking",
+        "zh-CN": "管理资料学校名单不是分配地图"
+      },
+      "daily": {
+        "ko": "1·2단지별 출입구·커뮤니티 이용 차이",
+        "en": "Phases 1 and 2 have different entrances and facility terms",
+        "zh-CN": "核对所选楼栋的日常生活中心"
+      }
+    }
+  },
+  "kr-dogok-rexle": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "한티역과 학교·쇼핑·병원이 가까운 생활형 단지입니다. 언덕 위 동은 장보기나 유모차 이동의 부담이 다릅니다.",
+      "en": "Schools, shopping and medical facilities sit close to Hanti station. The uphill buildings can mean a more demanding walk with groceries or a pushchair.",
+      "zh-CN": "若因Daedo及Sookmyung学校而看房，入学条件和实际通学路线必须成立。Daedo距离资料存在差异，比起小区学区名声，更应从所选楼栋陪孩子走到学校。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "한티역 생활권, 언덕과 동 위치가 변수",
+        "en": "Hanti station; hills and building location matter",
+        "zh-CN": "汉堤站154米为平台数据"
+      },
+      "schools": {
+        "ko": "대도초·숙명여중고 인근, 배정·지원 별도",
+        "en": "Daedo and Sookmyung schools nearby; admission separate",
+        "zh-CN": "Daedo与Sookmyung学校的具体条件"
+      },
+      "daily": {
+        "ko": "백화점·강남세브란스 생활권",
+        "en": "Department-store shopping and Gangnam Severance",
+        "zh-CN": "去医院须确定实际入口"
+      }
+    }
+  },
+  "kr-eunma": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "대치역과 은마상가를 이용하기 편한 노후 대단지입니다. 지금의 주거 상태와 재건축에 대한 기대를 함께 안고 있는 선택입니다.",
+      "en": "An older, large estate with convenient access to Daechi station and Eunma's shops. Its appeal combines today's location with expectations of future redevelopment.",
+      "zh-CN": "即使需要大峙生活圈，也必须能接受现有供暖、外廊式布局及未来搬迁的可能。若Daegok小学分配或房屋现状不合适，未来新房的期待无法解决家庭眼前的居住需求。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "대치역 3호선, 28개 동별 거리 차이",
+        "en": "Daechi Line 3; walking distance varies across 28 buildings",
+        "zh-CN": "从不同楼栋去大峙站，路线不同"
+      },
+      "schools": {
+        "ko": "대곡초 인근, 현재 배정은 주소별 확인",
+        "en": "Daegok Elementary nearby; confirm current allocation",
+        "zh-CN": "列有Daegok小学不保证学位分配"
+      },
+      "daily": {
+        "ko": "은마상가 이용, 노후 설비·주차 확인 필요",
+        "en": "Eunma shops; ageing equipment and parking need attention",
+        "zh-CN": "把银马商街当作日常目的地评估"
+      }
+    }
+  },
+  "kr-raemian-la-classy": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "삼성·청담 생활권의 비교적 작은 신축급 단지입니다. 대치 학원가나 코엑스가 바로 앞인 입지와는 다릅니다.",
+      "en": "A relatively small, newer estate in the Samseong–Cheongdam area. Daechi's academy streets and COEX still require a separate journey.",
+      "zh-CN": "考虑Eonbuk或Eonju学校的家庭，应先落实入学条件与校门路线。儿童图书馆、自习室只有在孩子需要的时段可用时，才会与庭园、游乐场一起构成生活优势。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "청담역·삼성중앙역 중 출근 노선 선택",
+        "en": "Cheongdam or Samseong Jungang, depending on the commute",
+        "zh-CN": "先选每天主要乘坐的线路"
+      },
+      "schools": {
+        "ko": "언북초·언주중 인근, 배정 별도",
+        "en": "Eonbuk Elementary and Eonju Middle nearby; allocation separate",
+        "zh-CN": "附近Eonbuk、Eonju学校须核对入学条件"
+      },
+      "daily": {
+        "ko": "단지 정원·놀이터, 삼성·청담 생활권",
+        "en": "Estate gardens and play areas; Samseong/Cheongdam setting",
+        "zh-CN": "庭园适合日常短途外出"
+      }
+    }
+  },
+  "kr-banpo-xi": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "단지 안 학교와 커뮤니티를 함께 이용하는 가족 생활에 잘 맞습니다. 44개 동이라 역과 시설까지의 거리는 동마다 다릅니다.",
+      "en": "Schools and shared facilities inside the estate make it well suited to family routines. With 44 buildings, distances to stations and amenities vary widely.",
+      "zh-CN": "更适合家庭的楼栋，应能衔接Wonchon学校、家和晚间课外班路线。先落实分配地址及车行出入口，再判断能否兼顾父母经盘浦站或砂平站的通勤。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "반포역·사평역 이용, 동별 주력 역 차이",
+        "en": "Banpo or Sapyeong, depending on the building",
+        "zh-CN": "从主要车站一路核对到具体楼栋"
+      },
+      "schools": {
+        "ko": "원촌초·원촌중 인근, 주소별 배정 확인",
+        "en": "Wonchon Elementary and Middle nearby; confirm allocation",
+        "zh-CN": "学校近不等于获得学位"
+      },
+      "daily": {
+        "ko": "단지 상가·커뮤니티, 시설까지 내부 이동",
+        "en": "Estate shops and amenities; allow for internal walking",
+        "zh-CN": "日常采购与专程购物分开看"
+      }
+    }
+  },
+  "kr-banpo-riche": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "반포의 초대형 단지보다 작은 규모와 사평역 생활권을 원하는 가구에 맞습니다. 조식은 과거 운영 사례로, 현재 제공 여부는 별도 확인이 필요합니다.",
+      "en": "A smaller-scale alternative to Banpo's largest estates, with Sapyeong station as a local transport option. Breakfast service was offered in the past; current availability needs checking.",
+      "zh-CN": "早餐服务能否减轻上学前的负担，取决于目前供应日及时间是否合适。应先落实Seowon或Wonchon小学分配与通学路线，再评价这一生活安排的价值。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "사평역 생활권, 현관부터 역 경로 확인",
+        "en": "Sapyeong area; check the route from the actual apartment",
+        "zh-CN": "从Gomurae路走到实际使用的站口"
+      },
+      "schools": {
+        "ko": "서원초·원촌초·원촌중 인근, 배정 별도",
+        "en": "Seowon/Wonchon schools nearby; allocation separate",
+        "zh-CN": "Seowon与Wonchon学校的具体条件"
+      },
+      "daily": {
+        "ko": "고무레공원·터미널 상권·의료시설",
+        "en": "Gomure Park, terminal shops and healthcare",
+        "zh-CN": "公园、医疗和购物是不同需求"
+      }
+    }
+  },
+  "kr-raemian-firstige": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "고속터미널의 교통·쇼핑·의료시설을 자주 쓰는 가구에 편리한 단지입니다. 이미 형성된 반포 생활권이 강점입니다.",
+      "en": "An established Banpo estate close to the Express Bus Terminal's transport, shops and medical facilities. It suits households that use these amenities regularly.",
+      "zh-CN": "若能结合Jamwon小学通学和小区内短途散步，家庭有理由将其列入备选。Gyeseong是私立学校，Sehwa各校也有不同入学条件，应先落实孩子实际的分配或申请路径。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "고속터미널역 3·7·9호선",
+        "en": "Express Bus Terminal Lines 3, 7 and 9",
+        "zh-CN": "一直核对到实际乘车站台"
+      },
+      "schools": {
+        "ko": "잠원초 인근·사립 계성초는 별도 입학",
+        "en": "Jamwon nearby; private Gyeseong has separate admissions",
+        "zh-CN": "Jamwon与Gyeseong入学方式不同"
+      },
+      "daily": {
+        "ko": "신세계·센트럴시티·의료시설",
+        "en": "Shinsegae, Central City and healthcare",
+        "zh-CN": "按真实使用频率评价购物便利"
+      }
+    }
+  },
+  "kr-raemian-one-bailey": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "최근 주거시설과 반포의 교통·생활 편의를 함께 갖춘 대단지입니다. 한강 조망과 역 접근은 동·세대에 따라 다릅니다.",
+      "en": "A large, recent development combining modern homes with Banpo's established transport and amenities. River views and station access depend on the building and apartment.",
+      "zh-CN": "人车动线分离可能有利于带孩子和推婴儿车出行。但私立Gyeseong小学不能作为公立学位分配依据，孩子的入学条件及实际校门路线仍须成立。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "고속터미널역 3·7·9호선, 동별 접근 차이",
+        "en": "Express Bus Terminal Lines 3, 7 and 9; building-specific access",
+        "zh-CN": "去高速客运站的路线从家门算起"
+      },
+      "schools": {
+        "ko": "계성초·신반포중 인근, 공립 배정·사립 입학 별도",
+        "en": "Gyeseong and Sinbanpo Middle nearby; admission routes differ",
+        "zh-CN": "附近学校名单不是分配地图"
+      },
+      "daily": {
+        "ko": "신세계·성모병원·단지 조경",
+        "en": "Shinsegae, St Mary's Hospital and landscaped grounds",
+        "zh-CN": "盘浦购物与医疗设施的实际用途"
+      }
+    }
+  },
+  "kr-jamsil-trizium": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "잠실새내역과 버들초, 시장을 중심으로 생활하기 좋은 단지입니다. 올림픽로 남쪽의 동선이 맞는지 보는 것이 중요합니다.",
+      "en": "Everyday life centres on Jamsilsaenae station, Beodeul Elementary School and the local market. Its position south of Olympic-ro shapes daily walking routes.",
+      "zh-CN": "落实Beodeul小学分配且校门路线合适后，这里可作为小学家庭的备选。但中学及奥林匹克路以北的活动可能需要另一套路线，也应考虑下一学段。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "잠실새내역 생활권, 출입구별 경로 차이",
+        "en": "Jamsilsaenae station; entrance choice matters",
+        "zh-CN": "从蚕室新川站出口走到具体楼栋"
+      },
+      "schools": {
+        "ko": "공립 버들초 인근, 주소별 배정 확인",
+        "en": "Public Beodeul Elementary nearby; confirm address allocation",
+        "zh-CN": "公立Beodeul小学与实际分配"
+      },
+      "daily": {
+        "ko": "새마을시장·잠실새내 상권",
+        "en": "Saemaeul Market and Jamsilsaenae shops",
+        "zh-CN": "将市场采购与车站串成路线"
+      }
+    }
+  },
+  "kr-godeok-gracium": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "5호선 출근과 학교·대단지 시설을 함께 이용하는 가족 생활에 맞습니다. 역 연결의 편의도 실제 거주 동에 따라 달라집니다.",
+      "en": "A large family-oriented estate combining Line 5 access, schools and shared facilities. The convenience of the station connection depends on where you live within it.",
+      "zh-CN": "关键在于兼顾分配到Gangdeok或Godeok小学的路线与父母经上一洞站的通勤。靠学校和靠车站的楼栋可能不同，先决定要缩短谁的每日路程，才能缩小范围。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "상일동역 연결, 두 역 모두 5호선",
+        "en": "Connection to Sangildong; both nearby stations are on Line 5",
+        "zh-CN": "连接通道实际可用的条件"
+      },
+      "schools": {
+        "ko": "강덕초·고덕초·고덕중 인근, 동별 배정",
+        "en": "Gangdeok, Godeok and Godeok Middle nearby; address-specific allocation",
+        "zh-CN": "Gangdeok与Godeok小学的具体条件"
+      },
+      "daily": {
+        "ko": "대단지 생활시설·쓰레기 자동이송 설비",
+        "en": "Large-estate facilities and automated waste handling",
+        "zh-CN": "室内厨余输送的当前运行状况"
+      }
+    }
+  },
+  "kr-godeok-arteon": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "상일동역과 주변 상권을 가까이 이용하는 대단지입니다. 학교 배정과 단지 안 이동 거리는 동별로 살펴봐야 합니다.",
+      "en": "A large estate close to Sangil-dong station and surrounding shops. School allocation and walks across the grounds depend on the building.",
+      "zh-CN": "Gohyeon小学通学条件及现行初中分配，可能直接影响家庭选择。小学近不代表之后仍有同样的生活路线，应按计划入学年度落实分配和回家路径。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "상일동역 5호선 인접, 내부 보행은 동별 차이",
+        "en": "Sangildong Line 5 nearby; internal walking varies",
+        "zh-CN": "从楼栋入口走到5号线"
+      },
+      "schools": {
+        "ko": "고현초 관련 통학구역, 적용 학년도 확인",
+        "en": "Gohyeon primary catchment; confirm the applicable school year",
+        "zh-CN": "与Gohyeon小学招生范围相关的小区"
+      },
+      "daily": {
+        "ko": "상일동역 상권과 단지 생활시설",
+        "en": "Sangildong station shops and estate facilities",
+        "zh-CN": "站边商圈与住宅出入口"
+      }
+    }
+  },
+  "kr-olympic-park-foreon": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "12,032세대 규모의 새 주거시설이 특징인 초대형 단지입니다. 어느 동에 사느냐가 역·학교·생활시설 접근을 좌우합니다.",
+      "en": "A recent development on an exceptional scale, with 12,032 homes. Your building determines how convenient the stations, schools and everyday facilities will be.",
+      "zh-CN": "须先落实Dunchon或Wirye小学目前的分配和接收条件。规划中的城市型初中校区尚未确认可用，应按实际分配学校的路线判断家庭生活，而不是把计划当作现成便利。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "둔촌동역 5호선 등 동별 이용 경로 확인",
+        "en": "Dunchon-dong Line 5 and other building-specific routes",
+        "zh-CN": "明确去遁村洞站的具体路线"
+      },
+      "schools": {
+        "ko": "둔촌초·위례초, 학년·주소별 수용·배정 확인",
+        "en": "Dunchon/Wirye schools; confirm capacity and allocation for the child's year",
+        "zh-CN": "跟进Dunchon与Wirye小学安排"
+      },
+      "daily": {
+        "ko": "대단지 시설·강동중앙도서관 생활권",
+        "en": "Large-estate facilities and Gangdong Central Library",
+        "zh-CN": "去图书馆也要从家门计算"
+      }
+    }
+  },
+  "kr-gyeonghuigung-xi-3": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "서대문역을 이용해 도심으로 출근하고 병원을 자주 찾는 가구에 편리한 단지입니다. 경희궁자이 전체가 아닌 3단지 위치로 봐야 합니다.",
+      "en": "Convenient for central Seoul commutes via Seodaemun station and regular hospital visits. These advantages relate to Section 3's location within the wider Gyeonghuigung Xi development.",
+      "zh-CN": "若Deoksu小学分配和接送安排符合孩子日程，可兼顾市中心生活与育儿。应以第三组团地址核对校门、车辆停靠和游乐区回家路线，不能套用整个项目其他组团的条件。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "서대문역 5호선 생활권",
+        "en": "Seodaemun Line 5",
+        "zh-CN": "以西大门站5号线为主要路线评估"
+      },
+      "schools": {
+        "ko": "덕수초 인근, 실제 주소의 배정 확인",
+        "en": "Deoksu Elementary nearby; confirm actual address allocation",
+        "zh-CN": "核对Deoksu小学具体条件"
+      },
+      "daily": {
+        "ko": "강북삼성·적십자병원, 단지 산책로·놀이터",
+        "en": "Kangbuk Samsung/Red Cross hospitals, paths and play areas",
+        "zh-CN": "景观步道与儿童活动区的用途"
+      }
+    }
+  },
+  "kr-mapo-prestige-xi": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "한서초와 동네 상가를 가까이 이용하는 가족 생활형 단지입니다. 지하철뿐 아니라 집 앞 버스를 함께 활용할 수 있습니다.",
+      "en": "A family-oriented estate close to Hanseo Elementary School and neighbourhood shops. Nearby buses offer another option alongside the subway.",
+      "zh-CN": "家庭选择取决于Hanseo小学放学后，托管、课外班与回家能否衔接。除落实分配外，还要解决托管结束到父母下班之间的空档；学校和补习点近并不能自动解决。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "단지 앞 버스와 지하철 보행 비교",
+        "en": "Estate bus stop; compare bus and station-walking options",
+        "zh-CN": "把附近公交纳入比较"
+      },
+      "schools": {
+        "ko": "한서초 통학권, 학년도별 최종 배정 확인",
+        "en": "Hanseo catchment; confirm entry-year allocation",
+        "zh-CN": "公立Hanseo小学与招生范围核实"
+      },
+      "daily": {
+        "ko": "주변 교습소·카페·작은 상점",
+        "en": "Nearby tuition centres, cafés and smaller shops",
+        "zh-CN": "附近补习机构与日常小店"
+      }
+    }
+  },
+  "kr-heukseok-xi": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "흑석 생활권에서 비교적 최근의 주거시설을 원하는 가족에게 맞습니다. 초고층 한강 조망보다 동별 지형과 실제 시야가 중요합니다.",
+      "en": "Relatively recent family homes in Heukseok. Terrain and the outlook from each building matter more than a general expectation of high-rise river views.",
+      "zh-CN": "应先落实Eunro小学分配及至校门的实际路线。附近中央大学附属小学是另行招生的私立学校，不能视为保证可入的替代选项；孩子回家坡路也必须可接受。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "단지 이름의 양방향 버스 정류장",
+        "en": "Bus stops named for the estate in both directions",
+        "zh-CN": "从附近公交站开始规划"
+      },
+      "schools": {
+        "ko": "공립 은로초 인근, 교문까지 경로 확인",
+        "en": "Public Eunro Elementary nearby; check the route to its gate",
+        "zh-CN": "公立Eunro小学的实际位置"
+      },
+      "daily": {
+        "ko": "최고 20층·26개 동, 동별 녹지·도로 시야",
+        "en": "26 buildings up to 20 storeys; outlook varies",
+        "zh-CN": "楼栋位置与最高20层的实际构成"
+      }
+    }
+  },
+  "kr-oksu-park-hills": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "금호역과 공원을 생활에 묶을 수 있는 단지입니다. 역이 가까워 보여도 지형과 계단 때문에 실제 이동은 달라질 수 있습니다.",
+      "en": "An estate that combines Geumho station access with nearby parks. Slopes and steps can make the actual walk more demanding than the distance suggests.",
+      "zh-CN": "先看Geumok小学分配及孩子上学路线的上下坡。101至116栋与117至125栋的回家条件不同，比起有公园，更应确认所选楼栋能否顺畅连接学校和托管。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "금호역 접근, 계단·엘리베이터 경로가 변수",
+        "en": "Geumho station; stairs and lift routes matter",
+        "zh-CN": "把路线接到金湖站站台"
+      },
+      "schools": {
+        "ko": "금옥초 인근, 동·호수별 배정 확인",
+        "en": "Geumok Elementary nearby; building-specific allocation",
+        "zh-CN": "附近Geumok小学与实际分配"
+      },
+      "daily": {
+        "ko": "주변 공원, 일부는 외부에 개방된 공간",
+        "en": "Nearby parks include publicly accessible space",
+        "zh-CN": "区分公共公园与私人小区用地"
+      }
+    }
+  },
+  "kr-centras": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "상왕십리역과 상업시설이 연결되는 도심 생활형 대단지입니다. 2호선 출근과 숭신초 주변 생활을 함께 보기 좋습니다.",
+      "en": "A large urban estate connected to Sangwangsimni station and shops. Line 2 and the area around Sungshin Elementary School anchor daily life.",
+      "zh-CN": "若能把Soongshin小学通学与上往十里站通勤融入一套日常安排，家庭更能受益。但初中可能要离开小区通学，不能仅凭小学方便就决定长期居住。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "상왕십리역 2호선 직접 연결",
+        "en": "Direct connection to Sangwangsimni Line 2",
+        "zh-CN": "先看2号线能否到达实际目的地"
+      },
+      "schools": {
+        "ko": "숭신초 통학권, 학년도별 배정 확인",
+        "en": "Soongshin catchment; confirm entry-year allocation",
+        "zh-CN": "核实Soongshin小学性质与地址"
+      },
+      "daily": {
+        "ko": "역 연결 상권, 주거동별 야간 경로 차이",
+        "en": "Station-connected shops; late-evening routes vary by building",
+        "zh-CN": "商业与住宅出入口"
+      }
+    }
+  },
+  "kr-tenz-hill-1": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "상왕십리역과 숭신초, 청계천 산책을 함께 이용할 수 있는 단지입니다. 센트라스나 텐즈힐 전체와 구분해 위치를 봐야 합니다.",
+      "en": "Access to Sangwangsimni station, Sungshin Elementary School and walks along Cheonggyecheon. These routes are specific to Tenz Hill 1, separate from Centras and the wider Tenz Hill area.",
+      "zh-CN": "若能结合Soongshin小学通学和清溪川散步，可能适合家庭。但初中公交与晚间课外班可能形成另一套路程，应从第一组团地址串起完整一天，而不只看小学路线。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "상왕십리역 2호선, 동별 접근 차이",
+        "en": "Sangwangsimni Line 2; approach varies by building",
+        "zh-CN": "核对至上往十里站2号线的路线"
+      },
+      "schools": {
+        "ko": "숭신초 통학권, 현재 배정 확인",
+        "en": "Soongshin catchment; confirm current allocation",
+        "zh-CN": "用现行资料核对Soongshin小学"
+      },
+      "daily": {
+        "ko": "청계천 산책, 진입 계단·경사로 확인",
+        "en": "Cheonggyecheon walks; check steps and ramps",
+        "zh-CN": "真正能进入清溪川的位置"
+      }
+    }
+  },
+  "sg-marina-one-residences": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "업무지구의 철도와 단지 안 장보기를 함께 이용하는 도심 주거입니다. 초등학교가 바로 앞인 가족형 입지와는 다릅니다.",
+      "en": "City living with CBD rail connections and groceries within the development. Primary schools are less immediate than the office and shopping amenities.",
+      "zh-CN": "CBD通勤和楼内采购能方便父母的日常。若买房首先为了孩子上学，应先落实入学条件和实际接送路线，再衡量这些便利。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Shenton Way TEL 지하 연결",
+        "en": "Underground connection to Shenton Way on TEL",
+        "zh-CN": "地下连接已有记录，家门至站台仍未实测"
+      },
+      "schools": {
+        "ko": "Cantonment Primary 표기 1.49km, 입학 거리 별도",
+        "en": "Cantonment Primary advertised at 1.49 km; admission distance separate",
+        "zh-CN": "一所学校的距离不足以判断全部入学条件"
+      },
+      "daily": {
+        "ko": "The Heart 지하 Cold Storage, 09~21시",
+        "en": "Cold Storage at The Heart, 09:00–21:00",
+        "zh-CN": "Cold Storage的位置与营业时间"
+      }
+    }
+  },
+  "sg-park-place-plq": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "Paya Lebar 환승역과 몰을 일상적으로 이용하기 좋은 복합단지입니다. 출근과 장보기를 짧게 묶는 생활이 강점입니다.",
+      "en": "A mixed-use development built around Paya Lebar's interchange and malls. Its clearest advantage is keeping commuting and everyday shopping close together.",
+      "zh-CN": "家庭常用东西线或环线，并习惯顺路采购时，PLQ值得列入候选。具体楼栋的官方学校距离类别未确认前，不宜为入学距离支付溢价。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Paya Lebar EWL·CCL 환승역 직접 연결",
+        "en": "Direct connection to Paya Lebar EWL/CCL interchange",
+        "zh-CN": "E出口连接PLQ地面层，F出口连接商场地下层"
+      },
+      "schools": {
+        "ko": "Kong Hwa 730m·Geylang Methodist 1.01km 공시",
+        "en": "Kong Hwa 730 m; Geylang Methodist 1.01 km advertised",
+        "zh-CN": "Kong Hwa 730米与Geylang Methodist小学1.01公里均为平台数据"
+      },
+      "daily": {
+        "ko": "PLQ Mall의 쇼핑·식음시설",
+        "en": "PLQ Mall shopping and dining",
+        "zh-CN": "2024年商场到访1,310万人次，商户销售额2.789亿新元"
+      }
+    }
+  },
+  "sg-wallich-residence": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "MRT역 위의 고층 주거로, 업무·외식·장보기를 한곳에서 연결하기 좋습니다. 높은 층의 전망과 실내 평면을 중시하는 선택입니다.",
+      "en": "High-rise homes above an MRT station, with work, dining and groceries close together. Views and the usable apartment layout are central to its appeal.",
+      "zh-CN": "高层住宅放入餐桌和孩子的学习区后，空间感可能不同。只有Cantonment入学安排和家庭公共空间都合适，车站上盖的便利才值得多付钱。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Tanjong Pagar MRT역 위, J출구 연결",
+        "en": "Above Tanjong Pagar MRT, with access via Exit J",
+        "zh-CN": "位于车站上方，不等于通勤已经实测"
+      },
+      "schools": {
+        "ko": "Cantonment Primary 표기 670m, 입학 별도",
+        "en": "Cantonment Primary advertised at 670 m; admission separate",
+        "zh-CN": "Cantonment小学670米不代表保证入学"
+      },
+      "daily": {
+        "ko": "Guoco Tower 지하 Little Farms·식음시설",
+        "en": "Little Farms and dining in Guoco Tower",
+        "zh-CN": "Guoco Tower内已有明确的杂货店"
+      }
+    }
+  },
+  "sg-the-sail-marina-bay": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Compact homes and shared facilities in the Marina Bay office district. Room usability and street noise deserve as much attention as the view.",
+      "ko": "Marina Bay 업무지구에서 소형 평면과 공용시설을 이용하는 도심 주거입니다. 전망만큼 실제 방의 쓰임과 거리 소음을 봐야 합니다.",
+      "zh-CN": "现有资料对父母的CBD生活支持更明确，孩子上学则需另做安排。先落实通学路线与室内更新范围，再比较购房预算。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Advertised station distance 360 m; internal walking is additional",
+        "ko": "표기 역 거리 360m, 실내 이동은 별도",
+        "zh-CN": "360米是广告所列距离"
+      },
+      "schools": {
+        "en": "Former Stamford Primary entries are outdated",
+        "ko": "옛 Stamford Primary 표기 주의, 현재 학교 확인",
+        "zh-CN": "学校名单中有一项已经过时"
+      },
+      "daily": {
+        "en": "Shared amenities and Marina Bay businesses",
+        "ko": "공용시설과 Marina Bay 생활권",
+        "zh-CN": "设施之外，也要计算出楼时间"
+      }
+    }
+  },
+  "sg-duo-residences": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A mixed-use development with a Bugis station connection, shops and a hotel. Convenient city travel and dining are its main strengths.",
+      "ko": "Bugis역 연결과 상업·호텔시설을 함께 누리는 복합단지입니다. 도심 이동과 외식 편의가 강점입니다.",
+      "zh-CN": "孩子较大、已有固定铁路通学路线时，Bugis换乘站可能实用。若优先考虑幼龄儿童，应排除旧Stamford邻近宣传，先确认实际学校路线和夜间卧室噪声。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Bugis MRT connection; advertised distance 110 m",
+        "ko": "Bugis역 연결, 표기 거리 110m",
+        "zh-CN": "110米为房产平台估算"
+      },
+      "schools": {
+        "en": "Stamford Primary has merged; check current school options",
+        "ko": "Stamford Primary는 통합, 현재 입학 학교 확인",
+        "zh-CN": "Stamford旧校址的邻近优势已不适用"
+      },
+      "daily": {
+        "en": "Shops, hotel and offices within the development",
+        "ko": "상가·호텔·오피스가 함께 있는 구성",
+        "zh-CN": "先查当前商户目录"
+      }
+    }
+  },
+  "sg-the-interlace": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A spacious estate with courtyards and outdoor facilities for family life. Much of its appeal lies within the grounds, while rail travel requires more planning.",
+      "ko": "중정과 야외시설을 자주 쓰는 가족에게 잘 맞는 넓은 단지입니다. 철도 바로 앞의 편의보다는 단지 안 공간에 무게가 있습니다.",
+      "zh-CN": "一家人每周会用球场和泳池，宽阔园区才值得投入预算。上学时间要包含园内路程，所选楼栋与项目地址同样重要。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Labrador Park MRT; older walking estimate about 10 minutes",
+        "ko": "Labrador Park역, 과거 도보 추정 약 10분",
+        "zh-CN": "最近车站为Labrador Park，时间仍未实测"
+      },
+      "schools": {
+        "en": "Family facilities do not establish school admission",
+        "ko": "가족 시설과 학교 입학 자격은 별도",
+        "zh-CN": "家庭设施不能说明入学资格"
+      },
+      "daily": {
+        "en": "Eight courtyards, courts and pools across 1,040 homes",
+        "ko": "8개 중정·코트·수영장, 1,040세대",
+        "zh-CN": "按实际使用需求评估球场与泳池"
+      }
+    }
+  },
+  "sg-seaside-residences": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Coastal surroundings and space for family life are the main attractions. Access to stations and schools varies by entrance and the school stage your child needs.",
+      "ko": "해안 쪽 생활과 가족 공간을 원하는 가구에게 맞습니다. 학교나 역이 가깝다는 말도 출입구와 교육 단계에 따라 달라집니다.",
+      "zh-CN": "每周都会去East Coast活动的家庭，可以把这里列入候选。先走学校和公园的过路路线，再判断所售卧室的安静程度是否能接受。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Check the route from station Exit 1 to the actual building",
+        "ko": "역 1번 출구에서 실제 주거동까지 경로 확인",
+        "zh-CN": "从1号出口开始核对实际路线"
+      },
+      "schools": {
+        "en": "Nearby secondary schools do not establish primary admission distance",
+        "ko": "인근 중학교와 초등 입학 거리는 별도",
+        "zh-CN": "邻近中学不等于小学距离类别"
+      },
+      "daily": {
+        "en": "Coastal recreation and grocery trips follow different routes",
+        "ko": "해안 여가와 장보기 경로는 따로",
+        "zh-CN": "休闲与买菜路线分开评估"
+      }
+    }
+  },
+  "sg-marina-bay-residences": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A convenient base for households working at MBFC and enjoying Marina Bay. The actual outlook depends on the apartment's orientation.",
+      "ko": "MBFC에서 일하고 Marina Bay 생활을 즐기는 가구에 맞는 도심 단지입니다. 조망은 지역 이름보다 세대의 방향에 따라 다릅니다.",
+      "zh-CN": "父母在MBFC工作且需要较大户型，可以考虑这里。但父母通勤短，可能换来孩子另一段接送行程，应先比较全家的时间安排。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Station Exit C and Link Mall routes",
+        "ko": "역 C출구·Link Mall 연결 경로 활용",
+        "zh-CN": "C出口与Link Mall服务不同路线"
+      },
+      "schools": {
+        "en": "Address-specific school admission bands need checking",
+        "ko": "학교별 등록 주소·거리 구간 확인 필요",
+        "zh-CN": "Cantonment与River Valley是待查学校，并非已确认距离类别"
+      },
+      "daily": {
+        "en": "Marina Bay walks and mall shopping",
+        "ko": "Marina Bay 산책과 몰 장보기",
+        "zh-CN": "滨水步道与采购便利分开看"
+      }
+    }
+  },
+  "sg-marina-bay-suites": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Larger homes in the CBD with underground rail connections. Monthly ownership costs are a significant part of the decision alongside the amenities.",
+      "ko": "CBD 안에서 넓은 집과 지하 철도 연결을 원하는 가구에 맞습니다. 편의시설만큼 매월 보유 비용의 비중도 큽니다.",
+      "zh-CN": "家庭同时需要宽敞室内和Downtown工作便利时，值得比较。房间多不会缩短接送时间，先测试接送动线，并算清家具与维修预算。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Underground rail connection; advertised distance 160 m",
+        "ko": "역 지하 연결, 표기 거리 160m",
+        "zh-CN": "广告中的160米未计入楼内行程"
+      },
+      "schools": {
+        "en": "Primary-school admission bands need a separate check",
+        "ko": "초등 입학 거리 구간은 별도 확인 필요",
+        "zh-CN": "学校便利并非现有资料的主要优势"
+      },
+      "daily": {
+        "en": "CBD businesses; check ordinary grocery routes",
+        "ko": "도심 상업시설, 일상 장보기 경로 확인",
+        "zh-CN": "天际线之外，日常采购仍需安排"
+      }
+    }
+  },
+  "sg-icon": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A Tanjong Pagar base for households that value practical layouts and easy city travel. Dining and storage space can matter more than the bedroom count alone.",
+      "ko": "Tanjong Pagar에서 평면의 실용성과 도심 이동을 중시하는 가구에 맞습니다. 침실 수보다 실제 식사·수납 공간을 보는 편이 좋습니다.",
+      "zh-CN": "Tanjong Pagar再方便，也无法解决一居室睡眠和学习空间的限制。有育儿计划时，应先看实际房间和阁楼楼梯，而非标示面积。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Tanjong Pagar on the East West Line",
+        "ko": "Tanjong Pagar EWL 이용",
+        "zh-CN": "先从东西线规划通勤"
+      },
+      "schools": {
+        "en": "Cantonment Primary is a nearby option; admission separate",
+        "ko": "Cantonment Primary 인근 후보, 입학 조건 별도",
+        "zh-CN": "Cantonment是明确列出的小学候选"
+      },
+      "daily": {
+        "en": "Icon Village shops and dining",
+        "ko": "Icon Village 식당·상가",
+        "zh-CN": "设施是否好用，要试预约"
+      }
+    }
+  },
+  "sg-one-shenton": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A relatively small CBD development with 341 homes. Street exposure and monthly costs are key differences between the options here.",
+      "ko": "CBD의 비교적 작은 단지에서 살고 싶은 가구에 맞습니다. 341세대 규모이며 거리 방향과 월비용이 선택의 변수입니다.",
+      "zh-CN": "较多户型选择有利于家庭，但不会自动解决上学路线。先把学习区和婴儿车收纳放进实际平面，再加上Shenton Way通勤的优势。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Downtown Exit E approach",
+        "ko": "Downtown역 E출구 경로",
+        "zh-CN": "Downtown E出口是具体的定位起点"
+      },
+      "schools": {
+        "en": "Check the chosen primary school's current address and distance band",
+        "ko": "희망 초등학교의 현재 주소·입학 거리 확인",
+        "zh-CN": "列出的小学仍需按当前地址核对"
+      },
+      "daily": {
+        "en": "Ground-floor shops; full grocery provision needs checking",
+        "ko": "저층 상가, 장보기 업종은 별도 확인",
+        "zh-CN": "楼下商业与完整采购行程分开看"
+      }
+    }
+  },
+  "sg-altez": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "High-rise and duplex homes in Tanjong Pagar. Internal stairs and the arrangement of rooms shape how comfortably a duplex works day to day.",
+      "ko": "Tanjong Pagar의 고층·복층 주거를 원하는 가구에 맞습니다. 복층 계단과 실제 방 배치가 생활에 맞는지가 중요합니다.",
+      "zh-CN": "家庭选择阁楼时，楼梯安全和夜间去卫生间的路线，可能比父母通勤短更重要。若上下楼会增加照顾负担，应先比较平层。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Tanjong Pagar on the East West Line",
+        "ko": "Tanjong Pagar EWL 이용",
+        "zh-CN": "以Tanjong Pagar规划已确认的东西线行程"
+      },
+      "schools": {
+        "en": "Check the chosen school's distance and eligibility rules",
+        "ko": "희망 학교별 입학 거리·자격 확인",
+        "zh-CN": "核对实际学校，而非依赖市中心标签"
+      },
+      "daily": {
+        "en": "CBD groceries and dining; high-floor lift journeys",
+        "ko": "도심 장보기·외식, 세대별 고층 이동",
+        "zh-CN": "方便的街区也要实走买菜路线"
+      }
+    }
+  },
+  "sg-skysuites-at-anson": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Compact city homes in a 360-unit high-rise tower, suited to adult households. Usable room space and lift journeys both affect daily convenience.",
+      "ko": "소형 도심 주거를 찾는 성인 가구에 맞습니다. 360세대 고층 타워라 방의 실용성과 엘리베이터 이동을 함께 봐야 합니다.",
+      "zh-CN": "小户型加入孩子的学习和收纳后，是否够住可能完全不同。若家庭成员可能增加，应先确认家具摆得下，再看附近学校名单。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Tanjong Pagar advertised at 410 m",
+        "ko": "Tanjong Pagar 표기 거리 410m",
+        "zh-CN": "Tanjong Pagar 410米为广告路线"
+      },
+      "schools": {
+        "en": "Cantonment Primary and graduate-school facilities serve different ages",
+        "ko": "Cantonment Primary와 대학원 시설은 구분",
+        "zh-CN": "Cantonment是小学，Duke-NUS不是"
+      },
+      "daily": {
+        "en": "Shared open-air viewing deck and CBD setting",
+        "ko": "공용 야외 전망 데크·도심 생활권",
+        "zh-CN": "屋顶景观属于公共设施"
+      }
+    }
+  },
+  "sg-midtown-modern": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Convenient access to Bugis interchange and surrounding shops. It can also support family life, with school admission considered separately from proximity.",
+      "ko": "Bugis 환승역과 주변 상권을 자주 쓰는 가구에 편리한 단지입니다. 가족 생활에도 후보가 되지만 학교 입학은 따로 봐야 합니다.",
+      "zh-CN": "想在Bugis兼顾家庭户型与花园，可优先于Midtown Bay比较。但花园图片不能保证卧室安静，应试听所售单位周边晚间活动和清晨服务噪声。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Direct connection to Bugis interchange",
+        "ko": "Bugis 환승역 직접 연결",
+        "zh-CN": "150米是过往街道路程估算"
+      },
+      "schools": {
+        "en": "Use current school information, not former Stamford entries",
+        "ko": "옛 Stamford 표기 대신 현재 학교 확인",
+        "zh-CN": "当前学校判断应移除Stamford"
+      },
+      "daily": {
+        "en": "Bugis malls and Tan Quee Lan businesses",
+        "ko": "Bugis·주변 몰·Tan Quee Lan 상권",
+        "zh-CN": "三片商业区对应不同日常行程"
+      }
+    }
+  },
+  "sg-midtown-bay": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Compact and duplex homes for keeping work and city life close together. Internal stairs and service costs need particular attention for families with young children.",
+      "ko": "도심에서 일과 생활을 가까이 묶는 소형·복층 주거입니다. 어린 자녀가 있는 집이라면 계단과 서비스 비용도 살펴봐야 합니다.",
+      "zh-CN": "工作与会客导向的设计，未必适合孩子晚间起居。复式的睡眠、卫生间和学习区若不顺手，应先比较同在Bugis的Midtown Modern。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Measure from the residential lobby to the station",
+        "ko": "주거 로비에서 역까지 경로 확인",
+        "zh-CN": "从住宅大堂计算出行起点"
+      },
+      "schools": {
+        "en": "Work-district convenience does not settle school suitability",
+        "ko": "업무지구의 편의와 학교 적합성은 별도",
+        "zh-CN": "商务住宅定位不能直接说明学校适配"
+      },
+      "daily": {
+        "en": "Shared facilities spread across several floors",
+        "ko": "여러 층에 나뉜 공용 편의시설",
+        "zh-CN": "配套分布在不同楼层"
+      }
+    }
+  },
+  "sg-south-beach-residences": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Spacious city homes above a hotel, with rail and dining close at hand. Its appeal depends on how much you value the services and usable living space.",
+      "ko": "호텔 위의 넓은 도심 주거로, 철도와 외식을 자주 이용하는 가구에 맞습니다. 서비스와 실사용 공간의 가치가 선택의 중심입니다.",
+      "zh-CN": "家庭想兼顾宽敞室内和City Hall生活圈，可以比较。实际接送位置、学习空间和持续服务费，比住宅位于酒店上方更影响日常。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Direct links to Esplanade and City Hall",
+        "ko": "Esplanade·City Hall 직접 연결",
+        "zh-CN": "官方公告列出两处车站连接"
+      },
+      "schools": {
+        "en": "Primary-school admission distance needs separate checking",
+        "ko": "초등 입학 거리 구간은 별도 확인 필요",
+        "zh-CN": "中心区铁路不代表小学距离类别"
+      },
+      "daily": {
+        "en": "Hotel and retail services; homes on levels 22–45",
+        "ko": "호텔·상업시설, 22~45층 주거",
+        "zh-CN": "日常采购与专程餐饮分开比较"
+      }
+    }
+  },
+  "sg-concourse-skyline": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Apartment space and access to Nicoll Highway station are the main draws. Covered walking routes and the outlook from an individual home need an on-site check.",
+      "ko": "Nicoll Highway 근처에서 넓이와 철도 접근을 함께 비교할 만한 단지입니다. 지붕 있는 경로와 세대 조망은 현장에서 확인할 부분입니다.",
+      "zh-CN": "较宽敞的户型值得与紧凑市区住宅比较。应核实广告中的五房是否实为四房加书房，并单独判断书房是否适合孩子睡眠。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Near Nicoll Highway; covered route needs an on-site check",
+        "ko": "Nicoll Highway 인근, 지붕 연결은 현장 확인",
+        "zh-CN": "有盖连接是需要现场核实的广告说法"
+      },
+      "schools": {
+        "en": "Use address-specific admission rules, not a generic school list",
+        "ko": "일반 학교 목록보다 주소별 입학 조건 확인",
+        "zh-CN": "不要直接沿用笼统学校名单"
+      },
+      "daily": {
+        "en": "Local shops; test routine grocery and return journeys",
+        "ko": "주변 상가, 실제 장보기·귀가 경로 확인",
+        "zh-CN": "在平常时段检查商业便利"
+      }
+    }
+  },
+  "sg-martin-modern": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Family-sized layouts within River Valley's school and shopping area. West-facing apartments can combine river views with strong afternoon sun.",
+      "ko": "River Valley의 학교·상권과 넓은 가족 평면을 함께 보는 단지입니다. 서향 세대는 강 조망과 오후 햇볕이 함께 따라옵니다.",
+      "zh-CN": "在River Valley寻找家庭户型与花园，值得看看这里。先落实入学资格，再把午后日晒和制冷负担与河景一起衡量。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Near TEL; older advertised distance about 400 m",
+        "ko": "TEL 인근, 과거 표기 거리 약 400m",
+        "zh-CN": "400米仍是过往估算"
+      },
+      "schools": {
+        "en": "River Valley Primary nearby; admission is address-specific",
+        "ko": "River Valley Primary 인근, 입학은 주소별",
+        "zh-CN": "邻近入学仍取决于实际地址"
+      },
+      "daily": {
+        "en": "450 homes with 2–4 bedrooms; river and shopping access",
+        "ko": "450세대·2~4베드룸, 강변·쇼핑 생활권",
+        "zh-CN": "车站距离不是商场距离"
+      }
+    }
+  },
+  "sg-rivergate": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A freehold estate with shared riverside spaces. Completed in 2009, it calls for attention to the renovation condition of each apartment.",
+      "ko": "강변 공용 공간과 영구 보유권을 선호하는 가구에 맞습니다. 2009년 단지라 세대별 수리 상태를 함께 봐야 합니다.",
+      "zh-CN": "家庭会常用河滨步道和成熟园区，值得比较。孩子较小的话，先看河边边界与出入口，并把入住前的设备更新列入预算。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Check the current TEL route; old walking times may be outdated",
+        "ko": "현재 TEL까지의 경로 확인, 옛 시간 표기 주의",
+        "zh-CN": "不要沿用2019年的两至三分钟说法"
+      },
+      "schools": {
+        "en": "River Valley Primary is a local school option",
+        "ko": "River Valley Primary 인근 후보",
+        "zh-CN": "River Valley小学是明确的附近候选"
+      },
+      "daily": {
+        "en": "Riverside shared spaces and restaurants; 545 homes",
+        "ko": "강변 공용부·주변 식당, 545세대",
+        "zh-CN": "当前商户比旧店名更重要"
+      }
+    }
+  },
+  "sg-the-trillium": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Spacious homes beside Great World, with everyday shopping close by. This freehold estate has 231 apartments.",
+      "ko": "Great World 옆에서 넓은 집과 일상 쇼핑 편의를 원하는 가구에 맞습니다. 231세대 규모의 영구 보유권 단지입니다.",
+      "zh-CN": "同样是两房，成熟的大户型可提供不同的收纳与公共空间。有增员计划时，应先匹配房间大小和当前通学路线，开阔河景仍要单独确认。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Great World TEL and basement mall connection",
+        "ko": "Great World TEL·몰 지하 연결",
+        "zh-CN": "汤申—东海岸线已是现有交通便利"
+      },
+      "schools": {
+        "en": "River Valley Primary nearby; check the actual gate route",
+        "ko": "River Valley Primary 인근, 교문 경로 확인",
+        "zh-CN": "River Valley小学需核实实际校门路线"
+      },
+      "daily": {
+        "en": "Great World shopping and groceries",
+        "ko": "Great World 쇼핑·장보기",
+        "zh-CN": "日常购物是明确吸引力"
+      }
+    }
+  },
+  "sg-d-leedon": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A large estate with extensive shared facilities for family life. Walks to stations and schools vary across its seven towers.",
+      "ko": "넓은 대단지와 공용시설을 선호하는 가족에게 맞습니다. 7개 타워 중 위치에 따라 역·학교까지의 실제 거리가 달라집니다.",
+      "zh-CN": "宽阔公共空间能成为家庭购买理由，但塔楼选择会改变早晨安排。先确认具体地址的入学情况和家门到接送点的路线，不宜为Nanyang的想当然支付溢价。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Farrer Road MRT nearby; walking varies by tower",
+        "ko": "Farrer Road MRT 인근, 동별 보행 차이",
+        "zh-CN": "已明确Farrer Road站，完整步行仍待确认"
+      },
+      "schools": {
+        "en": "Nanyang and Raffles Girls' among nearby schools; admission separate",
+        "ko": "Nanyang·Raffles Girls’ 등 인근, 입학 별도",
+        "zh-CN": "列出学校不等于入学资格证明"
+      },
+      "daily": {
+        "en": "Holland Village, Dempsey and Orchard destinations",
+        "ko": "Holland Village·Dempsey·Orchard 생활권",
+        "zh-CN": "附近生活区对应不同出行类型"
+      }
+    }
+  },
+  "sg-reflections-at-keppel-bay": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A waterfront estate mixing high-rise towers with low-rise villas. Walks and views are a draw, though everyday journeys can be longer.",
+      "ko": "고층 타워와 저층 빌라가 섞인 수변 단지입니다. 산책과 전망의 장점에 비해 일상 이동은 길게 느껴질 수 있습니다.",
+      "zh-CN": "一家人会常用滨水和户外空间，可以列入候选。低层别墅式楼栋与高塔的出入、通学不同，应先定学校安排，再选楼型。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Telok Blangah MRT; test the full walk from home",
+        "ko": "Telok Blangah MRT, 현관부터 보행 확인",
+        "zh-CN": "从Telok Blangah出发，再核对目的地"
+      },
+      "schools": {
+        "en": "Check current routes and admission terms for primary options",
+        "ko": "초등학교 후보별 현재 경로·입학 조건 확인",
+        "zh-CN": "小学候选需核对当前路线"
+      },
+      "daily": {
+        "en": "Shoreline gates and shared spaces; tower/villa lifestyles differ",
+        "ko": "해안 쪽문·수변 공용부, 타입별 생활 차이",
+        "zh-CN": "滨水散步与采购路线不同"
+      }
+    }
+  },
+  "sg-corals-at-keppel-bay": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A smaller, lower-rise waterfront estate with 366 homes across buildings of four to twelve storeys. It suits households seeking a less towering setting.",
+      "ko": "고층 대단지보다 낮고 작은 수변 주거를 선호하는 가구에 맞습니다. 4~12층, 366세대 규모입니다.",
+      "zh-CN": "偏好较低楼层的滨水居所，可与Reflections区别比较。应落实真实接送，别依赖驾车半径学校名单，同时检查低层沿日常通道的隐私。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Compare HarbourFront walks with local bus options",
+        "ko": "HarbourFront 보행·버스 경로 비교",
+        "zh-CN": "附近公交站有单独的距离估算"
+      },
+      "schools": {
+        "en": "School counts within a driving radius do not imply a short school walk",
+        "ko": "차량 반경의 학교 수와 도보 통학은 별도",
+        "zh-CN": "学校数量按驾车半径统计"
+      },
+      "daily": {
+        "en": "Waterfront walks; some errands require longer trips",
+        "ko": "수변 산책, 일상 용무는 이동 필요",
+        "zh-CN": "码头散步与日常采购分开比较"
+      }
+    }
+  },
+  "sg-parc-esta": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A large estate combining Eunos rail access with family-sized layouts. Road-facing apartments need a closer look at noise and comfort with the windows open.",
+      "ko": "Eunos 철도와 가족 평면을 함께 보기 좋은 대단지입니다. 도로를 향한 세대는 소음과 창문 사용을 함께 봐야 합니다.",
+      "zh-CN": "Eunos铁路和大型园区能满足部分家庭需求。应先安排孩子的学习与收纳，并试听开窗卧室噪声，再判断车站对面的便利是否适合全家。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Eunos is one stop from Paya Lebar interchange",
+        "ko": "Eunos에서 Paya Lebar 환승역 한 정거장",
+        "zh-CN": "东西线一站到Paya Lebar是实用连接"
+      },
+      "schools": {
+        "en": "Eunos Primary's 900 m figure is a driving route",
+        "ko": "Eunos Primary의 900m 표기는 차량 경로",
+        "zh-CN": "Eunos小学900米是驾车路线"
+      },
+      "daily": {
+        "en": "Eunos and Joo Chiat food and lifestyle shops",
+        "ko": "Eunos·Joo Chiat의 음식점·생활 점포",
+        "zh-CN": "Eunos与Joo Chiat对应不同日常行程"
+      }
+    }
+  },
+  "sg-jadescape": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A 1,206-home estate with family layouts and neighbourhood groceries nearby. For regular Marymount journeys, the station exit and walk to your building make a difference.",
+      "ko": "가족용 평면과 동네 장보기 시설을 함께 보는 1,206세대 대단지입니다. Marymount를 주로 이용한다면 출구와 실제 집까지의 경로가 중요합니다.",
+      "zh-CN": "家庭户型和Shunfu日常采购是具体比较理由。应推婴儿车试走Marymount A出口，并先确认男校Catholic High是否符合孩子的教育计划。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Marymount or Upper Thomson; Marymount Exit A has the lift",
+        "ko": "Marymount·Upper Thomson 이용, 엘리베이터는 Marymount A출구",
+        "zh-CN": "需要无台阶路线时使用A出口"
+      },
+      "schools": {
+        "en": "Nearby Catholic High is a boys' school; admission distance and eligibility separate",
+        "ko": "인근 Catholic High는 남학교, 입학 거리·자격 별도",
+        "zh-CN": "Catholic High是设小学与中学部的男校"
+      },
+      "daily": {
+        "en": "Shunfu Market and food centre; Thomson Plaza is a separate trip",
+        "ko": "Shunfu Market·푸드센터, Thomson Plaza는 별도 이동",
+        "zh-CN": "Shunfu是具体日常目的地"
+      }
+    }
+  },
+  "ae-skyflame-1": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "Majan에서 차로 출근하고 새집 입주를 기다릴 수 있는 가구에 맞는 계획 단지입니다. 메트로 중심 생활이나 즉시 입주에는 맞지 않습니다.",
+      "en": "An off-plan development in Majan suited to households that drive and can wait for completion. Car-free commuting and immediate occupancy are not its strengths.",
+      "zh-CN": "即使选定 Winchester 学校，也要等交房时间与校车接送安排对得上，搬家才可行。项目商铺尚未营业期间，前往 Cityland 采购的用车成本也要计入预算。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "E311 중심 차량 이동, Majan 내 메트로·트램 없음",
+        "en": "E311-based driving; no metro or tram inside Majan",
+        "zh-CN": "通往 E311 的最后一段路会影响出行"
+      },
+      "schools": {
+        "ko": "GEMS Winchester Dubai, FS~Year 13·차량 통학 확인",
+        "en": "GEMS Winchester Dubai, FS–Year 13; school transport needs checking",
+        "zh-CN": "Winchester 提供至 Year 13 的英式课程"
+      },
+      "daily": {
+        "ko": "기존 Cityland Mall과 예정 단지 상가 구분",
+        "en": "Existing Cityland Mall versus planned estate shops",
+        "zh-CN": "已营业的超市与规划商铺要分开看"
+      }
+    }
+  },
+  "ae-skyterraces": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "Motor City의 학교와 생활시설을 차로 연결하는 고층 주거 계획입니다. Autodrome 주변 소음과 실제 평면이 선택의 변수입니다.",
+      "en": "Planned high-rise homes in Motor City, with schools and everyday amenities reached by car. Autodrome noise and the actual apartment layout are key considerations.",
+      "zh-CN": "如果 Metropole 有合适学位，Motor City 现有学校和商业设施能减轻新项目初期的不便。儿童卧室的朝向仍需结合赛车场活动与休闲设施位置判断。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "간선도로 중심, F37 정류장 보행은 확인 필요",
+        "en": "Main-road access; check the walk to F37 stops",
+        "zh-CN": "道路连接不能直接换算成高峰通勤时间"
+      },
+      "schools": {
+        "ko": "GEMS Metropole Motor City, FS1~Year 13",
+        "en": "GEMS Metropole Motor City, FS1–Year 13",
+        "zh-CN": "Metropole 的课程与评估资料有各自日期"
+      },
+      "daily": {
+        "ko": "First Avenue Mall 식음·장보기·의료시설",
+        "en": "First Avenue Mall dining, groceries and healthcare",
+        "zh-CN": "可把 First Avenue Mall 作为日常办事目的地核实"
+      }
+    }
+  },
+  "ae-valia": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "Creek Harbour의 수변·공원 생활을 기대하는 계획 단지입니다. 지금의 메트로 역세권보다 장기 입주 계획에 맞는 선택입니다.",
+      "en": "An off-plan development built around Creek Harbour's waterfront and parks. It suits a longer-term move, with current metro access still limited.",
+      "zh-CN": "经常沿溪散步的家庭能享受这里的环境，但就读 DIS 需要另行前往 Festival City。学位和接送未落实，滨水优势还不足以决定搬家。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "현재는 도로 이동 중심, Blue Line은 2029년 개통 목표",
+        "en": "Road travel today; Blue Line opening targeted for 2029",
+        "zh-CN": "现有交通要对应真正的工作地点"
+      },
+      "schools": {
+        "ko": "Deira International은 Festival City 별도 캠퍼스",
+        "en": "Deira International is a separate Festival City campus",
+        "zh-CN": "Deira International 位于另一个区域 Festival City"
+      },
+      "daily": {
+        "ko": "Festival City Mall·수변 Viewing Point",
+        "en": "Festival City Mall and waterfront Viewing Point",
+        "zh-CN": "已营业商场与未来商铺要分开看"
+      }
+    }
+  },
+  "ae-peninsula-three": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "Business Bay 운하 주변에서 운동과 외식을 즐기는 소형 가구에 맞습니다. 메트로 바로 앞 주거로 생각하면 거리가 있습니다.",
+      "en": "Canal-side living in Business Bay for smaller households that enjoy exercise and dining out. The metro requires a longer walk than a station-front location would suggest.",
+      "zh-CN": "项目已列为完工，可以进入看实际房源的阶段。家庭能否享受市中心便利，还取决于紧凑户型是否够用，以及前往 Safa British 的接送安排。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Business Bay역까지 차량 약 5분",
+        "en": "Business Bay station advertised at about five minutes by car",
+        "zh-CN": "应从住宅入口走到地铁站测试路线"
+      },
+      "schools": {
+        "ko": "Safa British 후보, 학년 자리·통학 별도 확인",
+        "en": "Safa British option; check year-group places and transport",
+        "zh-CN": "选择 Safa British 需单独安排教育预算"
+      },
+      "daily": {
+        "ko": "운하 산책·운동시설, 몰 장보기는 별도 이동",
+        "en": "Canal walks and sports; mall shopping is a separate trip",
+        "zh-CN": "日常买菜与专程逛商场是不同需求"
+      }
+    }
+  },
+  "ae-the-edge": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "작은 실내 면적보다 운동·공용공간과 도심 생활을 중시하는 직장인에게 맞습니다. 인도 시점과 잔금 부담을 함께 봐야 합니다.",
+      "en": "A Business Bay option for working adults who value shared fitness facilities and city life despite compact interiors. Handover timing and the final payment affect the move-in budget.",
+      "zh-CN": "大面积休闲平台并不能替代孩子卧室里的床和书桌空间。卧室若朝向球场，设施开放时间与孩子睡眠是否冲突，可能和价格同样重要。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Clover Bay 정류장 도보 약 약 1분, F14·F19A",
+        "en": "Clover Bay stop advertised at a one-minute walk; F14/F19A",
+        "zh-CN": "Clover Bay 站可作为首段交通核实点"
+      },
+      "schools": {
+        "ko": "Safa British 후보, 해당 학년 비용·통학 확인",
+        "en": "Safa British option; check year-group fees and transport",
+        "zh-CN": "Safa British 的 Year 1 费用可纳入预算核实"
+      },
+      "daily": {
+        "ko": "주변 상점·공용 운동시설",
+        "en": "Nearby shops and shared exercise facilities",
+        "zh-CN": "日常买菜应先比较较小的便利购物点"
+      }
+    }
+  },
+  "ae-regalia": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "Business Bay에서 고층 주거와 큰 평면을 찾는 가구에 맞습니다. 광고의 준공 일정과 실제 인도 상태는 별도로 확인할 부분입니다.",
+      "en": "High-rise living and larger layouts in Business Bay. The advertised completion schedule still needs to be checked against actual handover availability.",
+      "zh-CN": "这里提供更多卧室选择，但 Hartland 接送和实际交房日要先落实。计划完工日期已经过去，并不意味着可以据此结束家庭现有租约。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Business Bay·Dubai Mall역 차량 표기 8~10분",
+        "en": "Business Bay/Dubai Mall stations advertised at 8–10 minutes by car",
+        "zh-CN": "资料用驾车方式描述去车站的最后一段"
+      },
+      "schools": {
+        "ko": "Hartland 영국식 과정, 별도 차량 통학",
+        "en": "Hartland British curriculum; separate school transport",
+        "zh-CN": "Hartland 是一段单独的英式学校通学路线"
+      },
+      "daily": {
+        "ko": "주변 장보기 시설, 현재 점포 운영 확인",
+        "en": "Nearby grocery options; check current store operations",
+        "zh-CN": "规划中的杂货店不等于已经营业"
+      }
+    }
+  },
+  "ae-one-by-binghatti": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "운하 옆 고층 주거를 원하고 인도를 기다릴 수 있는 가구에 맞습니다. 조망과 비용은 실제 계약할 세대에 따라 다릅니다.",
+      "en": "Planned high-rise homes beside the canal for households that can wait for handover. Views and ownership costs vary with the apartment you contract for.",
+      "zh-CN": "对家庭而言，关键是 Hartland 接送能否与 Marasi Drive 通勤衔接。楼下食品店尚未确认营业，入住初期还需要独立的采购安排。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Marasi Drive 중심 차량 이동",
+        "en": "Marasi Drive-based road travel",
+        "zh-CN": "交通判断从 Marasi Drive 的进出路线开始"
+      },
+      "schools": {
+        "ko": "Sobha Hartland 캠퍼스, 통학은 별도",
+        "en": "Sobha Hartland campus; school transport is separate",
+        "zh-CN": "Hartland 校址与校车覆盖需一起确认"
+      },
+      "daily": {
+        "ko": "운하 산책과 장보기 경로는 따로",
+        "en": "Canal walks and groceries follow different routes",
+        "zh-CN": "运河散步与买菜采用不同路线"
+      }
+    }
+  },
+  "ae-eltiera-views": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "호수 풍경과 클럽하우스 생활을 선호하는 가족을 위한 계획 단지입니다. JLT와 가까워도 메트로 도보 생활과는 다릅니다.",
+      "en": "A planned development focused on lake surroundings and clubhouse life for families. Proximity to JLT does not make it a walk-to-metro location.",
+      "zh-CN": "应先确定孩子所在年级就读哪一个 DBS 校区，再选择房源。Islands 现有配套的价值，要以未来入口的校车接送和采购路线可行为前提。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "JLT·Uptown 인접, 메트로까지 보행 미확인",
+        "en": "Near JLT/Uptown; metro walk not verified",
+        "zh-CN": "进入 JLT 与步行到车站不能混为一谈"
+      },
+      "schools": {
+        "ko": "Dubai British School, 캠퍼스별 주소 확인",
+        "en": "Dubai British School; distinguish campus addresses",
+        "zh-CN": "首先确认对应哪一个 DBS 校区"
+      },
+      "daily": {
+        "ko": "4개 층 클럽하우스 계획·외부 Pavilion 상권",
+        "en": "Planned four-level clubhouse; external Pavilion shopping",
+        "zh-CN": "The Pavilion 与项目内商铺不是一处"
+      }
+    }
+  },
+  "ae-serenia-district-east": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "클럽하우스와 주거 분위기를 중시하며 개발을 기다리는 가구에 맞습니다. East의 일정과 조건은 West와 구분해야 합니다.",
+      "en": "An off-plan option centred on a residential setting and clubhouse facilities. East has its own delivery schedule and terms, separate from West.",
+      "zh-CN": "East 的步道与阳台提供了家庭生活的设想，尚不是成熟日常。DBS 校区交通、交房和商铺开业时间对齐后，这些规划才足以支持搬家决定。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "DMCC역까지 실제 연결 경로 확인 필요",
+        "en": "Check the actual connection to DMCC station",
+        "zh-CN": "需要单独核实到 DMCC 站的实际连接"
+      },
+      "schools": {
+        "ko": "Dubai British School, 캠퍼스·통학 확인",
+        "en": "Dubai British School; check campus and transport",
+        "zh-CN": "先匹配 DBS 校区的具体地址"
+      },
+      "daily": {
+        "ko": "클럽하우스 계획·세대별 발코니 차이",
+        "en": "Planned clubhouse; balcony conditions vary by home",
+        "zh-CN": "阳台面积不能单独说明使用是否方便"
+      }
+    }
+  },
+  "ae-sobha-central": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "Jebel Ali 쪽 업무와 단지 안 운동·장보기를 묶고 싶은 가구에 맞는 고층 계획입니다. 타워별 인도와 역 연결이 중요합니다.",
+      "en": "Planned high-rise homes for households combining work towards Jebel Ali with on-site exercise and shopping. Handover dates and station connections depend on the tower.",
+      "zh-CN": "总体规划有多大，不如所选楼栋何时交房、Winchester 是否有学位重要。同属 Sobha Central，交付年份不同，孩子的转学安排也会不同。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "역까지 실제 출입구·보행 연결 확인 필요",
+        "en": "Station entrance and walking connection need checking",
+        "zh-CN": "站点名称不能代替住宅入口的连接路线"
+      },
+      "schools": {
+        "ko": "The Winchester School Jebel Ali, 학비·통학 별도",
+        "en": "The Winchester School Jebel Ali; fees and transport separate",
+        "zh-CN": "Winchester Jebel Ali 可作为具体教育预算参照"
+      },
+      "daily": {
+        "ko": "단지 시설 계획, 고층 엘리베이터 이동",
+        "en": "Planned amenities and high-rise lift journeys",
+        "zh-CN": "共用电梯及通道会影响高层日常生活"
+      }
+    }
+  },
+  "ae-golf-fields": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "DWC·Dubai South에서 일하며 가족 공간과 골프장 주변 환경을 원하는 가구에 맞습니다. 도심 통근과는 방향이 다릅니다.",
+      "en": "Family space and golf-course surroundings for households working around DWC and Dubai South. A central Dubai commute means travelling in a different direction.",
+      "zh-CN": "工作和学校都适合南部区位时，绿地规划才更能成为家庭优势。若 GEMS Founders 校车不能到达实际楼栋，每天接送两次可能改变住房选择。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Dubai South 차량 생활, Expo역은 단지 밖",
+        "en": "Dubai South driving; Expo station is outside the estate",
+        "zh-CN": "Expo 站并不位于项目内部"
+      },
+      "schools": {
+        "ko": "GEMS Founders Dubai South, 학년별 자리·학비 확인",
+        "en": "GEMS Founders Dubai South; year-group places and fees",
+        "zh-CN": "核准学费与优惠学费必须分开"
+      },
+      "daily": {
+        "ko": "공원·골프 주변 생활 계획",
+        "en": "Planned parks and golf-oriented setting",
+        "zh-CN": "附近公园与总体规划中的面积要分开"
+      }
+    }
+  },
+  "ae-terra-woods": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "Expo 업무·행사와 중층 녹지 주거를 함께 원하는 가구에 맞는 계획 단지입니다. 역과 미래 상업시설의 실제 연결을 봐야 합니다.",
+      "en": "Planned mid-rise homes and greenery near Expo's business and events district. The practical links to the station and future shops still matter to daily convenience.",
+      "zh-CN": "中层围合庭院可能适合家庭，但校车安排仍需独立落实。卧室靠近屋顶球场或庭院烧烤区，要权衡使用方便与活动时间对睡眠的影响。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Expo역 이용 검토, 단지부터 보행은 확인 필요",
+        "en": "Expo rail option; verify the walk from the development",
+        "zh-CN": "轨道网络覆盖与具体楼栋步行要分开"
+      },
+      "schools": {
+        "ko": "GEMS Founders Dubai South, 통학 별도",
+        "en": "GEMS Founders Dubai South; separate school transport",
+        "zh-CN": "GFD Year 7 的费用可作为教育预算核实项"
+      },
+      "daily": {
+        "ko": "녹지·옥상 패들 계획, 침실 소음 확인",
+        "en": "Planned greenery and rooftop padel; check bedroom noise",
+        "zh-CN": "屋顶板式网球场会影响房源选择"
+      }
+    }
+  },
+  "ae-creek-bay": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "수변 산책과 전망을 자주 즐길 가구를 위한 계획 단지입니다. Blue Line은 공사 중인 미래 교통편입니다.",
+      "en": "An off-plan waterfront development for households that value walks and views. The Blue Line is future transport that remains under construction.",
+      "zh-CN": "经常游泳和沿溪散步的家庭，有明确的生活理由考虑这里。但 DIS 接送与学费加入后，仍要同时满足卧室数量和总预算。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Blue Line 공사 중, 2029년 9월 개통 목표",
+        "en": "Blue Line under construction; opening targeted for September 2029",
+        "zh-CN": "交通设施施工与正式运营是不同阶段"
+      },
+      "schools": {
+        "ko": "Deira International은 Festival City 별도 캠퍼스",
+        "en": "Deira International is a separate Festival City campus",
+        "zh-CN": "Deira International 位于独立的 Festival City 校区"
+      },
+      "daily": {
+        "ko": "수변 산책·외부 몰 장보기",
+        "en": "Waterfront walks and off-site mall shopping",
+        "zh-CN": "逛商场与日常买菜是两种行程"
+      }
+    }
+  },
+  "ae-creek-haven": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "물과 공원을 가까이 두는 생활을 원하는 가구에 맞는 계획 단지입니다. Creek Bay와의 차이는 실제 평면·방향에서 드러납니다.",
+      "en": "A planned development focused on living close to water and parks. Apartment layouts and orientation reveal the practical differences from Creek Bay.",
+      "zh-CN": "兄弟姐妹计划就读 DIS，首先要面对不同学段放学时间不同的问题。家、学校与工作地的整天路线安排得过来，Creek Haven 的花园才更有吸引力。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Blue Line은 예정 교통, 현재 도로 이동 중심",
+        "en": "Blue Line is planned; current travel relies on roads",
+        "zh-CN": "Blue Line 属于未来交通条件"
+      },
+      "schools": {
+        "ko": "Deira International·Maverick 통학버스, 노선 확인",
+        "en": "Deira International/Maverick school buses; confirm the route",
+        "zh-CN": "DIS 指定 Maverick 作为校车服务方"
+      },
+      "daily": {
+        "ko": "지역 Viewing Point·수변·공원 계획",
+        "en": "Local Viewing Point and planned waterfront/park setting",
+        "zh-CN": "The Viewing Point 可作为实地了解区域的起点"
+      }
+    }
+  },
+  "ae-the-wilds-residences": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "빌라 대신 아파트에서 공원 중심 가족 생활을 원하는 가구에 맞습니다. 학교와 의료·상업시설은 아직 계획 단계입니다.",
+      "en": "Planned apartments for families seeking park-centred living. The school, medical facilities and shops remain part of the future plan.",
+      "zh-CN": "这里的吸引力是住公寓又能使用更广阔的自然空间。规划中的学校和托育，不能替代入住初期一条切实可行的 Winchester 通学路线。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Global Village 맞은편 차량 생활권",
+        "en": "Driving district opposite Global Village",
+        "zh-CN": "项目位于 Global Village 对面的道路型片区"
+      },
+      "schools": {
+        "ko": "국제학교·보육시설 예정",
+        "en": "International school and childcare are planned",
+        "zh-CN": "国际学校与幼儿园仍属于规划"
+      },
+      "daily": {
+        "ko": "공원·포디엄 의료·상가 예정",
+        "en": "Planned park, podium healthcare and shops",
+        "zh-CN": "需明确裙楼服务配套何时开始运营"
+      }
+    }
+  },
+  "ae-reportage-hills": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "방마다 욕실이 있는 가족용 공간을 찾는 가구에 맞는 타운하우스 계획입니다. 차량 생활과 2028년 인도 대기가 조건입니다.",
+      "en": "Planned family townhouses with en-suite bedrooms. The location requires a car-based routine and a wait for the planned 2028 handover.",
+      "zh-CN": "卧室各带浴室，有利于家人各自安排生活，但楼梯和两辆车的出入也要合适。加上 Metropole 接送后，才能看清大房子实际带来多少便利。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "차량 이동 중심, 광고 시간과 실제 통근은 별도",
+        "en": "Driving-based travel; advertised times are not tested commutes",
+        "zh-CN": "驾车时间估算需要保留计算条件"
+      },
+      "schools": {
+        "ko": "Metropole Motor City, 단지 밖 통학",
+        "en": "Metropole Motor City is an off-site school",
+        "zh-CN": "Metropole 位于另一个区域 Motor City"
+      },
+      "daily": {
+        "ko": "운동·상가·종교시설 계획",
+        "en": "Planned sports, shops and worship facilities",
+        "zh-CN": "宗教、运动和商业组合仍属于规划"
+      }
+    }
+  },
+  "ae-taormina-village-1": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "큰 집과 주차를 원하는 가족을 위한 빌라·타운하우스 계획입니다. 엘리베이터·정원·메이드룸은 유형마다 다릅니다.",
+      "en": "Planned villas and townhouses offering space and parking for families. Lifts, gardens and maid's rooms vary by home type.",
+      "zh-CN": "三间卧室若分布在多层，照看幼儿和夜间作息会很不同。应先选合适的实际户型并落实 Winchester 通学，不能依赖尚在规划的托育设施。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Al Barari·IMG 쪽 차량 생활권",
+        "en": "Driving toward Al Barari and IMG",
+        "zh-CN": "这是 Al Barari 与 IMG 附近以道路出行为主的位置"
+      },
+      "schools": {
+        "ko": "GEMS Winchester Dubai, IMG Worlds 인근",
+        "en": "GEMS Winchester Dubai near IMG Worlds",
+        "zh-CN": "需采用 GEMS Winchester Dubai 的实际校址"
+      },
+      "daily": {
+        "ko": "기존 Cityland Mall·예정 리테일",
+        "en": "Existing Cityland Mall and planned retail",
+        "zh-CN": "已营业的 Cityland 与未来商铺是不同配套"
+      }
+    }
+  },
+  "ae-hayat-1": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "공항·물류 업무권에서 가족 공간을 넓히려는 가구에 맞는 계획 단지입니다. 초기 Hayat 1 계약 조건을 기준으로 봐야 합니다.",
+      "en": "A planned development offering more family space near airport and logistics employment areas. The terms for the initial Hayat 1 phase govern the purchase here.",
+      "zh-CN": "DWC 工作与 GEMS Founders 接送都合适，南部大房子才更值得考虑。距机场近，并不能解决员工入口、轮班和兄弟姐妹放学接送的问题。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Dubai South·공항 출입구 중심 차량 이동",
+        "en": "Dubai South and airport-entrance road routes",
+        "zh-CN": "轮班通勤需对应机场实际出入口"
+      },
+      "schools": {
+        "ko": "GEMS Founders Dubai South, 통학 별도",
+        "en": "GEMS Founders Dubai South; separate school transport",
+        "zh-CN": "GFD 是现有学校选项"
+      },
+      "daily": {
+        "ko": "기존 지역 마트와 미래 몰 구분",
+        "en": "Existing district groceries versus future mall",
+        "zh-CN": "区域大卖场与未来商场是不同设施"
+      }
+    }
+  },
+  "ae-boulevard-park-1": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "공원과 Jebel Ali의 쇼핑·철도를 함께 이용하고 싶은 가구에 맞는 계획 단지입니다. Park 1과 전체 사업 규모는 다릅니다.",
+      "en": "A planned development combining park surroundings with access to Jebel Ali's shopping and rail network. Park 1 is one part of the wider project.",
+      "zh-CN": "公园朝向可能适合亲子户外活动，但 Winchester 仍需学位和接送。每天上学、乘车与采购使用哪个出口，会影响 Park 1 内的具体选择。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Ibn Battuta·Energy역 사이, 광고 1분 보행은 미확인",
+        "en": "Between Ibn Battuta and Energy; advertised one-minute walk unverified",
+        "zh-CN": "去 Energy 站的时间说明有其适用范围"
+      },
+      "schools": {
+        "ko": "희망 학교의 실제 캠퍼스·통학 노선 확인",
+        "en": "Check the actual campus and school-bus route",
+        "zh-CN": "学校名单需进一步落实到实际校址"
+      },
+      "daily": {
+        "ko": "Festival Plaza·IKEA·ACE·Ibn Battuta Mall",
+        "en": "Festival Plaza, IKEA, ACE and Ibn Battuta Mall",
+        "zh-CN": "购买家具与每天的生活采购是不同需求"
+      }
+    }
+  },
+  "ae-reportage-village-1": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "2베드룸에서도 독립 출입과 2개 층 생활을 원하는 가구에 맞는 타운하우스 계획입니다. 큰 유형의 옵션이 작은 집에 모두 포함되지는 않습니다.",
+      "en": "Planned townhouses offering a private entrance and two-storey living even in the two-bedroom range. Features of the larger homes are not included in every smaller layout.",
+      "zh-CN": "项目以两居室联排为主，应检查儿童房与楼梯布局，而不是期待大型别墅。Winchester 通学和幼儿照护分别安排得当，增加的空间才会更好住。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Dubailand 차량 이동 중심",
+        "en": "Driving-based Dubailand location",
+        "zh-CN": "驾车时间表不是实测通勤结果"
+      },
+      "schools": {
+        "ko": "GEMS Winchester Dubai, 단지 밖 통학",
+        "en": "GEMS Winchester Dubai; off-site school transport",
+        "zh-CN": "现有 Winchester 校区可作为学校选项"
+      },
+      "daily": {
+        "ko": "공용 수영장 계획, 개인 풀과 구분",
+        "en": "Planned shared pools, distinct from private pools",
+        "zh-CN": "公共泳池与私人泳池需要区分"
+      }
+    }
+  },
+  "ae-raw-district-r": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "집 근처에서 일·운동·교류를 함께 해결하려는 직장인을 위한 복합개발입니다. 산업지역의 분위기와 방문객 동선을 받아들일 수 있어야 합니다.",
+      "en": "A mixed-use development for working adults who want workspaces, exercise and social activity close to home. Its industrial surroundings and visitor traffic are part of the setting.",
+      "zh-CN": "住、办公与休闲混合的便利，需要住户、访客和配送动线分清。Winchester 学位受限时，学校问题会比住房供应多少更早限制家庭选择。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "실제 역 보행 경로·야간 귀가 확인 필요",
+        "en": "Verify the station walk and late-evening return",
+        "zh-CN": "车站溢价需要先验证首段接驳"
+      },
+      "schools": {
+        "ko": "The Winchester School, 캠퍼스 주소 확인",
+        "en": "The Winchester School; confirm the campus address",
+        "zh-CN": "需匹配 The Winchester School 的实际地址"
+      },
+      "daily": {
+        "ko": "주거·업무·코워킹·여가 혼합 계획",
+        "en": "Planned homes, offices, coworking and leisure",
+        "zh-CN": "办公访客与住宅电梯通道需要区分"
+      }
+    }
+  },
+  "ae-binghatti-aquarise": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "도심 아파트에서 물놀이와 운동시설을 자주 쓰려는 가구에 맞는 계획 단지입니다. 인공 해변 시설과 실제 해변 주거는 다릅니다.",
+      "en": "Planned city apartments with an emphasis on water and fitness facilities. The artificial beach amenity does not make this a coastal location.",
+      "zh-CN": "比卧室标签更重要的是室内能否放下孩子书桌和储物。Hartland 接送及商铺开业落实后，运河区位才更能转化为家庭生活便利。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Business Bay 운하 인근, 역 직결은 아님",
+        "en": "Business Bay canal setting, without a direct station link",
+        "zh-CN": "运河地址并不能证明方便到达车站"
+      },
+      "schools": {
+        "ko": "Hartland International, 별도 차량 통학",
+        "en": "Hartland International; separate car or bus school trip",
+        "zh-CN": "Hartland 是一项独立的学校接送选择"
+      },
+      "daily": {
+        "ko": "약 28개 리테일은 계획 공간 수",
+        "en": "About 28 retail spaces planned, not confirmed tenants",
+        "zh-CN": "商铺数量不等于已确定的商户名单"
+      }
+    }
+  },
+  "ae-rise-by-athlon-1": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "아파트에서 달리기·자전거·운동시설을 자주 이용하려는 가족을 위한 계획 단지입니다. 스포츠 테마 시설의 실제 개장은 따로 봐야 합니다.",
+      "en": "Planned apartments for families who expect to use running, cycling and sports facilities regularly. The opening dates of those facilities need a separate check.",
+      "zh-CN": "经常使用公园的家庭有理由考察，但 Winchester 接送应先解决。Rise 1 具体楼栋和设施权限确定后，才能把总体主题设施算作自家便利。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Global Village 인근 E311·E611 차량 이동",
+        "en": "E311/E611 driving near Global Village",
+        "zh-CN": "高速公路连接是判断该位置的基础"
+      },
+      "schools": {
+        "ko": "GEMS Winchester Dubai, 단지 밖 통학",
+        "en": "GEMS Winchester Dubai; off-site school transport",
+        "zh-CN": "需采用 GEMS Winchester Dubai 的实际校址"
+      },
+      "daily": {
+        "ko": "공원·클럽하우스 계획, Cityland Mall 별도 이동",
+        "en": "Planned parks/clubhouses; Cityland Mall is a separate trip",
+        "zh-CN": "Cityland Mall 是另外一个购物目的地"
+      }
+    }
+  },
+  "ae-passo": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "해변과 넓은 공간을 위해 Palm Crescent의 추가 이동을 받아들일 가구에 맞는 계획 단지입니다. 개인 정원·풀은 일부 유형에만 해당합니다.",
+      "en": "Planned spacious homes by the beach on Palm Crescent, with the extra travel that location brings. Private gardens and pools are available only in selected home types.",
+      "zh-CN": "经常使用海滩的家庭，有明确理由考虑 Passo。但从 West Crescent 反复前往 Golden Mile 托育或学校的路程，仍须能够承受。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "West Crescent에서 육지 출구까지 추가 이동",
+        "en": "Extra travel from West Crescent to the mainland exit",
+        "zh-CN": "先计算 West Crescent 到主干岛段的行程"
+      },
+      "schools": {
+        "ko": "Blossom Palm은 Golden Mile 3, 단지 밖 보육",
+        "en": "Blossom Palm at Golden Mile 3; off-site childcare",
+        "zh-CN": "Golden Mile 3 有已识别的托育运营方"
+      },
+      "daily": {
+        "ko": "Palm Jumeirah Mall의 Waitrose, 차량 장보기",
+        "en": "Waitrose in Palm Jumeirah Mall; grocery trips by car",
+        "zh-CN": "Waitrose 位于 Palm Jumeirah Mall"
+      }
+    }
+  },
+  "ae-azizi-venice-6": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "Dubai South 직장과 미래 라군 생활을 함께 생각하는 가구에 맞는 계획 단지입니다. 문화시설과 전체 사업 공정은 Venice 6의 현재 상태와 다릅니다.",
+      "en": "An off-plan option for households working in Dubai South and looking ahead to lagoon-side living. The wider cultural and development plans do not establish the current progress of Venice 6.",
+      "zh-CN": "对家庭而言，Venice 6 的交付顺序和 GEMS Founders 校车，比潟湖或文化设施规划更紧迫。即使项目商铺较晚开业，也要能使用外部超市与学校。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "DWC·남부 업무권 중심, 도심 통근은 별도",
+        "en": "DWC/southern work districts; assess CBD commutes separately",
+        "zh-CN": "适合南部工作与方便到市中心是两种判断"
+      },
+      "schools": {
+        "ko": "GEMS Founders Dubai South, 입주 연도 학비·자리 확인",
+        "en": "GEMS Founders Dubai South; check move-in-year fees and places",
+        "zh-CN": "教育预算可核实 GEMS Founders Dubai South 的费用"
+      },
+      "daily": {
+        "ko": "라군·오페라·문화지구는 계획",
+        "en": "Lagoon, opera and cultural district are planned",
+        "zh-CN": "歌剧及文化片区是未来吸引力"
+      }
+    }
+  },
+  "jp-park-city-toyosu": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "라라포트와 수변 산책을 일상적으로 즐기기 좋은 단지입니다. 역까지의 거리는 A·B·C동마다 다릅니다.",
+      "en": "An estate with convenient access to LaLaport and waterfront walks. Station distances vary between towers A, B and C.",
+      "zh-CN": "经常把采购与亲子外出安排在一起，LaLaport 连接就有实际价值。A、B、C 栋的入口、走廊及通学路线不同，应按雨天真实动线选栋。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "유라쿠초선 도요스역, 2025년 추정 A·B 8분·C 6분",
+        "en": "Toyosu Yurakucho Line: 2025 estimates A/B eight minutes, C six",
+        "zh-CN": "资料步行参考：A、B 栋约 8 分钟，C 栋约 6 分钟"
+      },
+      "schools": {
+        "ko": "도요스키타·후카가와 제5 통학권, 입주 연도 확인",
+        "en": "Toyosu Kita/Fukagawa No. 5 catchment listing; confirm entry year",
+        "zh-CN": "学校候选：丰洲北小学、深川第五中学"
+      },
+      "daily": {
+        "ko": "라라포트 쇼핑·외식·수변 생활",
+        "en": "LaLaport shopping, dining and waterfront life",
+        "zh-CN": "LaLaport 可把采购与亲子外出合并"
+      }
+    }
+  },
+  "jp-brillia-towers-meguro": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "메구로역의 네 노선을 자주 이용하는 가구에 편리한 역 앞 단지입니다. 학교도 역만큼 가깝다고 생각하면 안 됩니다.",
+      "en": "A station-front development with access to Meguro's four rail lines. Schools require a longer journey than the station does.",
+      "zh-CN": "父母离车站近，不代表孩子上学也近。这里按品川区地址分配学校，至第三日野小学的路线合适，车站溢价才真正惠及全家。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "메구로역 4개 노선, 표기 North 2분·South 3분",
+        "en": "Four lines at Meguro; advertised North two minutes, South three",
+        "zh-CN": "当前项目资料：North 步行 2 分钟、South 3 分钟"
+      },
+      "schools": {
+        "ko": "시나가와구 주소 기준 배정, 메구로구와 구분",
+        "en": "Shinagawa address-based allocation, separate from Meguro ward",
+        "zh-CN": "学校按品川区上大崎地址核对"
+      },
+      "daily": {
+        "ko": "아트레 메구로 장보기·식음·서점",
+        "en": "Atre Meguro groceries, dining, pharmacy shopping and books",
+        "zh-CN": "Atre 采购可衔接回家路线"
+      }
+    }
+  },
+  "jp-park-court-shibuya": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "시부야의 도심 생활과 요요기공원을 함께 누리는 언덕 위 단지입니다. 토지 소유가 아닌 정기차지권 조건이 중요합니다.",
+      "en": "Hillside homes combining Shibuya city life with access to Yoyogi Park. The land is held on a fixed-term lease, making its terms central to ownership costs.",
+      "zh-CN": "经常去代代木公园，也不能替代至神南小学临时校舍的通学判断。车站上坡路和孩子目前的上学路线，都需适合家庭生活。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "시부야역 표기 8분, 언덕·역 내부 이동 추가",
+        "en": "Shibuya advertised at eight minutes; hill and station walking additional",
+        "zh-CN": "涩谷步行 8 分钟是广告距离换算"
+      },
+      "schools": {
+        "ko": "진난초 임시 아오야마 캠퍼스, 입주 연도 확인",
+        "en": "Jinnan's temporary Aoyama Campus; check entry-year arrangements",
+        "zh-CN": "当前神南小学通学应按青山临时校区"
+      },
+      "daily": {
+        "ko": "요요기공원 약 160m·2분",
+        "en": "Yoyogi Park advertised at about 160 m / two minutes",
+        "zh-CN": "代代木公园须确认实际使用入口"
+      }
+    }
+  },
+  "jp-shirokane-the-sky": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "남북선·미타선 출근과 단지 안 장보기를 함께 해결하기 좋습니다. 간선도로와 고속도로 쪽 세대는 소음을 살펴봐야 합니다.",
+      "en": "Convenient for Namboku and Mita line commutes, with groceries inside the development. Apartments facing the main road or expressway need a closer look at noise.",
+      "zh-CN": "车站与 Lincos 方便日常，但上学是另一条路线。通学过街和路口、高架高速方向的房间噪声，决定具体房源是否适合家庭。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "시로카네타카나와역 도보 약 3분",
+        "en": "Shirokane-takanawa advertised at a three-minute walk",
+        "zh-CN": "3 分钟与 5 分钟步行指向不同入口"
+      },
+      "schools": {
+        "ko": "시로카네노오카초 표기 780m·10분, 배정 확인",
+        "en": "Shirokane-no-Oka advertised at 780 m / ten minutes; confirm allocation",
+        "zh-CN": "初售资料列白金之丘小学约 780 米"
+      },
+      "daily": {
+        "ko": "단지 주소의 링코스, 9~22시",
+        "en": "Lincos at the estate address, 09:00–22:00",
+        "zh-CN": "Lincos 当前营业时间为 09:00–22:00"
+      }
+    }
+  },
+  "jp-the-tokyo-towers": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "가치도키의 대단지 시설과 생활 편의를 이용하는 고층 주거입니다. Sea·Mid와 분양·임대 구역을 구분해야 합니다.",
+      "en": "High-rise living with large-estate facilities in Kachidoki. Sea and Mid towers include distinct ownership and rental sections.",
+      "zh-CN": "丰海小学与晴海西中学对应不同日常路线。先选 Sea 或 Mid，再测试孩子升学后的回家路线，才能判断是否适合长期家庭居住。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "Mid에서 가치도키역 도보 약 6분",
+        "en": "Mid to Kachidoki advertised at six minutes",
+        "zh-CN": "Mid 公布至胜哄站步行参考 6 分钟"
+      },
+      "schools": {
+        "ko": "도요미초·하루미니시중 통학구역",
+        "en": "Toyomi Elementary and Harumi Nishi Junior High catchments",
+        "zh-CN": "当前分配为丰海小学、晴海西中学"
+      },
+      "daily": {
+        "ko": "슈퍼·의료·보육시설, 고층 내부 이동",
+        "en": "Grocery, medical and childcare facilities; high-rise internal travel",
+        "zh-CN": "采购路线还包括高层电梯和出入口"
+      }
+    }
+  },
+  "jp-kachidoki-the-tower": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "공용공간을 자주 이용하고 오에도선으로 출근하는 가구에 맞는 대단지 타워입니다. 역과 직접 연결되지는 않습니다.",
+      "en": "A large tower development for households that use shared facilities and commute on the Oedo Line. There is no direct station connection.",
+      "zh-CN": "三翼布局会改变儿童房采光和对面窗户关系。即使至丰海小学路线合适，长期居住还需单独检查前往晴海西中学的路线。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "가치도키역 원분양 도보 약 6분",
+        "en": "Kachidoki: original advertised walk six minutes",
+        "zh-CN": "原开发资料列胜哄站步行参考 6 分钟"
+      },
+      "schools": {
+        "ko": "도요미초 통학구역",
+        "en": "Toyomi Elementary catchment",
+        "zh-CN": "当前小学分配为丰海小学"
+      },
+      "daily": {
+        "ko": "이웃 The Tokyo Towers의 마루에츠 이용",
+        "en": "Maruetsu at neighbouring The Tokyo Towers",
+        "zh-CN": "邻近超市并非楼内住户设施"
+      }
+    }
+  },
+  "jp-park-tower-harumi": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "정원과 야외·공용 공간을 즐기는 가족에게 맞는 단지입니다. 역까지의 짧은 도보보다 셔틀을 활용하는 생활에 가깝습니다.",
+      "en": "Gardens, outdoor areas and shared spaces are the main attractions for families. Daily rail journeys are more likely to involve the shuttle than a short station walk.",
+      "zh-CN": "经常使用花园和游戏空间的家庭，有明确理由考虑。月岛第三小学通学，以及接驳车不运行时的回家安排，仍须分别解决。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "쓰키시마역 이용·평일 아침저녁 셔틀",
+        "en": "Tsukishima rail options and weekday morning/evening shuttles",
+        "zh-CN": "经月岛使用有乐町线与大江户线"
+      },
+      "schools": {
+        "ko": "쓰키시마 제3초 통학구역",
+        "en": "Tsukishima No. 3 Elementary catchment",
+        "zh-CN": "晴海二丁目分配至月岛第三小学"
+      },
+      "daily": {
+        "ko": "모험의 숲·키즈필드·데크·라운지",
+        "en": "Adventure garden, kids' field, decks and lounges",
+        "zh-CN": "管理组合有公开防灾与活动信息"
+      }
+    }
+  },
+  "jp-skyz-tower-garden": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "수변 공용공간과 수영장·운동시설을 꾸준히 쓸 가구에게 매력적입니다. 신도요스역과 유라쿠초선 도요스역은 거리가 다릅니다.",
+      "en": "Waterfront shared spaces, a pool and exercise facilities give the estate its appeal. Shin-Toyosu station and the Yurakucho Line at Toyosu involve different walks.",
+      "zh-CN": "经常游泳、使用水岸空间的家庭，可能愿意接受更长的地铁步行。计划不能只到丰洲西小学，还应考虑之后前往有明西中学部的路线。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "신도요스역 표기 6분·도요스 유라쿠초선 12분",
+        "en": "Shin-Toyosu advertised at six minutes; Yurakucho Toyosu twelve",
+        "zh-CN": "至新丰洲 6 分钟为公布步行参考"
+      },
+      "schools": {
+        "ko": "도요스니시초 통학구역, 개별 입학 확인",
+        "en": "Toyosu Nishi Elementary catchment; confirm individual admission",
+        "zh-CN": "小学分配为丰洲西小学"
+      },
+      "daily": {
+        "ko": "수영장·헬스장·관측 돔, BAYZ와 공유",
+        "en": "Pool, gym and dome shared with BAYZ",
+        "zh-CN": "泳池等设施也供 BAYZ 住户使用"
+      }
+    }
+  },
+  "jp-bayz-tower-garden": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "SKYZ의 시설을 함께 쓰면서 550세대 규모를 선호하는 가구에 맞습니다. 유라쿠초선 출근과 중학교 통학은 따로 살펴볼 부분입니다.",
+      "en": "A 550-home estate with access to shared SKYZ facilities. Yurakucho Line commutes and the route to middle school need separate consideration.",
+      "zh-CN": "经常使用室内儿童空间，BAYZ 对家庭有明确好处。但采购不同于商场直连小区，上中学后前往有明西的路线也需重新评估。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "신도요스역 표기 6분·도요스역 11분",
+        "en": "Shin-Toyosu advertised at six minutes; Toyosu eleven",
+        "zh-CN": "公布步行参考：新丰洲 6 分钟、丰洲 11 分钟"
+      },
+      "schools": {
+        "ko": "도요스니시초 통학구역",
+        "en": "Toyosu Nishi Elementary catchment",
+        "zh-CN": "小学分配为丰洲西小学"
+      },
+      "daily": {
+        "ko": "BAYZ 스위트·SKYZ 게스트룸 공동 이용",
+        "en": "BAYZ suites and shared SKYZ guest rooms",
+        "zh-CN": "客房价值取决于访客频率和预约"
+      }
+    }
+  },
+  "jp-city-towers-toyosu-the-twin": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "도요스역과 도요스키타초 중심으로 생활하기 좋은 타워 단지입니다. 큰 유리창의 개방감과 여름철 냉방·발코니 쓰임이 함께 따라옵니다.",
+      "en": "A tower development centred on Toyosu station and Toyosu Kita Elementary School. Large windows bring openness, alongside questions about summer cooling and balcony use.",
+      "zh-CN": "丰洲北小学、深川第五中学与地铁路线合适，可以列入家庭候选。儿童房的大窗除景观外，还需看夏季日晒、遮阳与通风。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "도요스역 표기 5분, North·South 출입구 차이",
+        "en": "Toyosu advertised at five minutes; North/South entrances differ",
+        "zh-CN": "先选 North 或 South 的住宅入口"
+      },
+      "schools": {
+        "ko": "도요스키타초 통학구역",
+        "en": "Toyosu Kita Elementary catchment",
+        "zh-CN": "已核实丰洲北小学分配"
+      },
+      "daily": {
+        "ko": "약 1,000㎡ 로비·냉난방 실내 복도",
+        "en": "Roughly 1,000 m² lobby and climate-controlled corridors",
+        "zh-CN": "设施资料列大堂约 1,000 平方米"
+      }
+    }
+  },
+  "jp-city-towers-toyosu-the-symbol": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "도요스키타초와 유라쿠초선을 함께 이용하는 가족에게 맞는 단지입니다. 수선적립금까지 합친 월 부담을 보는 것이 중요합니다.",
+      "en": "A family-oriented tower with access to Toyosu Kita Elementary School and the Yurakucho Line. Monthly costs include repair-reserve contributions as well as management fees.",
+      "zh-CN": "丰洲北小学近，对小学阶段孩子有意义，但中学和 LaLaport 是不同距离。计划长期居住，不能只凭小学近来评价全家的日常路线。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "도요스역 유라쿠초선 표기 6분·유리카모메 10분",
+        "en": "Toyosu: advertised Yurakucho six minutes, Yurikamome ten",
+        "zh-CN": "挂牌步行参考：有乐町线 6 分钟、海鸥线 10 分钟"
+      },
+      "schools": {
+        "ko": "도요스키타초 통학구역",
+        "en": "Toyosu Kita Elementary catchment",
+        "zh-CN": "本地址在丰洲北小学学区"
+      },
+      "daily": {
+        "ko": "비바홈 표기 520m·라라포트 1,030m",
+        "en": "Viva Home advertised at 520 m; LaLaport 1,030 m",
+        "zh-CN": "Viva Home 与 LaLaport 对应不同采购需求"
+      }
+    }
+  },
+  "jp-deux-tours": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "24시간 슈퍼와 스파를 자주 쓰는 생활에 잘 맞는 고층 단지입니다. 가치도키역까지는 실제 출입구와 다리 경로에 따라 다릅니다.",
+      "en": "High-rise homes with a 24-hour supermarket and spa facilities. The walk to Kachidoki station depends on the entrance and bridge route used.",
+      "zh-CN": "经常晚间采购的家庭，West 的 Maruetsu 很实用。但回 East 的动线与晴海西通学路线，不能用宣传中的车站步行时间一并代替。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "가치도키역 주거 표기 5분, 경로별 표기 차이",
+        "en": "Kachidoki residential estimate five minutes; routes and published times differ",
+        "zh-CN": "当前住宅资料列胜哄站步行参考 5 分钟"
+      },
+      "schools": {
+        "ko": "하루미니시초 통학구역",
+        "en": "Harumi Nishi Elementary catchment",
+        "zh-CN": "小学分配为晴海西小学"
+      },
+      "daily": {
+        "ko": "하루미 마루에츠 24시간·단지 스파",
+        "en": "24-hour Harumi Maruetsu and estate spa",
+        "zh-CN": "超市 3 个顾客车位并非住户车位"
+      }
+    }
+  },
+  "jp-brillia-mare-ariake": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "33층 수영장·스파·라운지를 집의 연장처럼 쓰는 가구에 맞습니다. 공용시설을 얼마나 자주 이용하느냐가 중요한 단지입니다.",
+      "en": "The pool, spa and lounge on the 33rd floor are a major part of life here. The estate suits households that will use these shared facilities regularly.",
+      "zh-CN": "全家经常使用顶层泳池和温泉，可以补充家中空间。有明西通学及实际预约、年龄规则合适，每月配套费用才有生活上的理由。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "테니스노모리역 표기 5분·고쿠사이텐지조역 8분",
+        "en": "Advertised walks: Tennis-no-mori five minutes, Kokusai-tenjijo eight",
+        "zh-CN": "公布步行参考：海鸥线 5 分钟、临海线 8 分钟"
+      },
+      "schools": {
+        "ko": "아리아케니시 학원 전기 통학구역",
+        "en": "Ariake Nishi Gakuen primary-level catchment",
+        "zh-CN": "小学分配至有明西学园小学部"
+      },
+      "daily": {
+        "ko": "33층 공용시설·이웃 문화도 슈퍼 10~22시",
+        "en": "33rd-floor amenities; neighbouring Bunkado, 10:00–22:00",
+        "zh-CN": "Bunkado 营业至 22:00，并非全天营业"
+      }
+    }
+  },
+  "jp-brillia-ariake-sky-tower": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "1층 슈퍼와 공용 운동시설을 활용하기 좋은 대단지입니다. 철도까지의 보행과 시설 유지비를 함께 봐야 합니다.",
+      "en": "A large estate with a ground-floor supermarket and shared exercise facilities. Station walks and the ongoing cost of those amenities both shape daily life.",
+      "zh-CN": "楼内 Bunkado 与托育形成适合幼儿家庭的实用组合。但托育需要另行申请，入托与有明西通学落实后，才能把日常集中在这里。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "테니스노모리역 표기 6분·고쿠사이텐지조역 10분",
+        "en": "Advertised walks: Tennis-no-mori six minutes, Kokusai-tenjijo ten",
+        "zh-CN": "官方步行参考：海鸥线 6 分钟、临海线 10 分钟"
+      },
+      "schools": {
+        "ko": "아리아케니시 학원 전기·후기 통학구역",
+        "en": "Ariake Nishi Gakuen primary and junior-level catchments",
+        "zh-CN": "小学和中学均分配至有明西学园"
+      },
+      "daily": {
+        "ko": "1층 문화도 10~22시·공용 헬스장",
+        "en": "Ground-floor Bunkado, 10:00–22:00, and shared gym",
+        "zh-CN": "已有 2026 年 Sky Festa 活动记录"
+      }
+    }
+  },
+  "jp-branz-tower-toyosu": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "슈퍼·초등학교·업무 공간을 가까이 이용하기 좋은 단지입니다. 중학교 통학구역은 주변 도요스 5초메의 다른 주소와 다릅니다.",
+      "en": "A convenient setting for groceries, elementary school and nearby workplaces. The middle-school catchment differs from other addresses in Toyosu 5-chome.",
+      "zh-CN": "小学和 Daiei 较近，对低年级孩子家庭很实用。但本地址中学分配至有明西，小学阶段的便利不能直接延伸到整个居住期。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "도요스역 유라쿠초선 표기 5분·유리카모메 4분",
+        "en": "Toyosu: advertised Yurakucho five minutes, Yurikamome four",
+        "zh-CN": "挂牌步行参考：有乐町线 5 分钟、海鸥线 4 分钟"
+      },
+      "schools": {
+        "ko": "도요스니시초 표기 310m·중학교는 별도 구역",
+        "en": "Toyosu Nishi advertised at 310 m; junior-high catchment differs",
+        "zh-CN": "小学分配为丰洲西小学"
+      },
+      "daily": {
+        "ko": "다이에이 표기 170m, 7시~자정 영업",
+        "en": "Daiei advertised at 170 m, open 07:00–midnight",
+        "zh-CN": "Daiei 营业时间为 07:00–24:00"
+      }
+    }
+  },
+  "jp-park-tower-kachidoki": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "역 직결과 다양한 공용공간이 강점인 도심 타워입니다. 역·슈퍼는 가까운 반면 학교까지는 더 걸어야 합니다.",
+      "en": "Direct station access and a wide range of shared facilities define these city towers. The station and supermarket are close, while schools are a longer walk away.",
+      "zh-CN": "Mid 车站连接有利父母通勤，却不缩短至晴海西学校的路程。孩子路线与实际交付日都合适，直连溢价才惠及全家。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "가치도키역 직결, 표기 Mid 1분·South 2분",
+        "en": "Kachidoki station connection; advertised Mid one minute, South two",
+        "zh-CN": "Mid 1 分钟、South 2 分钟按每分钟 80 米换算"
+      },
+      "schools": {
+        "ko": "하루미니시 초·중학교, Mid 매물 표기 1,100m",
+        "en": "Harumi Nishi schools: Mid listing distance 1,100 m",
+        "zh-CN": "胜哄四丁目 6 街区有特定学校分配"
+      },
+      "daily": {
+        "ko": "Mid 매물 기준 Life 50m·동 간 시설 공유",
+        "en": "Life groceries 50 m in Mid listing; shared amenities across towers",
+        "zh-CN": "South 咖啡厅开放公众，并非住户专属"
+      }
+    }
+  },
+  "jp-harumi-flag": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "ko": "학교·공원·쇼핑을 한 동네에서 해결하려는 가족에게 맞습니다. 동·블록별 보행 거리와 버스 중심 교통을 받아들일 수 있어야 합니다.",
+      "en": "Schools, parks and shopping together in one neighbourhood make it attractive for families. Walking distances vary by block, and transport relies heavily on buses.",
+      "zh-CN": "学校与已营业的 Lala Terrace 同在片区，支持列入家庭候选。但 Village 和楼栋改变通学、公交与采购路线，不能用一个最短车站距离代表全区。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "신바시 BRT 등 버스 중심, 운행표 변경 확인",
+        "en": "Shimbashi BRT and other buses; check timetable changes",
+        "zh-CN": "新桥方向 BRT 须按实际出门时段查班次"
+      },
+      "schools": {
+        "ko": "하루미니시초 통학구역, 블록별 보행 차이",
+        "en": "Harumi Nishi Elementary catchment; walks vary by block",
+        "zh-CN": "晴海五丁目分配至晴海西小学"
+      },
+      "daily": {
+        "ko": "운영 중인 라라테라스·공원·지상 개방 공간",
+        "en": "Operating LaLa Terrace, parks and open ground-level space",
+        "zh-CN": "Lala Terrace 已营业，入口因楼栋而异"
+      }
+    }
+  },
+  "jp-capital-mark-tower": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A family-oriented tower in the Tamachi area with everyday conveniences nearby. The trip from a high floor adds time to the advertised station walk.",
+      "ko": "다마치 생활권의 가족형 타워로, 일상 편의와 월비용을 함께 비교하기 좋습니다. 역 도보 시간에는 고층 내부 이동이 더해집니다.",
+      "zh-CN": "田町通勤方便，不能替代芝浦四丁目新学区核对。当前芝浦小学和之后中学路线，比旧挂牌资料上的学校名称更能决定家庭选择。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Tamachi advertised at an eight- to nine-minute walk",
+        "ko": "다마치역 도보 약 8~9분",
+        "zh-CN": "田町 8 或 9 分钟均为公布步行参考"
+      },
+      "schools": {
+        "en": "Shibaura Elementary for 2025 entrants onward; existing-pupil exceptions",
+        "ko": "2025년 입학생부터 시바우라초, 기존 학생 예외",
+        "zh-CN": "调整后学区为芝浦小学"
+      },
+      "daily": {
+        "en": "Delivery lockers and on-site refuse collection",
+        "ko": "택배함·단지 내 쓰레기 수거",
+        "zh-CN": "快递柜与垃圾收集有具体日常用途"
+      }
+    }
+  },
+  "jp-shibaura-island-grove-tower": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A Shibaura estate with gardens and shared rooms for family life. Reaching Tamachi station also involves walking through the Island development.",
+      "ko": "정원과 공용실을 자주 쓰는 가족에게 맞는 시바우라 단지입니다. 다마치역까지는 아일랜드 안 이동도 포함해 봐야 합니다.",
+      "zh-CN": "经常使用花园和公共房间，可以构成家庭选择理由。但新迁入住户按新的芝浦小学分配执行，旧 Island 学区说明不能决定目前通学路线。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Tamachi advertised at an eight- to nine-minute walk",
+        "ko": "다마치역 도보 약 8~9분",
+        "zh-CN": "田町通勤须选实际使用的车站入口"
+      },
+      "schools": {
+        "en": "Shibaura Elementary for 2025 entrants onward; existing-pupil exceptions",
+        "ko": "2025년 입학생부터 시바우라초, 기존 학생 예외",
+        "zh-CN": "调整后学区为芝浦小学"
+      },
+      "daily": {
+        "en": "Garden terrace and garden entrance",
+        "ko": "가든 테라스·정원 출입구",
+        "zh-CN": "花园入口是否连接每天的出入路线"
+      }
+    }
+  },
+  "jp-shibaura-island-cape-tower": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Outdoor facilities and Island living come with a longer station walk. Grove is a useful comparison when commuting time matters most.",
+      "ko": "야외시설과 아일랜드 생활을 즐기는 대신 더 긴 역 도보를 감수하는 선택입니다. 출근 시간을 가장 중시한다면 Grove와 비교할 만합니다.",
+      "zh-CN": "经常使用花园、烧烤和游戏空间的家庭，可能接受较长进站步行。但通学和实际周末预约要可行，才能享受多人共用设施的好处。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Tamachi advertised at twelve minutes; Mita fourteen",
+        "ko": "다마치역 표기 12분·미타역 14분",
+        "zh-CN": "田町公布步行约 12 分钟，仍需测家门全程"
+      },
+      "schools": {
+        "en": "Shibaura Elementary for 2025 entrants onward; existing-pupil exceptions",
+        "ko": "2025년 입학생부터 시바우라초, 기존 학생 예외",
+        "zh-CN": "调整后学区为芝浦小学"
+      },
+      "daily": {
+        "en": "Outdoor amenities; Platanus Park advertised at about 450 m",
+        "ko": "야외시설·플라타너스 공원 약 450m",
+        "zh-CN": "Platanus 公园不属于小区共用花园"
+      }
+    }
+  },
+  "jp-world-city-towers": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A large waterfront estate with shared leisure facilities and on-site groceries. Access to the monorail and a commute through Shinagawa involve different journeys.",
+      "ko": "공용 여가시설과 단지 안 장보기를 자주 쓰는 수변 대단지입니다. 모노레일 접근과 시나가와역 통근은 따로 봐야 합니다.",
+      "zh-CN": "经常用儿童泳池和小区超市的家庭，应先选楼栋。若以为 Aqua 设施就在 Breeze 门口，就会漏算通学、采购与休闲之间的移动。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Tennozu Isle monorail advertised at four minutes; Rinkai route differs",
+        "ko": "덴노즈아일 모노레일 표기 4분, 린카이선과 구분",
+        "zh-CN": "4 分钟步行参考特指天王洲岛单轨站"
+      },
+      "schools": {
+        "en": "Konan Elementary nearby; confirm address-based allocation",
+        "ko": "고난초 인근, 주소별 배정 확인",
+        "zh-CN": "港南小学有当前家庭与课后活动信息"
+      },
+      "daily": {
+        "en": "Estate supermarket, pool, fitness and sky lounge",
+        "ko": "단지 슈퍼·수영장·피트니스·스카이라운지",
+        "zh-CN": "楼内超市仍需核对各栋入口路线"
+      }
+    }
+  },
+  "jp-park-city-osaki-the-tower": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A family-oriented tower with schools and groceries nearby. The apartment reviewed was tenanted, so immediate occupancy is a separate question.",
+      "ko": "학교와 장보기가 가까운 가족 생활형 타워입니다. 검토된 매물은 임대 중이므로 즉시 입주 여부는 별도입니다.",
+      "zh-CN": "御殿山小学与 Life 较近，对低龄孩子家庭很实用。但所核实房源正在出租，中学也更远，需要同时核对入住时间和长期通学安排。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Osaki advertised at a six- to seven-minute walk",
+        "ko": "오사키역 도보 약 6~7분",
+        "zh-CN": "大崎 6–7 分钟为参考，须走至实际站台"
+      },
+      "schools": {
+        "en": "Gotenyama Elementary advertised at about 150 m; confirm gate/allocation",
+        "ko": "고텐야마초 약 150m, 배정·교문 확인",
+        "zh-CN": "御殿山小学须确认分配及可用校门"
+      },
+      "daily": {
+        "en": "Life Drug Plus advertised at about 150 m",
+        "ko": "라이프 드러그 플러스 약 150m",
+        "zh-CN": "Life 适合日常小额采购，入口需核实"
+      }
+    }
+  },
+  "jp-brillia-ariake-city-tower": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "Schools and shared facilities are strengths for family life. Rail stations require a longer walk, and the supermarket is in a neighbouring building.",
+      "ko": "학교와 공용시설의 장점이 있는 가족형 타워입니다. 철도까지의 보행이 길고 슈퍼도 이웃 건물에 있습니다.",
+      "zh-CN": "有明西学校近、楼内有托育，支持以孩子为中心的选择。但托育入读和父母较长的临海线步行也要合适，才能全家都方便。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Tennis-no-mori advertised at nine minutes; Odaiba-Kaihinkoen thirteen",
+        "ko": "테니스노모리역 표기 9분·오다이바카이힌코엔역 13분",
+        "zh-CN": "两条海鸥线进站路线需按方向比较"
+      },
+      "schools": {
+        "en": "Nine-year Ariake Nishi Gakuen catchment",
+        "ko": "아리아케니시 9년제 학원 통학구역",
+        "zh-CN": "有明西为九年一贯学校，可安排参观"
+      },
+      "daily": {
+        "en": "33rd-floor lounge/spa; neighbouring supermarket about 290 m",
+        "ko": "33층 라운지·스파, 이웃 슈퍼 약 290m",
+        "zh-CN": "Bunkado 位于 Sky Tower，并非本楼内"
+      }
+    }
+  },
+  "jp-tomihisa-cross-comfort-tower": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "An urban tower close to Shinjuku's shops and services. The choice of subway entrance makes a practical difference to everyday journeys.",
+      "ko": "신주쿠 상업시설과 가까운 생활형 타워입니다. 도심의 편의와 함께 실제 이용할 지하철 출입구를 살펴보는 것이 좋습니다.",
+      "zh-CN": "附近食品店和儿童空间可能方便家庭。但所核实高层房仍在出租，即使学校与照护合适，也不能视为可立即入住。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Shinjuku-Gyoenmae advertised at seven minutes; Shinjuku-Sanchome nine",
+        "ko": "신주쿠교엔마에 표기 7분·신주쿠산초메 9분",
+        "zh-CN": "新宿三丁目须匹配实际线路入口"
+      },
+      "schools": {
+        "en": "Tomihisa Elementary nearby; confirm allocation",
+        "ko": "도미히사초 인근, 주소별 배정 확인",
+        "zh-CN": "富久小学有当前校务与活动信息"
+      },
+      "daily": {
+        "en": "York Foods/Mini Coop advertised at one minute; amenities on several floors",
+        "ko": "요크푸즈·미니코프 표기 1분, 층별 공용시설",
+        "zh-CN": "派对、客房和健身设施分处不同楼层"
+      }
+    }
+  },
+  "jp-park-court-hamarikyu": {
+    "checkedOn": "2026-09-13",
+    "impression": {
+      "en": "A city development with convenient options for commuting and airport travel. A view of Hamarikyu does not mean its park entrance is equally close.",
+      "ko": "출근과 공항 이동을 중시하는 가구에 편리한 도심 단지입니다. 하마리큐의 조망과 실제 공원 입구까지의 거리는 별도입니다.",
+      "zh-CN": "父母可受益于滨松町和大门通勤，孩子学校则需按当前御成门学园核对。滨离宫收费且日间开放，不能代替随时可去的晚间游乐空间。"
+    },
+    "highlights": {
+      "transport": {
+        "en": "Hamamatsucho and Daimon advertised at five to six minutes",
+        "ko": "하마마쓰초·다이몬 도보 약 5~6분",
+        "zh-CN": "机场或通勤须计算电梯、站台与换乘全程"
+      },
+      "schools": {
+        "en": "Onarimon Gakuen; confirm current address-based allocation",
+        "ko": "오나리몬 가쿠엔, 현재 주소별 배정 확인",
+        "zh-CN": "学校资料应更新至御成门学园"
+      },
+      "daily": {
+        "en": "Hamarikyu nearby; paid admission and limited opening hours",
+        "ko": "하마리큐 정원 인근, 유료·시간제 개장",
+        "zh-CN": "滨离宫须选择真正可进入的园门"
+      }
+    }
+  }
+}

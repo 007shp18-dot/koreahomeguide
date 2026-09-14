@@ -51,8 +51,14 @@ describe('property decisions preserve the boundary between evidence and interpre
       expect(new Set(reports.map(report => report.verdict.label)).size).toBe(3);
       expect(new Set(reports.map(report => report.summary)).size).toBe(3);
       expect(new Set(reports.map(report => report.priorities.map(item => item.evidence?.pointId).join(','))).size).toBe(3);
-      expect(new Set(reports.map(report => JSON.stringify(report.pros))).size).toBe(3);
-      expect(new Set(reports.map(report => JSON.stringify(report.cons))).size).toBe(3);
+      expect(new Set(reports.map(report => JSON.stringify(report.priorities))).size).toBe(3);
+      // Shared advantages remain the same facts for different readers; the
+      // summary, selected priorities and questions supply the personal context.
+      for (const report of reports) {
+        for (const item of [...report.priorities, ...report.pros, ...report.cons]) {
+          expect(item.body).toBe(evidencePoint(review, item).body.ko);
+        }
+      }
       expect(new Set(reports.map(report => JSON.stringify(report.checklist))).size).toBe(3);
     }
   });

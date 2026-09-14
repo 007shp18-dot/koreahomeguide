@@ -61,6 +61,12 @@
 .checklist { margin-top: 24px; padding: 20px; background: var(--petrol); color: var(--surface-strong); border-radius: var(--radius-card); }
 .checklist .points p { color: var(--line); }
 .report .method { margin-top: 20px; font-size: var(--text-meta); color: var(--muted); }
+.sources { margin-top: 16px; border-top: 1px solid var(--line); }
+.sources summary { min-height: var(--control-min); display: list-item; align-content: center; cursor: pointer; }
+.sources ul { padding-left: 20px; }
+.sources li { padding-bottom: 12px; overflow-wrap: anywhere; }
+.sources a { color: var(--accent); }
+.sources p { color: var(--muted); font-size: var(--text-meta); }
 .languageNote { font-size: var(--text-meta); color: var(--muted); }
 .reportFooter { position: sticky; bottom: -20px; margin: 20px -20px -20px; padding: 16px 20px; border-top: 1px solid var(--line); background: var(--surface-strong); }
 .dialog { position: fixed; inset: 0; width: min(860px, calc(100vw - 64px)); max-width: none; height: calc(100dvh - 64px); max-height: none; margin: auto; padding: 0; }
