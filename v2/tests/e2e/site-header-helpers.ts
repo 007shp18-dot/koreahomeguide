@@ -27,6 +27,7 @@ async function openVisibleContextMenu(page: Page, className: string): Promise<Lo
 
 export async function visibleProductNavigation(page: Page): Promise<Locator> {
   const mobile = await openVisibleMobileMenu(page);
+  if (!mobile) await openVisibleContextMenu(page, 'site-header__more');
   const language = await page.locator('html').getAttribute('lang');
   const menuName = language === 'ko' ? '전체 메뉴' : language?.startsWith('zh') ? '网站菜单' : 'Site menu';
   const navigation = mobile

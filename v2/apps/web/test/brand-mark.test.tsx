@@ -82,7 +82,7 @@ describe('SignedPrice brand mark', () => {
     expect(html).toContain('aria-label="Seoul market navigation"');
     const desktop = html.match(/<nav[^>]*aria-label="Primary navigation"[\s\S]*?<\/nav>/)?.[0] ?? '';
     const mobile = html.match(/<nav[^>]*aria-label="Site menu"[\s\S]*?<\/nav>/)?.[0] ?? '';
-    expect(desktop.match(/site-header__product-link/g)).toHaveLength(3);
+    expect(desktop.match(/site-header__product-link/g)).toHaveLength(7);
     expect(mobile.match(/site-header__product-link/g)).toHaveLength(7);
     expect(desktop).toContain('aria-label="More navigation"');
     expect(html.match(/market-local-nav__link/g)).toHaveLength(5);

@@ -6,4 +6,4 @@ The existing Next.js application, routes, data providers, storage and account be
 
 Implementation uses existing CSS modules and installed components instead of introducing competing UI frameworks. Existing locally hosted fonts and licensed photographs are reused. Shared controls retain visible focus, native semantics and reduced-motion support.
 
-Validation: full Next.js compilation and generation of 4,379 pages passed; TypeScript and changed-component lint passed; 77 focused navigation, home, insights, saved and question tests passed. Hosted preview and CI browser checks are the final review steps.
+Validation: full Next.js compilation and generation of 4,379 pages passed; TypeScript and changed-component lint passed; full unit suite passed (3,526 passed, 87 skipped), followed by 17 header checks after the final navigation adjustment. Hosted home and community layouts were inspected. Preview community data currently returns its connection-error state; no synthetic posts are substituted. CI browser checks are still being reviewed.

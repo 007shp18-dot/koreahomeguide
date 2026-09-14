@@ -127,7 +127,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
               <SiteContextMenu className="site-header__context-menu site-header__more">
                 <summary>{locale === 'ko' ? '더보기' : locale === 'zh-CN' ? '更多' : 'More'}<UiIcon name="chevron-down" /></summary>
                 <nav className="site-header__context-panel" aria-label={locale === 'ko' ? '추가 메뉴' : 'More navigation'}>
-                  {moreLinks.map(link => <Link key={link.href} href={link.href} prefetch={false} aria-current={isCurrentGlobalLink(link.href, currentHref) ? 'page' : undefined}>{link.label}</Link>)}
+                  {moreLinks.map(link => <Link className="site-header__product-link" key={link.href} href={link.href} prefetch={false} aria-current={isCurrentGlobalLink(link.href, currentHref) ? 'page' : undefined}>{link.label}</Link>)}
                 </nav>
               </SiteContextMenu>
             </li>
