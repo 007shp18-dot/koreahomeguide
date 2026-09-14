@@ -6,11 +6,12 @@ import tokyo from '../../content/property-reviews/tokyo.json';
 import type { LivingContext } from './living-context';
 import { propertyReviewSchema, type PropertyReview } from './property-review';
 import { reviewLocation } from './property-review-locations';
+import { withPropertyEditorial } from './property-editorial';
 
 export type ReviewedPropertyProfile = LivingContext & { review: PropertyReview };
 export type PropertyReviewDirectoryEntry = Pick<PropertyReview, 'id' | 'marketId' | 'name' | 'area'>;
 
-const reviews = [...seoul, ...singapore, ...dubai, ...tokyo].map(review => propertyReviewSchema.parse(review));
+const reviews = [...seoul, ...singapore, ...dubai, ...tokyo].map(review => withPropertyEditorial(propertyReviewSchema.parse(review)));
 
 function toProfile(review: PropertyReview): ReviewedPropertyProfile {
   return {

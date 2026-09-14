@@ -1,6 +1,7 @@
 import 'server-only';
 import { publicContentDatabase } from '../db/postgres.server';
 import { projectLivingContext, type LivingContext } from './living-context';
+import { withPropertyEditorial } from './property-editorial';
 
 export async function loadLivingContexts({ entity = null, profile = null }: { entity?: string | null; profile?: string | null } = {}): Promise<{ status: 'ready' | 'unavailable'; profiles: LivingContext[] }> {
   const db = publicContentDatabase();
@@ -19,7 +20,8 @@ export async function loadLivingContexts({ entity = null, profile = null }: { en
         AND (${entity}::text IS NULL OR raw_metadata->'profile'->'linked_entity_ids' ? ${entity}::text)
       ORDER BY business_key
       LIMIT 100`;
-    return { status: 'ready', profiles: rows.map(row => projectLivingContext(row.raw_metadata)).filter((row): row is LivingContext => row !== null) };
+    return { status: 'ready', profiles: rows.map(row => projectLivingContext(row.raw_metadata)).filter((row): row is LivingContext => row !== null)
+      .map(row => row.review ? { ...row, review: withPropertyEditorial(row.review) } : row) };
   } catch {
     return { status: 'unavailable', profiles: [] };
   }
