@@ -1,3 +1,4 @@
+import { SEPTEMBER_14_EDITORIAL } from './september-14-editorial';
 import { SEPTEMBER_13_EDITORIAL } from './september-13-editorial';
 import { reviseEditorial } from './editorial-revision';
 import { TOKYO_RENEWAL_ARTICLES } from './tokyo-renewal-2026-09-11';
@@ -92,6 +93,7 @@ export function validateEditorialPortfolio(values: readonly unknown[]): readonly
 }
 
 export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Object.freeze([
+  ...SEPTEMBER_14_EDITORIAL,
   ...SEPTEMBER_13_EDITORIAL,
   ...ENGLISH_PORTFOLIO.map(article => ({ ...article, translationGroupId: article.translationGroupId ?? article.slug })),
   ...MONTHLY_REPORTS.map(article => ({ ...article, translationGroupId: article.translationGroupId ?? article.slug })),
