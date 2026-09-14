@@ -1,5 +1,6 @@
-import { PropertyLivingContext } from '../market-ui/living-context';
+import { PropertyDecisionWorkspace } from '../market-ui/property-decision-workspace';
 import { hasPropertyReviewForEntity } from '../../lib/research/property-review-locations';
+import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
 import { seoulBuildingLocationHref } from '../../lib/public-market/seoul-building-location';
 import {localizedSeoulHref, type ProductLocale} from '../../lib/locale/product-copy';
 import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
@@ -68,6 +69,7 @@ export function BuildingDetailPage({
   facts,
   base,
   backHref,
+  decisionPanelReady = true,
   locale = 'en',
 }: Readonly<{
   model: PublicBuildingModel;
@@ -77,11 +79,31 @@ export function BuildingDetailPage({
   facts?: ReactNode;
   base: string;
   backHref?: string;
+  decisionPanelReady?: boolean;
   locale?: ProductLocale;
 }>) {
   const { mode, contract } = decision.selection;
   const t = (value: string) => seoulDetailText(locale, value);
   const reviewEntity = `kr-seoul:estate:${model.building.buildingId}`;
+  const selectedPriceCohort = model.building.groups[contract];
+  const priceCohort = selectedPriceCohort.published ? selectedPriceCohort : model.building.overall;
+  const priceContract = selectedPriceCohort.published ? contract : 'all';
+  const priceContext: DecisionPriceContext = {
+    scope: priceCohort.published ? 'property' : 'unavailable',
+    label: locale === 'ko' ? '전세 보증금 중앙값' : locale === 'zh-CN' ? '全租押金中位数' : 'Median jeonse deposit',
+    currency: 'KRW',
+    amount: priceCohort.published ? priceCohort.med : null,
+    count: priceCohort.n,
+    period: model.evidence.period,
+    unit: 'total',
+    range: priceCohort.published ? { low: priceCohort.p25, high: priceCohort.p75 } : null,
+    basis: `45–55㎡ · ${t(COHORT_LABELS[priceContract])}`,
+    note: !selectedPriceCohort.published
+      ? locale === 'ko' ? '선택한 계약 유형의 표본이 부족해 전체 전세 계약 집계를 표시합니다. 매매가격과는 별개입니다.' : locale === 'zh-CN' ? '所选合同类型样本不足，此处展示全部全租合同汇总，并非买卖价格。' : 'The selected contract type has too few records, so this shows all jeonse contracts. These are refundable deposits, not sale prices.'
+      : locale === 'ko' ? '월세 없는 전세 계약의 반환 보증금입니다. 매매가격과는 별개입니다.'
+      : locale === 'zh-CN' ? '这是无月租全租合同的可退还押金，并非买卖价格。'
+        : 'Refundable deposits for zero-monthly-rent jeonse contracts; these are not sale prices.',
+  };
   const districtName = locale === 'ko' ? model.district.nameKo : model.district.nameEn;
   const exploreHref = backHref ?? localizedSeoulHref(`/kr/seoul/explore/?district=${model.district.slug}`,locale);
   const exploreTarget = new URL(exploreHref, 'https://signedprice.invalid');
@@ -106,6 +128,7 @@ export function BuildingDetailPage({
   return (
     <div id="top" className={pageStyles.page}>
       <BuildingDetailHeader locale={locale} />
+      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
       <main className={`${pageStyles.main} ${detailStyles.root}`} data-building-detail="ready" data-detail-layout="unified">
         <RecordPlaceVisit place={{ market: 'seoul', key: `${model.district.slug}/${model.building.buildingId}`, name: model.building.name, href: `${detailTarget.pathname}${detailTarget.search}` }} />
         <nav className={pageStyles.breadcrumb} aria-label={t('Breadcrumb')}><Link href={localizedSeoulHref('/kr/seoul/',locale)}>{t('Seoul')}</Link><Link href={exploreHref}>{locale === 'ko' ? `${districtName} 탐색으로` : `Back to ${districtName} Explore`}</Link><span aria-current="page">{model.building.name}</span></nav>
@@ -136,7 +159,6 @@ export function BuildingDetailPage({
         <div id="building-facts" className={detailStyles.section} data-detail-order="facts">
           {facts ?? <section><h2>{t('Building profile')}</h2><p>{t(model.building.housingType)} · {model.building.neighborhoodName}</p></section>}
         </div>
-        <PropertyLivingContext entity={reviewEntity} locale={locale} />
         <DetailTools locale={locale} id="building-tools" checkHref={checkHref} />
         <div className={pageStyles.details} data-detail-order="sources"><BuildingSourceEvidence model={model} locale={locale} /></div>
         <DiscoveryReading market="seoul" locale={locale} />
@@ -145,6 +167,7 @@ export function BuildingDetailPage({
 
         </section>
       </main>
+      </PropertyDecisionWorkspace>
       <SiteFooter locale={locale} copy={locale === 'ko' ? { ...footer, descriptor: '서울 단지별 실거래 자료와 집계 범위를 확인하세요.' } : footer} />
     </div>
   );

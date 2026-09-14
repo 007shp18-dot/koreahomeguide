@@ -489,6 +489,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     );
     const proximity = entityProjection?.proximity ?? identity?.proximity;
     const fallback = <KoreaEvidenceBuildingDetail
+      decisionPanelReady={input.dependencies?.hydrateEvidence !== true}
       model={exact.model}
       backHref={exact.backHref}
       locale={locale}
@@ -554,6 +555,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       locale={locale}
     />;
     const fallback = <ObservedBuildingDetail
+      decisionPanelReady={input.dependencies?.hydrateEvidence !== true}
       model={observed}
       backHref={backHref}
       visual={visual}
@@ -625,6 +627,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
   ];
   const facts = <BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} observedFacts={observedFacts} proximity={entityProjection?.proximity ?? observed?.proximity} locale={locale} />;
   const fallback = <BuildingDetailPage
+    decisionPanelReady={input.dependencies?.hydrateEvidence !== true}
     locale={locale}
       model={model}
       decision={decision}

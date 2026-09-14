@@ -1,5 +1,6 @@
-import { PropertyLivingContext } from '../market-ui/living-context';
+import { PropertyDecisionWorkspace } from '../market-ui/property-decision-workspace';
 import { hasPropertyReviewForEntity } from '../../lib/research/property-review-locations';
+import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
 import { seoulBuildingLocationHref } from '../../lib/public-market/seoul-building-location';
 import { buildingDisplayName, neighborhoodDisplayName } from '../../lib/public-market/seoul-display-names';
 import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
@@ -131,12 +132,14 @@ export function ObservedBuildingDetail({
   backHref,
   visual,
   facts,
+  decisionPanelReady = true,
   locale = 'en',
 }: Readonly<{
   model: ObservedBuildingIdentityModel;
   backHref: string;
   visual?: ReactNode;
   facts?: ReactNode;
+  decisionPanelReady?: boolean;
   locale?: ProductLocale;
 }>) {
   const hasMonthly = model.observations.monthly > 0;
@@ -150,10 +153,21 @@ export function ObservedBuildingDetail({
   const coordinateLabel = model.coordinate.status === 'ready'
     ? 'Verified coordinate available'
     : 'Coordinate verification pending';
+  const requestedTransaction = new URL(backHref, 'https://signedprice.invalid').searchParams.get('transaction');
+  const priceTransaction = requestedTransaction === 'jeonse' || requestedTransaction === 'monthly' ? requestedTransaction : 'sale';
+  const priceContext: DecisionPriceContext = model.fallbackPriceContexts?.[priceTransaction]?.[locale] ?? {
+    scope: 'unavailable', currency: 'KRW', amount: null, count: null, period: model.source.period, unit: 'total',
+    label: priceTransaction === 'sale' ? (locale === 'ko' ? '매매가격' : locale === 'zh-CN' ? '买卖价格' : 'Sale price') : priceTransaction === 'jeonse' ? (locale === 'ko' ? '전세 보증금' : locale === 'zh-CN' ? '全租押金' : 'Jeonse deposit') : (locale === 'ko' ? '월세 · 월' : locale === 'zh-CN' ? '月租' : 'Monthly rent'),
+    basis: locale === 'ko' ? '전체 면적' : locale === 'zh-CN' ? '全部面积' : 'All sizes',
+    note: locale === 'ko' ? '단지 관측 기록은 있지만, 선택한 거래 유형의 공개 가능한 가격 집계는 없습니다.'
+      : locale === 'zh-CN' ? '已有项目观测记录，但所选交易类型没有可公布的价格汇总。'
+        : 'The property is identified, but no publishable price aggregate is available for the selected transaction type.',
+  };
 
   return (
     <div id="top" className={styles.page}>
       <BuildingDetailHeader locale={locale} />
+      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
       <main className={`${styles.main} ${detailStyles.root}`} data-detail-layout="unified" data-building-detail="identity-only">
         <section
           className={styles.identityHero}
@@ -202,7 +216,6 @@ export function ObservedBuildingDetail({
         <div id="building-facts" className={detailStyles.section}>
           {facts ?? <KnownBuildingFacts locale={locale} facts={[{ label: 'Map identity', value: coordinateLabel }]} />}
         </div>
-        <PropertyLivingContext entity={reviewEntity} locale={locale} />
         {facts === undefined ? <BuildingProximityDisclosure proximity={model.proximity} locale={locale} /> : null}
         <section id="building-source" className={styles.source}>
           <details className={styles.sourceDetails}>
@@ -220,6 +233,7 @@ export function ObservedBuildingDetail({
           </div>
         </section>
       </main>
+      </PropertyDecisionWorkspace>
       <SiteFooter locale={locale} copy={locale === 'ko' ? { ...footer, descriptor: '확인된 서울 단지 정보와 가격 자료의 제공 범위를 표시합니다.' } : footer} />
     </div>
   );
@@ -283,18 +297,46 @@ export function KoreaEvidenceBuildingDetail({
   backHref,
   visual,
   facts,
+  decisionPanelReady = true,
   locale = 'en',
 }: Readonly<{
   model: KoreaExplorerBuildingDetailModel;
   backHref: string;
   visual?: ReactNode;
   facts?: ReactNode;
+  decisionPanelReady?: boolean;
   locale?: ProductLocale;
 }>) {
-  const areaLabel = locale === 'ko' ? {all:'전체 면적','under-40':'40㎡ 미만','40-60':'40~60㎡','60-85':'60~85㎡','85-plus':'85㎡ 이상'}[model.selection.areaBand] : areaLabels[model.selection.areaBand];
+  const areaLabel = locale === 'ko' ? {all:'전체 면적','under-40':'40㎡ 미만','40-60':'40~60㎡','60-85':'60~85㎡','85-plus':'85㎡ 이상'}[model.selection.areaBand] : locale === 'zh-CN' ? {all:'全部面积','under-40':'40㎡以下','40-60':'40–60㎡','60-85':'60–85㎡','85-plus':'85㎡及以上'}[model.selection.areaBand] : areaLabels[model.selection.areaBand];
   const t = (value: string) => seoulDetailText(locale, value);
   const reviewEntity = `kr-seoul:estate:${model.building.buildingId}`;
   const transactionLabel = locale === 'ko' ? {sale:'매매',jeonse:'전세',monthly:'월세'}[model.selection.transaction] : locale === 'zh-CN' ? {sale:'买卖',jeonse:'全租',monthly:'月租'}[model.selection.transaction] : transactionLabels[model.selection.transaction];
+  const contractLabel = (locale === 'ko'
+    ? { all: '전체 계약', new: '신규 계약', renewal: '갱신 계약', unknown: '미분류 계약', 'not-applicable': '' }
+    : locale === 'zh-CN'
+      ? { all: '全部合同', new: '新签合同', renewal: '续约合同', unknown: '未分类合同', 'not-applicable': '' }
+      : { all: 'All contracts', new: 'New contracts', renewal: 'Renewals', unknown: 'Unclassified contracts', 'not-applicable': '' })[model.selection.contractGroup];
+  const priceContext: DecisionPriceContext = (model.evidence.state !== 'published' ? model.fallbackPriceContext?.[locale] : undefined) ?? {
+    scope: model.evidence.state === 'published' ? 'property' : 'unavailable',
+    label: locale === 'ko' ? `${transactionLabel}${model.selection.transaction === 'jeonse' ? ' 보증금' : ''} 중앙값${model.selection.transaction === 'monthly' ? ' · 월' : ''}`
+      : locale === 'zh-CN' ? `${transactionLabel}${model.selection.transaction === 'jeonse' ? '押金' : ''}中位数${model.selection.transaction === 'monthly' ? ' · 每月' : ''}`
+        : model.selection.transaction === 'sale' ? 'Median sale price' : model.selection.transaction === 'jeonse' ? 'Median jeonse deposit' : 'Median monthly rent',
+    currency: 'KRW',
+    amount: model.evidence.state === 'published' ? model.evidence.medianWon : null,
+    count: model.evidence.count ?? null,
+    period: model.period,
+    unit: 'total',
+    range: model.evidence.state === 'published' && model.evidence.p25Won != null && model.evidence.p75Won != null
+      ? { low: model.evidence.p25Won, high: model.evidence.p75Won } : null,
+    basis: `${areaLabel}${contractLabel ? ` · ${contractLabel}` : ''}`,
+    note: model.evidence.state !== 'published'
+      ? locale === 'ko' ? '선택한 조건에서 가격을 공개할 수 있는 거래가 부족합니다.' : locale === 'zh-CN' ? '当前筛选条件下可用于公布价格的成交不足。' : 'Too few eligible contracts are available to publish a price for these conditions.'
+      : model.selection.transaction === 'monthly'
+        ? locale === 'ko' ? '월세만 표시한 금액입니다. 반환 보증금은 거래 데이터에서 별도로 확인할 수 있습니다.' : locale === 'zh-CN' ? '此金额仅为月租，可退还押金在成交数据中另列。' : 'This is the monthly rent; refundable deposits appear separately in the transaction data.'
+        : model.selection.transaction === 'jeonse'
+          ? locale === 'ko' ? '반환 보증금이며 매매가격과는 별개입니다.' : locale === 'zh-CN' ? '这是可退还押金，并非买卖价格。' : 'This is a refundable deposit, not a sale price.'
+          : undefined,
+  };
   const publicationHeading = model.evidence.state === 'published'
     ? (model.selection.areaBand === 'all' ? (locale === 'ko' ? '이 단지 신고 거래 · 전체 면적' : locale === 'zh-CN' ? '申报合同 · 全部面积' : 'Reported contracts · all sizes') : (locale === 'ko' ? '같은 면적대 신고 거래' : locale === 'zh-CN' ? '申报合同 · 相同面积区间' : 'Reported contracts · same size'))
     : model.evidence.state === 'withheld'
@@ -314,6 +356,7 @@ export function KoreaEvidenceBuildingDetail({
   return (
     <div id="top" className={styles.page}>
       <BuildingDetailHeader locale={locale} />
+      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
       <main className={`${styles.main} ${detailStyles.root}`} data-detail-layout="unified" data-building-detail="exact-evidence" data-detail-locale={locale}>
         <RecordPlaceVisit place={{ market: 'seoul', key: `${model.district.slug}/${model.building.buildingId}`, name: buildingDisplayName(model.building.officialName, locale), href: `${recentTarget.pathname}${recentTarget.search}` }} />
         <BuildingSummaryCard model={model} backHref={backHref} locale={locale} />
@@ -391,7 +434,6 @@ export function KoreaEvidenceBuildingDetail({
             { label: 'Housing type', value: model.building.housingType },
           ]} />}
         </div>
-        <PropertyLivingContext entity={reviewEntity} locale={locale} />
         <DetailTools locale={locale} id="building-tools" checkHref={buildKoreaEvidenceCheckHref(model, locale)}
           calculatorHref={model.selection.transaction === 'sale' ? createPropertyScenarioHref({locale,market:'kr-seoul',currency:'KRW',entity:model.building.buildingId,propertyName:model.building.officialName,transaction:'sale',housing:model.building.housingType,areaBand:model.selection.areaBand,price:model.evidence.state === 'published' ? model.evidence.medianWon : null,annualRent:model.rentStartingPoint?.annualRent,returnTo:localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${model.selection.areaBand}`,locale)}) : undefined} />
 
@@ -413,6 +455,7 @@ export function KoreaEvidenceBuildingDetail({
         </section>}
         <DiscoveryReading market="seoul" locale={locale} />
       </main>
+      </PropertyDecisionWorkspace>
       <SiteFooter locale={locale} copy={locale === 'ko' ? { ...exactEvidenceFooter, descriptor: '서울 실거래가와 집계 기간·거래 건수·출처를 확인하세요.' } : locale === 'zh-CN' ? { ...exactEvidenceFooter, descriptor: '首尔申报交易价格、统计期间、交易笔数与来源。' } : exactEvidenceFooter} />
     </div>
   );

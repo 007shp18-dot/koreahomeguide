@@ -9,6 +9,8 @@ import type { DubaiSaleDistribution } from '../../lib/dubai/evidence-contract';
 import type { DubaiAreaModel, DubaiAreaSegmentModel } from '../../lib/dubai/route-types';
 import { DubaiShell } from './dubai-shell';
 import { MarketDetailShell } from '../market-ui/market-shell';
+import { AreaDecisionWorkspace } from '../market-ui/area-decision-workspace';
+import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
 import styles from './dubai-research.module.css';
 import detailStyles from '../market-ui/detail-layout.module.css';
 import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
@@ -78,8 +80,20 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
     { housing: segment.housing, stage: 'ready' as const, areas: segment.comparableAreas.ready },
     { housing: segment.housing, stage: 'off-plan' as const, areas: segment.comparableAreas.offPlan },
   ])).filter(({ areas }) => areas.length > 0);
+  const preferred = model.segments.find(segment => segment.housing === 'apartment') ?? model.segments[0];
+  const stage = preferred?.sales.ready ? 'Ready' : 'Off-Plan';
+  const distribution = preferred?.sales.ready ?? preferred?.sales.offPlan;
+  const priceContext: DecisionPriceContext | undefined = distribution ? {
+    scope: 'area', label: `${model.identity.name} · ${t('Median sale price')}`,
+    currency: 'AED', amount: distribution.medianPriceAed, count: distribution.n,
+    period: `${model.context.comparisonPeriod.from}–${model.context.comparisonPeriod.to}`,
+    unit: 'total', basis: `${t(preferred?.housing === 'villa' ? 'Villa' : 'Apartment')} · ${t(stage)}`,
+    range: { low: distribution.priceP25Aed, high: distribution.priceP75Aed },
+    note: locale === 'ko' ? '이 지역의 여러 면적을 포함한 거래 집계입니다. 특정 단지나 세대의 가격이 아닙니다.' : locale === 'zh-CN' ? '这是本区域不同面积住宅的成交汇总，并非某个项目或单套住宅的价格。' : 'Area sales include different home sizes; this is not a price for a specific project or unit.',
+  } : undefined;
   return <DubaiShell locale={locale} href={marketHref(locale, "/ae/dubai/explore/")}>
     <main data-dubai-area-evidence="ready">
+      <AreaDecisionWorkspace market="ae-dubai" areaKey={model.identity.slug} name={model.identity.name} priceContext={priceContext} locale={locale}>
       <MarketDetailShell locale={locale}
       related={<DiscoveryReading market="dubai" locale={locale} />}
       sections={[
@@ -125,6 +139,7 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
             <p><Link href={marketHref(locale, "/trust/")}>{t("Method and corrections")}</Link></p>
         </details>}
       />
+      </AreaDecisionWorkspace>
     </main>
   </DubaiShell>;
 }

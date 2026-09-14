@@ -1,0 +1,1352 @@
+{
+  "kr-acro-river-park": {
+    "family": {
+      "ko": "한강 산책과 단지 안 독서·운동시설을 자주 쓸 가족에게 어울립니다. 다만 계성초는 별도 입학 절차가 있어, 잠원초 배정과 해당 동의 통학길이 맞아야 후보로 남길 만합니다.",
+      "en": "Frequent river walks and on-site reading and sports facilities give families a reason to shortlist. That case depends on the actual Jamwon school allocation and route; nearby private Gyeseong has separate admissions.",
+      "zh-CN": "经常沿江散步、使用小区阅读和运动设施的家庭，可以把这里列入备选。但仍须落实Jamwon小学分配及所选楼栋的上学路线；附近私立Gyeseong小学另有招生程序。"
+    },
+    "couple": {
+      "ko": "반포에서 산책과 운동을 일상으로 삼는다면 입지의 값을 누릴 수 있습니다. 출근에 9호선 급행이 꼭 필요하다면 신반포역의 일반열차와 환승 대기까지 넣어 비교해야 합니다.",
+      "en": "The location earns its keep if riverside walks and exercise are part of your week. If your commute relies on Line 9 express trains, include the local service from Sinbanpo and the transfer wait before choosing.",
+      "zh-CN": "若沿江散步和运动是每周的固定安排，这里的位置更有价值。若通勤依赖9号线快车，选择前要把新盘浦站普通列车及换乘候车时间算进去。"
+    },
+    "investor": {
+      "ko": "한강 조망에 더 내는 돈은 같은 면적·층·방향의 거래로 설명돼야 합니다. 북측 올림픽대로 노출과 수선·시설비까지 반영한 비교가 없어, 지금은 조망만으로 가격 우위를 판단하기 어렵습니다.",
+      "en": "A river-view premium needs support from sales matched for size, floor and orientation. Until that comparison includes northern road exposure, repairs and amenity costs, the view alone cannot establish value.",
+      "zh-CN": "江景溢价需要同面积、楼层和朝向的成交来支撑。北侧道路影响、维修及设施费用尚未纳入匹配比较，单凭江景无法认定价格有优势。"
+    },
+    "titlesZh": {
+      "transport:0": "新盘浦站：平台步行估计为6或9分钟",
+      "transport:1": "9号线普通列车与快车要分开计算",
+      "schools:0": "从所选楼栋走到Jamwon小学校门",
+      "schools:1": "看放学后的安排，而非学区标签",
+      "daily:0": "找到实际进入汉江公园的通道",
+      "daily:1": "设施便利还须核对运营费用",
+      "costs:0": "2016年住宅的维修记录与冬季账单",
+      "costs:1": "用匹配成交检验江景溢价"
+    }
+  },
+  "kr-acro-seoul-forest": {
+    "family": {
+      "ko": "서울숲을 아이와 자주 이용한다면 공원 옆 생활이 선택 이유가 됩니다. 경일초 배정과 주거동에서 교문까지의 길이 확인되지 않았다면, 공원 접근성을 통학 편의로 대신 평가할 수는 없습니다.",
+      "en": "Regular family time in Seoul Forest makes the park-edge setting useful. It does not settle school suitability: confirm Gyeongil allocation and the walk from the residential entrance to the school gate.",
+      "zh-CN": "若经常带孩子去首尔林，紧邻公园确有生活价值。但公园近不能替代上学条件：还要落实Gyeongil小学分配，以及住宅入口至校门的路线。"
+    },
+    "couple": {
+      "ko": "서울숲·외식·문화시설을 자주 쓰는 생활이라면 잘 맞습니다. 다만 D Tower의 역 연결이 집까지 이어지는 실내 동선은 아니므로, 주거 보안문과 통로 운영시간이 출퇴근에 맞는지 봐야 합니다.",
+      "en": "This suits a routine built around Seoul Forest, dining and cultural venues. The public D Tower station connection does not establish an indoor route to your apartment; residential access and passage hours still matter.",
+      "zh-CN": "日常常去首尔林、餐饮和文化场所的人，更能用上这里的便利。但D Tower的公共连站通道不等于从家门全程室内到站，还须核对住宅门禁及通道开放时间。"
+    },
+    "investor": {
+      "ko": "같은 단지라도 테라스·천장고·숲 조망이 다른 집을 한 가격으로 묶기 어렵습니다. 해당 평면의 거래와 실제 관리비, 주거 전용 주차 권리가 확인돼야 추가로 내는 가격을 평가할 수 있습니다.",
+      "en": "Terraces, ceiling height and outlook make a single project price a poor benchmark here. Assess the premium only after matching the layout and checking actual bills and residential parking rights.",
+      "zh-CN": "露台、层高和景观的差异，使小区均价难以衡量具体房源。先匹配户型成交，并核对实际管理费及住宅专属停车权，才能判断加价是否合理。"
+    },
+    "titlesZh": {
+      "transport:0": "从车站连接通道一路核对至住宅大堂",
+      "transport:1": "分别比较水仁盆唐线与2号线路线",
+      "schools:0": "Gyeongil小学仍须核对地址分配",
+      "schools:1": "公园有利于课后活动，不能代表教学质量",
+      "daily:0": "文化设施与日常采购是不同需求",
+      "daily:1": "停车数据有分歧，须查实际使用权",
+      "costs:0": "按相同面积索取近期账单",
+      "costs:1": "景观与户型匹配后再判断价格"
+    }
+  },
+  "kr-mapo-raemian-prugio": {
+    "family": {
+      "ko": "아이의 학교와 부모가 쓸 역이 같은 생활 동선에 놓이는 단지를 골라야 합니다. 한서초·아현초 배정과 경사가 동별로 달라, 마포래미안푸르지오라는 이름만으로 가족에게 맞는 집을 고를 수는 없습니다.",
+      "en": "Choose the precinct that puts the child’s school and your station on a workable daily circuit. Hanseo or Ahyeon allocation and the slopes vary by building, so the estate name alone is not enough.",
+      "zh-CN": "应挑选能把孩子学校与父母常用车站串成日常路线的组团。Hanseo或Ahyeon小学分配及坡度因楼栋而异，只看小区名称不足以判断是否适合家庭。"
+    },
+    "couple": {
+      "ko": "2호선 아현과 5호선 애오개 중 직장에 맞는 노선을 먼저 고르면 후보 동이 좁혀집니다. 두 역이 있다는 장점보다 퇴근 후 경사와 장보기 귀가길을 감당할 수 있는지가 실제 선택을 가릅니다.",
+      "en": "Pick the better commute through Ahyeon on Line 2 or Aeogae on Line 5, then narrow the buildings. The climb home and grocery route can matter more than having two stations on the map.",
+      "zh-CN": "先在2号线阿岘站和5号线Aeogae站之间选出更适合通勤的线路，再缩小楼栋范围。下班回家的坡路和买菜路线，可能比地图上有两座车站更影响选择。"
+    },
+    "investor": {
+      "ko": "네 단지의 거래를 한꺼번에 평균내면 역 접근과 내부 수리 차이가 사라집니다. 같은 단지·면적·층의 거래에 보일러와 실내 보수비까지 맞춰야, 낮은 호가가 실제 가격 이점인지 알 수 있습니다.",
+      "en": "Pooling all four precincts hides station access and refurbishment differences. Match precinct, size and floor, then include boiler and interior work before treating a lower asking price as an advantage.",
+      "zh-CN": "把四个组团的成交混算，会掩盖到站路线和装修状况的差异。须匹配组团、面积、楼层，再加入锅炉及室内翻修费用，才能判断低报价是否真的划算。"
+    },
+    "titlesZh": {
+      "transport:0": "平台估计：Aeogae6分钟、阿岘9分钟",
+      "transport:1": "分别确定四个组团的常用路线",
+      "schools:0": "Hanseo 290米、Ahyeon 454米仅作位置参考",
+      "schools:1": "学校近的评价不能证明学位分配",
+      "daily:0": "核对药房等日常服务的营业时间",
+      "daily:1": "平均1.2车位不保证两辆车可停",
+      "costs:0": "2014年住宅：锅炉与公共维修分开看",
+      "costs:1": "同面积还须匹配组团、楼栋及翻修"
+    }
+  },
+  "kr-helio-city": {
+    "family": {
+      "ko": "해누리초중이음학교를 염두에 둔 가족이라면 실제 배정과 해당 동에서 교문까지의 길이 첫 기준입니다. 초·중 통합 운영이 연속 배정을 보장하지 않으므로, 그 조건이 맞을 때 단지 안 생활의 장점을 평가할 수 있습니다.",
+      "en": "For a family considering Haenuri, allocation and the route from the chosen building to the school gate come first. Integrated primary–middle administration does not guarantee consecutive placement; establish that before valuing the on-site routine.",
+      "zh-CN": "以Haenuri小学、初中一体化学校为目标的家庭，应先落实学位分配和所选楼栋到校门的路线。一体化管理不保证连续入学，条件成立后才能评价小区内生活的便利。"
+    },
+    "couple": {
+      "ko": "송파역까지의 내부 보행과 석촌·잠실·가락시장 환승 중 무엇을 매일 쓸지가 선택을 가릅니다. 정문과 후문의 상권도 달라, 출근길에 장보기를 묶을 수 있는 동이라면 생활 이점이 커집니다.",
+      "en": "The choice turns on your walk to Songpa and which transfer you actually need at Seokchon, Jamsil or Garak Market. Front- and rear-gate shops serve different routines; a building that combines commuting and errands offers more practical value.",
+      "zh-CN": "选择取决于走到松坡站的内部路程，以及每天在石村、蚕室或可乐市场哪站换乘。前后门商圈不同，能把通勤与采购串在一起的楼栋更实用。"
+    },
+    "investor": {
+      "ko": "84㎡라는 면적만 맞춰서는 가격 차이를 설명하기 어렵습니다. 세부 평면·맞은편 동 간격·향을 맞춘 거래에 수리비와 시설비를 더해야 하며, 그 비교가 끝나기 전에는 매수 우위를 붙일 근거가 부족합니다.",
+      "en": "An 84 m² label does not make two homes comparable. Match the layout, orientation and separation from the facing building, then add repairs and amenity costs; a buy case is premature without that comparison.",
+      "zh-CN": "同属84平方米并不代表条件相同。须匹配具体户型、朝向及与对面楼栋的间距，再加入维修和设施费用；完成这些比较前，尚不足以认定值得买入。"
+    },
+    "titlesZh": {
+      "transport:0": "松坡站提供8号线接驳",
+      "transport:1": "比较完整的换乘通勤",
+      "schools:0": "Haenuri采用小学、初中一体化管理",
+      "schools:1": "核对目前的班级安排",
+      "daily:0": "前门与后门的购物路线不同",
+      "daily:1": "区分住宅与商业出入路线",
+      "costs:0": "区域供暖与设施费分开计算",
+      "costs:1": "先匹配户型，再比较84平方米价格"
+    }
+  },
+  "kr-parkrio": {
+    "family": {
+      "ko": "잠실초·잠현초 중 어느 학교에 배정되는지와 현재 학급 운영이 가족의 판단을 가릅니다. 학교가 두 곳이라는 점보다 해당 동에서 실제 교문까지 이어지는 길이 편해야 대단지의 이점을 누릴 수 있습니다.",
+      "en": "The relevant Jamsil or Jamhyeon allocation and current classroom arrangements can decide the family fit. Two nearby schools only help if the assigned school works and the route from your building is manageable.",
+      "zh-CN": "家庭是否适合这里，取决于分配到Jamsil还是Jamhyeon小学，以及目前的班级安排。附近有两所学校并不够，分配学校和所选楼栋到校门的路线都要合适。"
+    },
+    "couple": {
+      "ko": "잠실나루 2호선 출근을 자주 한다면 역 쪽 동을 먼저 볼 만합니다. 대신 지상철 방향 침실의 소음을 확인하고, 공원 쪽 동에서 얻는 산책 편의와 맞바꿀 가치가 있는지 비교하세요.",
+      "en": "For a frequent Line 2 commute, start with buildings toward Jamsillaru. Check bedroom noise facing the elevated railway and decide whether the shorter station route outweighs a park-oriented position.",
+      "zh-CN": "若常乘2号线通勤，可先看靠蚕室渡站的楼栋。但要实地听朝向高架铁路的卧室噪音，再判断更近的车站是否值得放弃偏向公园一侧的便利。"
+    },
+    "investor": {
+      "ko": "잠실나루 접근과 공원 조망은 서로 다른 가격 요인입니다. 같은 면적이라도 어느 장점에 돈을 내는지 분리하고, 2008년 입주 주택의 창호·누수 처리·난방비까지 비교해야 호가 차이를 해석할 수 있습니다.",
+      "en": "Station access and park outlook are distinct price drivers here. Separate them in matched sales and include window condition, leak repairs and heating costs for a 2008 home before interpreting the asking-price gap.",
+      "zh-CN": "蚕室渡站距离与公园景观是不同的定价因素。比较同类成交时应分别看待，并加入2008年入住住宅的窗户状况、漏水维修及供暖费用，才能解释报价差异。"
+    },
+    "titlesZh": {
+      "transport:0": "蚕室渡站为高架车站",
+      "transport:1": "9号线接驳不等于快车站接驳",
+      "schools:0": "分别核对Jamsil与Jamhyeon小学分配",
+      "schools:1": "询问教室与操场的现行安排",
+      "daily:0": "落实前往Asan医院的实际路线",
+      "daily:1": "一并体验购物与散步路线",
+      "costs:0": "2008年小区要看当前维护状态",
+      "costs:1": "不同景观不能合成同一价格"
+    }
+  },
+  "kr-jamsil-ricenz": {
+    "family": {
+      "ko": "잠신초와 학원, 집을 잇는 저녁 귀가길이 맞는 가족에게 유리한 입지입니다. 학교가 모여 있다는 설명만으로 초·중·고 진학을 묶지 말고, 실제 배정과 동별 차량 출입로를 먼저 확인해야 합니다.",
+      "en": "The location works best when Jamsin school, tutoring and home form a manageable evening circuit. Nearby schools do not establish a continuous admissions path; check allocation and vehicle crossings for the chosen building.",
+      "zh-CN": "若Jamsin小学、课外班和家之间能形成顺畅的晚间路线，这里的位置更适合家庭。学校集中不代表可连续升学，仍须核对分配条件及所选楼栋沿途的车行出入口。"
+    },
+    "couple": {
+      "ko": "잠실새내역과 상가를 자주 쓰면 역 쪽 동의 편의가 분명합니다. 한강 산책은 별도 동선이므로, 매일의 출근을 줄일지 주말 산책을 가깝게 할지에 따라 같은 단지 안에서도 선택이 달라집니다.",
+      "en": "Buildings toward Jamsilsaenae make sense for frequent train trips and local shopping. River access follows a different route, so choose between saving time every workday and shortening leisure walks.",
+      "zh-CN": "常坐地铁、在附近购物的人，更适合靠蚕室新川站的楼栋。去汉江是另一条路线，因此应在每天通勤省时与休闲散步更近之间作选择。"
+    },
+    "investor": {
+      "ko": "수리된 집과 원상태 집의 차이가 매입가 밖으로 빠져나가지 않게 봐야 합니다. 2008년 준공 주택의 창호·욕실·배관 내역을 받고, 공급면적 대신 전용면적을 맞춘 거래로 비교해야 합니다.",
+      "en": "Keep the cost of an unrefurbished unit in the purchase comparison. For this 2008 estate, establish window, bathroom and pipe work, and compare transactions using internal rather than gross floor area.",
+      "zh-CN": "比较翻修房与原状房时，不能把后续维修费排除在购入成本之外。这是2008年竣工的小区，应核对窗户、浴室及管线工程，并按套内面积而非建筑面积匹配成交。"
+    },
+    "titlesZh": {
+      "transport:0": "直接接驳2号线是主要便利",
+      "transport:1": "去江南与市中心是不同通勤",
+      "schools:0": "附近Jamsin小学不等于已获分配",
+      "schools:1": "教育便利要落实到放学回家路线",
+      "daily:0": "适合常用蚕室新川商圈的生活",
+      "daily:1": "在临江与购物便利之间定优先次序",
+      "costs:0": "2008年住宅的维修记录",
+      "costs:1": "熟悉的户型名称也须核对套内面积"
+    }
+  },
+  "kr-jamsil-els": {
+    "family": {
+      "ko": "잠일초 통학과 부모의 역 동선을 함께 맞출 수 있는 동이 우선입니다. 학교가 단지 가까이 있어도 실제 교문과 차량 출입로가 다르므로, 아이 혼자 다닐 길이 성립해야 생활 장점이 됩니다.",
+      "en": "Prioritise a building that balances Jamil school with the parents’ station route. A nearby school becomes a practical advantage only when the actual gate and vehicle crossings allow a workable child’s walk.",
+      "zh-CN": "优先看能兼顾Jamil小学上学路线与父母到站路线的楼栋。学校近只有在校门、车行出入口和孩子独自行走路线都合适时，才构成实际便利。"
+    },
+    "couple": {
+      "ko": "9호선이 필요하면 종합운동장 쪽, 2호선과 잠실새내 상권이 주력이라면 그쪽 동선을 먼저 비교하세요. 역 두 곳을 모두 가깝게 쓰는 집이라는 전제보다 내 출근 노선에 맞는 동을 고르는 편이 낫습니다.",
+      "en": "Start toward Sports Complex if Line 9 matters, or toward Jamsilsaenae for a Line 2 and shopping routine. Choose for the line you use rather than assuming every building is equally close to both stations.",
+      "zh-CN": "需要9号线可先比较综合运动场站一侧；主要用2号线及蚕室新川商圈，则先看另一侧路线。按常用线路选楼栋，比假定每栋到两站都近更可靠。"
+    },
+    "investor": {
+      "ko": "리센츠와 비교할 때 브랜드보다 수리 후 총액과 역 접근이 가격 차이를 설명해야 합니다. 같은 전용면적·층의 거래에 2008년 입주 주택의 창호·욕실 보수비를 더하기 전에는 저렴하다고 단정하기 어렵습니다.",
+      "en": "Against Ricenz, the price gap should be explained by station access and the cost after refurbishment. Match size and floor, then add window and bathroom work for a 2008 home before calling it cheaper.",
+      "zh-CN": "与Ricenz比较时，价差应由到站条件和翻修后总成本来解释。须匹配套内面积、楼层，再加入2008年入住住宅的窗户和浴室维修费，才能判断是否更便宜。"
+    },
+    "titlesZh": {
+      "transport:0": "分别规划蚕室新川与综合运动场路线",
+      "transport:1": "站口距离与站台距离分开看",
+      "schools:0": "学校位置与实际入学条件",
+      "schools:1": "按家门与校门之间的路线看安全",
+      "daily:0": "从所选楼栋评估采购路线",
+      "daily:1": "能去汉江不代表家中有江景",
+      "costs:0": "2008年9月入住与现有维修需求",
+      "costs:1": "条件匹配后再与Ricenz比较"
+    }
+  },
+  "kr-raemian-daechi-palace": {
+    "family": {
+      "ko": "대치 학원가를 자주 쓰는 가족이라도 초등 배정과 귀가길이 먼저입니다. 현재 관리 자료만으로 배정학교를 확정할 수 없어, 학원 접근이 좋다는 이유만으로 통학까지 편하다고 판단하기는 어렵습니다.",
+      "en": "Even for a family using Daechi’s tutoring centres, primary allocation and the route home come first. The available management records do not settle school placement, so academy access cannot stand in for the school journey.",
+      "zh-CN": "即使经常使用大峙洞补习机构的家庭，也应先落实小学分配和回家路线。现有管理资料不能确认分配学校，补习方便不能替代上学方便。"
+    },
+    "couple": {
+      "ko": "도곡 환승과 대치역 3호선 중 직장에 맞는 경로가 확실할 때 후보가 됩니다. 집 안에서는 발코니 확장 범위와 동·라인별 승강기 구성을 봐야 같은 면적에 기대한 공간과 이동 편의가 나옵니다.",
+      "en": "Shortlist when the Dogok transfer or Daechi Line 3 route fits your commute. Then check the approved balcony arrangement and lifts serving the exact unit; the area label alone does not describe usable space or access.",
+      "zh-CN": "若道谷换乘或大峙站3号线符合通勤需求，可列入备选。室内还须核对获批阳台扩展及具体单元的电梯配置，面积标签不能完整代表可用空间与出入便利。"
+    },
+    "investor": {
+      "ko": "학원가 입지에 더 내는 돈과 실제 평면의 가치는 나눠 봐야 합니다. 서비스면적·확장 범위·승강기 구성을 맞춘 비교가 없으면, 같은 전용면적의 낮은 단가만으로 투자 매력을 설명하기 어렵습니다.",
+      "en": "Separate the tutoring-district premium from what the particular layout delivers. Without matching balcony space, approved alterations and lift arrangements, a lower rate for the same internal area does not establish an investment advantage.",
+      "zh-CN": "应把补习商圈的位置溢价与具体户型价值分开。若未匹配阳台附加面积、获批扩展及电梯配置，同套内面积下较低的单价也不足以证明投资优势。"
+    },
+    "titlesZh": {
+      "transport:0": "5分钟内的类别不是实测步行时间",
+      "transport:1": "比较道谷换乘与大峙站乘车",
+      "schools:0": "管理资料学校名单不是分配地图",
+      "schools:1": "确定孩子实际会走的上学路线",
+      "daily:0": "核对所选楼栋的日常生活中心",
+      "daily:1": "四层地下空间与电梯衔接",
+      "costs:0": "平均约1.94车位不代表使用权",
+      "costs:1": "按具体房源核对阳台与电梯"
+    }
+  },
+  "kr-dogok-rexle": {
+    "family": {
+      "ko": "대도초와 숙명 학교들을 고려한다면 주소별 배정과 실제 통학길이 후보 유지 조건입니다. 대도초 거리 안내가 서로 달라, 단지 이름이나 학교 평판보다 해당 동에서 아이와 걸어본 경로가 중요합니다.",
+      "en": "If Daedo and the Sookmyung schools drive the search, eligibility and the actual school walk must hold up. Conflicting Daedo distance estimates make a building-specific walk more useful than the estate’s school reputation.",
+      "zh-CN": "若因Daedo及Sookmyung学校而看房，入学条件和实际通学路线必须成立。Daedo距离资料存在差异，比起小区学区名声，更应从所选楼栋陪孩子走到学校。"
+    },
+    "couple": {
+      "ko": "한티 출근과 강남세브란스 이용이 잦다면 이 위치를 반복해서 쓸 수 있습니다. 다만 역 대표 거리보다 귀가 경사와 녹지 쪽 집의 채광을 봐야, 가까움과 쾌적함을 모두 얻는지 알 수 있습니다.",
+      "en": "Frequent Hanti trips or visits to Gangnam Severance make the location useful. Check the climb home and daylight in a greenery-facing unit before assuming the nearest station figure also means an easy, bright home.",
+      "zh-CN": "常从汉堤站出行或去江南Severance医院的人，更能用上这里的位置。仍须查看回家坡度及面向绿地房源的采光，不能用代表性车站距离推断居住一定轻松明亮。"
+    },
+    "investor": {
+      "ko": "2006년 승인 단지에서는 낮은 호가보다 수리 후 총액이 중요합니다. 배관·창호·욕실과 공용 승강기 이력, 해당 평형의 관리비를 함께 봐야 원상태 매물의 가격 차이가 남는지 판단할 수 있습니다.",
+      "en": "In this 2006 estate, compare the total after repairs rather than the asking price alone. Pipe, window and bathroom work, shared-lift records and size-matched bills determine whether an unrefurbished unit retains a price advantage.",
+      "zh-CN": "对这座2006年获批的小区，翻修后总成本比报价本身更重要。管线、窗户、浴室和公共电梯维修记录，以及对应面积的费用，决定原状房的价差是否仍然存在。"
+    },
+    "titlesZh": {
+      "transport:0": "汉堤站154米为平台数据",
+      "transport:1": "何时改走道谷站更合适",
+      "schools:0": "Daedo与Sookmyung学校的具体条件",
+      "schools:1": "上学距离有分歧，须重新核对",
+      "daily:0": "去医院须确定实际入口",
+      "daily:1": "绿地散步与低层采光一起看",
+      "costs:0": "2006年1月获批住宅的维修问题",
+      "costs:1": "85平方米账单不能套用更大户型"
+    }
+  },
+  "kr-eunma": {
+    "family": {
+      "ko": "대치 생활권이 필요해도 현재 집의 난방·복도식 구조와 향후 이주 가능성을 함께 감당해야 합니다. 대곡초 배정과 실제 수리 상태가 맞지 않으면, 미래 새 아파트 기대만으로 가족의 당장 생활을 설득하기 어렵습니다.",
+      "en": "A family choosing Daechi must still be comfortable with today’s heating, corridor-access layout and possible future relocation. If Daegok allocation or the unit’s condition fails, a future new apartment does not solve the immediate housing need.",
+      "zh-CN": "即使需要大峙生活圈，也必须能接受现有供暖、外廊式布局及未来搬迁的可能。若Daegok小学分配或房屋现状不合适，未来新房的期待无法解决家庭眼前的居住需求。"
+    },
+    "couple": {
+      "ko": "3호선 출근과 은마상가를 자주 쓴다면 현재 입지의 효용은 있습니다. 다만 복도 쪽 사생활·환기와 손볼 범위를 직접 보고, 앞으로의 이주가 생활 계획에 미치는 영향까지 맞아야 선택할 만합니다.",
+      "en": "Line 3 commuting and regular Eunma shopping can make the present location useful. The choice still depends on corridor-side privacy, ventilation, required repairs and whether a future move fits your plans.",
+      "zh-CN": "常用3号线通勤和银马商街，现有位置仍有实用价值。但是否选择，还取决于外廊一侧的私密性、通风、维修范围，以及未来搬迁是否符合生活安排。"
+    },
+    "investor": {
+      "ko": "사업시행계획인가만으로 이주나 착공 시점을 확정할 수는 없습니다. 관리처분 이후 부담금·현 주택 수선비·이주 자금을 나눠 계산하고 권리 서류를 대조해야, 재건축 기대가 내 자금 계획에 맞는지 판단할 수 있습니다.",
+      "en": "Project-plan approval does not fix relocation or construction dates. Separate later project contributions, current repairs and relocation cash, then reconcile the rights documents before deciding whether the redevelopment fits your funding plan.",
+      "zh-CN": "项目实施计划获批，不代表搬迁或开工日期已经确定。须分别计算后续项目分摊、现房维修和搬迁资金，并核对权利文件，才能判断重建预期是否符合自己的资金安排。"
+    },
+    "titlesZh": {
+      "transport:0": "从不同楼栋去大峙站，路线不同",
+      "transport:1": "按实际目的地检验3号线通勤",
+      "schools:0": "列有Daegok小学不保证学位分配",
+      "schools:1": "高中距离与入学资格分开看",
+      "daily:0": "把银马商街当作日常目的地评估",
+      "daily:1": "外廊式住宅的隐私与通风",
+      "costs:0": "项目获批后仍有后续阶段",
+      "costs:1": "当前持有费与未来分摊分开算"
+    }
+  },
+  "kr-raemian-la-classy": {
+    "family": {
+      "ko": "언북초·언주중을 염두에 둔다면 실제 배정과 학교 문까지의 길이 먼저입니다. 어린이도서관과 스터디룸도 자녀가 쓸 시간에 열려 있어야, 정원·놀이터와 함께 가족의 생활 이점으로 남습니다.",
+      "en": "For families considering Eonbuk or Eonju, establish eligibility and the actual school route first. The children’s library and study rooms add value alongside the gardens only if access hours suit the child’s routine.",
+      "zh-CN": "考虑Eonbuk或Eonju学校的家庭，应先落实入学条件与校门路线。儿童图书馆、自习室只有在孩子需要的时段可用时，才会与庭园、游乐场一起构成生活优势。"
+    },
+    "couple": {
+      "ko": "청담 7호선과 삼성중앙 9호선 중 매일 쓸 역에 맞는 동이라면 비교가 쉬워집니다. 정원과 운동시설을 자주 이용할수록 장점이 커지지만, 삼성로 방향 집은 소음과 현재 시설 이용료를 함께 봐야 합니다.",
+      "en": "Choose around the station you will use daily: Cheongdam on Line 7 or Samseong Jungang on Line 9. Gardens and sports facilities matter more to regular users, while a Samseong-ro-facing home needs a noise and fee check.",
+      "zh-CN": "先按每天使用的车站选楼栋：7号线清潭站或9号线三成中央站。经常使用庭园和运动设施的人更受益，朝三成路的房源则要同时查看噪音和现行设施收费。"
+    },
+    "investor": {
+      "ko": "2021년 승인이라는 이유만으로 추가 비용이 적다고 볼 수는 없습니다. 대로 방향과 실내 상태가 같은 거래에 에어컨·환기 설비 이력, 시설비와 추가 주차비를 맞춰야 매입 후 비용 차이를 읽을 수 있습니다.",
+      "en": "A 2021 approval date does not establish low ownership costs. Match road exposure and interior condition, then account for cooling and ventilation equipment, amenity fees and extra-car charges in the comparison.",
+      "zh-CN": "2021年获批并不代表持有成本低。应匹配道路朝向和室内状况，再核对空调、通风设备记录、设施费用及额外车辆收费，才能看清购入后的成本差异。"
+    },
+    "titlesZh": {
+      "transport:0": "先选每天主要乘坐的线路",
+      "transport:1": "出入口选择与主干道影响",
+      "schools:0": "附近Eonbuk、Eonju学校须核对入学条件",
+      "schools:1": "核对学习空间在所需时段是否可用",
+      "daily:0": "庭园适合日常短途外出",
+      "daily:1": "设施现行运营须另行核实",
+      "costs:0": "记录中停车位平均约1.78个",
+      "costs:1": "2021年获批不代表当前房况"
+    }
+  },
+  "kr-banpo-xi": {
+    "family": {
+      "ko": "원촌초·원촌중과 집, 저녁 학원길을 함께 맞출 수 있는 동이 가족에게 유리합니다. 학교가 가깝다는 설명보다 배정 주소와 차량 출입로를 확인해야, 부모의 반포·사평역 출근까지 무리 없이 묶을 수 있습니다.",
+      "en": "The better family building links Wonchon school, home and the evening academy route. Confirm allocation and vehicle crossings before assuming that routine can also accommodate the parents’ Banpo or Sapyeong commute.",
+      "zh-CN": "更适合家庭的楼栋，应能衔接Wonchon学校、家和晚间课外班路线。先落实分配地址及车行出入口，再判断能否兼顾父母经盘浦站或砂平站的通勤。"
+    },
+    "couple": {
+      "ko": "반포역 7호선과 사평역 9호선 중 직장에 맞는 쪽으로 동을 고르면 큰 단지의 이동 부담을 줄일 수 있습니다. 신세계 이용보다 평일 장보기와 약국이 귀갓길에 붙는지가 일상의 편의를 가릅니다.",
+      "en": "Select a building toward the useful line—Banpo on Line 7 or Sapyeong on Line 9—to limit internal walking. Weekday groceries and pharmacy stops on the way home can matter more than occasional department-store trips.",
+      "zh-CN": "按通勤选择靠7号线盘浦站或9号线砂平站的楼栋，有助于减少大社区内部步行。比起偶尔去百货店，平日买菜和药房能否顺路更影响便利程度。"
+    },
+    "investor": {
+      "ko": "역·학교·상가 접근이 다른 동의 거래를 섞으면 가격 차이의 이유가 흐려집니다. 같은 면적·층·수리 상태에 겨울 난방비와 장기수선 부담을 맞춰야, 단지 규모가 아닌 해당 집의 매입 조건을 평가할 수 있습니다.",
+      "en": "Mixing buildings with different station, school and shopping routes obscures the price gap. Match area, floor and refurbishment, then compare heating and reserve costs to assess the particular home rather than estate size.",
+      "zh-CN": "混合到站、上学和购物路线不同楼栋的成交，会模糊价差原因。应匹配面积、楼层和装修状况，再比较冬季供暖及长期维修负担，评价具体房源的购入条件。"
+    },
+    "titlesZh": {
+      "transport:0": "从主要车站一路核对到具体楼栋",
+      "transport:1": "先确定实际换乘方案",
+      "schools:0": "学校近不等于获得学位",
+      "schools:1": "上学与补习路线分别规划",
+      "daily:0": "日常采购与专程购物分开看",
+      "daily:1": "儿童戏水设施有历史运营记录",
+      "costs:0": "记录有6075个停车位",
+      "costs:1": "供暖与维修费用一起看"
+    }
+  },
+  "kr-banpo-riche": {
+    "family": {
+      "ko": "조식이 등교 준비를 덜어줄 수 있는지는 현재 제공일과 아이의 출발 시간이 맞아야 알 수 있습니다. 서원초·원촌초 목록만으로 배정을 정하지 말고, 실제 통학길과 함께 가족이 쓸 서비스의 가치를 따져야 합니다.",
+      "en": "Breakfast is useful to a family only if the current service days and times fit school mornings. Establish the actual Seowon or Wonchon allocation and school route before assigning value to that routine.",
+      "zh-CN": "早餐服务能否减轻上学前的负担，取决于目前供应日及时间是否合适。应先落实Seowon或Wonchon小学分配与通学路线，再评价这一生活安排的价值。"
+    },
+    "couple": {
+      "ko": "사평역 출근과 고무래공원 산책을 자주 한다면 일상 동선이 맞을 수 있습니다. 조식은 지금의 운영시간에 실제로 이용할 수 있을 때만 장점이므로, 식사 서비스보다 집에서 역까지의 길을 먼저 비교하세요.",
+      "en": "A Sapyeong commute and regular Gomurae Park walks may fit this location. Breakfast adds value only if the current hours work for you; compare the door-to-station route before letting the service decide.",
+      "zh-CN": "常经砂平站通勤、去Gomurae公园散步的人，日常路线可能适合这里。早餐只有在现行时段能用上才有价值，因此应先比较家门至车站的路线，再考虑服务。"
+    },
+    "investor": {
+      "ko": "조식 이력만으로 현재 임대 수요나 가격 프리미엄을 설명할 수는 없습니다. 실제 운영과 세대별 난방·서비스 비용을 확인하고 같은 면적·상태의 거래를 맞춰야, 편의에 더 내는 비용이 남는지 볼 수 있습니다.",
+      "en": "A history of breakfast service does not establish present rental demand or a price premium. Verify current operation and unit-level heating and service costs, then use size- and condition-matched sales to assess the extra cost.",
+      "zh-CN": "曾提供早餐服务，并不能证明当前租赁需求或房价溢价。须核实现行运营及各户供暖、服务费用，再按相同面积和状况匹配成交，评估为便利多付的成本。"
+    },
+    "titlesZh": {
+      "transport:0": "从Gomurae路走到实际使用的站口",
+      "transport:1": "按目的地评估9号线",
+      "schools:0": "Seowon与Wonchon学校的具体条件",
+      "schools:1": "核对过街点与车辆出入口",
+      "daily:0": "公园、医疗和购物是不同需求",
+      "daily:1": "比较小区服务与外部替代选择",
+      "costs:0": "记录中平均每户约1.50个车位",
+      "costs:1": "将供暖与服务消费加入预算"
+    }
+  },
+  "kr-raemian-firstige": {
+    "family": {
+      "ko": "잠원초 통학과 단지 안 짧은 산책을 함께 쓰는 가족에게는 선택 이유가 있습니다. 사립 계성초는 별도 지원이고 세화 학교들도 진학 조건이 달라, 주변 학교 이름보다 자녀의 실제 배정·지원 경로가 우선입니다.",
+      "en": "Jamwon schooling and short walks within the grounds can give families a reason to shortlist. Gyeseong is private and the Sehwa schools have distinct admissions conditions, so the child’s actual route through those rules comes first.",
+      "zh-CN": "若能结合Jamwon小学通学和小区内短途散步，家庭有理由将其列入备选。Gyeseong是私立学校，Sehwa各校也有不同入学条件，应先落实孩子实际的分配或申请路径。"
+    },
+    "couple": {
+      "ko": "고속터미널의 세 노선과 장거리 버스를 자주 쓴다면 위치의 이점이 커집니다. 다만 역 입구에서 끝내지 말고 내가 타는 승강장까지 걸어봐야, 센트럴시티 쇼핑 편의와 실제 출근 부담을 함께 평가할 수 있습니다.",
+      "en": "Frequent use of the terminal’s three rail lines or intercity coaches makes the location more useful. Walk to the platform you actually use, not just the station entrance, before weighing that commute against Central City convenience.",
+      "zh-CN": "常用高速客运站三条地铁线或长途客车，更能体现这里的位置价值。要走到实际乘车站台，而不只到站口，才能把通勤负担与Central City的便利放在一起衡量。"
+    },
+    "investor": {
+      "ko": "원베일리와 비교할 때는 매입가 차이에서 내부 보수와 장기수선 비용을 빼고 봐야 합니다. 같은 반포 생활권이라도 2009년 주택의 현재 상태와 역·학교 동선이 달라, 단지 평균가만으로 대체재라고 보기 어렵습니다.",
+      "en": "Against One Bailey, test whether the purchase-price gap survives interior work and long-term repair costs. This 2009 home also needs matched station and school routes; sharing Banpo does not make project averages interchangeable.",
+      "zh-CN": "与One Bailey比较时，要看购入价差在扣除室内翻修和长期维修成本后还剩多少。2009年住宅的现状及到站、上学路线也须匹配，不能仅因都在盘浦就互用小区均价。"
+    },
+    "titlesZh": {
+      "transport:0": "一直核对到实际乘车站台",
+      "transport:1": "地铁与长途客车分别评估",
+      "schools:0": "Jamwon与Gyeseong入学方式不同",
+      "schools:1": "学校门口路线与实际招生程序",
+      "daily:0": "按真实使用频率评价购物便利",
+      "daily:1": "小区景观与汉江是不同散步路线",
+      "costs:0": "记录中平均每户约1.79个车位",
+      "costs:1": "区域供暖与长期维修负担"
+    }
+  },
+  "kr-raemian-one-bailey": {
+    "family": {
+      "ko": "보행·차량 동선을 나눈 설계는 유모차와 아이의 일상에 도움이 될 수 있습니다. 다만 계성초 이름을 공립 배정 근거로 쓸 수는 없어, 실제 학교 문까지의 길과 자녀의 입학 조건이 맞아야 가족 후보로 설득력이 생깁니다.",
+      "en": "The separation of pedestrian and vehicle routes may help a family routine. That does not settle schooling: private Gyeseong is not evidence of a public allocation, and the actual school-gate route must work for the child.",
+      "zh-CN": "人车动线分离可能有利于带孩子和推婴儿车出行。但私立Gyeseong小学不能作为公立学位分配依据，孩子的入学条件及实际校门路线仍须成立。"
+    },
+    "couple": {
+      "ko": "고속터미널·신세계·성모병원을 반복해서 이용하는 생활이라면 위치가 잘 맞습니다. 집에서 승강장과 실제 점포까지의 실내 이동이 길어질 수 있어, 새 단지라는 인상보다 자주 쓰는 경로를 먼저 골라봐야 합니다.",
+      "en": "Regular trips to the terminal, Shinsegae or St Mary’s Hospital give this location a clear use. Select the routes you will repeat, including indoor passages to platforms and shops, before letting the new-estate appeal decide.",
+      "zh-CN": "若经常去高速客运站、新世界百货或圣母医院，这里有明确的使用价值。先选出真正会反复走的路线，包括至站台和店铺的室内通道，再衡量新小区本身的吸引力。"
+    },
+    "investor": {
+      "ko": "2023년 승인과 공용시설 구성이 추가 매입가를 정당화하는지는 별도 문제입니다. 같은 면적·층·방향의 거래에 실제 시설 유지비와 세대 사용료를 맞춰야, 신축에 더 내는 돈을 평가할 수 있습니다.",
+      "en": "The 2023 approval and shared facilities do not by themselves justify a purchase premium. Match size, floor and orientation, then compare real shared-facility charges and household bills to assess the price of newer stock.",
+      "zh-CN": "2023年获批和公共设施配置，本身不足以证明购入溢价合理。须匹配面积、楼层、朝向，并比较真实设施维护费及户内账单，才能衡量为较新房龄多付的价格。"
+    },
+    "titlesZh": {
+      "transport:0": "去高速客运站的路线从家门算起",
+      "transport:1": "实地检验人车动线",
+      "schools:0": "附近学校名单不是分配地图",
+      "schools:1": "按楼栋核对校门与晚间回家路线",
+      "daily:0": "盘浦购物与医疗设施的实际用途",
+      "daily:1": "把景观路线接到具体楼栋",
+      "costs:0": "记录中平均每户约1.83个车位",
+      "costs:1": "新近入住的小区也须看实际账单"
+    }
+  },
+  "kr-jamsil-trizium": {
+    "family": {
+      "ko": "버들초 배정과 실제 교문까지의 길이 맞으면 초등 자녀의 생활을 묶기 좋은 후보입니다. 다만 중·고교와 북쪽 학원·시설 이용은 올림픽로를 건너는 별도 이동이 될 수 있어 다음 학년의 동선도 같이 봐야 합니다.",
+      "en": "A confirmed Beodeul allocation and workable school walk can suit a primary-age family. Secondary schooling and activities north of Olympic-ro may introduce a different journey, so consider the next school stage too.",
+      "zh-CN": "落实Beodeul小学分配且校门路线合适后，这里可作为小学家庭的备选。但中学及奥林匹克路以北的活动可能需要另一套路线，也应考虑下一学段。"
+    },
+    "couple": {
+      "ko": "잠실새내 출근과 새마을시장 장보기를 한 길로 묶을 수 있다면 생활이 단순해집니다. 북쪽 상권이나 운동시설을 자주 쓰는 경우에는 올림픽로 횡단이 매일 얼마나 반복되는지가 선택 조건입니다.",
+      "en": "A route combining Jamsilsaenae and Saemaeul Market can simplify daily errands. If your shops or sports facilities are north of Olympic-ro, the number of crossings in an ordinary day becomes part of the choice.",
+      "zh-CN": "若能把蚕室新川站通勤与Saemaeul市场采购串成一条路线，日常更省事。若常用店铺或运动设施在奥林匹克路以北，则应考虑每天需要过街多少次。"
+    },
+    "investor": {
+      "ko": "84.83·84.95·84.97㎡를 모두 같은 집처럼 비교하면 평면 차이를 놓칩니다. 정확한 타입과 수리 상태, 동별 역 접근을 맞춘 뒤 차량 등록·주차 조건까지 더해야 낮은 호가의 이유가 드러납니다.",
+      "en": "Treating 84.83, 84.95 and 84.97 m² as one product loses layout differences. Match the exact type, refurbishment and station route, then review parking terms to understand what lies behind a lower asking price.",
+      "zh-CN": "把84.83、84.95和84.97平方米视为同一种房源，会遗漏户型差异。先匹配具体户型、装修和到站路线，再看车辆登记及停车条件，才能理解较低报价的原因。"
+    },
+    "titlesZh": {
+      "transport:0": "从蚕室新川站出口走到具体楼栋",
+      "transport:1": "日常是否需要穿越奥林匹克路",
+      "schools:0": "公立Beodeul小学与实际分配",
+      "schools:1": "小学之后的通学另行核对",
+      "daily:0": "将市场采购与车站串成路线",
+      "daily:1": "46栋之间的实际小区内部目的地",
+      "costs:0": "区分三种84平方米户型",
+      "costs:1": "4686个停车位对住户意味着什么"
+    }
+  },
+  "kr-godeok-gracium": {
+    "family": {
+      "ko": "강덕초·고덕초 배정과 부모가 쓸 상일동역 동선을 함께 맞추는 것이 핵심입니다. 학교 쪽 동과 역 쪽 동이 다를 수 있어, 어느 쪽 이동을 매일 줄여야 하는지 정하면 후보가 좁혀집니다.",
+      "en": "The key is balancing the assigned Gangdeok or Godeok school route with the parents’ Sangil-dong commute. School-facing and station-facing buildings may differ; decide whose daily journey needs to be shorter.",
+      "zh-CN": "关键在于兼顾分配到Gangdeok或Godeok小学的路线与父母经上一洞站的通勤。靠学校和靠车站的楼栋可能不同，先决定要缩短谁的每日路程，才能缩小范围。"
+    },
+    "couple": {
+      "ko": "5호선으로 직장에 이어진다면 상일동역 연결을 자주 활용할 수 있습니다. 환승이 많은 강남 출근이라면 장점이 줄 수 있고, 연결통로의 야간 개방과 집까지의 동선이 실제 편의를 결정합니다.",
+      "en": "A workplace on Line 5 lets you use the Sangil-dong connection regularly. A Gangnam journey with transfers may weaken that advantage; passage opening hours and the route back to your building still decide daily convenience.",
+      "zh-CN": "工作地点在5号线沿线，可经常用上上一洞站连接通道。若去江南需要多次换乘，优势可能减弱；通道夜间开放和回到楼栋的路线仍决定实际便利。"
+    },
+    "investor": {
+      "ko": "역 연결과 음식물 자동 이송을 곧바로 가격 프리미엄이나 관리비 절감으로 바꿀 수는 없습니다. 같은 타입의 역 접근을 맞춘 거래와 실제 이송시설 유지비를 봐야, 편의에 더 내는 비용을 평가할 수 있습니다.",
+      "en": "Station access and automated waste handling are not automatic evidence of a premium or lower bills. Use same-type sales with comparable station routes and actual system-maintenance charges to assess what the convenience costs.",
+      "zh-CN": "连站通道和自动厨余输送，并不自动意味着房价溢价合理或管理费更低。须比较同户型、相近到站条件的成交及系统真实维护费用，才能衡量便利的成本。"
+    },
+    "titlesZh": {
+      "transport:0": "连接通道实际可用的条件",
+      "transport:1": "去江南须把换乘算进去",
+      "schools:0": "Gangdeok与Godeok小学的具体条件",
+      "schools:1": "把上学与补习路线放在一起",
+      "daily:0": "室内厨余输送的当前运行状况",
+      "daily:1": "连接绿地、学校与店铺的短途路线",
+      "costs:0": "系统设计容量不是家庭账单",
+      "costs:1": "在同一面积类型内比较"
+    }
+  },
+  "kr-godeok-arteon": {
+    "family": {
+      "ko": "고현초 통학 조건과 현재 중학교 배정이 가족의 선택을 좌우합니다. 초등학교가 가깝다는 설명만으로 중학교까지 같은 생활이 이어진다고 보기 어려워, 전입 학년도에 맞춘 배정과 귀가길이 먼저입니다.",
+      "en": "Gohyeon primary arrangements and the current secondary allocation can decide the family fit. A nearby primary school does not guarantee the same routine later; establish placement and the route home for the intended entry year.",
+      "zh-CN": "Gohyeon小学通学条件及现行初中分配，可能直接影响家庭选择。小学近不代表之后仍有同样的生活路线，应按计划入学年度落实分配和回家路径。"
+    },
+    "couple": {
+      "ko": "상일동역 5호선과 역 주변 점포를 함께 쓰는 생활에 맞습니다. 다만 단지 안 보행은 동마다 달라, 장보기 짐을 들고 돌아오는 길과 출근 환승이 감당할 만할 때 후보로 남길 만합니다.",
+      "en": "This fits a routine using Sangil-dong Line 5 and station-side shops. Internal walking varies by building, so keep it on the shortlist if the grocery trip home and the full commute remain manageable.",
+      "zh-CN": "适合常用上一洞站5号线及站边店铺的生活方式。小区内部步行因楼栋而异，只有提着采购物品回家和完整通勤都能接受时，才值得继续保留。"
+    },
+    "investor": {
+      "ko": "학교 배정을 강조한 호가는 실제 해당 주소에 적용되는지부터 봐야 합니다. 학교 조건이 확인되지 않았다면 그 부분에 더 낼 근거가 부족하고, 2020년 입주라는 사실도 현재 수선비나 관리비를 대신 설명하지 못합니다.",
+      "en": "An asking premium built around school allocation needs to apply to the exact address. Without that confirmation the premium is unproven, and the 2020 occupancy date does not establish present repair or running costs.",
+      "zh-CN": "以学位分配为理由加价，必须先确认适用于具体地址。未确认就缺少支付这部分溢价的依据；2020年入住也不能说明当前维修费或持有费用。"
+    },
+    "titlesZh": {
+      "transport:0": "从楼栋入口走到5号线",
+      "transport:1": "按已运营线路计算通勤",
+      "schools:0": "与Gohyeon小学招生范围相关的小区",
+      "schools:1": "从家门重新规划初中路线",
+      "daily:0": "站边商圈与住宅出入口",
+      "daily:1": "住户规模与真正可用的设施",
+      "costs:0": "价格判断与学位假设分开",
+      "costs:1": "较新小区的实际持有费用"
+    }
+  },
+  "kr-olympic-park-foreon": {
+    "family": {
+      "ko": "둔촌초·위례초의 현재 배정과 수용 조건이 먼저 맞아야 합니다. 중학교 도시형 캠퍼스는 현재 이용 가능 여부가 확인되지 않아, 계획을 통학 편의에 넣기보다 실제 배정 학교까지의 길로 가족 생활을 판단해야 합니다.",
+      "en": "Current Dunchon or Wirye allocation and capacity need to work first. The planned urban middle-school campus has not been confirmed as available, so judge family life by the route to the school actually assigned.",
+      "zh-CN": "须先落实Dunchon或Wirye小学目前的分配和接收条件。规划中的城市型初中校区尚未确认可用，应按实际分配学校的路线判断家庭生活，而不是把计划当作现成便利。"
+    },
+    "couple": {
+      "ko": "둔촌동 5호선과 9호선 중 내 출근에 맞는 역을 정하면 볼 동이 크게 달라집니다. 큰 단지 안에서 집·마트·약국·역이 한 방향으로 이어지는지가 새집의 편의를 실제 생활로 바꾸는 조건입니다.",
+      "en": "Choosing between Dunchon-dong Line 5 and a useful Line 9 station changes which buildings make sense. The practical question is whether home, groceries, pharmacy and rail form one repeatable route across this very large estate.",
+      "zh-CN": "先在遁村洞站5号线与适合的9号线车站之间确定通勤选择，适合的楼栋就会不同。超大小区里，家、超市、药房和车站能否形成顺路的日常路线，才是实际便利。"
+    },
+    "investor": {
+      "ko": "최근 승인과 큰 세대 수만으로 가격이나 임대 경쟁력을 판단할 수는 없습니다. 같은 면적·동선의 거래에 해당 집의 하자 처리와 안정된 관리비 내역이 갖춰져야, 새집에 더 내는 비용을 비교할 수 있습니다.",
+      "en": "Recent approval and estate scale do not establish pricing or rental strength. Compare matched size and access only after obtaining the unit’s defect-resolution record and settled bills to assess the extra cost of a new home.",
+      "zh-CN": "新近获批与庞大户数，不能证明价格或租赁竞争力。须取得具体房源的缺陷处理记录和稳定后的账单，再匹配面积与动线成交，比较为新房多付的成本。"
+    },
+    "titlesZh": {
+      "transport:0": "明确去遁村洞站的具体路线",
+      "transport:1": "使用其他线路须选定实际车站",
+      "schools:0": "跟进Dunchon与Wirye小学安排",
+      "schools:1": "初中条件须单独核对",
+      "daily:0": "去图书馆也要从家门计算",
+      "daily:1": "哪些日常店铺真正服务所选楼栋",
+      "costs:0": "记录中平均每户约1.43个车位",
+      "costs:1": "查看缺陷处理与稳定后的运营"
+    }
+  },
+  "kr-gyeonghuigung-xi-3": {
+    "family": {
+      "ko": "덕수초 배정과 정문 픽업이 아이의 일정에 맞으면 도심 생활과 육아를 함께 묶을 수 있습니다. 경희궁자이 전체가 아닌 3단지 주소를 기준으로 학교 문·차량 정차·놀이터 귀가길을 맞춰봐야 합니다.",
+      "en": "A workable Deoksu allocation and pickup routine can combine central living with family needs. Use the Phase 3 address to map school gates, vehicle stopping points and the route back from play areas; other phases are not interchangeable.",
+      "zh-CN": "若Deoksu小学分配和接送安排符合孩子日程，可兼顾市中心生活与育儿。应以第三组团地址核对校门、车辆停靠和游乐区回家路线，不能套用整个项目其他组团的条件。"
+    },
+    "couple": {
+      "ko": "광화문 일대 출근이나 강북삼성·적십자병원 방문이 잦다면 생활 목적지가 뚜렷한 후보입니다. 서대문역 거리만 보기보다 직장·진료동 출입문까지 걸어봐야, 도보와 대중교통 중 무엇이 편한지 판단할 수 있습니다.",
+      "en": "This is a focused option for central-office commuting or frequent Kangbuk Samsung and Red Cross hospital visits. Compare the journey to the actual office or clinic entrance, not just Seodaemun station, to choose walking or transit.",
+      "zh-CN": "常往光化门办公区或江北三星、红十字医院的人，可把这里作为目标明确的备选。应比较到办公室或诊疗楼实际入口的路线，而不只看到西大门站的距离。"
+    },
+    "investor": {
+      "ko": "도심 입지의 가격을 비교할 때 3단지 거래를 다른 경희궁자이 단지와 구분해야 합니다. 개별난방 가스비와 공용비, 2017년 주택의 보수 내역을 합쳐야 같은 생활권에서 실제 보유 부담이 드러납니다.",
+      "en": "Keep Phase 3 sales distinct from other Gyeonghuigung Xi phases when comparing central-location prices. Combine individual-heating gas, shared charges and repair records for this 2017 home to establish the actual holding cost.",
+      "zh-CN": "比较市中心位置价格时，应将第三组团成交与庆熙宫Xi其他组团分开。把独立供暖燃气费、公共费用和2017年住宅的维修记录合并，才能看清实际持有负担。"
+    },
+    "titlesZh": {
+      "transport:0": "以西大门站5号线为主要路线评估",
+      "transport:1": "市中心通勤要走到办公室门口",
+      "schools:0": "核对Deoksu小学具体条件",
+      "schools:1": "接送安排是否真正可用",
+      "daily:0": "景观步道与儿童活动区的用途",
+      "daily:1": "附近医院对生活有多重要",
+      "costs:0": "独立供暖须合并比较账单",
+      "costs:1": "2017年获批与当前室内状态"
+    }
+  },
+  "kr-mapo-prestige-xi": {
+    "family": {
+      "ko": "한서초 등교 뒤 돌봄·학원·집으로 이어지는 하루가 맞는 가족에게 의미가 있습니다. 학교 배정뿐 아니라 돌봄 종료와 부모 퇴근 사이가 이어져야, 주변 교습소와 가까운 학교가 실제 편의가 됩니다.",
+      "en": "The family case depends on a workable day from Hanseo school through care, lessons and home. Confirm allocation, but also bridge the gap between care closing and the parents’ return; nearby lessons alone do not solve it.",
+      "zh-CN": "家庭选择取决于Hanseo小学放学后，托管、课外班与回家能否衔接。除落实分配外，还要解决托管结束到父母下班之间的空档；学校和补习点近并不能自动解决。"
+    },
+    "couple": {
+      "ko": "대흥·이대·아현 중 직장에 맞는 역과 단지 앞 버스를 함께 비교할 만합니다. 지하철역 이름이 여러 개라는 이유보다 해당 동에서 귀가하는 길과 환승 횟수가 맞을 때 입지의 장점을 누릴 수 있습니다.",
+      "en": "Compare the useful route via Daeheung, Ewha or Ahyeon with the nearby bus option. The location works when the transfers and walk home suit your building, not simply because several stations appear nearby.",
+      "zh-CN": "可把经大兴、梨大或阿岘站的适用路线，与小区附近公交一起比较。关键是换乘次数和回到所选楼栋的路是否合适，而不只是附近列出多个车站。"
+    },
+    "investor": {
+      "ko": "59㎡와 84㎡의 거래를 섞지 않고, 해당 동의 역 접근과 수리 상태를 맞춰야 합니다. 2021년 입주나 과거 서비스 소개만으로 추가 가격을 설명하기보다, 현재 운영표와 계절별 고지서가 뒷받침하는지 봐야 합니다.",
+      "en": "Keep 59 m² and 84 m² sales separate and match the building’s station route and condition. Test any newer-estate or service premium against current operating terms and seasonal bills, not the 2021 move-in date alone.",
+      "zh-CN": "应分开59和84平方米成交，并匹配楼栋到站路线及房屋状况。新小区或服务溢价须由现行运营安排和季节账单支持，不能只依据2021年入住或旧服务介绍。"
+    },
+    "titlesZh": {
+      "transport:0": "把附近公交纳入比较",
+      "transport:1": "先选一个主要使用的车站",
+      "schools:0": "公立Hanseo小学与招生范围核实",
+      "schools:1": "各所中学的路线分别评估",
+      "daily:0": "附近补习机构与日常小店",
+      "daily:1": "串起幼童一整天的路线",
+      "costs:0": "59与84平方米分开比较",
+      "costs:1": "现行收费与服务条件"
+    }
+  },
+  "kr-heukseok-xi": {
+    "family": {
+      "ko": "은로초 배정과 실제 교문까지의 길이 맞는지가 먼저입니다. 가까운 중앙대부초는 별도 입학 절차가 있는 사립학교라 대안으로 확정할 수 없고, 아이의 귀가 경사까지 감당할 수 있어야 가족에게 맞습니다.",
+      "en": "Start with Eunro allocation and the walk to the actual gate. Nearby Chung-Ang primary has separate private admissions, so it is not a guaranteed fallback; the child’s return route and slopes must work too.",
+      "zh-CN": "应先落实Eunro小学分配及至校门的实际路线。附近中央大学附属小学是另行招生的私立学校，不能视为保证可入的替代选项；孩子回家坡路也必须可接受。"
+    },
+    "couple": {
+      "ko": "흑석역까지 걷는 출근과 단지 앞 버스 이용 중 어느 쪽이 편한지 먼저 비교하세요. 돌아오는 오르막·계단과 실외 쓰레기 투입구 동선까지 맞아야, 2023년 입주 단지의 편의를 매일 누릴 수 있습니다.",
+      "en": "Compare walking to Heukseok station with the nearby bus route first. The climb or stairs home and the outdoor waste-inlet trip determine how convenient this 2023 estate feels in ordinary use.",
+      "zh-CN": "先比较步行到黑石站与使用小区附近公交的路线。回家上坡、台阶以及去室外垃圾投入口的路，决定这座2023年入住小区在日常使用中是否方便。"
+    },
+    "investor": {
+      "ko": "흑석리버파크자이와 흑석자이는 같은 단지이므로 이름이 다른 거래를 중복 대안으로 볼 필요는 없습니다. 실제 층의 조망과 누수·배수 처리 기록, 자동 이송 사용료를 맞춰야 해당 매물의 추가 비용을 판단할 수 있습니다.",
+      "en": "Heukseok River Park Xi and Heukseok Xi are the same estate, not competing alternatives. Assess the offered floor’s real outlook, leak and drainage records, and waste-system charges to establish unit-specific costs.",
+      "zh-CN": "Heukseok River Park Xi与Heukseok Xi是同一小区，不是两个替代项目。应核对所售楼层的实际景观、漏水排水处理记录及输送系统收费，判断具体房源的额外成本。"
+    },
+    "titlesZh": {
+      "transport:0": "从附近公交站开始规划",
+      "transport:1": "去车站与回家的路线都要看",
+      "schools:0": "公立Eunro小学的实际位置",
+      "schools:1": "中央大学附属小学另有私立招生程序",
+      "daily:0": "楼栋位置与最高20层的实际构成",
+      "daily:1": "去室外垃圾投入口的路线",
+      "costs:0": "使用费与公共维护费",
+      "costs:1": "近期入住与个别房屋缺陷"
+    }
+  },
+  "kr-oksu-park-hills": {
+    "family": {
+      "ko": "금옥초 배정과 아이가 오르내릴 통학길이 먼저 맞아야 합니다. 101~116동과 117~125동의 귀가 조건이 달라, 공원이 있다는 장점보다 선택 동에서 학교·돌봄을 잇는 길이 가족에게 맞는지 봐야 합니다.",
+      "en": "Geumok allocation and the child’s uphill and downhill school route come first. The two building groups have different return journeys; judge the school-and-care circuit from the chosen building before the park setting.",
+      "zh-CN": "先看Geumok小学分配及孩子上学路线的上下坡。101至116栋与117至125栋的回家条件不同，比起有公园，更应确认所选楼栋能否顺畅连接学校和托管。"
+    },
+    "couple": {
+      "ko": "금호역 가까운 입구보다 실제 승강장과 엘리베이터까지 이어지는 길이 중요합니다. 퇴근 후 귀가 경사와 장보기 동선이 맞는 동을 고르면, 같은 옥수파크힐스 안에서도 생활 부담을 줄일 수 있습니다.",
+      "en": "The relevant distance is to Geumho’s platform and lift, not the nearest entrance pin. Choosing a building with a manageable climb home and grocery route can reduce daily effort within the same estate.",
+      "zh-CN": "应走到金湖站实际站台和电梯，而不是只看最近入口。选对回家坡路与采购路线合适的楼栋，在同一个小区内也能减少日常负担。"
+    },
+    "investor": {
+      "ko": "거래가 두 동 번호 그룹으로 나뉘어 있어 이를 무조건 합치면 위치 차이가 사라집니다. 같은 면적·층·방향에 역 출입구 접근과 2016년 주택의 창호·난방 수리비를 맞춘 뒤 가격 차이를 봐야 합니다.",
+      "en": "The two building-number groups in the transaction records preserve a useful location distinction. Match area, floor and orientation, then station access and window or heating work for this 2016 home before interpreting the price gap.",
+      "zh-CN": "成交记录中的两组楼号保留了有用的位置差异，直接混算会掩盖它。应匹配面积、楼层、朝向，再加入到站入口条件及2016年住宅的窗户、供暖维修费，才能解释价差。"
+    },
+    "titlesZh": {
+      "transport:0": "把路线接到金湖站站台",
+      "transport:1": "按楼号比较回家路线",
+      "schools:0": "附近Geumok小学与实际分配",
+      "schools:1": "初中校门路线须单独检查",
+      "daily:0": "区分公共公园与私人小区用地",
+      "daily:1": "车站附近的日常小型设施",
+      "costs:0": "2016年入住与维护记录",
+      "costs:1": "两组交易楼号之间的比较条件"
+    }
+  },
+  "kr-centras": {
+    "family": {
+      "ko": "숭신초 배정과 상왕십리역 출근을 한 동선으로 묶을 수 있는 가족에게 유리합니다. 다만 중학교는 단지 밖 이동이 될 수 있어 초등 통학의 편리함만으로 장기 거주까지 결정하기는 어렵습니다.",
+      "en": "A family can benefit when Soongshin schooling and Sangwangsimni commuting fit one routine. Secondary school may require a separate journey outside the estate, so primary convenience alone should not decide a long stay.",
+      "zh-CN": "若能把Soongshin小学通学与上往十里站通勤融入一套日常安排，家庭更能受益。但初中可能要离开小区通学，不能仅凭小学方便就决定长期居住。"
+    },
+    "couple": {
+      "ko": "2호선 출근과 역 연결 상권을 자주 쓰면 장점이 분명합니다. 왕십리 환승망을 집 앞 조건으로 계산하지 말고, 늦은 귀가와 비 오는 날에도 연결통로를 쓸 수 있는지가 해당 동의 편의를 결정합니다.",
+      "en": "Line 2 commuting and station-linked shopping give this location a clear purpose. Do not treat Wangsimni’s interchange as doorstep access; check whether the connecting route works for late returns and wet weather from your building.",
+      "zh-CN": "常用2号线通勤和连站商圈，这里的便利很明确。但不能把往十里的换乘网络当作家门口条件，仍须确认所选楼栋在晚归和雨天能否使用连接通道。"
+    },
+    "investor": {
+      "ko": "센트라스 아파트와 같은 이름의 오피스텔을 섞으면 비교 가격부터 달라집니다. 아파트 거래만 남겨 면적·층·방향을 맞추고, 2016년 주택의 냉방·환기 보수비와 유지비를 더해야 매입 조건을 읽을 수 있습니다.",
+      "en": "Mixing Centras apartments with the same-name officetels changes the benchmark. Keep apartment sales only, match area, floor and orientation, then add cooling, ventilation and running costs for this 2016 home.",
+      "zh-CN": "把Centras公寓与同名办公型住宅混合，会改变比较基准。应只保留公寓成交，匹配面积、楼层和朝向，再加入2016年住宅的空调、通风维修及持有费用。"
+    },
+    "titlesZh": {
+      "transport:0": "先看2号线能否到达实际目的地",
+      "transport:1": "雨天和夜间核对连接通道",
+      "schools:0": "核实Soongshin小学性质与地址",
+      "schools:1": "初中通学单独规划",
+      "daily:0": "商业与住宅出入口",
+      "daily:1": "与Tenz Hill比较清溪川通道",
+      "costs:0": "排除同名办公型住宅成交",
+      "costs:1": "2016年住宅的当前状况"
+    }
+  },
+  "kr-tenz-hill-1": {
+    "family": {
+      "ko": "숭신초 배정과 청계천 산책을 함께 활용할 가족에게 맞을 수 있습니다. 아이의 통학뿐 아니라 중학교 버스와 저녁 학원 귀가가 별도 동선이 될 수 있어, 1단지 주소에서 하루 전체를 이어봐야 합니다.",
+      "en": "Soongshin schooling and Cheonggyecheon walks can work for a family. Secondary-school buses and evening lessons may create separate journeys, so map the whole day from the Phase 1 address rather than only the primary-school walk.",
+      "zh-CN": "若能结合Soongshin小学通学和清溪川散步，可能适合家庭。但初中公交与晚间课外班可能形成另一套路程，应从第一组团地址串起完整一天，而不只看小学路线。"
+    },
+    "couple": {
+      "ko": "청계천 산책을 자주 한다면 하천 쪽 출입구를 실제로 쓰기 쉬운 동이 후보입니다. 그 문이 상왕십리역 출근에도 유리한 것은 아니므로, 매일의 출근과 저녁 운동 중 어느 동선을 줄일지 정해야 합니다.",
+      "en": "Regular stream walks favour a building with convenient access to the actual Cheonggyecheon entry. That gate may not help the Sangwangsimni commute, so decide whether daily work trips or evening exercise deserve the shorter route.",
+      "zh-CN": "经常沿清溪川散步，可优先看容易到达实际河道入口的楼栋。但该门未必也便于去上往十里站，应决定是通勤还是晚间运动更需要缩短路线。"
+    },
+    "investor": {
+      "ko": "텐즈힐 2단지와 합친 평균가보다 1단지의 같은 면적·위치 거래가 기준입니다. 2015년 개별난방 주택의 보일러·창호 상태와 겨울 가스비를 더해야, 청계천 접근에 더 내는 돈과 실제 보유비를 나눠 볼 수 있습니다.",
+      "en": "Use matched Phase 1 sales, not an average pooled with Phase 2. Boiler and window condition plus winter gas bills for this 2015 individually heated home help separate the price of stream access from actual holding costs.",
+      "zh-CN": "应以第一组团相同面积、位置的成交为基准，而非与第二组团合并的均价。2015年独立供暖住宅的锅炉、窗户状况及冬季燃气费，有助于分清临河便利的价格与实际持有成本。"
+    },
+    "titlesZh": {
+      "transport:0": "核对至上往十里站2号线的路线",
+      "transport:1": "清溪川入口与车站出入口不同",
+      "schools:0": "用现行资料核对Soongshin小学",
+      "schools:1": "初中公交与课外班回家路线",
+      "daily:0": "真正能进入清溪川的位置",
+      "daily:1": "附近日常采购与公共服务",
+      "costs:0": "平均每户约1.50个停车位",
+      "costs:1": "独立供暖与2015年的设备"
+    }
+  },
+  "sg-marina-one-residences": {
+    "family": {
+      "ko": "부모의 CBD 출퇴근과 장보기는 한곳에서 해결하기 좋습니다. 아이 학교가 먼저라면 Cantonment까지의 거리 표기보다 실제 배정 조건과 등하교 시간을 확인한 뒤 후보를 좁히세요.",
+      "en": "The CBD connection and on-site groceries can simplify the parents’ day. For a school-first purchase, settle eligibility and the child’s actual journey before giving those adult conveniences much weight.",
+      "zh-CN": "CBD通勤和楼内采购能方便父母的日常。若买房首先为了孩子上学，应先落实入学条件和实际接送路线，再衡量这些便利。"
+    },
+    "couple": {
+      "ko": "Shenton Way에서 일한다면 지하 연결을 자주 쓸 수 있어 입지의 값어치가 분명합니다. 다만 요리를 자주 하는 집은 개방형 주방의 환기와 퇴근 후 장보기 시간을 먼저 맞춰보세요.",
+      "en": "The underground link earns its keep if Shenton Way is part of your working week. Frequent cooks should put the offered kitchen’s ventilation and their after-work grocery hours ahead of the Marina address.",
+      "zh-CN": "如果每周都在Shenton Way上班，地下通道才会真正派上用场。常做饭的住户，应优先看所售户型的通风，以及下班后是否赶得上采购。"
+    },
+    "investor": {
+      "ko": "2011년 시작된 임차권과 현재 관리비를 넣어 보유비를 계산해야 합니다. 최근 소형 거래 두 건만으로 싸다고 보기에는 동·층·조망 차이가 남아 있습니다.",
+      "en": "Price the lease from its 2011 start and obtain current ownership charges. The two small-unit sales leave too much unresolved about block, floor and outlook to establish a bargain.",
+      "zh-CN": "持有成本要结合2011年起算的地契和最新账单。两笔小户型成交仍缺少楼栋、楼层及景观等信息，不足以证明眼前这套便宜。"
+    },
+    "titlesZh": {
+      "transport:0": "地下连接已有记录，家门至站台仍未实测",
+      "transport:1": "附近有三座车站，所列距离不是步行距离",
+      "schools:0": "一所学校的距离不足以判断全部入学条件",
+      "schools:1": "核对注册地址、入学年份与身份",
+      "daily:0": "Cold Storage的位置与营业时间",
+      "daily:1": "周末氛围与隔音仍需现场判断",
+      "costs:0": "两笔710至721平方英尺成交仅供有限参考",
+      "costs:1": "2011年起算的地契与当前持有成本"
+    }
+  },
+  "sg-park-place-plq": {
+    "family": {
+      "ko": "EWL·CCL 통근과 장보기를 함께 해결하려는 가족에게 검토할 이유가 있습니다. Kong Hwa가 1km 이내라는 기대는 각 동의 공식 주소 구간을 확인하기 전까지 가격에 반영하지 마세요.",
+      "en": "PLQ makes a strong practical shortlist when the family uses EWL or CCL and shops on the way home. Do not pay a school-distance premium until the exact block’s official category is confirmed.",
+      "zh-CN": "家庭常用东西线或环线，并习惯顺路采购时，PLQ值得列入候选。具体楼栋的官方学校距离类别未确认前，不宜为入学距离支付溢价。"
+    },
+    "couple": {
+      "ko": "두 노선 중 실제로 쓰는 승강장까지의 동선이 편해야 복합단지의 이점이 살아납니다. 창문을 열고 지내는 편이라면 몰의 편리함과 별개로 매물 방향의 도로 소음을 들어보세요.",
+      "en": "The integrated setting is most useful when the route from your tower to your usual platform works well. If you like open windows, test the offered facing’s road noise as carefully as its retail convenience.",
+      "zh-CN": "从住宅楼到常用线路站台的路线顺畅，综合体的便利才完整。喜欢开窗生活的话，也要把所售朝向的道路噪声听清楚。"
+    },
+    "investor": {
+      "ko": "몰 방문객이나 매출 증가는 주택 임대수익의 근거가 되지 않습니다. 2015년 시작된 임차권과 실제 관리비를 반영하고, 같은 면적 거래도 층과 세대 조건을 맞춰 비교해야 합니다.",
+      "en": "Mall visits and tenant sales do not establish residential returns. Start with the 2015 lease and current charges, then match floor and unit condition even when comparing equal floor areas.",
+      "zh-CN": "商场客流和商户销售额不能直接说明住宅回报。先计入2015年起算的地契与现行费用，再按楼层和房屋状况匹配同面积成交。"
+    },
+    "titlesZh": {
+      "transport:0": "E出口连接PLQ地面层，F出口连接商场地下层",
+      "transport:1": "从所住楼栋走到实际使用的线路",
+      "schools:0": "Kong Hwa 730米与Geylang Methodist小学1.01公里均为平台数据",
+      "schools:1": "核对注册地址、入学年份与身份",
+      "daily:0": "2024年商场到访1,310万人次，商户销售额2.789亿新元",
+      "daily:1": "综合商场以外也有日常选择",
+      "costs:0": "同栋同面积成交，房屋条件仍有差异",
+      "costs:1": "地契始于2015年，费用需看最新账单"
+    }
+  },
+  "sg-wallich-residence": {
+    "family": {
+      "ko": "넓어 보이는 고층 집도 식탁·아이 공부방을 놓으면 판단이 달라집니다. Cantonment 통학 조건과 가족 공용공간이 맞는 집일 때 역 위 입지에 값을 줄 수 있습니다.",
+      "en": "A high-floor home can feel quite different once dining and homework space are laid out. The station location deserves a premium for your family only if the Cantonment school plan and shared rooms also work.",
+      "zh-CN": "高层住宅放入餐桌和孩子的学习区后，空间感可能不同。只有Cantonment入学安排和家庭公共空间都合适，车站上盖的便利才值得多付钱。"
+    },
+    "couple": {
+      "ko": "Tanjong Pagar 업무지와 Guoco Tower 장보기를 자주 쓴다면 생활 반경을 줄일 수 있습니다. 고층 조망을 고르기 전에 엘리베이터 대기와 침실·식사 공간이 둘의 일상에 맞는지 보세요.",
+      "en": "For Tanjong Pagar workers, Guoco Tower’s rail and groceries can keep everyday trips close. Before choosing the high-floor outlook, test lift waiting and whether the bedroom and dining layout works for two.",
+      "zh-CN": "在Tanjong Pagar工作，车站和Guoco Tower采购设施能缩短日常行程。挑高层景观前，先试电梯等候，并确认卧室和用餐空间适合两个人。"
+    },
+    "investor": {
+      "ko": "높이와 주소만으로 서비스 비용까지 회수된다고 볼 수는 없습니다. 2011년 시작된 임차권, 현재 추가 서비스 요금, 같은 조망·평면의 거래를 함께 놓고 매수가를 정해야 합니다.",
+      "en": "Height and address do not show that service costs will be recovered. Set a buying limit using the lease from 2011, current paid extras and sales with a comparable layout and outlook.",
+      "zh-CN": "楼高与地址不能证明服务成本都能收回。出价上限应结合2011年起算的地契、现行额外服务费，以及户型和景观相近的成交。"
+    },
+    "titlesZh": {
+      "transport:0": "位于车站上方，不等于通勤已经实测",
+      "transport:1": "B2闸机层与B3东西线站台",
+      "schools:0": "Cantonment小学670米不代表保证入学",
+      "schools:1": "核对注册地址、入学年份与身份",
+      "daily:0": "Guoco Tower内已有明确的杂货店",
+      "daily:1": "商业设施已有记录，客流与销售额尚无验证",
+      "costs:0": "两笔646平方英尺成交需结合各自条件",
+      "costs:1": "地契始于2011年，服务费用另行核实"
+    }
+  },
+  "sg-the-sail-marina-bay": {
+    "family": {
+      "ko": "아이보다 부모의 CBD 출퇴근에 근거가 더 많은 단지입니다. 학교 동선과 집 안 수리 범위를 먼저 정리해야 오래된 설비에 쓸 돈을 놓치지 않고 비교할 수 있습니다.",
+      "en": "The evidence supports the parents’ CBD routine more clearly than a child’s school day. Settle the school journey and interior renewal work before comparing the purchase budget.",
+      "zh-CN": "现有资料对父母的CBD生活支持更明确，孩子上学则需另做安排。先落实通学路线与室内更新范围，再比较购房预算。"
+    },
+    "couple": {
+      "ko": "Downtown이나 Raffles Place가 매일의 목적지라면 입지를 자주 누릴 수 있습니다. 낮은 평당가에 끌리더라도 배관·에어컨 수리비와 주말 장보기 동선을 더해 판단하세요.",
+      "en": "Downtown and Raffles Place are useful advantages when they are regular destinations. A low headline PSF still needs to survive the unit’s plumbing and cooling costs, plus a weekend grocery test.",
+      "zh-CN": "经常去Downtown或Raffles Place，这里的位置优势才用得上。即使每平方英尺单价看起来低，也要加上管道、空调更新费用，并试走周末采购路线。"
+    },
+    "investor": {
+      "ko": "2008년 준공보다 2002년 임차권 시작일이 보유기간 판단에 중요합니다. Marina One과 비교할 때는 남은 기간과 수리비를 맞춰야 가격 차이가 실제 할인인지 볼 수 있습니다.",
+      "en": "For holding-period comparisons, the lease starts in 2002, not at completion in 2008. Match remaining tenure and renovation needs against Marina One before treating a price gap as a discount.",
+      "zh-CN": "持有期比较应从2002年的地契起点算起，而非2008年竣工。与Marina One相比，先调整剩余年限和装修需求，再判断价差是否真是折价。"
+    },
+    "titlesZh": {
+      "transport:0": "360米是广告所列距离",
+      "transport:1": "先选通勤线路，再看最近的地图标记",
+      "schools:0": "学校名单中有一项已经过时",
+      "schools:1": "Cantonment需按具体地址核对",
+      "daily:0": "设施之外，也要计算出楼时间",
+      "daily:1": "实际走一次周末采购路线",
+      "costs:0": "2002年地契起点与竣工年份应分开",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-duo-residences": {
+    "family": {
+      "ko": "Bugis 환승은 학교가 철도 노선에 있는 큰아이에게 쓸모가 있을 수 있습니다. 어린아이의 통학을 우선한다면 사라진 Stamford 근접 문구를 빼고 실제 학교와 저녁 소음부터 판단하세요.",
+      "en": "Bugis interchange may work well for an older child with a settled rail journey. For a younger child, discard the old Stamford proximity claim and resolve the actual school route and evening bedroom noise first.",
+      "zh-CN": "孩子较大、已有固定铁路通学路线时，Bugis换乘站可能实用。若优先考虑幼龄儿童，应排除旧Stamford邻近宣传，先确认实际学校路线和夜间卧室噪声。"
+    },
+    "couple": {
+      "ko": "Bugis 출퇴근과 Kampong Glam 외식을 즐기는 집이라면 생활 방식이 잘 맞습니다. 저녁 식사 시간에 침실을 보고, 주거동이 실제로 쓰는 역 연결을 걸어본 뒤 결정하세요.",
+      "en": "DUO suits adults who will use Bugis rail and Kampong Glam dining. View the bedroom during evening dining hours and walk the connection residents actually use before deciding.",
+      "zh-CN": "常用Bugis铁路、喜欢Kampong Glam餐饮的住户，生活方式较容易契合。决定前，应在晚餐时段看卧室，并走一次住户实际使用的车站通道。"
+    },
+    "investor": {
+      "ko": "역세권이라는 이유만으로 오피스 동의 편의나 수익성을 주거동에 옮겨올 수는 없습니다. 해당 세대 관리비와 수선 상태를 받고 같은 평면 거래를 맞춰야 매수 기준이 생깁니다.",
+      "en": "The office tower’s connections and amenities cannot simply be assigned to the residences. Obtain the offered unit’s charges and repair condition, then use matched layouts to set the purchase benchmark.",
+      "zh-CN": "办公楼的连接与配套不能直接套用到住宅。拿到所售单位的费用和维修状况，再用相同户型成交建立出价依据。"
+    },
+    "titlesZh": {
+      "transport:0": "110米为房产平台估算",
+      "transport:1": "住宅与办公楼的路线需分开",
+      "schools:0": "Stamford旧校址的邻近优势已不适用",
+      "schools:1": "铁路对较大孩子的帮助不同",
+      "daily:0": "先查当前商户目录",
+      "daily:1": "过往泳池介绍只能帮助安排现时看房",
+      "costs:0": "索取最新全部费用",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-the-interlace": {
+    "family": {
+      "ko": "마당과 코트·수영장을 매주 쓸 가족이라면 넓은 부지가 매수 이유가 됩니다. 그만큼 단지 안 이동도 통학 시간에 들어가므로, 고를 동에서 교문까지의 아침 동선이 맞아야 합니다.",
+      "en": "The grounds earn their place in the budget if the family will use the courts and pools weekly. Include the trip inside the estate in the school morning; the chosen block matters as much as the address.",
+      "zh-CN": "一家人每周会用球场和泳池，宽阔园区才值得投入预算。上学时间要包含园内路程，所选楼栋与项目地址同样重要。"
+    },
+    "couple": {
+      "ko": "야외 공간을 자주 쓰고 짧은 역 도보가 필수는 아닌 생활에 어울립니다. 매일 MRT를 탄다면 오래된 셔틀·도보 안내에 기대지 말고 출근 시간의 실제 이동을 먼저 해보세요.",
+      "en": "This fits a routine that uses outdoor space and can accept a less direct station trip. Daily MRT commuters should test their journey without relying on historical shuttle or walking claims.",
+      "zh-CN": "经常使用户外空间、也能接受车站路线不那么直接，生活方式才比较匹配。每天乘MRT的人应实走通勤，别把旧接驳车或步行说法当作前提。"
+    },
+    "investor": {
+      "ko": "건축 수상 경력보다 2009년 시작된 임차권과 넓은 공용부의 수선 계획이 보유비를 좌우합니다. 평당가 비교에는 큰 평형과 실제 공용부 지출을 함께 넣으세요.",
+      "en": "The lease from 2009 and repair plans for extensive common grounds matter more to carrying costs than architectural awards. Compare larger layouts and actual shared expenses alongside the headline PSF.",
+      "zh-CN": "建筑奖项对持有成本的解释有限，2009年起算的地契和大面积公共空间维修计划更关键。每平方英尺单价要结合较大户型与实际公共支出一起比较。"
+    },
+    "titlesZh": {
+      "transport:0": "最近车站为Labrador Park，时间仍未实测",
+      "transport:1": "核对当前接驳车与出入口安排",
+      "schools:0": "家庭设施不能说明入学资格",
+      "schools:1": "大型园区内部路程也要计算",
+      "daily:0": "按实际使用需求评估球场与泳池",
+      "daily:1": "2018年的商户组合并非当前目录",
+      "costs:0": "地契与公共区域持续维护费用",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-seaside-residences": {
+    "family": {
+      "ko": "East Coast 여가를 자주 누릴 가족에게 후보가 됩니다. 아이 학교와 공원까지의 횡단 동선을 먼저 걸어보고, 해안 조망 때문에 침실 소음을 양보할 수 있는지도 판단하세요.",
+      "en": "Seaside belongs on a family shortlist when East Coast recreation is part of the week. Walk the school and park crossing routes, then decide whether the offered bedroom is quiet enough for the coastal outlook you want.",
+      "zh-CN": "每周都会去East Coast活动的家庭，可以把这里列入候选。先走学校和公园的过路路线，再判断所售卧室的安静程度是否能接受。"
+    },
+    "couple": {
+      "ko": "TEL 통근과 해안 여가를 함께 쓰면 Siglap 입지의 이점이 분명해집니다. 직장이 EWL에 있다면 환승 시간을 넣고 Parc Esta 같은 대안과 비교해야 합니다.",
+      "en": "Siglap makes most sense when you use both TEL and the coast. If work is on EWL, include transfers and compare an Eunos option such as Parc Esta before paying for station proximity.",
+      "zh-CN": "同时使用汤申—东海岸线和海边休闲空间，Siglap的位置才更合适。工作地在东西线的话，应把换乘算进去，再与Parc Esta等Eunos选择比较。"
+    },
+    "investor": {
+      "ko": "Siglap역은 이미 운영 중이므로 미래 개통 호재로 한 번 더 값을 줄 이유는 없습니다. 실제 조망·소음과 창호·외관 수선비를 반영해 비슷한 세대 거래와 맞추세요.",
+      "en": "Siglap is already operating, so an upcoming-station premium is no longer the right argument. Match actual outlook and noise with comparable sales, allowing for window and façade upkeep.",
+      "zh-CN": "Siglap站已经运营，不应再按“未来通车”支付一轮溢价。应按真实景观、噪声和门窗外墙维护需求，匹配相近单位的成交。"
+    },
+    "titlesZh": {
+      "transport:0": "从1号出口开始核对实际路线",
+      "transport:1": "汤申—东海岸线与东西线的便利不同",
+      "schools:0": "邻近中学不等于小学距离类别",
+      "schools:1": "使用学校当前校址",
+      "daily:0": "休闲与买菜路线分开评估",
+      "daily:1": "去公园要算完整的过路路线",
+      "costs:0": "地契与外立面维护仍要考虑",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-marina-bay-residences": {
+    "family": {
+      "ko": "부모가 MBFC에서 일하고 넓은 기존 평면이 필요하다면 비교할 만합니다. 부모의 짧은 출근길과 아이의 별도 통학이 맞바뀌는 선택일 수 있어 등하교 시간을 먼저 넣어보세요.",
+      "en": "Established larger layouts may suit a family working in MBFC. Test the trade-off between a short parent commute and a separate child’s school journey before treating the address as convenient for everyone.",
+      "zh-CN": "父母在MBFC工作且需要较大户型，可以考虑这里。但父母通勤短，可能换来孩子另一段接送行程，应先比较全家的时间安排。"
+    },
+    "couple": {
+      "ko": "업무와 평일 생활이 MBFC에 모여 있다면 시간을 아낄 수 있는 집입니다. 물가 산책과 별개로 주말 장보기, 맞은편 오피스 시선이 둘의 생활에 맞는지 확인하세요.",
+      "en": "This works best when work and weekday errands stay within MBFC. Check the weekend grocery loop and neighbouring office sightlines as carefully as the waterfront walk.",
+      "zh-CN": "工作和工作日活动主要在MBFC内，最能发挥这里的便利。除了滨水散步，也要认真看周末采购路线与对面办公楼的视线。"
+    },
+    "investor": {
+      "ko": "금융지구 주소와 고층 사진만으로 조망 프리미엄을 정하기는 어렵습니다. 창가에서 보이는 실제 각도와 99년 임차권의 시작일, 세대별 관리비가 확인돼야 비교 가격이 의미가 있습니다.",
+      "en": "A financial-district address and skyline photograph cannot set the view premium. Establish the window-level outlook, the 99-year lease commencement and unit charges before matching a price.",
+      "zh-CN": "金融区地址与天际线照片不足以确定景观溢价。先落实窗边真实视野、99年地契起始日和单位费用，价格比较才有基础。"
+    },
+    "titlesZh": {
+      "transport:0": "C出口与Link Mall服务不同路线",
+      "transport:1": "Bayfront不是同一个家门口",
+      "schools:0": "Cantonment与River Valley是待查学校，并非已确认距离类别",
+      "schools:1": "另行预留接送孩子的时间",
+      "daily:0": "滨水步道与采购便利分开看",
+      "daily:1": "按家庭实际需求评估设施",
+      "costs:0": "地契与每月费用需要不同文件",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-marina-bay-suites": {
+    "family": {
+      "ko": "넉넉한 실내와 Downtown 업무지 접근이 함께 필요한 가족에게 비교 가치가 있습니다. 방이 많아도 통학 시간이 줄지는 않으므로 학교 픽업 동선과 가구·수리 예산을 먼저 맞추세요.",
+      "en": "This deserves comparison for a family needing substantial interior space near Downtown work. Extra bedrooms do not shorten the school run; test pickup circulation and the furnishing and repair budget first.",
+      "zh-CN": "家庭同时需要宽敞室内和Downtown工作便利时，值得比较。房间多不会缩短接送时间，先测试接送动线，并算清家具与维修预算。"
+    },
+    "couple": {
+      "ko": "둘이 넓은 집을 실제로 쓰고 DTL을 자주 탄다면 지하 연결을 누릴 수 있습니다. 낮은 평당가보다 총 매수액과 쓰지 않을 공간의 유지비가 감당되는지가 먼저입니다.",
+      "en": "The underground link helps a couple who use DTL and genuinely need a large home. Start with the absolute purchase price and the cost of maintaining spare space, rather than a low PSF.",
+      "zh-CN": "两人确实需要大面积、又常坐滨海市区线，地下连接会实用。应先看总价和闲置空间维护费用，而非只看较低的每平方英尺单价。"
+    },
+    "investor": {
+      "ko": "큰 평형은 평당가가 낮아도 매수 총액과 보유비 부담이 남습니다. 서로 다른 준공 표기와 수리 기록부터 대조하고, 호가를 거래가로 사용하지 않은 비교표가 필요합니다.",
+      "en": "Large formats can carry a substantial total commitment despite a lower PSF. Resolve the conflicting completion records and refurbishment history, and keep asking prices out of the transaction comparison.",
+      "zh-CN": "大户型即使单价较低，总投入仍可能很高。先核对相互不一致的竣工资料与装修记录，比较成交时也应排除挂牌价。"
+    },
+    "titlesZh": {
+      "transport:0": "广告中的160米未计入楼内行程",
+      "transport:1": "晚餐后试走连接通道",
+      "schools:0": "学校便利并非现有资料的主要优势",
+      "schools:1": "房间大也不能省去接送时间",
+      "daily:0": "天际线之外，日常采购仍需安排",
+      "daily:1": "私人窗景与公共平台视野不同",
+      "costs:0": "核对竣工和维修记录",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-icon": {
+    "family": {
+      "ko": "Tanjong Pagar 생활권이 편해도 작은 1베드룸은 아이가 자고 공부할 공간부터 막힐 수 있습니다. 가족 계획이 있다면 로프트의 표시 면적보다 계단을 뺀 실제 방 구성을 우선하세요.",
+      "en": "Tanjong Pagar convenience cannot solve a one-bedroom home’s limits on sleeping and study space. For a family plan, usable rooms and loft stairs matter more than the advertised floor area.",
+      "zh-CN": "Tanjong Pagar再方便，也无法解决一居室睡眠和学习空间的限制。有育儿计划时，应先看实际房间和阁楼楼梯，而非标示面积。"
+    },
+    "couple": {
+      "ko": "EWL 출퇴근과 동네 식사를 일상으로 쓰는 1~2인에게 잘 맞는 후보입니다. 로프트라면 위층 냉방과 머리 높이, 계단 동선이 단층 대안보다 나은지 직접 비교하세요.",
+      "en": "Icon is a plausible fit for one or two people using EWL and neighbourhood meals. In a loft, compare upstairs cooling, headroom and stair use with a single-level alternative.",
+      "zh-CN": "一两人常用东西线、习惯在街区吃饭，可以考虑Icon。选阁楼户型时，要把楼上制冷、净高和楼梯使用与平层方案实际比较。"
+    },
+    "investor": {
+      "ko": "로프트와 단층을 한 평당가로 비교하면 사용하기 어려운 면적에 값을 줄 수 있습니다. 99년 임차권 시작일과 현재 관리비를 받고 실제로 쓰는 면적이 비슷한 거래부터 맞추세요.",
+      "en": "A single PSF comparison can overvalue awkward loft space. Obtain the 99-year lease start and current charges, then match transactions by genuinely usable area and configuration.",
+      "zh-CN": "用同一每平方英尺单价比较阁楼与平层，可能高估难用的面积。先拿到99年地契起点和最新费用，再按真正可用面积与格局匹配成交。"
+    },
+    "titlesZh": {
+      "transport:0": "先从东西线规划通勤",
+      "transport:1": "雨天通勤与采购路线一起试走",
+      "schools:0": "Cantonment是明确列出的小学候选",
+      "schools:1": "一居室可能限制家庭计划",
+      "daily:0": "设施是否好用，要试预约",
+      "daily:1": "保留日常餐食价格比较",
+      "costs:0": "99年地契与最新管理账单",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-one-shenton": {
+    "family": {
+      "ko": "큰 평면을 고를 수 있다는 점은 가족에게 유리하지만 학교 동선까지 해결해주지는 않습니다. 아이 공부·유모차 수납 공간과 실제 등하교를 맞춘 뒤 Shenton Way 출근의 이점을 더하세요.",
+      "en": "The wider layout choice can help a family, but it does not settle the school journey. Fit homework and stroller storage into the actual plan before adding the benefit of a Shenton Way commute.",
+      "zh-CN": "较多户型选择有利于家庭，但不会自动解决上学路线。先把学习区和婴儿车收纳放进实际平面，再加上Shenton Way通勤的优势。"
+    },
+    "couple": {
+      "ko": "Shenton Way와 Lau Pa Sat를 자주 쓰는 집이라면 주소의 장점을 누리기 쉽습니다. 단지 평균 면적이나 사진 대신 실제 침실과 테라스가 차지하는 공간을 보고 고르세요.",
+      "en": "The address is useful when Shenton Way and Lau Pa Sat are regular stops. Choose by the offered bedroom dimensions and terrace allocation, rather than a project-wide area figure or photograph.",
+      "zh-CN": "经常去Shenton Way和Lau Pa Sat，地址优势较容易用上。选房应看实际卧室尺寸和露台占比，而非项目平均面积或照片。"
+    },
+    "investor": {
+      "ko": "일반 아파트와 큰 스카이 스위트를 섞은 평당가는 매수가 기준으로 거칠습니다. 같은 평면 거래에 2011년 준공 주택의 수리비와 최근 관리비를 더해 비교하세요.",
+      "en": "A PSF mixing ordinary apartments with large sky suites is a rough buying guide. Match the layout, then add renovation needs and current charges for a building completed in 2011.",
+      "zh-CN": "普通公寓与大面积空中套房混合计算的单价，只能粗略参考。应先匹配户型，再计入这座2011年竣工住宅的翻修需求和现行费用。"
+    },
+    "titlesZh": {
+      "transport:0": "Downtown E出口是具体的定位起点",
+      "transport:1": "Telok Ayer也是滨海市区线，并非第二条线路",
+      "schools:0": "列出的小学仍需按当前地址核对",
+      "schools:1": "家庭户型需要的不只是卧室数量",
+      "daily:0": "楼下商业与完整采购行程分开看",
+      "daily:1": "实地查看自己会用的设施楼层",
+      "costs:0": "2011年竣工与当前持有费用",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-altez": {
+    "family": {
+      "ko": "아이와 함께 살 로프트라면 부모의 짧은 출근보다 계단 안전과 밤중 화장실 동선이 더 중요할 수 있습니다. 두 층을 오가는 생활이 번거롭다면 단층 평면을 먼저 비교하세요.",
+      "en": "In a family loft, safe stairs and the night-time bathroom route may matter more than a shorter adult commute. Compare a single-level plan first if moving between floors would complicate daily care.",
+      "zh-CN": "家庭选择阁楼时，楼梯安全和夜间去卫生间的路线，可能比父母通勤短更重要。若上下楼会增加照顾负担，应先比较平层。"
+    },
+    "couple": {
+      "ko": "일과 수면 공간을 층으로 나눠 쓰고 싶다면 검토할 이유가 있습니다. 다만 위층 온도와 계단, 고층 엘리베이터 대기까지 편해야 복층의 장점이 남습니다.",
+      "en": "A loft can be worthwhile if separate work and sleeping levels fit your routine. That advantage depends on upstairs temperature, stairs and the high-floor lift journey being comfortable in practice.",
+      "zh-CN": "若想把工作和睡眠分在两层，阁楼值得考虑。但楼上温度、楼梯和高层电梯行程都适合，分层的好处才成立。"
+    },
+    "investor": {
+      "ko": "가려진 세대 번호의 거래 한 건으로 모든 로프트 가격을 정할 수는 없습니다. 단층·복층을 나눠 실제 쓰는 면적과 수리 상태를 맞추고, 확인되지 않은 추가 철도 호재는 계산에서 빼세요.",
+      "en": "One sale with a redacted stack cannot price every loft. Separate single-level and duplex layouts, match usable area and condition, and leave unverified extra rail access out of the return case.",
+      "zh-CN": "一笔楼层单位信息不完整的成交，不能给所有阁楼定价。应分开平层与复式，匹配可用面积和房况，并剔除尚未核实的新增铁路便利。"
+    },
+    "titlesZh": {
+      "transport:0": "以Tanjong Pagar规划已确认的东西线行程",
+      "transport:1": "车站标记变化可能比户型更快",
+      "schools:0": "核对实际学校，而非依赖市中心标签",
+      "schools:1": "阁楼需检查儿童安全布局",
+      "daily:0": "方便的街区也要实走买菜路线",
+      "daily:1": "高层生活包含电梯等待",
+      "costs:0": "一笔已报道成交的比较范围有限",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-skysuites-at-anson": {
+    "family": {
+      "ko": "작은 집에서는 아이 공부와 수납 공간을 넣는 순간 선택이 달라집니다. 가족이 늘 계획이라면 주변 학교 목록보다 실제 가구 배치가 가능한 평면인지부터 보세요.",
+      "en": "A compact home can stop working once study space and children’s storage are added. If the household may grow, a workable furniture plan comes before the nearby-school list.",
+      "zh-CN": "小户型加入孩子的学习和收纳后，是否够住可能完全不同。若家庭成员可能增加，应先确认家具摆得下，再看附近学校名单。"
+    },
+    "couple": {
+      "ko": "집 밖에서 식사·장보기를 해결하고 실내 짐이 적은 1~2인에게 맞는 후보입니다. 둘 다 재택근무를 한다면 침대와 책상 두 개, 빨래 수납까지 함께 놓아봐야 합니다.",
+      "en": "This can fit one or two people who use the neighbourhood and keep few belongings. If both work at home, test the bed, two desks and laundry storage together before accepting the compact plan.",
+      "zh-CN": "一两人常在街区解决餐食和采购、家中物品不多，可能比较合适。若两人都居家办公，要同时摆下床、两张书桌和洗衣收纳后再判断。"
+    },
+    "investor": {
+      "ko": "작은 총면적이 낮은 월 보유비를 보장하지는 않습니다. 세대별 관리비·적립금과 내부 조망을 확인하고, 공용 옥상 전망을 매물의 사적 조망처럼 가격에 넣지 마세요.",
+      "en": "A small floor area does not guarantee low monthly costs. Obtain unit charges and the apartment’s own outlook; the shared rooftop view should not be priced as a private bedroom view.",
+      "zh-CN": "面积小不代表每月成本一定低。应查单位费用和室内真实视野，公共屋顶景观不能按私人卧室景观计价。"
+    },
+    "titlesZh": {
+      "transport:0": "Tanjong Pagar 410米为广告路线",
+      "transport:1": "东西线与Maxwell完整行程一起比较",
+      "schools:0": "Cantonment是小学，Duke-NUS不是",
+      "schools:1": "在所选住宅内安排学习空间",
+      "daily:0": "屋顶景观属于公共设施",
+      "daily:1": "设施本身与到达设施的行程都要看",
+      "costs:0": "房子小，管理账单仍需单独核实",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-midtown-modern": {
+    "family": {
+      "ko": "Bugis에서 가족용 평면과 정원을 함께 찾는다면 Midtown Bay보다 먼저 비교할 이유가 있습니다. 다만 정원 이미지가 침실의 조용함을 보장하지 않으므로 저녁과 아침 생활 소음을 들어보세요.",
+      "en": "For family layouts and gardens at Bugis, this deserves an earlier look than Midtown Bay. Garden imagery cannot establish a quiet bedroom; test evening activity and morning servicing around the offered unit.",
+      "zh-CN": "想在Bugis兼顾家庭户型与花园，可优先于Midtown Bay比较。但花园图片不能保证卧室安静，应试听所售单位周边晚间活动和清晨服务噪声。"
+    },
+    "couple": {
+      "ko": "Bugis 두 노선과 주변 상권을 자주 쓰면서 정원도 누릴 집이라면 선택할 이유가 있습니다. 정원을 거의 쓰지 않는다면 더 작은 Midtown Bay 평면과 총비용을 나란히 보세요.",
+      "en": "There is a case here if you will use Bugis rail, surrounding shops and the gardens. If the gardens would go largely unused, compare the total cost with a smaller Midtown Bay layout.",
+      "zh-CN": "常用Bugis两条线路、周边商业和花园，购买理由较充分。若很少使用花园，可把总成本与Midtown Bay较小户型并列比较。"
+    },
+    "investor": {
+      "ko": "2019년 시작된 임차권만으로 신축 프리미엄의 크기를 정할 수는 없습니다. 정원·가족 평면의 값을 실제 세대 거래로 확인하고, 여러 해가 섞인 평균을 현재 가격으로 쓰지 마세요.",
+      "en": "A lease starting in 2019 does not by itself set a newness premium. Test what matched transactions pay for the family layout and gardens, rather than using a multi-year mix as today’s price.",
+      "zh-CN": "2019年起算的地契本身不能确定次新溢价。应通过匹配成交评估家庭户型和花园的价格，而非把多年混合数据当作当前价格。"
+    },
+    "titlesZh": {
+      "transport:0": "150米是过往街道路程估算",
+      "transport:1": "按线路与闸机规划，而非数四个车站标记",
+      "schools:0": "当前学校判断应移除Stamford",
+      "schools:1": "沿线学校不等于附近小学学位",
+      "daily:0": "三片商业区对应不同日常行程",
+      "daily:1": "花园需结合实际高峰使用情况",
+      "costs:0": "地契起点与最新账单一起看",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-midtown-bay": {
+    "family": {
+      "ko": "업무와 접객 중심 구성은 아이가 있는 집의 저녁 동선과 다를 수 있습니다. 복층 침실·화장실·공부 공간이 맞지 않으면 같은 Bugis의 Midtown Modern을 먼저 비교하세요.",
+      "en": "The work-and-entertaining brief may not match a child’s evening routine. If the duplex sleeping, bathroom and study arrangement is awkward, compare Midtown Modern before committing to this format.",
+      "zh-CN": "工作与会客导向的设计，未必适合孩子晚间起居。复式的睡眠、卫生间和学习区若不顺手，应先比较同在Bugis的Midtown Modern。"
+    },
+    "couple": {
+      "ko": "Guoco Midtown의 업무·식사 공간을 실제로 쓰는 1~2인에게 이유가 분명합니다. 복층이 일과 휴식을 잘 나눠주는지, 자주 쓸 공용 업무시설에 별도 요금이 있는지부터 보세요.",
+      "en": "This has a clear use case for one or two people who will use Guoco Midtown’s work and dining spaces. Check whether the duplex separates work and rest usefully, and what the business facilities actually cost.",
+      "zh-CN": "一两人会实际使用Guoco Midtown办公和餐饮空间，购买理由比较明确。先看复式能否有效分开工作与休息，以及商务设施到底如何收费。"
+    },
+    "investor": {
+      "ko": "업무 편의시설이 많다는 설명을 임차인의 지불 의사로 바로 바꿀 수는 없습니다. 실제 이용 권한·추가 요금과 복층의 사용 면적을 확인한 뒤 유사 평면의 거래·임대 조건을 비교하세요.",
+      "en": "A business-amenity list does not establish what a tenant will pay. Confirm access, extra fees and usable duplex area before comparing sales and rental terms for genuinely similar layouts.",
+      "zh-CN": "商务配套清单不能直接说明租客愿意多付多少。应先确认使用权限、额外费用和复式可用面积，再比较真正相似户型的买卖与租赁条件。"
+    },
+    "titlesZh": {
+      "transport:0": "从住宅大堂计算出行起点",
+      "transport:1": "分别测试工作日与深夜回家",
+      "schools:0": "商务住宅定位不能直接说明学校适配",
+      "schools:1": "检查孩子的睡眠与学习区域",
+      "daily:0": "配套分布在不同楼层",
+      "daily:1": "日常街区使用不止于工作时段",
+      "costs:0": "服务费用与地契分开计算",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-south-beach-residences": {
+    "family": {
+      "ko": "넓은 실내와 City Hall 생활권을 함께 원하면 비교할 만합니다. 호텔 위 주거라는 점보다 실제 학교 픽업 장소와 아이 공부 공간, 매달 낼 서비스 비용이 가족 생활에 맞아야 합니다.",
+      "en": "The interior space and City Hall setting deserve comparison for a family. Actual school pickup, homework space and recurring service charges matter more than the fact that the home sits above a hotel.",
+      "zh-CN": "家庭想兼顾宽敞室内和City Hall生活圈，可以比较。实际接送位置、学习空间和持续服务费，比住宅位于酒店上方更影响日常。"
+    },
+    "couple": {
+      "ko": "City Hall 일상과 넉넉한 집, 서비스 이용을 함께 원한다면 후보가 됩니다. 어떤 컨시어지 서비스가 포함되는지 서면으로 받고 행사 시간의 주거 로비도 살펴보세요.",
+      "en": "This fits a couple seeking space, City Hall routines and services they will actually use. Obtain written concierge entitlements and visit the residential arrival area during a busy event period.",
+      "zh-CN": "想要空间、City Hall生活便利，并确实会使用服务的两人住户，可以考虑。应取得礼宾权益的书面说明，并在活动繁忙时查看住宅入口。"
+    },
+    "investor": {
+      "ko": "비교 거래가 적어 주변 고급 단지의 단가를 그대로 가져오기 어렵습니다. 해당 세대의 조망과 인테리어, 포함 서비스·추가 요금을 확인한 뒤 감당할 매수가 범위를 좁혀야 합니다.",
+      "en": "The limited comparable-sales pool makes borrowed luxury-project rates unreliable. Narrow a buying range only after matching the unit’s outlook, interior and included versus paid services.",
+      "zh-CN": "可比成交有限，不能轻易套用周边豪宅单价。应匹配单位景观、室内状态，以及包含和另收费的服务后，再收窄可承受出价区间。"
+    },
+    "titlesZh": {
+      "transport:0": "官方公告列出两处车站连接",
+      "transport:1": "活动期间测试大堂动线",
+      "schools:0": "中心区铁路不代表小学距离类别",
+      "schools:1": "客厅宽敞，通学安排仍需落实",
+      "daily:0": "日常采购与专程餐饮分开比较",
+      "daily:1": "公共天际线照片不是单位窗景",
+      "costs:0": "地契、翻修与服务分别核算",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-concourse-skyline": {
+    "family": {
+      "ko": "가족 공간이 필요하면 작은 도심 평면보다 비교할 이유가 있습니다. 다만 5베드룸 광고가 실제로는 방 네 개와 서재인지 확인하고, 서재를 아이 침실로 쓸 수 있는지는 따로 판단하세요.",
+      "en": "The roomier formats deserve comparison with compact city homes. Verify whether an advertised five-bedroom is actually four bedrooms plus study, and judge the study’s suitability separately.",
+      "zh-CN": "较宽敞的户型值得与紧凑市区住宅比较。应核实广告中的五房是否实为四房加书房，并单独判断书房是否适合孩子睡眠。"
+    },
+    "couple": {
+      "ko": "Circle Line 생활권에서 집 안 여유 공간을 원하는 둘에게 맞을 수 있습니다. 지붕 있는 통로라는 광고는 실제 주거 출입구부터 걸어보고, Bugis 환승이 필요한 출근과도 비교하세요.",
+      "en": "This may suit two people wanting more interior space on a Circle Line routine. Walk the advertised covered route from the residential entrance and compare any commute that instead requires Bugis transfers.",
+      "zh-CN": "两人需要更多室内空间且常用环线，可能适合这里。应从住宅入口走一遍广告所说的有盖通道，并与需要Bugis换乘的通勤比较。"
+    },
+    "investor": {
+      "ko": "침실 수보다 승인된 방 용도와 실제 크기가 가격 비교의 출발점입니다. 2014년 준공 주택의 최근 관리비·대규모 수선 통지를 더해, 같은 구성 거래와 맞춰보세요.",
+      "en": "Approved room use and dimensions are the starting point, rather than the bedroom label. Add current charges and major-works notices for this 2014 project before matching equivalent configurations.",
+      "zh-CN": "价格比较应从批准的房间用途和尺寸出发，而非卧室标签。再计入这座2014年竣工项目的最新费用与大型维修通知，匹配同类格局。"
+    },
+    "titlesZh": {
+      "transport:0": "有盖连接是需要现场核实的广告说法",
+      "transport:1": "环线路线与经Bugis换乘路线比较",
+      "schools:0": "不要直接沿用笼统学校名单",
+      "schools:1": "书房可能提升家庭空间实用性",
+      "daily:0": "在平常时段检查商业便利",
+      "daily:1": "住户数量之外，还要看设施使用",
+      "costs:0": "2014年项目需使用当前账单",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-martin-modern": {
+    "family": {
+      "ko": "River Valley에서 가족용 방 구성과 정원을 함께 찾는다면 검토할 이유가 있습니다. 입학 조건을 먼저 맞추고, 강 조망을 고를 때는 오후 햇빛과 냉방 부담도 함께 보세요.",
+      "en": "Family layouts and gardens make this worth a look in River Valley. Settle school eligibility first, then weigh afternoon sun and cooling alongside a river-facing outlook.",
+      "zh-CN": "在River Valley寻找家庭户型与花园，值得看看这里。先落实入学资格，再把午后日晒和制冷负担与河景一起衡量。"
+    },
+    "couple": {
+      "ko": "정원을 자주 쓰고 Great World 생활권이 맞는 둘에게 후보가 됩니다. 서향 강 조망은 퇴근 후 집에 머무는 시간의 온도와 함께 판단해야 일상의 만족도가 남습니다.",
+      "en": "This is a candidate for two people who use the gardens and Great World area. Judge a west-facing river view at the hours you spend at home, including its afternoon heat.",
+      "zh-CN": "两人会常用花园和Great World生活圈，可以列入候选。西向河景应在平时居家的时段查看，把午后热度一起算进去。"
+    },
+    "investor": {
+      "ko": "Rivergate와 비교할 때는 신축 연도만 볼 것이 아니라 99년 임차권과 영구 보유권의 차이를 맞춰야 합니다. 서향 조망·현재 관리비·수리 필요까지 같은 조건으로 놓아야 가격 차이를 읽을 수 있습니다.",
+      "en": "A Rivergate comparison needs the leasehold–freehold difference as well as building age. Match west-facing exposure, current charges and repair needs before interpreting the price gap.",
+      "zh-CN": "与Rivergate比较，除了楼龄还要调整有限地契与永久地契的差别。朝西日晒、现行费用及维修需求也应对齐，再解读价差。"
+    },
+    "titlesZh": {
+      "transport:0": "400米仍是过往估算",
+      "transport:1": "Great World已运营，出入口也有变化",
+      "schools:0": "邻近入学仍取决于实际地址",
+      "schools:1": "上学早高峰与休闲散步路线不同",
+      "daily:0": "车站距离不是商场距离",
+      "daily:1": "按预期用途判断花园",
+      "costs:0": "较新建筑也需要当前实际费用",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-rivergate": {
+    "family": {
+      "ko": "강변 산책과 넓은 기존 단지 생활을 자주 누릴 가족에게 비교할 만합니다. 어린아이가 있다면 물가 경계·출입문과 통학 동선을 먼저 보고, 입주 전 설비 수리까지 예산에 넣으세요.",
+      "en": "This deserves comparison for families who will use the river promenade and established grounds. With younger children, inspect riverside boundaries and gates, then budget unit-system renewal before moving in.",
+      "zh-CN": "家庭会常用河滨步道和成熟园区，值得比较。孩子较小的话，先看河边边界与出入口，并把入住前的设备更新列入预算。"
+    },
+    "couple": {
+      "ko": "Robertson Quay 일상을 즐기고 넉넉한 기존 평면을 원한다면 후보가 됩니다. 옛 역 도보 시간보다 현재 다리·역 출입구를 직접 걸어보고 집 안 배관·냉방 상태를 보세요.",
+      "en": "The Robertson Quay routine and established larger layouts may suit a couple. Walk today’s bridges and station entrances, then inspect plumbing and cooling rather than relying on old walking times.",
+      "zh-CN": "喜欢Robertson Quay日常、又想要成熟大户型的两人住户，可以考虑。应实走现在的桥和车站入口，并检查管道、空调，不要沿用旧步行时间。"
+    },
+    "investor": {
+      "ko": "영구 보유권은 내부 설비의 수명을 늘려주지 않습니다. 2009년 준공 이후의 수리 이력과 현재 적립금·특별 분담금을 받고, Martin Modern과는 보유권·수리 총액을 함께 비교하세요.",
+      "en": "Freehold does not extend the life of interior systems. Obtain repair history since the 2009 completion and current reserve or special-levy obligations, then compare tenure and total renewal costs with Martin Modern.",
+      "zh-CN": "永久地契不会延长室内设备寿命。应取得2009年竣工后的维修记录及当前储备金、特别征费义务，再与Martin Modern比较产权和更新总成本。"
+    },
+    "titlesZh": {
+      "transport:0": "不要沿用2019年的两至三分钟说法",
+      "transport:1": "乘公交时，选哪座桥会影响路线",
+      "schools:0": "River Valley小学是明确的附近候选",
+      "schools:1": "检查河边照看孩子的安排",
+      "daily:0": "当前商户比旧店名更重要",
+      "daily:1": "车站与商场路线分别比较",
+      "costs:0": "旧管理费只能提示进一步核查",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-the-trillium": {
+    "family": {
+      "ko": "같은 2베드룸이라도 큰 기존 평면의 수납·공용공간은 다르게 쓸 수 있습니다. 가족이 늘 계획이라면 실제 방 크기와 현재 학교 길을 먼저 맞추고, 막힘없는 강 조망은 따로 확인하세요.",
+      "en": "A larger established two-bedroom can offer very different storage and shared space. For a growing family, fit the actual rooms and current school route first; an open river view remains a separate question.",
+      "zh-CN": "同样是两房，成熟的大户型可提供不同的收纳与公共空间。有增员计划时，应先匹配房间大小和当前通学路线，开阔河景仍要单独确认。"
+    },
+    "couple": {
+      "ko": "Great World 장보기와 넉넉한 실내를 자주 누릴 둘에게 비교할 이유가 있습니다. 원형 타워의 모습보다 거실·침실에서 이웃 창이 어떻게 보이는지 보고 프라이버시를 판단하세요.",
+      "en": "There is a case for a couple wanting generous space and Great World shopping. Judge privacy from the living and bedroom windows, rather than from the circular tower’s appearance.",
+      "zh-CN": "两人想要宽敞空间和Great World采购便利，可以比较。隐私应从客厅、卧室实际看向邻楼的角度判断，而非塔楼圆形外观。"
+    },
+    "investor": {
+      "ko": "영구 보유권과 넓은 평면은 장점이지만 총 매수가와 유지비 부담도 함께 커집니다. 낮아 보이는 평당가를 판단하려면 최근 공용부 수선 계획과 인테리어 비용을 더한 총액이 필요합니다.",
+      "en": "Freehold and generous layouts can appeal while still demanding a large total commitment. Judge a seemingly lower PSF against planned common works and the full interior refurbishment budget.",
+      "zh-CN": "永久地契和宽敞户型有吸引力，但总投入仍可能很大。单价看似较低时，应加上计划中的公共维修和室内翻新预算后再判断。"
+    },
+    "titlesZh": {
+      "transport:0": "汤申—东海岸线已是现有交通便利",
+      "transport:1": "去商场过路与进站是不同路线",
+      "schools:0": "River Valley小学需核实实际校门路线",
+      "schools:1": "旧学校名单不应进入当前判断",
+      "daily:0": "日常购物是明确吸引力",
+      "daily:1": "旧设施照片需要当前实地复核",
+      "costs:0": "永久地契住宅仍需缴纳维护费用",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-d-leedon": {
+    "family": {
+      "ko": "넓은 공용부를 쓰는 가족에게 이유가 있지만 어느 타워를 고르느냐가 아침을 바꿉니다. Nanyang 근접 기대보다 해당 주소의 입학 조건과 집에서 픽업 장소까지의 동선을 먼저 보세요.",
+      "en": "The grounds can justify a family shortlist, but tower choice changes the morning routine. Establish the exact address’s school position and apartment-to-pickup route before paying for a Nanyang assumption.",
+      "zh-CN": "宽阔公共空间能成为家庭购买理由，但塔楼选择会改变早晨安排。先确认具体地址的入学情况和家门到接送点的路线，不宜为Nanyang的想当然支付溢价。"
+    },
+    "couple": {
+      "ko": "코트·수영장 등 단지 시설을 꾸준히 쓰는 둘이라면 비교할 만합니다. 매일 Circle Line을 탄다면 단지 경계의 역 거리 대신 고를 타워의 엘리베이터와 내부 보행부터 재보세요.",
+      "en": "This may suit two people who regularly use estate facilities. Daily Circle Line users should time the chosen tower’s lift and internal walk, rather than starting the journey at the estate boundary.",
+      "zh-CN": "两人会经常使用园区设施，可以比较。每天乘环线的话，应从所选塔楼的电梯和园内步行开始计时，而非从项目边界起算。"
+    },
+    "investor": {
+      "ko": "아파트와 반단독주택을 섞은 세대 수는 투자 비교 표본이 아닙니다. 같은 타워·평면의 거래와 실제 아파트 관리비를 맞추고, 넓은 시설의 예약 가능성도 임대 조건과 함께 보세요.",
+      "en": "The estate total mixes apartments with semi-detached houses, so it is not a uniform comparable pool. Match tower and layout sales with apartment charges, and test facility access when assessing the rental offering.",
+      "zh-CN": "项目总户数混合了公寓与半独立屋，不能当成统一可比样本。应匹配塔楼、户型和公寓费用，评估出租条件时也要核实设施是否方便使用。"
+    },
+    "titlesZh": {
+      "transport:0": "已明确Farrer Road站，完整步行仍待确认",
+      "transport:1": "环线通勤可能需要换乘",
+      "schools:0": "列出学校不等于入学资格证明",
+      "schools:1": "测试具体家庭接送安排",
+      "daily:0": "附近生活区对应不同出行类型",
+      "daily:1": "公共设施数量需结合实际预约情况",
+      "costs:0": "TOP日期明确，每月账单尚未验证",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-reflections-at-keppel-bay": {
+    "family": {
+      "ko": "물가와 야외 공간을 자주 쓰는 가족이라면 후보가 됩니다. 저층 빌라동과 고층 타워의 출입·통학이 다르므로 아이 학교를 정한 뒤 동을 골라야 합니다.",
+      "en": "This belongs on a shortlist for a family that will use the waterfront and grounds. Villa blocks and towers have different departures and school journeys; choose the school routine before the building format.",
+      "zh-CN": "一家人会常用滨水和户外空间，可以列入候选。低层别墅式楼栋与高塔的出入、通学不同，应先定学校安排，再选楼型。"
+    },
+    "couple": {
+      "ko": "워터프런트 생활에 시간을 쓰고 역 바로 앞이 필수는 아니라면 비교할 만합니다. 굽은 건물 외관보다 실제 방 모양에 침대·책상이 놓이는지, 장보기 길이 편한지를 보세요.",
+      "en": "This can work for two people who value the waterfront and do not need a station-door home. Test furniture fit in the actual room geometry and the grocery return, rather than buying the skyline silhouette.",
+      "zh-CN": "两人重视滨水生活、也不要求车站就在门口，可以考虑。应测试实际房间能否放好家具，以及买菜回程是否方便，不宜只为天际线外形买单。"
+    },
+    "investor": {
+      "ko": "한 단지 안에서도 빌라동과 타워의 가격을 같은 조망 기준으로 묶기 어렵습니다. 2011년 준공 이후의 창호·외부 수리 기록과 현재 분담금을 받고 같은 형태의 세대끼리 비교하세요.",
+      "en": "Villa and tower apartments cannot share one automatic view premium. Obtain window and external-repair records since the 2011 completion and current contributions, then compare the same building format.",
+      "zh-CN": "别墅式楼栋与高塔单位不能套用同一种景观溢价。应取得2011年竣工后的门窗、外部维修记录及现行缴费，再比较相同楼型。"
+    },
+    "titlesZh": {
+      "transport:0": "从Telok Blangah出发，再核对目的地",
+      "transport:1": "大园区在出门前已增加行程",
+      "schools:0": "小学候选需核对当前路线",
+      "schools:1": "滨水生活预算应包含校车或接送",
+      "daily:0": "滨水散步与采购路线不同",
+      "daily:1": "检查外部构件，不预设已存在缺陷",
+      "costs:0": "建筑师资料支持2011年竣工",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-corals-at-keppel-bay": {
+    "family": {
+      "ko": "높은 타워보다 낮은 워터프런트 단지를 원한다면 Reflections와 구분해서 볼 이유가 있습니다. 학교는 차량 반경 목록으로 정하지 말고 실제 아침 픽업과 저층 집의 외부 시선을 함께 보세요.",
+      "en": "For a lower-rise waterfront home, this is a distinct comparison with Reflections. Resolve the real school pickup rather than a driving-radius list, and inspect low-floor privacy along the family’s daily paths.",
+      "zh-CN": "偏好较低楼层的滨水居所，可与Reflections区别比较。应落实真实接送，别依赖驾车半径学校名单，同时检查低层沿日常通道的隐私。"
+    },
+    "couple": {
+      "ko": "King’s Dock 산책을 자주 하고 저층·중층 주거를 선호하는 둘에게 맞을 수 있습니다. 물가 풍경만 보지 말고 HarbourFront 장보기와 늦은 식사 후 귀가를 직접 해보세요.",
+      "en": "This may suit a couple who will use King’s Dock walks and prefer lower buildings. Test HarbourFront groceries and a late meal return alongside the waterfront setting.",
+      "zh-CN": "两人喜欢较低楼栋、会常在King’s Dock散步，可能合适。除了滨水环境，也应试走HarbourFront采购及晚餐后回家的路线。"
+    },
+    "investor": {
+      "ko": "V자 배치의 설계 의도가 모든 세대의 열린 조망을 보장하지는 않습니다. 실제 거실 시선과 저층 프라이버시를 맞추고 현재 관리비·거래비용으로 가격 차이를 계산하세요.",
+      "en": "The V-shaped design does not establish an open view for every home. Match the living-room sightline and low-floor privacy, then use current charges and transaction costs to judge any premium.",
+      "zh-CN": "V形设计不能保证每套都有开阔景观。应匹配客厅实际视线与低层隐私，再用当前管理和交易成本判断溢价。"
+    },
+    "titlesZh": {
+      "transport:0": "附近公交站有单独的距离估算",
+      "transport:1": "按当前公交路线比较铁路换乘",
+      "schools:0": "学校数量按驾车半径统计",
+      "schools:1": "先选学校，再选楼栋",
+      "daily:0": "码头散步与日常采购分开比较",
+      "daily:1": "检查低楼层隐私与外部暴露",
+      "costs:0": "当前持有成本不能沿用旧融资表",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-parc-esta": {
+    "family": {
+      "ko": "Eunos 철도와 큰 단지 생활을 원하는 가족에게 후보가 됩니다. 아이 방의 공부·수납을 배치하고 창문을 연 침실 소음을 들어봐야 역 맞은편의 편리함이 가족에게도 남습니다.",
+      "en": "Eunos rail and a large estate give this a family use case. Fit study and storage into the child’s room and test open-window bedroom noise before deciding the opposite-station convenience works for everyone.",
+      "zh-CN": "Eunos铁路和大型园区能满足部分家庭需求。应先安排孩子的学习与收纳，并试听开窗卧室噪声，再判断车站对面的便利是否适合全家。"
+    },
+    "couple": {
+      "ko": "EWL 출퇴근과 Eunos·Joo Chiat 생활을 즐기는 둘에게 비교할 만합니다. PLQ보다 한 정거장 더 타는 시간과 길 건너는 불편을 넣고, 집의 조용함·총비용을 맞춰보세요.",
+      "en": "This deserves comparison for a couple using EWL and the Eunos–Joo Chiat area. Include the extra stop and crossing versus PLQ, then compare bedroom quiet and the total cost.",
+      "zh-CN": "两人常用东西线、喜欢Eunos与Joo Chiat生活圈，可以比较。相较PLQ应计入多一站及过路时间，再比较卧室安静程度和总成本。"
+    },
+    "investor": {
+      "ko": "과거 소형 3베드룸의 관리비가 지금 매수할 집의 비용을 설명하지는 않습니다. 최신 청구서와 실제 창문 방향을 확인하고, 같은 평면의 거래·임대 조건을 맞춰야 보유비를 계산할 수 있습니다.",
+      "en": "An older maintenance figure for one compact three-bedroom does not establish the cost of the home offered today. Use its current bills and actual window orientation, then match layout-specific sale and rental terms to assess holding costs.",
+      "zh-CN": "过去某套紧凑三居室的管理费，不能代表今天所售房源的成本。应核对最新账单和实际窗户朝向，再匹配同户型的成交与租赁条件，计算持有费用。"
+    },
+    "titlesZh": {
+      "transport:0": "东西线一站到Paya Lebar是实用连接",
+      "transport:1": "位于MRT对面，仍需要过路",
+      "schools:0": "Eunos小学900米是驾车路线",
+      "schools:1": "家庭适配同时需要学校与房间检查",
+      "daily:0": "Eunos与Joo Chiat对应不同日常行程",
+      "daily:1": "社区活动是过往观察，并非承诺",
+      "costs:0": "所述费用仅对应当时那位住户",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  },
+  "sg-jadescape": {
+    "family": {
+      "ko": "가족용 평면과 Shunfu 일상을 함께 원한다면 비교할 이유가 있습니다. 유모차는 Marymount A출구까지 실제로 걸어보고, Catholic High는 남학교라는 점부터 아이의 학교 계획과 맞추세요.",
+      "en": "Family layouts and Shunfu errands provide a concrete reason to compare. Test the stroller route to Marymount Exit A and check whether the all-boys Catholic High actually fits the child’s school plan.",
+      "zh-CN": "家庭户型和Shunfu日常采购是具体比较理由。应推婴儿车试走Marymount A出口，并先确认男校Catholic High是否符合孩子的教育计划。"
+    },
+    "couple": {
+      "ko": "Marymount 통근과 Shunfu 식사를 자주 쓰면 일상의 장점을 누릴 수 있습니다. TEL이 더 맞는 직장이라면 Upper Thomson까지의 전체 길을 비교하고, 스마트홈 장치가 실제로 작동하는지도 보세요.",
+      "en": "Marymount commuting and Shunfu meals can make this practical for two. If work fits TEL better, compare the full Upper Thomson route and test the smart-home devices in the offered apartment.",
+      "zh-CN": "常从Marymount通勤、在Shunfu用餐，两人生活会较实用。若工作地更适合汤申—东海岸线，应比较到Upper Thomson的完整路线，并测试所售住宅的智能设备。"
+    },
+    "investor": {
+      "ko": "2018년 시작된 임차권과 실제 관리비를 기준으로 보유비를 잡아야 합니다. 출시 때의 스마트홈 설명에 값을 더하기 전에 계정 이전·장치 교체·구독 비용을 확인하세요.",
+      "en": "Base ownership costs on the lease from 2018 and the current unit bills. Before paying for launch-era smart-home promises, establish account transfer, device replacement and subscription costs.",
+      "zh-CN": "持有成本应根据2018年起算的地契和当前单位账单。为开盘时的智能家居宣传多付钱前，先确认账户转移、设备更换和订阅费用。"
+    },
+    "titlesZh": {
+      "transport:0": "需要无台阶路线时使用A出口",
+      "transport:1": "按目的地比较Marymount与Upper Thomson",
+      "schools:0": "Catholic High是设小学与中学部的男校",
+      "schools:1": "三公里驾车学校名单不是入学距离图",
+      "daily:0": "Shunfu是具体日常目的地",
+      "daily:1": "Thomson Plaza是另一段采购行程",
+      "costs:0": "从2018年起算地契，再核实账单",
+      "costs:1": "先看成交构成，再读每平方英尺单价"
+    }
+  }
+}

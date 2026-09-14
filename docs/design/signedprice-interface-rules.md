@@ -6,6 +6,7 @@ These rules extend SignedPrice's existing white/grey surfaces, dark typography a
 
 - Reuse colours, spacing and typography from `v2/apps/web/app/globals.css`. Standard controls use `--control-height` (48px), interactive targets have at least `--control-min` (44px), and controls use `--radius-control` (8px).
 - Use `--accent` for the primary action and `--accent-soft` for selected conditions. Pair selection colour with a label or accessible state.
+- Indicate selected controls with a subtle background and stronger text, without decorative blue bottom borders or inset shadows. Retain visible keyboard focus rings; section navigation may use a neutral underline.
 - Use the shared `AppliedFilters` component for removable query conditions. Removing one condition preserves unrelated conditions, resets pagination and clears a release identifier whose scope may have changed. Reset restores the documented default for the selected city/ward.
 - Keep main input text at 16px and regular control labels at 14px. Amounts use tabular numerals; long names may wrap.
 - Keep keyboard focus visible. Loading, empty results, missing publications and failed requests must remain distinguishable. Missing data must never become a zero price or zero transaction count.

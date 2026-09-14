@@ -18,6 +18,8 @@ import styles from './tokyo-explorer.module.css';
 import { tokyoText, tokyoHref, type TokyoLocale } from './tokyo-copy';
 import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
 import { DiscoveryReading } from '../discovery/discovery-reading';
+import { AreaDecisionWorkspace } from '../market-ui/area-decision-workspace';
+import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
 
 type Params = Record<string, string | string[] | undefined>;
 export default async function TokyoExplorer({ searchParams, locale = 'en' }: { searchParams: Promise<Params>; locale?: TokyoLocale }) {
@@ -89,10 +91,25 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
         : filters.minArea !== null ? `≥ ${filters.minArea} m²` : `≤ ${filters.maxArea} m²`,
       href: filterLink(['minArea', 'maxArea']) }] : []),
   ];
+  const selectedArea = !error && (query.has('city') || Boolean(filters.neighbourhood));
+  let priceContext: DecisionPriceContext | undefined;
+  // The median belongs to the same release and complete filtered cohort as the
+  // transaction table, including pinned superseded releases and free-text terms.
+  if (selectedArea && data && data.filteredCount > 0 && data.medianPrice !== null
+    && data.medianPrice !== undefined && Number.isFinite(data.medianPrice) && data.medianPrice > 0) {
+      priceContext = {
+        scope: 'area', label: `${filters.neighbourhood || wardName(scope.city)} · ${locale === 'ko' ? '지역 거래 중위가' : locale === 'zh-CN' ? '区域成交中位价' : 'area transaction median'}`,
+        currency: 'JPY', amount: data.medianPrice, count: data.filteredCount, period: `${data.scope.year} Q${data.scope.quarter}`, unit: 'total',
+        basis: `${typeLabel}${filters.minArea !== null || filters.maxArea !== null ? ` · ${filters.minArea ?? '0'}–${filters.maxArea ?? '∞'} ㎡` : ''}${filters.q ? ` · ${filters.q}` : ''}`,
+        sourceUrl: data.sourceUrl,
+        note: locale === 'ko' ? '거래 목록과 같은 공개본·필터의 전체 익명 거래입니다. 특정 건물이나 현재 매물의 가격은 아닙니다.' : locale === 'zh-CN' ? '这是与成交列表相同公开版本及筛选条件下的全部匿名成交，并非某栋楼或当前房源的价格。' : 'All anonymous sales from the same publication and filters as the transaction list. These are not prices for a named building or a current listing.',
+      };
+  }
   return <>
     <SiteHeader copy={{ ...homepageCopy.header, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', homeHref: locale === 'en' ? '/' : locale === 'ko' ? '/ko/' : '/zh-cn/', marketLabel: t('Tokyo'), links: [{ label: t('Explore'), href: href('/jp/tokyo/explore/'), isCurrent: true }] }} />
     <main className={styles.page}>
       {data && data.filteredCount > 0 && filters.neighbourhood && <RecordPlaceVisit place={{ market: 'tokyo', key: `${scope.city}/${filters.neighbourhood}`, name: `${filters.neighbourhood} · ${wardName(scope.city)}`, href: pageLink(filters.page) }} />}
+      <AreaDecisionWorkspace market="jp-tokyo" areaKey={selectedArea ? scope.city : ''} name={filters.neighbourhood ? `${filters.neighbourhood} · ${wardName(scope.city)}` : wardName(scope.city)} neighbourhood={filters.neighbourhood} priceContext={priceContext} locale={locale}>
       <MarketExploreShell eyebrow={t("Tokyo")} title={t("Explore")} period={`${wardName(scope.city)} · ${scope.year} Q${scope.quarter} · JPY`}
         history={<RecentPlaces market="tokyo" locale={locale} excludeKey={filters.neighbourhood ? `${scope.city}/${filters.neighbourhood}` : undefined} />}
         related={<DiscoveryReading market="tokyo" locale={locale} />}
@@ -164,6 +181,7 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
             filters={{ q: filters.q, neighbourhood: filters.neighbourhood, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />
         </Suspense>}
       />
+      </AreaDecisionWorkspace>
       <div className={styles.sourcePanel}>
       <details className={styles.method}><summary>{t('About these recorded prices')}</summary>
         <p>{t('These are completed transactions reported by area, not homes currently for sale. The source does not disclose building names, exact addresses or unit identities.')}</p>

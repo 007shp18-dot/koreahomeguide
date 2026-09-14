@@ -1,4 +1,5 @@
 import type { UraProjectLocation } from './project-location';
+import type { LocalizedDecisionPriceContext } from '../research/property-decision-fallback.server';
 import type {
   EvidenceDescriptor,
 } from '@signedprice/market-core';
@@ -63,6 +64,7 @@ export type SingaporeExploreModel = SingaporeUnavailableModel | Readonly<{
 }>;
 
 export type SingaporeInsufficientModel<Identity extends SingaporeSegmentSummary | SingaporeProjectSummary> = Readonly<{
+  fallbackPriceContext?: LocalizedDecisionPriceContext;
   status: 'insufficient';
   identity: Identity;
   count: number;

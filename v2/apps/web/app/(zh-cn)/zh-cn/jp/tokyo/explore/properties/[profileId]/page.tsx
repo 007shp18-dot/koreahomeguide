@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import {
-  PropertyReviewDetailPage,
+  renderPropertyReviewDetailWithPrice,
   namedPropertyMetadata,
   namedPropertyProfile,
   namedPropertyStaticParams,
@@ -20,5 +20,5 @@ export async function generateMetadata({ params }: NamedPropertyPageProps) {
 export default async function PropertyDetailPage({ params }: NamedPropertyPageProps) {
   const profile = namedPropertyProfile('jp-tokyo', (await params).profileId);
   if (!profile) notFound();
-  return <PropertyReviewDetailPage profile={profile} locale="zh-CN" />;
+  return renderPropertyReviewDetailWithPrice({ profile, locale: 'zh-CN' });
 }

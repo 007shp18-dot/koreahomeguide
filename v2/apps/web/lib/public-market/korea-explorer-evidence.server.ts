@@ -18,6 +18,8 @@ import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
 import type { KoreaProximityRepositoryState } from './korea-proximity-repository.server';
 import type { KoreaExploreProximitySelection } from './area-route-types';
 import { koreaBuildingMatchesProximity } from './korea-proximity-display.server';
+import { koreaDecisionPriceFallback, type LocalizedDecisionPriceContext } from '../research/property-decision-fallback.server';
+import { hasPropertyReviewForEntity } from '../research/property-review-locations';
 
 export const KOREA_EXPLORER_HOUSING_TYPES = Object.freeze([
   'all', 'apartment', 'officetel', 'villa_multifamily', 'detached',
@@ -121,6 +123,7 @@ export type KoreaExplorerProjectionOptions = Readonly<{
 }>;
 
 export type KoreaExplorerBuildingDetailModel = Readonly<{
+  fallbackPriceContext?: LocalizedDecisionPriceContext;
   status: 'ready';
   period: string;
   generatedAt: string;
@@ -137,7 +140,10 @@ export type KoreaExplorerBuildingDetailModel = Readonly<{
     state: 'published' | 'withheld' | 'unavailable';
     primaryMetric: 'deposit' | 'monthly-rent' | 'sale-price';
     sampleLabel: string;
+    count?: number;
     medianWon: number | null;
+    p25Won?: number | null;
+    p75Won?: number | null;
     medianLabel: string | null;
     middleHalfLabel: string | null;
     rangeLabel: string | null;
@@ -698,12 +704,18 @@ export function buildKoreaExplorerBuildingDetailModel(
       housingType: building.housingType,
     }),
     selection: Object.freeze({ ...requested, housingType: building.housingType }),
+    fallbackPriceContext: !primary.published && hasPropertyReviewForEntity(`kr-seoul:estate:${buildingId}`)
+      ? koreaDecisionPriceFallback({ district: districtSlug, buildingId, housingType: building.housingType, transaction: requested.transaction, areaBand: requested.areaBand, contractGroup: requested.contractGroup, repositories })
+      : undefined,
     evidence: Object.freeze({
       state: primary.n === 0 ? 'unavailable' as const
         : primary.published ? 'published' as const : 'withheld' as const,
       primaryMetric: building.primaryMetric,
       sampleLabel: `${primary.n} reported contract${primary.n === 1 ? '' : 's'}`,
+      count: primary.n,
       medianWon: primary.published ? primary.med : null,
+      p25Won: primary.published ? primary.p25 : null,
+      p75Won: primary.published ? primary.p75 : null,
       medianLabel: primary.published ? formatMoney(primary.med) : null,
       middleHalfLabel: primary.published
         ? `${formatMoney(primary.p25)}–${formatMoney(primary.p75)}`

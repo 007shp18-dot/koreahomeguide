@@ -28,7 +28,7 @@ describe('shared Japan Data Cache contract', () => {
     expect(mocks.coverage).toHaveBeenCalledTimes(2);
   });
   it('uses a 60-second bounded response cache shared by page and API without restamping source time', async () => {
-    expect(mocks.settings).toHaveBeenCalledWith(['jp-tokyo-published-transactions-v1'], { revalidate: 60 });
+    expect(mocks.settings).toHaveBeenCalledWith(['jp-tokyo-published-transactions-v2'], { revalidate: 60 });
     mocks.read.mockResolvedValue({ releaseId: 'published', retrievedAt: '2025-12-01T00:00:00Z', records: [] });
     await readCachedJapanPublication(scope, filters);
     expect((await readCachedJapanPublication({ ...scope }, { ...filters }))?.retrievedAt).toBe('2025-12-01T00:00:00Z');

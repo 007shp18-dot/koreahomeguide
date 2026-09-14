@@ -59,8 +59,10 @@ suite('Japan real PostgreSQL publication and failure modes', () => {
     const corrected = await publish(snapshot([source, { ...source, TradePrice: '95000000' }]));
     const current = await readJapanPublication(scope, filters, port);
     expect(current?.records.map(r => r.price)).toEqual([95000000, 85000000]);
+    expect(current?.medianPrice).toBe(90000000);
     const old = await readJapanPublication(scope, { ...filters, release: previous.releaseId }, port);
     expect(old?.records.map(r => r.price)).toEqual([90000000, 85000000, 85000000]);
+    expect(old?.medianPrice).toBe(85000000);
     const history = await db.query('SELECT previous_release_id FROM japan_area_releases WHERE id=$1', [corrected.releaseId]);
     expect(history.rows[0]?.previous_release_id).toBe(previous.releaseId);
   });
@@ -100,6 +102,26 @@ suite('Japan real PostgreSQL publication and failure modes', () => {
     expect(exact?.records.map(row => row.district)).toEqual(['Ebisu']);
     const search = await readJapanPublication(scope, { ...filters, q: 'Ebisu' }, port);
     expect(search?.filteredCount).toBe(3);
+  });
+  it('calculates the price median from every matching record, independently of pagination and excluded terms', async () => {
+    await publish(snapshot([
+      ...Array.from({ length: 30 }, (_, index) => ({ ...source, TradePrice: String((index + 1) * 1_000_000) })),
+      { ...source, TradePrice: '999000000', FloorPlan: '3LDK' },
+      { ...source, TradePrice: '888000000', DistrictName: 'Ebisu' },
+      { ...source, TradePrice: '777000000', Area: '90' },
+      { ...source, TradePrice: '666000000', Type: 'Residential Land(Land Only)' },
+    ]));
+    const selected = { ...filters, q: '2LDK', neighbourhood: 'Azabu', minArea: 60, maxArea: 80, type: source.Type };
+    const first = await readJapanPublication(scope, selected, port);
+    const second = await readJapanPublication(scope, { ...selected, page: 2, release: first!.releaseId }, port);
+    expect(first?.records).toHaveLength(20);
+    expect(second?.records).toHaveLength(10);
+    expect(first?.filteredCount).toBe(30);
+    expect(first?.medianPrice).toBe(15_500_000);
+    expect(second?.medianPrice).toBe(15_500_000);
+    const empty = await readJapanPublication(scope, { ...selected, q: 'No matching floor plan' }, port);
+    expect(empty?.filteredCount).toBe(0);
+    expect(empty?.medianPrice).toBeNull();
   });
   it('quarter-only records store JPY and disclosed area without creating any building or exact date', async () => {
     await publish(snapshot([{ ...source, Area: '2000 or greater' }]));

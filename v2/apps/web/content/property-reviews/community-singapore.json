@@ -1,0 +1,706 @@
+[
+  {
+    "id": "sg-community-cbd-weekend-routine",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-marina-one-residences",
+      "sg-the-sail-marina-bay",
+      "sg-one-shenton",
+      "sg-marina-bay-residences",
+      "sg-marina-bay-suites"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "출근이 짧아진 만큼 주말도 편할까",
+      "en": "Test the weekend you would actually live",
+      "zh-CN": "通勤短了，周末也方便吗"
+    },
+    "body": {
+      "ko": "CBD의 한산한 주말은 쉴 틈이 될 수도, 식사와 아이 일정을 위해 다시 나가야 하는 시간이 될 수도 있습니다. 평일 출근길과 주말 하루를 따로 비교하세요.",
+      "en": "A quiet CBD weekend can be restful or mean another trip for meals and children’s activities. Compare the working day with a whole weekend routine.",
+      "zh-CN": "CBD安静的周末可能适合休息，也可能需要外出吃饭、安排孩子活动。工作日与完整周末应分开比较。"
+    },
+    "visitQuestion": {
+      "ko": "일요일에 실제로 이용할 식사·장보기·아이 활동을 집에서 출발해 이어갈 수 있나요?",
+      "en": "Can you complete your Sunday meals, groceries and children’s activities starting from this home?",
+      "zh-CN": "从这套房出发，周日吃饭、采购和孩子活动能顺利衔接吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/askSingapore/comments/1nd14c7/why_does_nobody_want_to_live_in_the_city_centre/",
+        "title": "Why does nobody want to live in the City Centre?",
+        "publishedOn": "2025-09-10",
+        "inspectedOn": "2026-09-14",
+        "context": "Thread names Marina One, The Sail, One Shenton, Marina Bay Residences and Suites. Conflicting weekend and family accounts; identity, shop hours and outcomes unverified.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "sg-community-one-shenton-office-sightlines",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-one-shenton"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "창밖 조망과 맞은편 시선은 함께 보기",
+      "en": "Check who can see back through the view",
+      "zh-CN": "看景观，也看对面的视线"
+    },
+    "body": {
+      "ko": "One Shenton은 오피스 방향의 시선까지 보고 세대를 골라야 합니다. 낮에 탁 트여 보여도 밤에 불을 켠 침실의 프라이버시는 따로 확인할 문제입니다.",
+      "en": "At One Shenton, include office-facing sightlines in the unit viewing. An open daytime outlook does not settle bedroom privacy with the lights on.",
+      "zh-CN": "看One Shenton单位时，应把朝办公楼的视线纳入检查。白天视野开阔，不等于晚上开灯后卧室仍有隐私。"
+    },
+    "visitQuestion": {
+      "ko": "침대 위치에서 맞은편 사무실이 얼마나 보이고, 커튼을 열고 지낼 수 있나요?",
+      "en": "From the bed position, what can you see of the opposite offices, and can curtains stay open?",
+      "zh-CN": "从床的位置能看见多少对面办公室，平时能开着窗帘吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/askSingapore/comments/1nd14c7/why_does_nobody_want_to_live_in_the_city_centre/",
+        "title": "Why does nobody want to live in the City Centre?",
+        "publishedOn": "2025-09-10",
+        "inspectedOn": "2026-09-14",
+        "context": "A commenter says their SGX office faces One Shenton bedrooms. No stack identified; use only to inspect the offered unit, not assert a building-wide privacy defect.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "sg-community-tanjong-pagar-evening-loop",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-wallich-residence",
+      "sg-icon",
+      "sg-altez",
+      "sg-skysuites-at-anson"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "외식하기 좋은 동네와 쉬기 좋은 집",
+      "en": "Dinner nearby is only half the evening",
+      "zh-CN": "附近好吃，也要住得安稳"
+    },
+    "body": {
+      "ko": "Tanjong Pagar의 식당과 CBD 접근을 자주 쓰는 생활이라면 입지가 제값을 할 수 있습니다. 식사 후 돌아오는 길과 잠들 시간의 침실을 함께 보세요.",
+      "en": "Tanjong Pagar can earn its location premium when nearby meals and CBD trips are part of your routine. Test the return from dinner and the bedroom at bedtime.",
+      "zh-CN": "经常使用附近餐饮和CBD通勤，Tanjong Pagar的位置才更有价值。应一起测试晚饭回家路线和睡前卧室环境。"
+    },
+    "visitQuestion": {
+      "ko": "평소 먹을 저녁을 먹고 돌아왔을 때, 침실은 쉬기 편하고 집까지의 길은 부담 없나요?",
+      "en": "After your usual dinner nearby, is the walk home practical and the bedroom comfortable for sleep?",
+      "zh-CN": "在附近吃完平常的晚饭后，回家路线方便，卧室适合休息吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/askSingapore/comments/r0e1uj/im_moving_to_singapore_d_where_should_i_live/",
+        "title": "I’m moving to Singapore: where should I live?",
+        "publishedOn": "2021-11-23",
+        "inspectedOn": "2026-09-14",
+        "context": "Tanjong Pagar renters and commenters contrast dining access and CBD proximity with the feel of returning home. Historical neighbourhood context, no project-specific noise claim.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "sg-community-icon-repair-responsibility",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-icon"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "배관 수리가 집 안에서 끝나는지",
+      "en": "Find the boundary of the repair bill",
+      "zh-CN": "维修责任是否只在室内"
+    },
+    "body": {
+      "ko": "Icon의 기존 세대는 새 인테리어보다 배관·냉방 수리 이력을 먼저 받을 만합니다. 공용 배관까지 연결되는 문제라면 공사 범위와 책임 주체가 달라집니다.",
+      "en": "For an existing Icon unit, ask for plumbing and cooling repair history before judging the finishes. A problem reaching shared pipework changes both the scope and the responsible party.",
+      "zh-CN": "看Icon既有单位，应先查管道和空调维修记录，再看装修。问题若涉及公共管道，施工范围与责任方都会不同。"
+    },
+    "visitQuestion": {
+      "ko": "배관·에어컨 최근 수리 내역과 공용부로 넘어갈 때의 관리 주체를 서면으로 받을 수 있나요?",
+      "en": "Can you obtain recent plumbing and air-conditioning records and written responsibility for shared-system repairs?",
+      "zh-CN": "能否取得近期管道、空调维修记录，以及涉及公共系统时的书面责任说明？"
+    },
+    "sources": [
+      {
+        "url": "https://www.propertyguru.com.sg/singapore-condo-reviews/icon-75",
+        "title": "Icon: public user reviews",
+        "publishedOn": "2024-05-10",
+        "inspectedOn": "2026-09-14",
+        "context": "Repeat visitor values location but calls for maintenance. Read alongside the older unit-repair account; current conditions and repair responsibility require documents.",
+        "scope": "individual-experience"
+      },
+      {
+        "url": "https://www.propertyguru.com.sg/singapore-condo-reviews/icon-75",
+        "title": "Icon: public user reviews",
+        "publishedOn": "2022-06-29",
+        "inspectedOn": "2026-09-14",
+        "context": "Anonymous account describes bathroom/main-pipe repair and old cooling equipment; a 2023-11-19 review raises renewal. Unverified unit experiences, not current defects for all Icon homes.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "sg-community-altez-window-usable-space",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-altez"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "큰 창 사진보다 실제 침실 벽면",
+      "en": "Measure the bedroom beyond the window photo",
+      "zh-CN": "大窗照片之外，量真实卧室"
+    },
+    "body": {
+      "ko": "Altez에서는 창 옆 벽과 에어컨 실외기 공간이 가구 배치를 어떻게 바꾸는지 보세요. 전망이 좋아도 침대와 책상을 놓을 벽면이 부족하면 생활은 달라집니다.",
+      "en": "At Altez, inspect how wall sections and air-conditioning ledges affect the actual bedroom. A good outlook cannot replace the wall space needed for a bed and desk.",
+      "zh-CN": "看Altez时，应检查窗旁墙面和空调平台怎样影响实际卧室。景观再好，也不能代替摆床和书桌所需的墙面。"
+    },
+    "visitQuestion": {
+      "ko": "보려는 평면에 침대·책상을 놓으면 창과 출입문, 냉방 설비를 모두 편하게 쓸 수 있나요?",
+      "en": "With your bed and desk drawn in, can you still use the windows, doorway and cooling arrangement comfortably?",
+      "zh-CN": "放入自己的床和书桌后，窗、门和空调布置仍方便使用吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.propertyguru.com.sg/singapore-condo-reviews/altez-2651",
+        "title": "Altez: public user reviews",
+        "publishedOn": "2014-08-08",
+        "inspectedOn": "2026-09-14",
+        "context": "Historical viewing account identifies window/wall and air-conditioning-ledge geometry in some units. Only a plan-specific inspection prompt; no present universal design or condition assertion.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "sg-community-bugis-walkable-space-tradeoff",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-duo-residences",
+      "sg-midtown-modern",
+      "sg-midtown-bay",
+      "sg-south-beach-residences",
+      "sg-concourse-skyline"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "걸어서 아낀 시간과 집 안에서 포기한 공간",
+      "en": "Trade walking convenience against usable space",
+      "zh-CN": "步行便利，要和室内空间一起算"
+    },
+    "body": {
+      "ko": "Bugis·Beach Road에서 생활을 걸어서 해결할 수 있어도 좁은 집의 불편이 사라지지는 않습니다. 재택근무나 가족 계획이 있다면 같은 예산의 넓은 대안과 함께 보세요.",
+      "en": "A walkable Bugis–Beach Road routine does not remove the compromise of a compact home. Compare a roomier alternative at the same budget if home working or family growth matters.",
+      "zh-CN": "Bugis—Beach Road日常可步行解决，也不会消除小户型的局限。重视居家办公或家庭增员，应比较同预算更宽敞的选择。"
+    },
+    "visitQuestion": {
+      "ko": "출퇴근에서 아낀 시간만큼 책상·수납·아이 공간을 줄여도 괜찮은가요?",
+      "en": "Is the commute time saved worth the desk, storage or children’s space you would give up?",
+      "zh-CN": "节省的通勤时间，值得换掉书桌、收纳或孩子空间吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/askSingapore/comments/1mbc39n/how_much_rent_are_you_paying_in_sg/",
+        "title": "How much rent are you paying in SG?",
+        "publishedOn": "2025-07-28",
+        "inspectedOn": "2026-09-14",
+        "context": "Bugis renter values walking but considers moving farther out for space. Building unnamed: regional comparison only, not a review of any mapped project; rent figure excluded.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "sg-community-plq-real-shopping-loop",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-park-place-plq"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "몰 하나로 장보기가 끝나는지",
+      "en": "Can one mall finish the grocery trip?",
+      "zh-CN": "一个商场能买齐日常所需吗"
+    },
+    "body": {
+      "ko": "PLQ의 편리함은 매장 수보다 실제로 사는 물건과 식사를 해결할 수 있는지에 달렸습니다. 몰 사이를 옮겨 다녀야 한다면 주말 역 앞 보행까지 포함해 보세요.",
+      "en": "PLQ’s convenience depends on the shops you actually use. If the errand needs several malls, include the weekend station-front walk in the comparison.",
+      "zh-CN": "PLQ是否方便，取决于自己实际使用的商户。采购若要跨几个商场，也应把周末车站前的步行算进去。"
+    },
+    "visitQuestion": {
+      "ko": "평소 장바구니를 채우고 식사하려면 어느 몰까지 가며, 주말에도 같은 동선이 편한가요?",
+      "en": "Which malls complete your usual shopping and meal, and does that route still work at weekends?",
+      "zh-CN": "买齐平常物品并吃饭要走到哪些商场，周末这条路线仍方便吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/askSingapore/comments/1n36iea/plq_mall_whats_happening_all_stores_are_leaving/",
+        "title": "PLQ mall: stores leaving or empty?",
+        "publishedOn": "2025-08-29",
+        "inspectedOn": "2026-09-14",
+        "context": "Public thread debates tenant changes, mall-hopping and conflicting crowd experiences. No vacancy rate, spending estimate or present crowd claim is adopted.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "sg-community-river-valley-daytime-noise",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-martin-modern",
+      "sg-rivergate",
+      "sg-the-trillium"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "강변의 저녁과 재택근무 시간은 다르다",
+      "en": "Visit River Valley during the working day",
+      "zh-CN": "河边晚景，不等于白天居家环境"
+    },
+    "body": {
+      "ko": "River Valley에서 조용한 집을 찾는다면 저녁 산책만으로 판단하기 어렵습니다. 평일 낮의 주변 공사·청소·차량 소리를 실제 방에서 듣고 수면이나 업무 시간과 맞춰보세요.",
+      "en": "An evening walk is a poor substitute for a daytime viewing in River Valley. Listen inside the room during your work or sleep hours, including nearby works and servicing.",
+      "zh-CN": "想在River Valley找安静住宅，晚间散步不能代替白天看房。应在工作或睡眠时段进房试听，包括周边施工与服务车辆。"
+    },
+    "visitQuestion": {
+      "ko": "재택근무나 아이 낮잠 시간에 방문하면 실제 침실에서 어떤 소리가 들리나요?",
+      "en": "What can you hear inside the bedroom during home-working or the child’s nap time?",
+      "zh-CN": "居家办公或孩子午睡时，实际卧室能听到哪些声音？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/singapore/comments/r7cxbc/top_4_noisiest_neighbourhoods_in_singapore/",
+        "title": "Top 4 Noisiest Neighbourhoods in Singapore: public discussion",
+        "publishedOn": "2021-12-02",
+        "inspectedOn": "2026-09-14",
+        "context": "A comment names Orchard/River Valley construction and servicing noise. Old regional anecdote, not a current noise ranking or measured defect in the three mapped homes.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "area-context"
+  },
+  {
+    "id": "sg-community-river-valley-current-gate-route",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-martin-modern",
+      "sg-rivergate",
+      "sg-the-trillium"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "Great World까지 지도 거리보다 현관 경로",
+      "en": "Start the Great World walk at your door",
+      "zh-CN": "去Great World，要从家门开始走"
+    },
+    "body": {
+      "ko": "같은 River Valley에서도 출입문과 햇빛을 피할 길에 따라 역까지의 체감이 달라질 수 있습니다. 유모차나 장바구니를 가지고 보려는 동에서 직접 걸어보세요.",
+      "en": "Within River Valley, gates and shelter can change how a station walk feels. Test the offered block’s route with the stroller or groceries you would normally carry.",
+      "zh-CN": "同在River Valley，出入口和遮阳避雨路线会改变去车站的感受。应带着平时的婴儿车或采购袋，从所看楼栋实走。"
+    },
+    "visitQuestion": {
+      "ko": "선택한 동에서 Great World 개찰구까지 비를 피할 길과 계단 없는 길이 이어지나요?",
+      "en": "From the chosen block to Great World faregates, where do shelter and step-free access stop?",
+      "zh-CN": "从所选楼栋到Great World闸机，遮蔽和无台阶路线分别在哪里中断？"
+    },
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/askSingapore/comments/1qyf3jx/is_valley_park_a_good_condo_in_river_valley/",
+        "title": "Is Valley Park a good condo in River Valley?",
+        "publishedOn": "2026-02-07",
+        "inspectedOn": "2026-09-14",
+        "context": "Valley Park thread disagrees over Great World distance and exposed walking. Neighbourhood route-check principle only; its times, layout and fees are not transferred to other projects.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "comparable-setting"
+  },
+  {
+    "id": "sg-community-keppel-waterfront-errands",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-reflections-at-keppel-bay",
+      "sg-corals-at-keppel-bay"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "물가를 누리는 집과 매일 나가는 집",
+      "en": "Separate waterfront leisure from daily departures",
+      "zh-CN": "滨水休闲与每天出门分开看"
+    },
+    "body": {
+      "ko": "Keppel Bay에서는 산책의 만족과 출근·식사 때 이동 부담을 함께 비교해야 합니다. Reflections와 Corals의 출입구가 다르므로 한쪽 경험을 다른 쪽의 도보 시간으로 쓰지 마세요.",
+      "en": "At Keppel Bay, weigh waterfront time against work and meal departures. Reflections and Corals have different gates; test each rather than transferring one project’s journey to the other.",
+      "zh-CN": "在Keppel Bay，应把滨水时间与上班、外出吃饭的负担一起比较。Reflections和Corals出入口不同，两处都要实走，不能互套路程。"
+    },
+    "visitQuestion": {
+      "ko": "차 없이 퇴근하고 장을 봐서 돌아오는 날에도 이 출입구와 이동 방식이 편한가요?",
+      "en": "Does this gate and transport plan work when you return from work with groceries and no car?",
+      "zh-CN": "不驾车、下班买菜回来时，这个出入口和交通安排仍方便吗？"
+    },
+    "sources": [
+      {
+        "url": "https://forums.hardwarezone.com.sg/threads/reflections-at-keppel-bay.6374209/page-3",
+        "title": "Reflections at Keppel Bay: HardwareZone discussion, page 3",
+        "publishedOn": "2020-09-15",
+        "inspectedOn": "2026-09-14",
+        "context": "Post #56 debates waterfront identity versus car/public-transport dependence. Corals receives only a shared waterfront comparison question; no claim its distance equals Reflections. Old discussion.",
+        "scope": "public-discussion"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "comparable-setting"
+  },
+  {
+    "id": "sg-community-interlace-shuttle-fallback",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-the-interlace"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "셔틀이 없는 시간에도 돌아올 수 있는지",
+      "en": "Plan the trip when the shuttle is unavailable",
+      "zh-CN": "接驳车不运行时怎样回家"
+    },
+    "body": {
+      "ko": "Interlace의 넓은 부지를 선택한다면 셔틀이 생활을 얼마나 떠받치는지 알아야 합니다. 과거 운행 설명만으로 결정하지 말고 늦은 귀가와 아이 픽업의 대체 동선을 잡으세요.",
+      "en": "If you choose Interlace for its grounds, establish how much the routine depends on a shuttle. Obtain current arrangements and a workable late-return or school-pickup alternative.",
+      "zh-CN": "选择Interlace的园区空间，也要弄清日常多依赖接驳车。应查当前安排，并落实晚归或接孩子时的替代路线。"
+    },
+    "visitQuestion": {
+      "ko": "현재 셔틀 이용 조건·막차를 받을 수 있고, 놓쳤을 때도 귀가 동선이 감당되나요?",
+      "en": "Can you obtain current shuttle eligibility and last service, and manage the return if you miss it?",
+      "zh-CN": "能否取得当前接驳资格和末班时间，错过后仍能方便回家吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.propertyguru.com.sg/singapore-condo-reviews/the-interlace-1574",
+        "title": "The Interlace: public user reviews",
+        "publishedOn": "2017-12-15",
+        "inspectedOn": "2026-09-14",
+        "context": "Older self-described experience contrasts grounds with MRT walk and shuttle. Present service, times and access are unverified; no historic timetable adopted.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "sg-community-interlace-facility-access",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-the-interlace"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "시설이 많은 것과 쓸 수 있는 것은 별개",
+      "en": "Check availability beyond the facilities list",
+      "zh-CN": "设施多，还要预约得到"
+    },
+    "body": {
+      "ko": "Interlace의 코트·헬스장·모임 공간은 쓰려는 시간에 이용할 수 있어야 매수 이유가 됩니다. 별도 대관료와 예약 제한을 현재 규정으로 받아보세요.",
+      "en": "Interlace’s shared spaces matter when available at your usual time. Obtain current booking limits and separate room charges before counting them as part of everyday living.",
+      "zh-CN": "Interlace的公共空间，要在自己常用时段能用才有意义。应取得当前预约限制与单独场地费，再算进日常便利。"
+    },
+    "visitQuestion": {
+      "ko": "퇴근 후 헬스장과 주말 모임 공간의 예약 화면·추가 요금을 보여줄 수 있나요?",
+      "en": "Can you see after-work gym access, weekend room availability and any extra charges?",
+      "zh-CN": "能否查看下班后的健身使用、周末房间预约情况和额外费用？"
+    },
+    "sources": [
+      {
+        "url": "https://www.propertyguru.com.sg/singapore-condo-reviews/the-interlace-1574",
+        "title": "The Interlace: public user reviews",
+        "publishedOn": "2017-05-27",
+        "inspectedOn": "2026-09-14",
+        "context": "Old individual review pairs family facilities with gym crowding and a separate function-room charge. Old amounts and hours excluded; check present rules.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "sg-community-seaside-windows-and-errands",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-seaside-residences"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "바다를 보며 창을 열고 지낼 수 있는지",
+      "en": "Test the sea view with the window open",
+      "zh-CN": "看海时，窗能舒服地开着吗"
+    },
+    "body": {
+      "ko": "Seaside에서는 바다 조망과 창을 열었을 때의 교통 소리를 함께 판단하세요. 산책이 편한 선택이 장보기까지 편하다는 뜻은 아니므로 귀가 동선도 따로 걸어볼 만합니다.",
+      "en": "At Seaside, judge the sea view alongside traffic sound with windows open. Test the grocery return separately from the leisure walk.",
+      "zh-CN": "在Seaside，应把海景与开窗后的交通声音一起判断。采购回程也应单独实走，不能用休闲散步代替。"
+    },
+    "visitQuestion": {
+      "ko": "침실 창을 열어도 편히 지낼 수 있고, 장바구니를 든 귀가도 무리가 없나요?",
+      "en": "Can you comfortably use the bedroom with its window open and return with your usual grocery bags?",
+      "zh-CN": "卧室开窗仍住得舒服吗，拎平常采购袋回家是否方便？"
+    },
+    "sources": [
+      {
+        "url": "https://www.propertyguru.com.sg/singapore-condo-reviews/seaside-residences-22939",
+        "title": "Seaside Residences: public user reviews",
+        "publishedOn": "2026-08-29",
+        "inspectedOn": "2026-09-14",
+        "context": "Public account mentions sea-facing living, variable traffic sound and delivery dependence. Author has many reviews; residency and independence cannot be authenticated. Questions only.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "sg-community-jadescape-entry-system",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-jadescape"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "스마트 출입은 시연으로 확인",
+      "en": "Try the full access system",
+      "zh-CN": "把整套门禁实际试一遍"
+    },
+    "body": {
+      "ko": "JadeScape의 스마트 기능은 기기 목록보다 실제 귀가 동선으로 확인하는 편이 낫습니다. 옆문·로비·인터폰이 연결되는지와 장애 때의 대체 출입을 함께 물어보세요.",
+      "en": "At JadeScape, test smart access through the actual homecoming route. Check side gates, lobby and intercom together, including the fallback when a device is unavailable.",
+      "zh-CN": "看JadeScape的智能门禁，应沿实际回家路线测试。侧门、大堂与对讲要连起来试，也要问设备不能使用时的替代进入方式。"
+    },
+    "visitQuestion": {
+      "ko": "매수 후 계정 이전과 방문객 호출을 시연하고, 장애 접수·대체 출입 절차도 받을 수 있나요?",
+      "en": "Can account transfer and visitor calling be demonstrated, with written fault reporting and backup entry procedures?",
+      "zh-CN": "能否演示账户转移和访客呼叫，并提供故障报修与备用进入流程？"
+    },
+    "sources": [
+      {
+        "url": "https://www.propertyguru.com.sg/singapore-condo-reviews/jadescape-23491",
+        "title": "JadeScape: public user reviews",
+        "publishedOn": "2024-10-15",
+        "inspectedOn": "2026-09-14",
+        "context": "Positive facilities account also mentions gate breakdowns. Other old complaints are unverified and not republished; no claim an access fault persists today.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "sg-community-jadescape-facing-choice",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-jadescape"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple"
+    ],
+    "title": {
+      "ko": "같은 평면도 도로 방향이면 다시 보기",
+      "en": "Compare inward and road-facing rooms",
+      "zh-CN": "同户型也要区分内向与临路"
+    },
+    "body": {
+      "ko": "JadeScape의 평면이 마음에 들어도 방향을 바꾸면 창을 여는 생활은 달라질 수 있습니다. 아이 방이나 업무 공간을 놓을 위치에서 도로 쪽과 안쪽 세대를 비교하세요.",
+      "en": "Even with a suitable JadeScape plan, facing can change open-window comfort. Compare road-facing and inward rooms at the child’s bed or desk position.",
+      "zh-CN": "JadeScape户型合适，朝向仍可能改变开窗舒适度。应在孩子床位或书桌位置，比较临路与朝内房间。"
+    },
+    "visitQuestion": {
+      "ko": "고를 침실에서 창을 열고 닫아 들어봤으며, 다른 방향의 같은 평면과 비교했나요?",
+      "en": "Have you listened with the chosen bedroom window open and closed, and compared the same plan on another facing?",
+      "zh-CN": "是否在所选卧室开关窗试听，并与另一朝向的相同户型比较过？"
+    },
+    "sources": [
+      {
+        "url": "https://www.propertyguru.com.sg/singapore-condo-reviews/jadescape-23491",
+        "title": "JadeScape: public user reviews",
+        "publishedOn": "2025-02-01",
+        "inspectedOn": "2026-09-14",
+        "context": "Individual review praises layout/facilities while preferring non-road-facing units for noise/dust. School distance and walking-minute claims not adopted.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "sg-community-d-leedon-actual-facility-use",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-d-leedon"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "대단지라는 말보다 내 시간의 시설",
+      "en": "Judge the estate at your own hours",
+      "zh-CN": "大项目，也要在自己用的时间看"
+    },
+    "body": {
+      "ko": "D’Leedon의 시설 규모만으로 붐빔이나 조용함을 정할 수는 없습니다. 고를 동의 낮은 층과 자주 쓸 공용부를 같은 시간에 봐야 생활의 이점과 소리의 부담을 함께 알 수 있습니다.",
+      "en": "D’Leedon’s scale does not settle crowding or quiet. View the chosen lower-floor room and your regular shared spaces at the same time to judge both usefulness and sound.",
+      "zh-CN": "D’Leedon规模大，不能直接推断拥挤或安静。应在同一常用时段看所选低楼层房间与公共设施，同时判断好用程度和声音。"
+    },
+    "visitQuestion": {
+      "ko": "아이 놀이·수영 시간에 집 안에서는 무엇이 들리고, 실제 시설 예약은 가능한가요?",
+      "en": "During children’s play or swimming hours, what reaches the room, and are your intended facilities bookable?",
+      "zh-CN": "孩子玩耍、游泳时，房内听到什么，自己要用的设施能预约吗？"
+    },
+    "sources": [
+      {
+        "url": "https://www.propertyguru.com.sg/singapore-condo-reviews/d-leedon-former-farrer-court-20575",
+        "title": "d’Leedon: public user reviews",
+        "publishedOn": "2024-08-10",
+        "inspectedOn": "2026-09-14",
+        "context": "Self-described resident reports refurbished facilities and less crowding; another 2024-11-21 account distinguishes facing. Neither current condition nor crowding independently verified.",
+        "scope": "individual-experience"
+      },
+      {
+        "url": "https://www.propertyguru.com.sg/singapore-condo-reviews/d-leedon-former-farrer-court-20575",
+        "title": "d’Leedon: public user reviews",
+        "publishedOn": "2020-07-15",
+        "inspectedOn": "2026-09-14",
+        "context": "Individual account praises extensive facilities but notes low-floor noise. A separate 2016 account found facilities uncrowded. Historical mixed experiences, not today’s crowd level.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  },
+  {
+    "id": "sg-community-parc-esta-peak-facilities",
+    "marketId": "sg-singapore",
+    "profileIds": [
+      "sg-parc-esta"
+    ],
+    "areaKeys": [],
+    "personas": [
+      "family",
+      "couple",
+      "investor"
+    ],
+    "title": {
+      "ko": "헬스장과 모임 공간은 퇴근 후에 보기",
+      "en": "Test Parc Esta after work",
+      "zh-CN": "下班后再看Parc Esta设施"
+    },
+    "body": {
+      "ko": "Parc Esta의 시설은 평일 낮에 둘러보는 것만으로 쓰임을 알기 어렵습니다. 퇴근 후 헬스장과 주말 모임 공간이 실제로 가능한지 먼저 확인하세요.",
+      "en": "A quiet daytime tour cannot establish how Parc Esta’s facilities fit your week. Check the gym after work and room availability for the weekend you would actually use.",
+      "zh-CN": "工作日白天安静地参观，不能说明Parc Esta设施是否适合自己的日程。应看下班后健身使用和实际需要的周末房间预约。"
+    },
+    "visitQuestion": {
+      "ko": "평소 운동 시간의 헬스장과 모임 공간 예약·취소 규정을 현재 화면으로 볼 수 있나요?",
+      "en": "Can you inspect the gym at your usual hour and see current room-booking and cancellation rules?",
+      "zh-CN": "能否在平时运动时间看健身房，并查看当前房间预约、取消规则？"
+    },
+    "sources": [
+      {
+        "url": "https://stackedhomes.com/ive-lived-at-parc-esta-at-eunos-for-4-months-heres-my-review-of-what-this-new-mega-development-is-like/",
+        "title": "Parc Esta: four-month resident interview",
+        "publishedOn": "2023-07-04",
+        "inspectedOn": "2026-09-14",
+        "context": "Published resident interview describes gym crowding and limited dining-room slots. This is an interview, not a forum sample; current occupancy and rules remain unverified.",
+        "scope": "individual-experience"
+      }
+    ],
+    "evidenceKind": "community-anecdote",
+    "mappingScope": "named-property"
+  }
+]
