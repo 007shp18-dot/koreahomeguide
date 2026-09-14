@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useId, useMemo, useState, useSyncExternalStore } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import type { LivingContext } from '../../lib/research/living-context';
 import type { ReviewPoint, ReviewText } from '../../lib/research/property-review';
@@ -60,18 +60,29 @@ export function LivingContextCard({profile:p,locale,alternatives=[],embedded=fal
 export function PropertyLivingContext({entity,profileId,locale}: {entity?:string;profileId?:string;locale:MarketLocale}) {
   const key=profileId??entity??'';
   const enabled=profileId?Boolean(reviewLocation(profileId)):Boolean(entity&&hasPropertyReviewForEntity(entity));
+  const disclosure=useRef<HTMLDetailsElement>(null);
+  const [opened,setOpened]=useState(false);
   const [result,setResult]=useState<{key:string;profiles:LivingContext[];failed:boolean}|null>(null);
   useEffect(()=>{
-    if(!enabled)return;
+    const reveal=()=>{if(window.location.hash==='#property-review'&&disclosure.current){disclosure.current.open=true;setOpened(true);}};
+    reveal();
+    window.addEventListener('hashchange',reveal);
+    return()=>window.removeEventListener('hashchange',reveal);
+  },[key]);
+  useEffect(()=>{
+    if(!enabled||!opened)return;
     const controller=new AbortController();
     const query=profileId?`profile=${encodeURIComponent(profileId)}`:`entity=${encodeURIComponent(entity!)}`;
     fetch(`/api/living-context/?${query}`,{signal:controller.signal}).then(async r=>{if(!r.ok)throw new Error('unavailable');return r.json();}).then(data=>setResult({key,profiles:data.profiles,failed:data.status!=='ready'})).catch(()=>{if(!controller.signal.aborted)setResult({key,profiles:[],failed:true});});
     return()=>controller.abort();
-  },[entity,profileId,key,enabled]);
+  },[entity,profileId,key,enabled,opened]);
   if(!enabled)return null;
-  return <section id="property-review" className={styles.inline} aria-label={copy(locale,'입지·생활 분석','Location & living','区位与生活')}>
+  return <details ref={disclosure} id="property-review" className={styles.inline} onToggle={event=>{if(event.currentTarget.open)setOpened(true);}}>
+    <summary className={styles.analysisEntry}>{copy(locale,'단지 분석 읽기','Read the property analysis','阅读项目分析')} <span>{copy(locale,'비교 단지와 매수 판단의 쟁점','Comparables and the buying decision','可比项目与购买判断')}</span></summary>
+    {opened && <div>
     {!result||result.key!==key?<p className={styles.meta} role="status">{copy(locale,'단지 리뷰 확인 중…','Loading property review…','正在加载住宅评估…')}</p>:result.failed?<p role="status" className={styles.note}>{copy(locale,'분석을 불러오지 못했습니다. 잠시 후 페이지를 새로고침해 주세요.','The review could not be loaded. Please refresh this page shortly.','评估暂时无法加载，请稍后刷新页面。')}</p>:!result.profiles.length?<p className={styles.meta}>{copy(locale,'이 단지의 분석이 아직 게시되지 않았습니다.','This property review has not been published yet.','该住宅评估尚未发布。')}</p>:result.profiles.map(p=><LivingContextCard key={p.id} profile={p} locale={locale} embedded/>)}
-  </section>;
+    </div>}
+  </details>;
 }
 
 export function SavedPropertyReviews({locale}: {locale:MarketLocale}) {

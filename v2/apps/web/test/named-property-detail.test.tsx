@@ -61,7 +61,7 @@ describe('named property details in Explore', () => {
     const html = renderToStaticMarkup(<PropertyReviewDetailPage profile={profile} locale="ko" />);
     expect(html).toMatch(/\/ko\/ae\/dubai\/explore\/?\?stage=off-plan&amp;area=al-hebiah-first&amp;project=4327-apartment-off-plan/);
     expect(html).toContain('이 프로젝트의 거래 요약');
-    expect(html).toContain('입지·생활 분석');
+    expect(html).toContain('단지 분석');
   });
 
   it('keeps completed projects in the Ready cohort', () => {
