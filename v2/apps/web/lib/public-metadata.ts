@@ -1,3 +1,4 @@
+import { isContentIndexable, indexableLanguageAlternates } from './seo/content-index-policy';
 import { languageDestinations } from './navigation/site-navigation';
 import type { Metadata } from 'next';
 import type { EditorialPortfolioRecord } from '../content/portfolio-types';
@@ -106,7 +107,7 @@ export function indexableMetadata({
     const routes = languageDestinations(path);
     if (routes.en && routes.ko) languageAlternates = { en: routes.en as `/${string}`, ko: routes.ko as `/${string}`, ...(routes['zh-CN'] ? { 'zh-Hans': routes['zh-CN'] as `/${string}` } : {}) };
   }
-  const languages = languageAlternates == null ? undefined : {
+  const languages = languageAlternates == null ? undefined : indexableLanguageAlternates({
     en: publicCanonical(languageAlternates.en),
     ...(languageAlternates.ko === undefined ? {} : {
       ko: publicCanonical(languageAlternates.ko),
@@ -115,7 +116,7 @@ export function indexableMetadata({
       'zh-Hans': publicCanonical(languageAlternates['zh-Hans']),
     }),
     'x-default': publicCanonical(languageAlternates.en),
-  };
+  });
   const canonical = publicCanonical(path);
   // Locale routes historically supplied /og/en/, /og/ko/ or /og/zh/.
   // Share the current four-city brand card while preserving custom article images.
@@ -125,7 +126,7 @@ export function indexableMetadata({
   return {
     title,
     description,
-    robots: { index: true, follow: true },
+    robots: { index: isContentIndexable(path), follow: true },
     alternates: {
       canonical,
       ...(languages === undefined ? {} : { languages }),

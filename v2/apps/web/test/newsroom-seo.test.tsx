@@ -4,15 +4,16 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 
 import sitemap from '../app/sitemap';
+import { isContentIndexable } from '../lib/seo/content-index-policy';
 import { PublicEditorialJsonLd } from '../components/public-json-ld';
 import { EDITORIAL_PORTFOLIO } from '../content/portfolio-manifest';
 import { editorialLanguageAlternates } from '../lib/public-metadata';
 import { signedPricePublicRouteRegistry } from '../lib/seo/public-route-registry.server';
 
 describe('Newsroom and Guide SEO release contract', () => {
-  it('publishes every reviewed portfolio canonical and no legacy editorial route', () => {
+  it('publishes every indexable portfolio canonical and no legacy editorial route', () => {
     const urls = sitemap().map(({ url }) => url);
-    const activeRecords = EDITORIAL_PORTFOLIO.filter(record => record.slug !== 'compare-seoul-district-prices');
+    const activeRecords = EDITORIAL_PORTFOLIO.filter(record => record.slug !== 'compare-seoul-district-prices' && isContentIndexable(record.canonicalHref));
     expect(urls).not.toContain('https://www.signedprice.com/guides/compare-seoul-district-prices/');
     for (const record of activeRecords) {
       expect(urls).toContain(`https://www.signedprice.com${record.canonicalHref}`);

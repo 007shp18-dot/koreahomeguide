@@ -8,6 +8,7 @@ vi.mock('server-only', () => ({}));
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import Home from '../app/(en)/page';
 import sitemap from '../app/sitemap';
+import { isContentIndexable } from '../lib/seo/content-index-policy';
 import { generateStaticParams as marketStaticParams } from '../app/(en)/[country]/[city]/page';
 import { generateStaticParams as intentStaticParams } from '../app/(en)/[country]/[city]/[intent]/page';
 import { metadata as proofMetadata } from '../app/(en)/kr/seoul/tools/rent-check/page';
@@ -41,7 +42,7 @@ import { dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-re
 const neighbourhoodCanonicalUrls = NEIGHBOURHOOD_STORIES.flatMap(({ slug }) => ['', '/ko'].map(locale => `https://www.signedprice.com${locale}${neighbourhoodHref(slug)}`));
 
 const period = '2026-01/2026-07';
-const portfolioUrls = EDITORIAL_PORTFOLIO.filter(record => record.slug !== 'compare-seoul-district-prices').map(({ canonicalHref }) => `https://www.signedprice.com${canonicalHref}`);
+const portfolioUrls = EDITORIAL_PORTFOLIO.filter(record => isContentIndexable(record.canonicalHref)).filter(record => record.slug !== 'compare-seoul-district-prices').map(({ canonicalHref }) => `https://www.signedprice.com${canonicalHref}`);
 
 // Published Korean hubs and translated market research are independent of Seoul evidence.
 const koreanPublishedHubUrls = [
@@ -389,7 +390,6 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/zh-cn/news/',
       'https://www.signedprice.com/zh-cn/guides/',
       'https://www.signedprice.com/zh-cn/',
-      'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',
       'https://www.signedprice.com/contact/',
@@ -555,7 +555,6 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/zh-cn/news/',
       'https://www.signedprice.com/zh-cn/guides/',
       'https://www.signedprice.com/zh-cn/',
-      'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',
       'https://www.signedprice.com/contact/',
@@ -612,7 +611,6 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/zh-cn/news/',
       'https://www.signedprice.com/zh-cn/guides/',
       'https://www.signedprice.com/zh-cn/',
-      'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',
       'https://www.signedprice.com/contact/',

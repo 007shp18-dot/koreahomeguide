@@ -1,3 +1,4 @@
+import { isContentIndexable, indexableLanguageAlternates } from '../lib/seo/content-index-policy';
 import { propertyReviewPaths } from '../lib/research/property-review-metadata';
 import 'server-only';
 import { resourceParams, regionalResourceHref } from '../content/regional-guide-resources';
@@ -86,14 +87,14 @@ function languageAlternates(
   ));
   if (pair === undefined) return undefined;
   return {
-    languages: {
+    languages: indexableLanguageAlternates({
       en: publicCanonical(pair.en),
       ...(pair.ko === undefined ? {} : { ko: publicCanonical(pair.ko) }),
       ...(pair['zh-Hans'] === undefined ? {} : {
         'zh-Hans': publicCanonical(pair['zh-Hans']),
       }),
       'x-default': publicCanonical(pair.en),
-    },
+    }),
   };
 }
 
@@ -324,5 +325,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
         buildingLastModified,
       )));
   }
-  return entries;
+  return entries.filter(({ url }) => isContentIndexable(url));
 }
