@@ -23,7 +23,7 @@ describe('reviewed rankings', () => {
  it('renders database Date values for source timestamps',()=>{
   const row = {...rows.find(r=>r.city==='seoul'&&r.order==='highest')!, source_as_of: new Date('2026-09-11T00:00:00.000Z')};
   const html = renderToStaticMarkup(<ContractRankings rows={[row]} city="seoul" kind="sale"/>);
-  expect(html).toContain('Source collected: 2026-09-11');
+  expect(html).toContain('Source collected: 11 September 2026');
  });
  it('validates cohorts and keeps the source month independent of cohort filtering',()=>{
   const c=resolveRentCohort('singapore',{area:"invalid'",beds:'100',deposit:'invalid'});

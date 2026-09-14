@@ -2138,6 +2138,11 @@
   .buildingDialogBody { padding: .85rem; }
 }
 
+.explorer > [data-discovery-reading] {
+  width: min(calc(100% - 2 * var(--page-gutter)), var(--workspace-frame));
+  margin-inline: auto;
+}
+
 .buyingGuide {
   width: min(100%, var(--evidence-workspace-frame));
   margin: 0 auto;

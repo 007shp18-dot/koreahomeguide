@@ -40,12 +40,18 @@ WITH condo_projects AS (
  )
 ), months AS MATERIALIZED (
  SELECT dataset_id,date_trunc('month',max(observed_at)) AS month FROM eligible GROUP BY dataset_id
+), monthly_contracts AS (
+ SELECT e.*,
+ row_number() OVER (PARTITION BY e.dataset_id,e.subject_entity_id ORDER BY ranking_amount DESC,observed_at DESC,id) AS property_position,
+ count(*) OVER (PARTITION BY e.dataset_id) AS eligible_contracts,
+ max(fetched_at) OVER (PARTITION BY e.dataset_id) AS dataset_source_as_of
+ FROM eligible e JOIN months m ON e.dataset_id=m.dataset_id AND date_trunc('month',e.observed_at)=m.month
 ), ranked AS (
  SELECT e.*, rank() OVER (PARTITION BY e.dataset_id ORDER BY ranking_amount DESC) AS rank,
  row_number() OVER (PARTITION BY e.dataset_id ORDER BY ranking_amount DESC,observed_at DESC,id) AS position,
- count(*) OVER (PARTITION BY e.dataset_id) AS sample,
- max(fetched_at) OVER (PARTITION BY e.dataset_id) AS source_as_of
- FROM eligible e JOIN months m ON e.dataset_id=m.dataset_id AND date_trunc('month',e.observed_at)=m.month
+ eligible_contracts AS sample,
+ dataset_source_as_of AS source_as_of
+ FROM monthly_contracts e WHERE property_position=1
 )
 SELECT dataset_id,city,kind,id::text,rank::integer,position::integer,sample::integer,name,
  to_char(observed_at,'YYYY-MM') AS month,source_as_of,

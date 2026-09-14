@@ -9,7 +9,7 @@ const readRankings = unstable_cache(async (order: RankingOrder) => {
  if (!sql) throw new Error('Ranking data unavailable');
  const rows = await sql.query(contractRankingSql(order)) as ContractRankingRow[];
  return { rows, checkedAt: new Date().toISOString() };
-}, ['individual-contract-rankings-v2'], { revalidate: 900 });
+}, ['unique-property-contract-rankings-v3'], { revalidate: 900 });
 
 export async function contractRankings(order: RankingOrder = 'highest') {
  try { return await readRankings(order); }

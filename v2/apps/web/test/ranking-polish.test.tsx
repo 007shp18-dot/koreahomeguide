@@ -1,12 +1,11 @@
 import { readFileSync } from 'node:fs';
-import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { RankingMarketsHub } from '../components/rankings/ranking-markets-hub';
 
 describe('ranking hierarchy', () => {
   it('describes the building-first Seoul destination accurately', () => {
-    const html = renderToStaticMarkup(createElement(RankingMarketsHub));
+    const html = renderToStaticMarkup(<RankingMarketsHub>{null}</RankingMarketsHub>);
     expect(html).toContain('Seoul · buildings');
     expect(html).toContain('Sale, jeonse and rent by building');
     expect(html).not.toContain('Seoul · districts');

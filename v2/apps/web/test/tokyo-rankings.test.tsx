@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import data from '../data/tokyo-ranking-2026-q1.json';
 import { TokyoRankings } from '../components/rankings/tokyo-rankings';
+vi.mock('server-only', () => ({}));
 
 vi.mock('../lib/rankings/contracts.server', () => ({ contractRankings: vi.fn(), regionalRentRankings: vi.fn() }));
 vi.mock('next/navigation', async importOriginal => ({ ...await importOriginal<typeof import('next/navigation')>(), useRouter: () => ({ push: vi.fn() }) }));
