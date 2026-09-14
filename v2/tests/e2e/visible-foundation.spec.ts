@@ -391,7 +391,8 @@ for (const path of [
   test(`${path} keeps editorial metadata and keyboard-accessible source disclosures`, async ({ page }) => {
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index,\s*follow$/);
+    const expectedRobots = path === '/zh-cn/guides/rent-in-korea-zh/' ? /^noindex,\s*follow$/ : /^index,\s*follow$/;
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', expectedRobots);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://www.signedprice.com${path}`);
     if (!path.endsWith('/news/') && !path.endsWith('/guides/')) {
       await expect(page.getByText(/Reviewed by|Reviewer|SignedPrice (Research|Chinese)/i)).toHaveCount(0);

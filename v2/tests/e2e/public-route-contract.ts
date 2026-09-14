@@ -16,7 +16,9 @@ const editorialTranslationPairs = [
 
 export const editorialAlternates: Readonly<Record<string, Readonly<Record<string, string>>>> =
   Object.fromEntries(editorialTranslationPairs.flatMap(([en, ko, chinese]) => {
-    const languages = { en, ko, 'zh-Hans': chinese, 'x-default': en };
+    // This short translation remains readable but is excluded from search.
+    const languages: Record<string, string> = { en, ko, 'x-default': en };
+    if (chinese !== '/zh-cn/guides/rent-in-korea-zh/') languages['zh-Hans'] = chinese;
     return [[en, languages], [ko, languages], [chinese, languages]];
   }));
 
@@ -108,7 +110,7 @@ export const publicRoutes = [
   { path: '/guides/rent-an-apartment-in-korea/', heading: 'Rent an apartment in Korea: search-to-move-in sequence', indexing: 'index', canonical: '/guides/rent-an-apartment-in-korea/' },
   { path: '/zh-cn/news/', heading: '洞察', indexing: 'index', canonical: '/zh-cn/news/' },
   { path: '/zh-cn/guides/', heading: '先理解本地流程，再作跨境决定。', indexing: 'index', canonical: '/zh-cn/guides/' },
-  { path: '/zh-cn/guides/rent-in-korea-zh/', heading: '外国人在韩国租房：从找房到入住', indexing: 'index', canonical: '/zh-cn/guides/rent-in-korea-zh/' },
+  { path: '/zh-cn/guides/rent-in-korea-zh/', heading: '外国人在韩国租房：从找房到入住', indexing: 'noindex', canonical: '/zh-cn/guides/rent-in-korea-zh/' },
   ...PUBLIC_AREA_TEST_DISTRICTS.map((district) => ({
     path: `/kr/seoul/${district.slug}/`,
     heading: district.nameEn,
