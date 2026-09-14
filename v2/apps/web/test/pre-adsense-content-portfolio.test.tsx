@@ -9,6 +9,7 @@ import ChineseArticlePage, { generateMetadata as generateChineseArticleMetadata 
 import { generateStaticParams as generateEnglishArticleParams } from '../app/(en)/news/[slug]/page';
 import { generateStaticParams as generateEnglishGuideParams } from '../app/(en)/guides/[slug]/page';
 import sitemap from '../app/sitemap';
+import { isContentIndexable } from '../lib/seo/content-index-policy';
 import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '../content/portfolio-manifest';
 
 const primarySourceHosts = new Set([
@@ -91,10 +92,10 @@ describe('pre-AdSense reviewed launch portfolio', () => {
     expect(metadata.alternates?.canonical).toBe(`https://www.signedprice.com${article.canonicalHref}`);
   });
 
-  it('publishes every reviewed canonical in the sitemap exactly once', () => {
+  it('includes indexable canonicals once and omits excluded content from the sitemap', () => {
     const urls = sitemap().map(({ url }) => url);
     for (const article of EDITORIAL_PORTFOLIO) {
-      expect(urls.filter((url) => url === `https://www.signedprice.com${article.canonicalHref}`)).toHaveLength(1);
+      expect(urls.filter((url) => url === `https://www.signedprice.com${article.canonicalHref}`)).toHaveLength(isContentIndexable(article.canonicalHref) ? 1 : 0);
     }
   });
 });
