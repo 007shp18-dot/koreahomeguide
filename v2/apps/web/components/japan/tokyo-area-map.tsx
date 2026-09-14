@@ -63,7 +63,7 @@ export function TokyoAreaMap({ rows, city, year, quarter, browserKey, filters, u
   return <section className={styles.areaMap} aria-label={view === 'directory' ? 'Tokyo area prices' : 'Tokyo area price map'} data-tokyo-google-map={view !== 'directory' ? 'true' : undefined} aria-busy={pending}>
     {view !== 'directory' && <h2>{t('Explore Tokyo by area')}</h2>}
     {view === 'combined' && <p>{t('Ward → neighbourhood → recorded home prices')}</p>}
-    {view !== 'map' && <details className={styles.wardDirectory}><summary><span>{wardName}</span><span>{t('Change ward · 23 wards')}</span></summary>
+    {view === 'combined' && <details className={styles.wardDirectory}><summary><span>{wardName}</span><span>{t('Change ward · 23 wards')}</span></summary>
       <label className={styles.areaSearch}>{t('Find a ward')}<input type="search" value={wardSearch} onChange={event => setWardSearch(event.target.value)} placeholder="Shibuya, Minato…" /></label>
       <nav className={styles.mapAreaList} aria-label="Choose a Tokyo ward">{visibleWards.map(([code, name]) => {
         const summary = wards.find(row => row.city === code);

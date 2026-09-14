@@ -119,16 +119,6 @@ export const publicRoutes = [
       ? {}
       : { canonical: `/kr/seoul/explore/${district.slug}/` }),
   })),
-  ...PUBLIC_AREA_TEST_DISTRICTS.map((district) => ({
-    path: `/kr/seoul/explore/${district.slug}/`,
-    heading: district.nameEn,
-    indexing: district.slug === PUBLIC_AREA_WITHHELD_SLUG
-      ? 'noindex' as const
-      : 'index' as const,
-    ...(district.slug === PUBLIC_AREA_WITHHELD_SLUG
-      ? {}
-      : { canonical: `/kr/seoul/explore/${district.slug}/`, alternates: true as const }),
-  })),
   {
     path: '/kr/seoul/explore/jongno-gu/synthetic-test-building/',
     heading: 'Synthetic Test Building',
@@ -137,3 +127,9 @@ export const publicRoutes = [
   },
   { path: '/compare/', heading: 'Compare what each market can support.', indexing: 'index', canonical: '/compare/' },
 ] as const;
+
+
+export const retiredDistrictRoutes = PUBLIC_AREA_TEST_DISTRICTS.map(district => ({
+  path: `/kr/seoul/explore/${district.slug}/`,
+  slug: district.slug,
+}));

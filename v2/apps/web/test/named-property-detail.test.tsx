@@ -40,6 +40,12 @@ describe('named property details in Explore', () => {
     expect(html).toContain('data-decision-workspace="true"');
     expect(html).toContain('data-decision-panel="side"');
     expect(html).toContain('id="property-facts"');
+    const main = html.match(/<div[^>]*data-decision-main="true"[\s\S]*?<\/article>/)?.[0];
+    expect(main).toContain('Life at this property');
+    expect(main).toContain('Transport');
+    expect(main).toContain('Schools');
+    expect(main).toContain('Daily life');
+    expect(html.match(/data-property-overview=/g)).toHaveLength(1);
     expect(html).not.toContain('role="tablist"');
     expect(html).toContain('MLIT publishes transactions without building names.');
     expect(html).toMatch(/\/jp\/tokyo\/explore\/?\?city=13108/);

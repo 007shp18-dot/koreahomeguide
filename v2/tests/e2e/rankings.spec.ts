@@ -135,7 +135,7 @@ test('rankings remain contained and keyboard-readable at every release width', a
   assertNoRuntimeFailures();
 });
 
-test('Explore keeps direct product links while district evidence retains its Rankings action', async ({ page }) => {
+test('Explore keeps direct product links after following a legacy district URL', async ({ page }) => {
   await page.goto('/kr/seoul/explore/');
   const productNavigation = await openPrimaryNavigation(page);
   await expect(productNavigation.getByRole('link', { name: 'Explore' }))
@@ -147,6 +147,7 @@ test('Explore keeps direct product links while district evidence retains its Ran
 
 
   await page.goto('/kr/seoul/explore/jongno-gu/');
-  await expect(page.getByRole('link', { name: 'View district rankings' }))
-    .toHaveAttribute('href', '/kr/seoul/rankings/');
+  await expect(page).toHaveURL(/district=jongno-gu/);
+  const redirectedNavigation = await openPrimaryNavigation(page);
+  await expect(redirectedNavigation.getByRole('link', { name: 'Rankings', exact: true })).toHaveAttribute('href', '/rankings/');
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { publicRoutes } from './e2e/public-route-contract';
+import { publicRoutes, retiredDistrictRoutes } from './e2e/public-route-contract';
 import { PUBLIC_AREA_TEST_DISTRICTS } from './e2e/public-area-summary-fixture';
 
 describe('browser route coverage contract', () => {
@@ -64,12 +64,13 @@ describe('browser route coverage contract', () => {
       '/kr/seoul/gangnam-gu/',
       '/kr/seoul/songpa-gu/',
       '/kr/seoul/gangdong-gu/',
-      ...PUBLIC_AREA_TEST_DISTRICTS.map(({ slug }) => `/kr/seoul/explore/${slug}/`),
       '/kr/seoul/explore/jongno-gu/synthetic-test-building/',
       '/compare/',
     ]);
-    expect(paths).toHaveLength(84);
-    expect(new Set(paths).size).toBe(84);
+    expect(paths).toHaveLength(59);
+    const redirects = retiredDistrictRoutes.map(route => route.path);
+    expect(redirects).toEqual(PUBLIC_AREA_TEST_DISTRICTS.map(({ slug }) => `/kr/seoul/explore/${slug}/`));
+    expect(new Set([...paths, ...redirects]).size).toBe(84);
     expect(publicRoutes.find(({ path }) => path === '/kr/seoul/check/')).toMatchObject({
       heading: 'Compare an asking price',
       indexing: 'index',

@@ -11,6 +11,7 @@ import { propertyReviewProfile, propertyReviewProfilesForMarket, type ReviewedPr
 import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
 import { namedPropertyDecisionPrice } from '../../lib/research/property-decision-price.server';
 import { PropertyDecisionWorkspace } from './property-decision-workspace';
+import { PropertyOverviewCard } from './property-overview-card';
 import { PropertyReviewVisuals } from './property-review-visuals';
 import { MarketDetailShell } from './market-shell';
 import { RecordPlaceVisit } from '../discovery/recent-places';
@@ -87,7 +88,7 @@ export function PropertyReviewDetailPage({ profile, locale = 'en', priceContext 
     <SiteHeader copy={{ ...homepageCopy.header, marketLabel: city, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', homeHref: marketHref(locale, '/'), links: [{ label: 'Explore', href: detailHref, isCurrent: true }] }} />
     <main data-named-property-detail={profile.id}>
       <RecordPlaceVisit place={{ market: tokyo ? 'tokyo' : 'dubai', key: profile.id, name: review.name[lang], href: detailHref }} />
-      <PropertyDecisionWorkspace profileId={profile.id} profile={profile} locale={locale} priceContext={priceContext}>
+      <PropertyDecisionWorkspace showOverview={false} profileId={profile.id} profile={profile} locale={locale} priceContext={priceContext}>
       <MarketDetailShell locale={locale} related={<PlaceQuestions locale={locale} market={tokyo?"tokyo":"dubai"} path={detailHref} name={review.name[lang]}/>}
         breadcrumb={<Link href={marketHref(locale, explorePath)}>{city} · {t('탐색', 'Explore', '探索')}</Link>}
         sections={[
@@ -100,6 +101,7 @@ export function PropertyReviewDetailPage({ profile, locale = 'en', priceContext 
           <p className={styles.meta}>{city} · {tokyo ? t('주거 단지', 'Residential property', '住宅项目') : stage === 'off-plan' ? t('분양 예정·건설 중 프로젝트', 'Off-plan project', '期房项目') : stage === 'ready' ? t('준공 단지', 'Completed property', '已竣工项目') : t('주거 프로젝트', 'Residential project', '住宅项目')}</p>
           <h1>{review.name[lang]}</h1>
           <p>{address}</p>
+          <PropertyOverviewCard id={profile.id} locale={locale} checkedOn={review.checkedOn} />
           <nav aria-label={t('단지 탐색', 'Property exploration', '项目探索')}>
             <a href="#property-review">{t('단지 분석', 'Property analysis', '项目分析')}</a>
             <Link href={contextHref}>{tokyo ? t('주변 구의 실거래·지도', 'Ward transactions & map', '周边行政区成交与地图') : location.projectId ? t('이 프로젝트의 거래 요약', 'Project transaction summary', '本项目成交摘要') : t('두바이 실거래·지도', 'Dubai transactions & map', '迪拜成交与地图')}</Link>

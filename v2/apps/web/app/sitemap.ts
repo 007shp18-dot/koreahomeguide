@@ -17,10 +17,8 @@ import { dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-re
 import { buildKoreaPublicRouteModel } from '../lib/public-market/route-model.server';
 import { buildPublicAreaExploreModel } from '../lib/public-market/area-route-model.server';
 import {
-  listSignedPricePropertyTypeRoutes,
   signedPricePublicRouteRegistry,
 } from '../lib/seo/public-route-registry.server';
-import { buildPublicPropertyTypeModel } from '../lib/public-market/property-type-route-model.server';
 import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
 import {
   listIndexableKoreaBuildingRouteParams,
@@ -264,27 +262,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: publicCanonical(`/kr/seoul/news/${record.slug}/`),
       lastModified: new Date(record.updatedAt ?? record.publishedAt),
     })));
-  }
-  if (area.status === 'ready') {
-    const publishedDistricts = new Set<string>(area.districts.flatMap((district) => (
-      district.summary.published ? [district.slug] : []
-    )));
-    entries.push(...area.districts.flatMap((district) => district.summary.published
-      ? [sitemapEntry(`/kr/seoul/explore/${district.slug}/`, areaLastModified, {en:`/kr/seoul/explore/${district.slug}/`,ko:`/ko/kr/seoul/explore/${district.slug}/`}), sitemapEntry(`/ko/kr/seoul/explore/${district.slug}/`, areaLastModified, {en:`/kr/seoul/explore/${district.slug}/`,ko:`/ko/kr/seoul/explore/${district.slug}/`})]
-      : []));
-    entries.push(...listSignedPricePropertyTypeRoutes().flatMap((route) => {
-      const [, , , , district, propertyType] = route.path.split('/');
-      if (!publishedDistricts.has(district ?? '')) return [];
-      const model = buildPublicPropertyTypeModel(district ?? '', propertyType ?? '');
-      const en = route.path as `/${string}`;
-      const ko = `/ko${route.path}` as `/${string}`;
-      const pair = Object.freeze({ en, ko });
-      const lastModified = validDate(model?.evidence.generatedAt);
-      return [
-        sitemapEntry(en, lastModified, pair),
-        sitemapEntry(ko, lastModified, pair),
-      ];
-    }));
   }
   if (dubaiEvidence !== null) {
     const dubaiAreaParams = dubaiEvidence.listAreaRouteParams();

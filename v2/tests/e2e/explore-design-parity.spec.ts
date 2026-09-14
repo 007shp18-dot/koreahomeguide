@@ -6,7 +6,7 @@ test('four Explore markets share heading geometry and contained controls', async
     await page.goto(`/${city}/explore/`);
     const heading = page.locator('.explore-page-heading h1');
     await expect(heading).toBeVisible();
-    await expect(heading).toHaveText('Explore');
+    await expect(heading).toHaveText(city === 'jp/tokyo' ? 'Find a property' : 'Explore');
     measurements.push(await heading.evaluate(node => ({ size: getComputedStyle(node).fontSize, weight: getComputedStyle(node).fontWeight, left: node.getBoundingClientRect().left })));
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
     await testInfo.attach(city.replace('/', '-') + '-explore', { body: await page.screenshot(), contentType: 'image/png' });
@@ -17,7 +17,7 @@ test('four Explore markets share heading geometry and contained controls', async
 });
 
 test('Tokyo ward searches use the latest period unless the reader chooses an exact quarter', async ({ page }) => {
-  await page.goto('/jp/tokyo/explore/');
+  await page.goto('/jp/tokyo/explore/?view=prices');
   const filters = page.getByRole('form', { name: 'Tokyo transaction filters' });
   for (const control of await filters.locator('input:not([type="checkbox"]):visible, select:visible, button:visible').all()) {
     const box = await control.boundingBox();
@@ -62,4 +62,28 @@ test('recent places stay inside the Explore frame and preserve market history', 
     await recent.getByRole('button', { name: '기록 지우기' }).click();
     await expect(recent).toHaveCount(0);
   }
+});
+
+test('Tokyo properties can be found and opened directly, with unbroken overview labels', async ({ page }) => {
+  await page.goto('/jp/tokyo/explore/');
+  const directory = page.locator('[data-tokyo-property-directory]');
+  await expect(directory.getByRole('link', { name: /View property/ })).toHaveCount(31);
+  const filters = page.getByRole('form', { name: 'Find Tokyo properties' });
+  await filters.getByRole('searchbox').fill('Park Tower Kachidoki');
+  await filters.getByRole('button', { name: 'Find properties', exact: true }).click();
+  const property = directory.getByRole('link', { name: /View property/ });
+  await expect(property).toHaveCount(1);
+  await property.click();
+  await expect(page).toHaveURL(/\/jp\/tokyo\/explore\/properties\/jp-park-tower-kachidoki\//);
+  const overview = page.locator('[data-property-overview="jp-park-tower-kachidoki"]').first();
+  await expect(overview).toBeVisible();
+  const transport = overview.locator('dt').filter({ hasText: /^Transport$/ });
+  const dimensions = await transport.evaluate(node => {
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    return { lines: range.getClientRects().length, width: range.getBoundingClientRect().width, available: node.getBoundingClientRect().width };
+  });
+  expect(dimensions.lines).toBe(1);
+  expect(dimensions.width).toBeLessThanOrEqual(dimensions.available);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });

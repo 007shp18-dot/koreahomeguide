@@ -1,6 +1,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { resolveReleaseTestTarget } from '../../release-test-target';
-import { editorialAlternates, publicRoutes } from './public-route-contract';
+import { editorialAlternates, publicRoutes, retiredDistrictRoutes } from './public-route-contract';
 import {
   openCityNavigation,
   openMarketPagesNavigation,
@@ -137,6 +137,21 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
     }),
   ).toBeVisible();
 });
+
+for (const route of retiredDistrictRoutes) {
+  test(`${route.path} redirects to the current explorer with its district selected`, async ({ page, request }) => {
+    const response = await request.get(route.path, { maxRedirects: 0 });
+    expect(response.status()).toBe(308);
+    const destination = new URL(response.headers().location!, response.url());
+    expect(destination.pathname).toBe('/kr/seoul/explore/');
+    expect(destination.searchParams.get('district')).toBe(route.slug);
+    await page.goto(route.path);
+    await expect(page).toHaveURL(url => url.pathname === '/kr/seoul/explore/' && url.searchParams.get('district') === route.slug);
+    await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toHaveValue(route.slug);
+    await expect(page.locator('[data-detail-hero="district"]')).toHaveCount(0);
+    await expectNoHorizontalPageOverflow(page);
+  });
+}
 
 for (const route of publicRoutes) {
   test(`${route.path} is usable, contained, and follows its indexing cohort`, async ({ page }) => {
@@ -372,6 +387,9 @@ test('sitemap includes only indexable canonical public routes', async ({ request
       : route.indexing;
     const expected = indexing === 'index' && 'canonical' in route;
     expect(xml.includes(`<loc>https://www.signedprice.com${route.path}</loc>`)).toBe(expected);
+  }
+  for (const route of retiredDistrictRoutes) {
+    expect(xml).not.toContain(`<loc>https://www.signedprice.com${route.path}</loc>`);
   }
   expect(xml).toContain('<loc>https://www.signedprice.com/sg/</loc>');
   expect(xml).toContain(

@@ -9,21 +9,20 @@ test('Tokyo ward map changes the ward while retaining period and property filter
   await expect(map.getByRole('heading', { name: 'Explore Tokyo by area' })).toBeVisible();
   await expect(map.getByRole('button', { name: 'Open ward and neighbourhood price map' })).toHaveCount(0);
   const mobile = page.viewportSize()!.width <= 760;
+  const filters = page.getByRole('form', { name: 'Tokyo transaction filters' });
+  await filters.getByRole('combobox', { name: 'Ward', exact: true }).selectOption('13113');
+  await filters.getByRole('button', { name: 'Explore transactions' }).click();
+  await expect(page).toHaveURL(url => url.searchParams.get('city') === '13113'
+    && url.searchParams.get('year') === '2025' && url.searchParams.get('quarter') === '4'
+    && url.searchParams.get('minArea') === '50');
+  await expect(page.locator('select[name="city"]')).toHaveValue('13113');
+  await expect(page.locator('input[name="minArea"]')).toHaveValue('50');
   if (mobile) {
     await directory.getByRole('button', { name: 'View neighbourhoods & prices', exact: true }).click();
     await expect(page.getByRole('dialog', { name: 'Neighbourhoods & prices', exact: true })).toBeVisible();
   }
-  await directory.getByText('Change ward · 23 wards', { exact: true }).click();
-  await expect(directory.locator('a[data-ward]')).toHaveCount(23);
-  const shibuya = directory.locator('a[data-ward="13113"]');
-  await shibuya.focus();
-  await expect(shibuya).toBeFocused();
-  await shibuya.press('Enter');
-  await expect(page).toHaveURL(/city=13113&year=2025&quarter=4&type=Pre-owned\+Condominiums%2C\+etc\.&minArea=50/);
-  await expect(directory.locator('a[data-ward="13113"]')).toHaveAttribute('aria-current', 'location');
-  await expect(page.locator('select[name="city"]')).toHaveValue('13113');
-  await expect(page.locator('input[name="minArea"]')).toHaveValue('50');
   await expect(directory.getByRole('heading', { name: 'Neighbourhoods in Shibuya' })).toBeVisible();
+  await expect(directory.locator('a[data-ward]')).toHaveCount(0);
   if (mobile) {
     await page.getByRole('button', { name: 'Close results', exact: true }).click();
     await expect(page.getByRole('dialog', { name: 'Neighbourhoods & prices', exact: true })).not.toBeVisible();

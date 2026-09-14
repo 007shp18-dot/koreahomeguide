@@ -22,86 +22,27 @@ async function expectContained(page: Page) {
   expect(overflow).toBeLessThanOrEqual(0);
 }
 
-async function expectTouchTarget(page: Page, selector: string) {
-  const target = page.locator(selector).first();
-  await target.scrollIntoViewIfNeeded();
-  const box = await target.boundingBox();
-  expect(box).not.toBeNull();
-  expect(box?.width).toBeGreaterThanOrEqual(44);
-  expect(box?.height).toBeGreaterThanOrEqual(44);
-}
-
-test('Explore selection opens a reload-safe district detail from the explicit evidence link', async ({ page }) => {
+test('legacy district URLs open the current explorer and retain selection after reload', async ({ page }) => {
   const noFailures = observeFailures(page);
-  await page.goto('/kr/seoul/explore/');
-  await page.getByRole('combobox', { name: 'All 25 Seoul districts' }).selectOption('jongno-gu');
-  await expect(page).toHaveURL(/district=jongno-gu/);
-  await page.locator('summary').filter({ hasText: 'Selected · Jongno-gu' }).click();
-  const detailLink = page.getByRole('link', { name: 'Open evidence · Jongno-gu' });
-  await expect(detailLink).toHaveAttribute('href', /^\/kr\/seoul\/explore\/jongno-gu/);
-  await detailLink.click();
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/?(?:\?.*)?$/);
-  await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
-  await expect(page.locator('[data-section="district-buildings"]')).toBeVisible();
+  await page.goto('/kr/seoul/explore/seongdong-gu/');
+  await expect(page).toHaveURL(url => url.pathname === '/kr/seoul/explore/' && url.searchParams.get('district') === 'seongdong-gu');
+  await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toHaveValue('seongdong-gu');
   await page.reload();
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/?(?:\?.*)?$/);
-  await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
-  await expect(page.locator('[data-section="district-buildings"]')).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toHaveValue('seongdong-gu');
+  await expect(page.locator('[data-detail-hero="district"]')).toHaveCount(0);
   await expectContained(page);
   noFailures();
 });
 
-test('district detail composes official evidence before verified context', async ({
-  page,
-}, testInfo) => {
+test('legacy villa URLs retain locale, district and transaction in the current explorer', async ({ page }) => {
   const noFailures = observeFailures(page);
-  const response = await page.goto('/kr/seoul/explore/jongno-gu/');
-  expect(response?.status()).toBe(200);
-
-  const detailMain = page.locator('[data-detail-main="true"]');
-  const detailRail = page.locator('[data-detail-rail="true"]');
-  await expect(detailMain).toBeVisible();
-  await expect(detailRail).toBeVisible();
-  await expect(detailRail.getByRole('heading', { name: 'Latest verified News' })).toBeVisible();
-  await expect(detailRail.getByRole('heading', { name: 'Community signal' })).toBeVisible();
-  await expect(detailRail.getByRole('link', { name: 'Back to Seoul map' }))
-    .toHaveAttribute('href', '/kr/seoul/explore/?district=jongno-gu');
-  await expectTouchTarget(page, '[data-detail-rail="true"] a[href^="/kr/seoul/news/"]');
-
-  const layout = await page.locator('[data-detail-main="true"]').evaluate((main) => {
-    const rail = main.parentElement?.querySelector('[data-detail-rail="true"]');
-    const parent = main.parentElement;
-    if (rail === null || parent === null) throw new Error('Detail layout is incomplete.');
-    const hero = main.querySelector('[data-detail-hero="district"]');
-    const heading = hero?.querySelector('h1');
-    return {
-      mainBeforeRail: Boolean(main.compareDocumentPosition(rail) & Node.DOCUMENT_POSITION_FOLLOWING),
-      columns: getComputedStyle(parent).gridTemplateColumns.split(' ').filter(Boolean).length,
-      railWidth: rail.getBoundingClientRect().width,
-      heroColumns: hero === null
-        ? 0
-        : getComputedStyle(hero).gridTemplateColumns.split(' ').filter(Boolean).length,
-      headingSize: heading === null ? 0 : Number.parseFloat(getComputedStyle(heading).fontSize),
-    };
-  });
-  expect(layout.mainBeforeRail).toBe(true);
-  if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
-    expect(layout.columns).toBe(2);
-    expect(Math.abs(layout.railWidth - 300)).toBeLessThanOrEqual(2);
-    expect(layout.heroColumns).toBe(2);
-  } else {
-    expect(layout.columns).toBe(1);
-    expect(layout.heroColumns).toBe(1);
-  }
-  expect(layout.headingSize).toBeGreaterThanOrEqual(32);
-  expect(layout.headingSize).toBeLessThanOrEqual(64);
-
-  const htmlResponse = await page.request.get('/kr/seoul/explore/jongno-gu/');
-  const html = await htmlResponse.text();
-  expect(html).toContain('data-detail-main="true"');
-  expect(html).toContain('data-detail-rail="true"');
-  expect(html).toContain('Latest verified News');
-  expect(html).toContain('Community signal');
+  await page.goto('/ko/kr/seoul/explore/seongdong-gu/villa/?transaction=jeonse');
+  await expect(page).toHaveURL(url => url.pathname === '/ko/kr/seoul/explore/'
+    && url.searchParams.get('district') === 'seongdong-gu'
+    && url.searchParams.get('propertyType') === 'villa_multifamily'
+    && url.searchParams.get('transaction') === 'jeonse');
+  await expect(page.locator('[data-market-selection="kr:jeonse"]')).toBeVisible();
+  await expect(page.locator('[data-detail-rail="true"]')).toHaveCount(0);
   await expectContained(page);
   noFailures();
 });

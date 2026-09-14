@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import type { ContractGroupEvidenceModel } from '../../lib/public-market/area-route-types';
 import {
   PUBLIC_MARKET_COPY,
@@ -55,9 +53,6 @@ export function DistrictEvidenceSummary({
   const copy = PUBLIC_MARKET_COPY[locale].summary;
   const evidence = model.groups[model.selected];
   const groupSelectionHref = selectionHref ?? evidence.href;
-  const detailHref = model.selected === 'all'
-    ? evidence.href
-    : `${evidence.href}?contractType=${model.selected}`;
   const comparisonOrder = ['new', 'renewal', 'all'] as const;
 
   return (
@@ -195,9 +190,6 @@ export function DistrictEvidenceSummary({
 
       <footer className={styles.footer}>
         <p>{copy.reportedPeriod} · {evidence.period}</p>
-        <Link href={detailHref}>
-          {copy.openEvidence} · {locale === 'ko' ? evidence.nameKo : evidence.nameEn}
-        </Link>
       </footer>
     </section>
   );
