@@ -16,7 +16,7 @@ export function LanguageLinks({ pathname, search = '', translations = {}, altern
   return <nav className="site-header__languages" aria-label="Language navigation">
     {languages.map(([id, label]) => destinations[id] === null
       ? null
-      : <Link key={id} className="site-header__language" href={destinations[id]} hrefLang={id} lang={id} aria-current={locale === id ? 'page' : undefined}>{label}</Link>)}
+      : <Link key={id} className="site-header__language" href={destinations[id]} hrefLang={id} lang={id} prefetch={false} aria-current={locale === id ? 'page' : undefined}>{label}</Link>)}
   </nav>;
 }
 

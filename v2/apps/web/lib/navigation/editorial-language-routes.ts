@@ -63,6 +63,10 @@ const routes: EditorialLanguageRoutes = {
 };
 // Canonical English/Korean pairs, without importing article bodies into the client.
 const koreanPairs = [
+  ['/news/seoul-euljiro-read-the-workshop-signs/', '/ko/news/seoul-euljiro-read-the-workshop-signs/'],
+  ['/news/dubai-deira-gold-and-spice-walk/', '/ko/news/dubai-deira-gold-and-spice-walk/'],
+  ['/news/seoul-footfall-shop-rent-capacity/', '/ko/news/seoul-footfall-shop-rent-capacity/'],
+  ['/news/dubai-valuation-purchase-cash-gap/', '/ko/news/dubai-valuation-purchase-cash-gap/'],
   ['/news/singapore-lower-psf-higher-total-budget/', '/ko/news/singapore-lower-psf-higher-total-budget/'],
   ['/news/dubai-new-renewal-rent-mix/', '/ko/news/dubai-new-renewal-rent-mix/'],
   ['/news/singapore-queenstown-everyday-heritage/', '/ko/news/singapore-queenstown-everyday-heritage/'],
@@ -199,3 +203,4 @@ for (const slug of BILINGUAL_DATABASE_SLUGS) {
   const en = `/news/${slug}/`, ko = `/ko/news/${slug}/`;
   routes[en] = routes[ko] = { en, ko };
 }
+

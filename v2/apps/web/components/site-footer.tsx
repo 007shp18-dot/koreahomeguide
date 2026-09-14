@@ -33,8 +33,8 @@ export function SiteFooter({ copy, locale = 'en' }: Readonly<{ copy: SiteFooterM
   ];
   return <footer className={styles.footer} aria-label={copy.navigationLabel}>
     <div className={styles.inner}>
-      <div className={styles.intro}><Link href={ko ? '/ko/' : zh ? '/zh-cn/' : '/'} aria-label="signedprice home"><BrandWordmark /></Link><p className={styles.descriptor}>{ko ? '도시를 알아보고, 거래를 비교하고, 나에게 맞는 집을 찾아보세요.' : zh ? '了解城市，比较成交，找到适合自己的家。' : 'Discover a city. Understand its prices. Find your place.'}</p></div>
-      <div className={styles.navigation}>{groups.map((group) => <nav key={group.label} aria-label={`Footer ${group.label}`}><p>{group.label}</p><ul className={styles.links}>{group.links.map((link) => <li key={link.href}><Link href={link.href}>{link.label}</Link></li>)}</ul></nav>)}</div>
+      <div className={styles.intro}><Link href={ko ? '/ko/' : zh ? '/zh-cn/' : '/'} aria-label="signedprice home" prefetch={false}><BrandWordmark /></Link><p className={styles.descriptor}>{ko ? '도시를 알아보고, 거래를 비교하고, 나에게 맞는 집을 찾아보세요.' : zh ? '了解城市，比较成交，找到适合自己的家。' : 'Discover a city. Understand its prices. Find your place.'}</p></div>
+      <div className={styles.navigation}>{groups.map((group) => <nav key={group.label} aria-label={`Footer ${group.label}`}><p>{group.label}</p><ul className={styles.links}>{group.links.map((link) => <li key={link.href}><Link href={link.href} prefetch={false}>{link.label}</Link></li>)}</ul></nav>)}</div>
       <nav className={styles.social} aria-label={ko ? 'SignedPrice 공식 SNS' : zh ? 'SignedPrice 官方社交账号' : 'SignedPrice social accounts'}>
         <p>{ko ? '소셜에서 만나세요' : zh ? '关注我们' : 'Follow SignedPrice'}</p>
         <ul>{socialAccounts.map((account) => <li key={account.label}><a href={account.href} target="_blank" rel="noopener noreferrer" aria-label={`${account.label} · SignedPrice${ko ? ' · 새 탭' : zh ? ' · 新标签页' : ' · new tab'}`} title={account.label}><SocialBrandIcon name={account.icon} /></a></li>)}</ul>
