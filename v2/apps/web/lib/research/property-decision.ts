@@ -50,18 +50,21 @@ function topicFor(point: ReviewPoint, section: Section): DecisionTopic {
   if (/noise|acoustic|expressway|road exposure|windows open|rail-facing/.test(title)) return 'noise';
   if (/window|glazing|outlook|view|façade|orientation|bay premium/.test(title) && section !== 'costs') return 'view';
   if (/repair|defect|reserve|maintenance|equipment|renewal|renovation|interior condition|boiler|refurbishment|current condition|current running/.test(title)) return 'repair';
-  if (section === 'costs' && /price|sale|transaction|valuation|psf|sample|yield|compare|match|area type|layouts/.test(title)) return 'price';
   if (/bill|charge|fee|cost|upkeep|heating|cooling|utility|common fund/.test(title)) return 'fees';
+  if (section === 'costs' && /price|sale|transaction|valuation|psf|sample|yield|compare|match|area type|layouts/.test(title)) return 'price';
+  if (section !== 'costs' && /\b(bedrooms?|layouts?|floor plans?|storage)\b/.test(title)) return 'layout';
   if (section === 'schools') {
+    if (/nursery|preschool|early.years/.test(title)) return 'nursery';
     return /walk|journey|route|travel|escort|crossing|pickup|school morning|return|gate|longer/.test(title) ? 'schoolRoute' : 'school';
   }
   if (/school|catchment|nursery|admission|allocation|primary|classroom/.test(title)) return 'school';
   if (section === 'transport') {
     if (/transfer|express|shuttle|brt|bus|departure|airport|operating line|service|line 3|line 5|line 9|four rail|four line/.test(title)) return 'transfer';
-    if (/entrance|gate|door|platform|block|tower|starting|internal|circulation|stairs|slope|uphill/.test(title)) return 'entrance';
+    if (/\b(entrances?|gates?|doors?|platforms?|blocks?|towers?|starting|internal|circulation|stairs|slopes?|uphill)\b/.test(title)) return 'entrance';
     return 'transit';
   }
   if (/grocer|retail|mall|shop|store|errand|pharmacy|hospital|healthcare|atre|supermarket|lincos|daiei|bunkado/.test(title)) return 'retail';
+  if (section === 'daily' && /\b(pools?|play|lounges?|gyms?|swimming)\b/.test(title)) return 'amenities';
   if (/walk|route|access|station|entrance|gate|passage|corridor|stairs|slope/.test(title)) return 'entrance';
   if (section === 'costs') return 'fees';
   return 'amenities';
