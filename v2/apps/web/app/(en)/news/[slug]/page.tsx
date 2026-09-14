@@ -6,7 +6,7 @@ import { NewsroomArticle } from '@/components/newsroom/newsroom-article';
 import { PublicEditorialJsonLd } from '@/components/public-json-ld';
 import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '@/content/portfolio-manifest';
 import { getNewsroomArticle } from '@/lib/content/newsroom-content.server';
-import { editorialLanguageAlternates, indexableMetadata } from '@/lib/public-metadata';
+import { editorialDiscoveryMetadata } from '@/lib/public-metadata';
 
 export const revalidate = 900;
 
@@ -22,13 +22,7 @@ export async function generateMetadata({ params }: NewsArticlePageProps): Promis
   const { slug } = await params;
   const article = await getNewsroomArticle(slug);
   if (article === null) notFound();
-  const languageAlternates = editorialLanguageAlternates(article, EDITORIAL_PORTFOLIO);
-  return indexableMetadata({
-    path: `/news/${article.slug}/`,
-    title: `${article.title} | signedprice`,
-    description: article.deck,
-    ...(languageAlternates === undefined ? {} : { languageAlternates }),
-  });
+  return editorialDiscoveryMetadata(article, EDITORIAL_PORTFOLIO);
 }
 
 export default async function NewsArticlePage({ params }: NewsArticlePageProps) {

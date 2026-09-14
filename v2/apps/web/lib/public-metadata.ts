@@ -2,6 +2,24 @@ import { isContentIndexable, indexableLanguageAlternates } from './seo/content-i
 import { languageDestinations } from './navigation/site-navigation';
 import type { Metadata } from 'next';
 import type { EditorialPortfolioRecord } from '../content/portfolio-types';
+import { discoveryCopy } from '../content/editorial-discovery';
+
+/** Search keeps specific keywords; social previews keep the article's hook. */
+export function editorialDiscoveryMetadata(article: EditorialPortfolioRecord, records: readonly EditorialPortfolioRecord[]): Metadata {
+  const copy = discoveryCopy(article.slug, article.locale);
+  const base = indexableMetadata({
+    path: article.canonicalHref as `/${string}`,
+    title: `${copy?.searchTitle ?? article.title} | SignedPrice`,
+    description: article.deck,
+    languageAlternates: editorialLanguageAlternates(article, records),
+    locale: article.locale === 'ko' ? 'ko_KR' : article.locale === 'zh-CN' ? 'zh_CN' : 'en_US',
+    ...(article.locale === 'ko' ? { imagePath: '/og/ko/' as const } : {}),
+  });
+  return { ...base,
+    openGraph: { ...base.openGraph, title: article.title, description: article.deck, type: 'article', publishedTime: article.publishedAt, modifiedTime: article.updatedAt },
+    twitter: { ...base.twitter, title: article.title, description: article.deck },
+  };
+}
 
 export const SIGNEDPRICE_ORIGIN = 'https://www.signedprice.com' as const;
 export const SIGNEDPRICE_SOCIAL_IMAGE = '/og.png' as const;

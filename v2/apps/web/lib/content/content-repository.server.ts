@@ -2,6 +2,7 @@ import 'server-only';
 
 import { cache } from 'react';
 import { BILINGUAL_DATABASE_SLUGS, EDITORIAL_REVISION_DATE, reviseEditorial } from '../../content/editorial-revision';
+import { refreshDiscovery } from '../../content/editorial-discovery';
 
 import { publicContentDatabase } from '../db/postgres.server';
 import type {
@@ -203,7 +204,7 @@ async function queryPublishedContent(query: PublishedContentQuery, slug?: string
 export async function listPublishedContent(
   query: PublishedContentQuery,
 ): Promise<readonly PublishedContentArticle[]> {
-  if (query.locale !== 'ko') return queryPublishedContent(query);
+  if (query.locale !== 'ko') return Object.freeze((await queryPublishedContent(query)).map(refreshDiscovery));
   const [native, english] = await Promise.all([
     queryPublishedContent(query), queryPublishedContent({ ...query, locale: 'en', limit: 200 }, undefined, 'ko'),
   ]);
@@ -211,7 +212,7 @@ export async function listPublishedContent(
   const translated = english.filter(article => hasCurrentKoreanEdition(article) && !nativeSlugs.has(article.slug))
     .map(article => koreanEdition(article));
   return Object.freeze([...native, ...translated].sort((a,b) => b.publishedAt.localeCompare(a.publishedAt) || a.slug.localeCompare(b.slug))
-    .slice(0, Math.min(Math.max(Math.trunc(query.limit), 1), 200)));
+    .slice(0, Math.min(Math.max(Math.trunc(query.limit), 1), 200)).map(refreshDiscovery));
 }
 
 // The source edition must still pass the live publication, rights and withdrawal gates.
@@ -233,8 +234,8 @@ export const getPublishedContent = cache(async (
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(slug)) return null;
   const articles = await queryPublishedContent({ locale, limit: 1 }, slug);
   const native = articles.find((article) => article.slug === slug);
-  if (native) return native;
+  if (native) return refreshDiscovery(native);
   if (locale !== 'ko' || !BILINGUAL_DATABASE_SLUGS.includes(slug)) return null;
   const english = await queryPublishedContent({ locale: 'en', limit: 1 }, slug, 'ko');
-  return english[0] && hasCurrentKoreanEdition(english[0]) ? koreanEdition(english[0]) : null;
+  return english[0] && hasCurrentKoreanEdition(english[0]) ? refreshDiscovery(koreanEdition(english[0])) : null;
 });

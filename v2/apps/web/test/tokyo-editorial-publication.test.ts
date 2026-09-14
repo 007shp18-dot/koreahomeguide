@@ -6,6 +6,7 @@ vi.mock('../lib/db/postgres.server', () => ({
 }));
 import { parseEditorialArticleInput } from '../app/api/internal/content-articles/route';
 import { saveEditorialArticle } from '../lib/insights/content-article-store.server';
+import { refreshDiscovery } from '../content/editorial-discovery';
 import { TOKYO_RENEWAL_ARTICLES } from '../content/tokyo-renewal-2026-09-11';
 import { articleFromRow } from '../lib/content/content-repository.server';
 import { buildInsightItems } from '../components/newsroom/insights-index';
@@ -33,7 +34,7 @@ describe('Tokyo editorial publication', () => {
   it.each(['en', 'ko', 'zh-CN'] as const)('shows the translated article in Tokyo Investment: %s', locale => {
     const article = TOKYO_RENEWAL_ARTICLES.find(a => a.locale === locale)!;
     const found = buildInsightItems([], 'tokyo', locale, 'investment').find(item => item.href === article.canonicalHref);
-    expect(found).toMatchObject({ title: article.title, language: locale, city: 'tokyo', investment: true });
+    expect(found).toMatchObject({ title: refreshDiscovery(article).title, language: locale, city: 'tokyo', investment: true });
     expect(article.bodyMarkdown.match(/^## /gm)).toHaveLength(locale === 'zh-CN' ? 4 : 3);
   });
 });

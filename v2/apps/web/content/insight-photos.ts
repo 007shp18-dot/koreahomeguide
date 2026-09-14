@@ -5,6 +5,8 @@ import type { NeighbourhoodPhoto } from './neighbourhood-stories';
 // Editorial selections, not photographs of the transactions discussed in a story.
 // Keep named neighbourhood stories in PHOTO_ESSAYS, where exact place identity is required.
 export const INSIGHT_PHOTOS: Readonly<Record<string, NeighbourhoodPhotoId>> = {
+  'seoul-same-complex-price-gap': 'nowon-apartments',
+  'tokyo-cheaper-rent-longer-commute': 'tokyo-station',
   'singapore-lower-psf-higher-total-budget': 'singapore-condo-recent',
   'dubai-new-renewal-rent-mix': 'dubai-waterfront',
   'how-to-read-property-transaction-prices-and-medians': 'seoul-river',
