@@ -142,8 +142,7 @@
   .page :global(dialog) .areaMap { padding-top: 0; }
   .page :global([data-market-shell-region="discovery"]) { position: sticky; bottom: max(var(--space-3), env(safe-area-inset-bottom)); z-index: 2; }
 }
-.selectedArea > details { flex-basis: 100%; min-width: 0; border-top: 1px solid var(--border-subtle, #e2e8f0); padding-top: 12px; }
-.selectedArea > details summary { cursor: pointer; min-height: 44px; align-content: center; }
-.selectedArea > details p { line-height: 1.6; }
-.selectedArea > details nav { display: grid; gap: 4px; }
-.selectedArea > details a { display: block; min-height: 44px; padding-block: 10px; overflow-wrap: anywhere; }
+.propertyAnalysis { flex-basis: 100%; min-width: 0; border-top: 1px solid var(--line); padding-top: 12px; }
+.propertyAnalysis p { line-height: 1.6; }
+.propertyAnalysis nav { display: grid; gap: 4px; }
+.propertyAnalysis a { display: block; min-height: var(--control-min); padding-block: 10px; overflow-wrap: anywhere; font-size: 14px; }
