@@ -472,8 +472,8 @@ describe('public migration containment', () => {
     const urls = sitemap().map(({ url }) => url);
     expect(urls).toContain('https://www.signedprice.com/kr/seoul/explore/');
     expect(urls).toContain('https://www.signedprice.com/kr/seoul/rankings/');
-    expect(urls).toContain('https://www.signedprice.com/kr/seoul/explore/jongno-gu/');
-    expect(urls).toContain('https://www.signedprice.com/kr/seoul/explore/gangnam-gu/');
+    expect(urls).not.toContain('https://www.signedprice.com/kr/seoul/explore/jongno-gu/');
+    expect(urls).not.toContain('https://www.signedprice.com/kr/seoul/explore/gangnam-gu/');
     expect(urls).not.toContain('https://www.signedprice.com/kr/seoul/explore/mapo-gu/');
     expect(urls).not.toContain('https://www.signedprice.com/kr/seoul/gangnam-gu/');
     expect(urls).toContain('https://www.signedprice.com/ko/kr/seoul/explore/');
@@ -515,13 +515,7 @@ describe('public migration containment', () => {
       lastModified: new Date('2026-08-31T01:13:24.787Z'),
       alternates: { languages: localizedExplore },
     });
-    expect(entries.get(
-      'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
-    )).toEqual({
-      url: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
-      alternates:{languages:{en:'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',ko:'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/','x-default':'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/'}},
-      lastModified: new Date('2026-08-31T01:13:24.787Z'),
-    });
+    expect(entries.has('https://www.signedprice.com/kr/seoul/explore/gangnam-gu/')).toBe(false);
     expect(entries.has('https://www.signedprice.com/kr/seoul/news/')).toBe(false);
     expect(entries.get('https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/')).toMatchObject({
       lastModified: new Date('2026-08-31T00:00:00.000Z'),

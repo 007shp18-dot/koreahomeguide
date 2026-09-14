@@ -528,9 +528,6 @@ describe('public Seoul area Explorer', () => {
     expect(selectedMarkup).toContain('data-market-selection="kr:jeonse"');
     expect(selectedMarkup).toContain('Selected · Jongno-gu');
     expect(selectedMarkup).toContain('Renewal contracts');
-    expect(selectedMarkup).toContain(
-      'href="/kr/seoul/explore/jongno-gu?contractType=renewal"',
-    );
     expect(invalidMarkup).toContain('data-market-selection="kr:jeonse"');
     expect(invalidMarkup).toContain('Selected · Jongno-gu');
   });

@@ -189,21 +189,11 @@ describe('district property-type SEO routes', () => {
     expect(districtHtml).toContain('href="/kr/seoul/explore/gangnam-gu/villa/"');
 
     const urls = sitemap().map(({ url }) => url);
-    expect(urls).toEqual(expect.arrayContaining([
-      'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
-      'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/officetel/',
-      'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/villa/',
-      'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/apartment/',
-      'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/officetel/',
-      'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/villa/',
-    ]));
-    const apartmentEntries = sitemap().filter(({ url }) => url.endsWith('/explore/gangnam-gu/apartment/'));
-    expect(apartmentEntries).toHaveLength(2);
-    for (const entry of apartmentEntries) expect(entry.alternates?.languages).toEqual({
-      en: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
-      ko: 'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/apartment/',
-      'x-default': 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
-    });
+    for (const prefix of ['', '/ko', '/zh-cn']) {
+      for (const type of ['apartment', 'officetel', 'villa']) {
+        expect(urls).not.toContain(`https://www.signedprice.com${prefix}/kr/seoul/explore/gangnam-gu/${type}/`);
+      }
+    }
   });
 
   it('returns the 404 boundary for unsupported or unpublished combinations', async () => {

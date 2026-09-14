@@ -1,0 +1,19 @@
+.page { margin-bottom: 48px; }
+.filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 20px 0; }
+.filters label { display: grid; flex: 1 1 180px; gap: 8px; color: var(--muted); font-size: 14px; }
+.filters label:first-of-type { flex: 3 1 280px; }
+.filters input, .filters select, .filters button { min-width: 0; width: 100%; min-height: var(--control-height); padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface-strong); color: var(--ink); font: inherit; font-size: 16px; }
+.filters button { width: auto; color: white; background: var(--accent); border-color: var(--accent); cursor: pointer; }
+.filters a { min-height: var(--control-min); display: inline-flex; align-items: center; color: var(--accent); font-size: 14px; }
+.count { color: var(--muted); font-size: 14px; }
+.list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.list li { min-width: 0; }
+.list a { display: flex; flex-direction: column; height: 100%; gap: 10px; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius-control); color: var(--ink); background: var(--surface-strong); text-decoration: none; }
+.list a:hover { border-color: var(--accent); }
+.list h2 { margin: 0; font-size: 20px; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
+.list p { margin: 0; }
+.area { color: var(--muted); font-size: 13px; }
+.impression { font-size: 14px; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+.open { margin-top: auto; padding-top: 8px; min-height: var(--control-min); display: flex; gap: 12px; align-items: center; color: var(--accent); font-size: 14px; }
+.page :is(a, input, select, button):focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+@media (max-width: 640px) { .list { grid-template-columns: minmax(0, 1fr); } .filters label, .filters label:first-of-type { flex-basis: 100%; } }

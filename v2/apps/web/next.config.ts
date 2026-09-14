@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   async redirects() {
     return [
+      // Retired district/type pages now open the current filtered explorer.
+      ...['', '/ko', '/zh-cn'].flatMap(prefix => [
+        { source: `${prefix}/kr/seoul/explore/:district(jongno-gu|jung-gu|yongsan-gu|seongdong-gu|gwangjin-gu|dongdaemun-gu|jungnang-gu|seongbuk-gu|gangbuk-gu|dobong-gu|nowon-gu|eunpyeong-gu|seodaemun-gu|mapo-gu|yangcheon-gu|gangseo-gu|guro-gu|geumcheon-gu|yeongdeungpo-gu|dongjak-gu|gwanak-gu|seocho-gu|gangnam-gu|songpa-gu|gangdong-gu)/`, destination: `${prefix}/kr/seoul/explore/?district=:district`, permanent: true },
+        ...[['apartment', 'apartment'], ['villa', 'villa_multifamily'], ['officetel', 'officetel']].map(([path, housing]) => ({
+          source: `${prefix}/kr/seoul/explore/:district(jongno-gu|jung-gu|yongsan-gu|seongdong-gu|gwangjin-gu|dongdaemun-gu|jungnang-gu|seongbuk-gu|gangbuk-gu|dobong-gu|nowon-gu|eunpyeong-gu|seodaemun-gu|mapo-gu|yangcheon-gu|gangseo-gu|guro-gu|geumcheon-gu|yeongdeungpo-gu|dongjak-gu|gwanak-gu|seocho-gu|gangnam-gu|songpa-gu|gangdong-gu)/${path}/`,
+          destination: `${prefix}/kr/seoul/explore/?district=:district&propertyType=${housing}`, permanent: true,
+        })),
+      ]),
       ...['en', 'ko', 'zh'].map((locale) => ({
         source: `/og/${locale}/`, destination: '/og.png', permanent: false,
       })),

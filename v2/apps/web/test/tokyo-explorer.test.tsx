@@ -47,7 +47,7 @@ describe('Tokyo transaction exploration', () => {
       expect(html).toContain(locale === 'ko' ? '>매입 비용 계산<' : '>计算购置成本<');
     }
   });
-  it('starts a ward-only search at its latest published period and reports actual ward coverage', async () => {
+  it('starts a ward-only search at its latest published period without duplicate ward directories', async () => {
     coverage.mockResolvedValue([
       { city: '13113', year: '2026', quarter: '1', sourceCount: 12 },
       { city: '13103', year: '2025', quarter: '4', sourceCount: 197 },
@@ -55,9 +55,9 @@ describe('Tokyo transaction exploration', () => {
     read.mockResolvedValue(null);
     const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({ city: '13113' }) }));
     expect(read).toHaveBeenCalledWith({ city: '13113', year: '2026', quarter: '1' }, expect.anything());
-    expect(html).toContain('1 of 23 wards available');
-    expect(html).toContain('Browse published wards');
-    expect(html).toContain('city=13103&amp;year=2025&amp;quarter=4');
+    expect(html).not.toContain('Browse published wards');
+    expect(html).not.toContain('Change ward · 23 wards');
+    expect(html.match(/<select name="city"/g)).toHaveLength(1);
     expect(html).toContain('city=13113&amp;year=2026&amp;quarter=1');
     expect(html.match(/<details\b[^>]*aria-label="More filters"[^>]*>/)?.[0]).not.toContain('open=""');
     expect(html).toContain('<select name="year" disabled="">');
@@ -77,7 +77,7 @@ describe('Tokyo transaction exploration', () => {
   it('keeps published transactions readable if the coverage summary cannot be loaded', async () => {
     coverage.mockRejectedValue(new Error('private coverage error'));
     read.mockResolvedValue({ retrievedAt: '2026-09-01T00:00:00Z', sourceCount: 1, filteredCount: 1, records: [] });
-    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({}) }));
+    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({ view: 'prices' }) }));
     expect(html).toContain('1 recorded transactions');
     expect(html).not.toContain('0 of 23');
     expect(html).not.toContain('private coverage error');
@@ -99,7 +99,7 @@ describe('Tokyo transaction exploration', () => {
 
   it('keeps filters available on a failed read without displaying a fabricated zero count', async () => {
     read.mockRejectedValue(new Error('private storage error'));
-    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({}) }));
+    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({ view: 'prices' }) }));
     expect(html).toContain('aria-label="Tokyo transaction filters"');
     expect(html).toContain('role="alert"');
     expect(html).not.toContain('private storage error');
@@ -108,7 +108,7 @@ describe('Tokyo transaction exploration', () => {
 
   it('starts with a compact search while retaining the default period in the form', async () => {
     read.mockResolvedValue(null);
-    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({}) }));
+    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({ view: 'prices' }) }));
     const advanced = html.match(/<details\b[^>]*aria-label="More filters"[^>]*>/)?.[0];
     expect(advanced).toBeDefined();
     expect(advanced).not.toContain('open=""');
@@ -143,14 +143,14 @@ describe('Tokyo transaction exploration', () => {
 
   it('offers a useful city guide when no publication exists instead of inventing an available quarter', async () => {
     read.mockResolvedValue(null);
-    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({}) }));
+    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({ view: 'prices' }) }));
     expect(html).not.toContain('Try Minato, 2025 Q4');
     expect(html).not.toContain('0 recorded transactions');
     expect(html).toMatch(/href="\/news\/city-stories\/tokyo\/?"/);
   });
   it('keeps one two-column workspace without an extra ward rail', async () => {
     read.mockResolvedValue(null);
-    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({}) }));
+    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({ view: 'prices' }) }));
     expect(html).not.toContain('data-tokyo-region-rail');
     expect(html.match(/data-layout="split"/g)).toHaveLength(1);
     expect(html).toContain('data-tokyo-area-directory');
@@ -158,9 +158,31 @@ describe('Tokyo transaction exploration', () => {
 
   it('opens on apartment transactions but preserves an explicit all-property selection', async () => {
     read.mockResolvedValue(null);
-    await TokyoExplorer({ searchParams: Promise.resolve({}) });
+    await TokyoExplorer({ searchParams: Promise.resolve({ view: 'prices' }) });
     expect(read).toHaveBeenLastCalledWith(expect.anything(), expect.objectContaining({ type: 'Pre-owned Condominiums, etc.' }));
     await TokyoExplorer({ searchParams: Promise.resolve({ type: '' }) });
     expect(read).toHaveBeenLastCalledWith(expect.anything(), expect.objectContaining({ type: '' }));
+  });
+});
+
+
+describe('Tokyo property discovery', () => {
+  it('opens directly on all named properties without requiring transaction storage', async () => {
+    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({}) }));
+    expect(read).not.toHaveBeenCalled();
+    expect(coverage).not.toHaveBeenCalled();
+    expect(html).toContain('Find a property');
+    expect(html.match(/>View property /g)).toHaveLength(31);
+    expect(html).toMatch(/href="\/jp\/tokyo\/explore\/properties\/jp-park-tower-kachidoki\/?"/);
+    expect(html).not.toContain('Tokyo transaction filters');
+  });
+  it('filters named properties by translated name and ward while keeping localized detail links', async () => {
+    const html = renderToStaticMarkup(await TokyoExplorer({ locale: 'ko', searchParams: Promise.resolve({ view: 'properties', q: '파크 타워 가치도키', city: '13102' }) }));
+    expect(html.match(/>상세 보기 /g)).toHaveLength(1);
+    expect(html).toMatch(/href="\/ko\/jp\/tokyo\/explore\/properties\/jp-park-tower-kachidoki\/?"/);
+    const empty = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({ view: 'properties', q: 'Park Tower Kachidoki', city: '13113' }) }));
+    expect(empty).toContain('No properties match');
+    expect(empty).not.toContain('>View property ');
+    expect(read).not.toHaveBeenCalled();
   });
 });
