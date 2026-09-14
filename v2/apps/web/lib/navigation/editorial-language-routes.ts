@@ -1,4 +1,5 @@
 import type { SiteLocale } from './site-navigation';
+import { BILINGUAL_DATABASE_SLUGS } from '../../content/editorial-edition-slugs';
 import { JOURNEY_ARTICLE_ROUTES, journeyArticleHref } from '../../content/city-journey-routes';
 export type EditorialLanguageRoutes = Record<string, Partial<Record<SiteLocale, string>>>;
 // Published translation groups only. Keep article bodies out of client navigation bundles.
@@ -194,3 +195,7 @@ for (const { city, id } of JOURNEY_ARTICLE_ROUTES) {
   routes[ko] = pair;
 }
 export function editorialLanguageRoutes(): EditorialLanguageRoutes { return routes; }
+for (const slug of BILINGUAL_DATABASE_SLUGS) {
+  const en = `/news/${slug}/`, ko = `/ko/news/${slug}/`;
+  routes[en] = routes[ko] = { en, ko };
+}

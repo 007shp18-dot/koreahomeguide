@@ -7,8 +7,19 @@ import { CITY_STORIES } from '../content/city-stories';
 import { listPortfolioRecords } from '../content/portfolio-manifest';
 import { getNeighbourhoodStory } from '../content/neighbourhood-stories';
 import { EDITORIAL_REVISION_DATE, hasEditorialRevision, reviseEditorial } from '../content/editorial-revision';
+import { BILINGUAL_DATABASE_SLUGS } from '../content/editorial-edition-slugs';
+import { editorialLanguageRoutes } from '../lib/navigation/editorial-language-routes';
 
 describe('whole editorial revision coverage', () => {
+  it('connects both directions of all eight new database language pairs without importing their prose', () => {
+    expect(BILINGUAL_DATABASE_SLUGS).toHaveLength(8);
+    const routes = editorialLanguageRoutes();
+    for (const slug of BILINGUAL_DATABASE_SLUGS) {
+      expect(hasEditorialRevision(slug)).toBe(true);
+      expect(routes[`/news/${slug}/`]?.ko).toBe(`/ko/news/${slug}/`);
+      expect(routes[`/ko/news/${slug}/`]?.en).toBe(`/news/${slug}/`);
+    }
+  });
   it('replaces both editions of all thirty city articles without changing their evidence or anchors', () => {
     expect(CITY_JOURNEY_ARTICLES).toHaveLength(originals.length);
     for (const article of CITY_JOURNEY_ARTICLES) {

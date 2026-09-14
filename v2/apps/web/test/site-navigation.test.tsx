@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { listPortfolioRecords } from '../content/portfolio-manifest';
+import { BILINGUAL_DATABASE_SLUGS } from '../content/editorial-edition-slugs';
 import { JOURNEY_ARTICLE_ROUTES, journeyArticleHref } from '../content/city-journey-routes';
 import { editorialLanguageRoutes } from '../lib/navigation/editorial-language-routes';
 import { globalNavigation, languageDestinations, marketDestination } from '../lib/navigation/site-navigation';
@@ -110,6 +111,7 @@ describe('shared navigation destinations', () => {
     const published = new Set([
       ...listPortfolioRecords().map((record) => record.canonicalHref),
       ...JOURNEY_ARTICLE_ROUTES.flatMap(({ city, id }) => ['en', 'ko'].map(locale => journeyArticleHref(city, id, locale as 'en' | 'ko'))),
+      ...BILINGUAL_DATABASE_SLUGS.flatMap(slug => [`/news/${slug}/`, `/ko/news/${slug}/`]),
     ]);
     for (const destinations of Object.values(routes)) for (const href of Object.values(destinations)) expect(published.has(href)).toBe(true);
     const translated = Object.entries(routes).find(([, destinations]) => destinations.en && destinations['zh-CN']);

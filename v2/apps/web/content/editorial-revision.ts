@@ -7,11 +7,7 @@ import { DATABASE_NEIGHBOURHOOD_REVISIONS } from './revisions/database-neighbour
 
 export type EditorialRevision = Readonly<Record<'en' | 'ko', readonly [title: string, deck: string, body: string]>>;
 const revisions: Readonly<Record<string, EditorialRevision>> = { ...SEPTEMBER_REVISIONS, ...INSIGHT_REVISIONS, ...MARKET_BRIEF_REVISIONS, ...MONTHLY_REVISIONS, ...DATABASE_REVISIONS, ...DATABASE_NEIGHBOURHOOD_REVISIONS };
-export const BILINGUAL_DATABASE_SLUGS = Object.freeze([
-  ...Object.keys(DATABASE_NEIGHBOURHOOD_REVISIONS),
-  'dubai-flexi-rent-monthly-payments-total-cost', 'seoul-august-2026-sales-reporting-lag',
-  'singapore-rents-vacancy-landlord-income-2026', 'tokyo-august-2026-asking-prices-inquiry-gap',
-]);
+export { BILINGUAL_DATABASE_SLUGS } from './editorial-edition-slugs';
 export const hasEditorialRevision = (slug: string) => Object.hasOwn(revisions, slug);
 export const EDITORIAL_REVISION_DATE = '2026-09-14T00:00:00Z';
 
