@@ -28,8 +28,19 @@ import searchStyles from '../price-market-search.module.css';
 import { selectedResultPage } from '../../lib/navigation/selected-result-page';
 import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
 import { DiscoveryReading } from '../discovery/discovery-reading';
+import { PropertyOverviewCard } from '../market-ui/property-overview-card';
+import { reviewLocationForEntity } from '../../lib/research/property-review-locations';
 
 const PAGE_SIZE = 24;
+function ProjectOverview({ id, href, locale }: { id: string; href: string; locale: MarketLocale }) {
+  const review = reviewLocationForEntity(`sg-singapore:project:${id}`);
+  if (!review) return null;
+  return <div className={styles.projectOverview}>
+    <PropertyOverviewCard id={review.reviewId} locale={locale} compact />
+    <Link prefetch={false} href={marketHref(locale, `${href}#property-review`)}>{locale === 'ko' ? '단지 분석 보기' : locale === 'zh-CN' ? '查看项目分析' : 'View property analysis'} →</Link>
+  </div>;
+}
+
 const REGION_NAMES = {
   CCR: { en: 'Core Central Region', ko: '핵심 중심 권역', 'zh-CN': '核心中央区' },
   RCR: { en: 'Rest of Central Region', ko: '그 외 중심 권역', 'zh-CN': '其他中央区' },
@@ -290,6 +301,7 @@ export function SingaporeExplorer({ locale = 'en',
             {(!loadingProjects && !loadError ? visible : []).map((project) => <div key={project.id} data-selected={selectedProjectId === project.id}>
               <button type="button" aria-pressed={selectedProjectId === project.id} onClick={() => setSelectedProjectId((current) => current === project.id ? null : project.id)}><span><strong title={project.name}>{project.name}</strong><small title={sgText(locale, `${project.street} · District ${project.district}`)}>{project.street}{sgText(locale, " · District ")}{sgText(locale, project.district)}</small></span><span><strong>{sgText(locale, project.medianPriceLabel ?? 'Not published')}</strong><small>{sgText(locale, project.n.toLocaleString('en'))}{sgText(locale, " ")}{sgText(locale, project.n === 1 ? 'sale' : 'sales')}</small></span></button>
               {project.state === 'published' ? <Link prefetch={false} href={marketHref(locale, project.href)} aria-label={sgText(locale, `Open ${project.name} evidence`)} aria-busy={pendingHref === project.href} onClick={() => setPendingHref(project.href)}>{sgText(locale, "Details")}</Link> : <span className={styles.evidenceUnavailableLink} data-evidence-link="unavailable" title={sgText(locale, "At least 5 transactions are required")}>{sgText(locale, "Below 5 sales")}</span>}
+              <ProjectOverview id={project.id} href={project.href} locale={locale} />
             </div>)}
           </div>
           {!loadingProjects && !loadError && projects.length > 0 && <nav className={styles.projectPagination} aria-label={sgText(locale, "Project result pages")}><button type="button" disabled={activePage === 1} onClick={() => { setPage(activePage - 1); setSelectedProjectId(null); }}>{sgText(locale, "Previous")}</button><span>{sgText(locale, "Page ")}{sgText(locale, activePage)}{sgText(locale, " of ")}{sgText(locale, pageCount)}</span><button type="button" disabled={activePage >= pageCount} onClick={() => { setPage(activePage + 1); setSelectedProjectId(null); }}>{sgText(locale, "Next")}</button></nav>}
