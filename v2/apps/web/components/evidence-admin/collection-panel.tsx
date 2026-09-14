@@ -83,8 +83,8 @@ export function CollectionPanel({initialData, onUnauthorized}: {initialData?: Da
   {error && <p role="alert" className={styles.error}>{error}</p>}{message && <p role="status" className={styles.success}>{message}</p>}
   {!data ? <p role="status">{loading?'출처별 수집 현황을 불러오고 있습니다…':'수집 현황에 연결하지 못했습니다.'}</p> : <>
    <div className={styles.collectionFilters} role="search" aria-label="수집 작업 필터">
-    <label>도시<select value={city} onChange={event=>setCity(event.target.value)}><option value="all">모든 도시</option>{COLLECTION_CITIES.map(city=><option key={city.id} value={city.id}>{city.name}</option>)}</select></label>
-    <label>확인할 상태<select value={filter} onChange={event=>setFilter(event.target.value as CollectionFilter)}><option value="all">전체</option><option value="attention">조치 확인</option><option value="failed">실패</option><option value="overdue">예정 시각 경과</option><option value="review">원문·후보 검토 대기</option><option value="blocked">보류·예약 비활성</option><option value="unrun">실행 기록 없음</option></select></label>
+    <label>도시<select aria-label="도시" value={city} onChange={event=>setCity(event.target.value)}><option value="all">모든 도시</option>{COLLECTION_CITIES.map(city=><option key={city.id} value={city.id}>{city.name}</option>)}</select></label>
+    <label>확인할 상태<select aria-label="확인할 상태" value={filter} onChange={event=>setFilter(event.target.value as CollectionFilter)}><option value="all">전체</option><option value="attention">조치 확인</option><option value="failed">실패</option><option value="overdue">예정 시각 경과</option><option value="review">원문·후보 검토 대기</option><option value="blocked">보류·예약 비활성</option><option value="unrun">실행 기록 없음</option></select></label>
     <label>출처·작업·오류 검색<input type="search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="예: OneMap, 서울, http_503"/></label>
     <button type="button" onClick={()=>{setCity('all');setFilter('all');setQuery('');}}>필터 초기화</button>
    </div>
