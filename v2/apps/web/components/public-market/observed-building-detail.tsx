@@ -132,12 +132,14 @@ export function ObservedBuildingDetail({
   backHref,
   visual,
   facts,
+  decisionPanelReady = true,
   locale = 'en',
 }: Readonly<{
   model: ObservedBuildingIdentityModel;
   backHref: string;
   visual?: ReactNode;
   facts?: ReactNode;
+  decisionPanelReady?: boolean;
   locale?: ProductLocale;
 }>) {
   const hasMonthly = model.observations.monthly > 0;
@@ -165,7 +167,7 @@ export function ObservedBuildingDetail({
   return (
     <div id="top" className={styles.page}>
       <BuildingDetailHeader locale={locale} />
-      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext}>
+      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
       <main className={`${styles.main} ${detailStyles.root}`} data-detail-layout="unified" data-building-detail="identity-only">
         <section
           className={styles.identityHero}
@@ -295,12 +297,14 @@ export function KoreaEvidenceBuildingDetail({
   backHref,
   visual,
   facts,
+  decisionPanelReady = true,
   locale = 'en',
 }: Readonly<{
   model: KoreaExplorerBuildingDetailModel;
   backHref: string;
   visual?: ReactNode;
   facts?: ReactNode;
+  decisionPanelReady?: boolean;
   locale?: ProductLocale;
 }>) {
   const areaLabel = locale === 'ko' ? {all:'전체 면적','under-40':'40㎡ 미만','40-60':'40~60㎡','60-85':'60~85㎡','85-plus':'85㎡ 이상'}[model.selection.areaBand] : locale === 'zh-CN' ? {all:'全部面积','under-40':'40㎡以下','40-60':'40–60㎡','60-85':'60–85㎡','85-plus':'85㎡及以上'}[model.selection.areaBand] : areaLabels[model.selection.areaBand];
@@ -352,7 +356,7 @@ export function KoreaEvidenceBuildingDetail({
   return (
     <div id="top" className={styles.page}>
       <BuildingDetailHeader locale={locale} />
-      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext}>
+      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
       <main className={`${styles.main} ${detailStyles.root}`} data-detail-layout="unified" data-building-detail="exact-evidence" data-detail-locale={locale}>
         <RecordPlaceVisit place={{ market: 'seoul', key: `${model.district.slug}/${model.building.buildingId}`, name: buildingDisplayName(model.building.officialName, locale), href: `${recentTarget.pathname}${recentTarget.search}` }} />
         <BuildingSummaryCard model={model} backHref={backHref} locale={locale} />

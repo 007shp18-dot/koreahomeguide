@@ -69,6 +69,7 @@ export function BuildingDetailPage({
   facts,
   base,
   backHref,
+  decisionPanelReady = true,
   locale = 'en',
 }: Readonly<{
   model: PublicBuildingModel;
@@ -78,6 +79,7 @@ export function BuildingDetailPage({
   facts?: ReactNode;
   base: string;
   backHref?: string;
+  decisionPanelReady?: boolean;
   locale?: ProductLocale;
 }>) {
   const { mode, contract } = decision.selection;
@@ -126,7 +128,7 @@ export function BuildingDetailPage({
   return (
     <div id="top" className={pageStyles.page}>
       <BuildingDetailHeader locale={locale} />
-      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext}>
+      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
       <main className={`${pageStyles.main} ${detailStyles.root}`} data-building-detail="ready" data-detail-layout="unified">
         <RecordPlaceVisit place={{ market: 'seoul', key: `${model.district.slug}/${model.building.buildingId}`, name: model.building.name, href: `${detailTarget.pathname}${detailTarget.search}` }} />
         <nav className={pageStyles.breadcrumb} aria-label={t('Breadcrumb')}><Link href={localizedSeoulHref('/kr/seoul/',locale)}>{t('Seoul')}</Link><Link href={exploreHref}>{locale === 'ko' ? `${districtName} 탐색으로` : `Back to ${districtName} Explore`}</Link><span aria-current="page">{model.building.name}</span></nav>

@@ -18,12 +18,14 @@ function subscribeCompact(onChange: () => void) {
 }
 const compactSnapshot = () => window.matchMedia(compactQuery).matches;
 const serverSnapshot = () => false;
-type WorkspaceProps = { entity?: string; profileId?: string; profile?: LivingContext; priceContext?: DecisionPriceContext; analysisScope?: 'property' | 'area'; locale: MarketLocale; children: ReactNode };
+type WorkspaceProps = { entity?: string; profileId?: string; profile?: LivingContext; priceContext?: DecisionPriceContext; analysisScope?: 'property' | 'area'; ready?: boolean; locale: MarketLocale; children: ReactNode };
 
 /** Server-rendered data stays mounted while the independently scrolling report changes. */
 export function PropertyDecisionWorkspace(props: WorkspaceProps) {
   const available = props.profile?.review || (props.profileId ? reviewLocation(props.profileId) : props.entity && hasPropertyReviewForEntity(props.entity));
-  if (!available) return props.children;
+  // A whole-page Suspense fallback can be replaced after its own client children
+  // hydrate. Only the committed detail should create an interactive session.
+  if (props.ready === false || !available) return props.children;
   return <DecisionSession key={`${props.profileId ?? props.entity ?? props.profile?.id}:${props.locale}`} {...props} />;
 }
 

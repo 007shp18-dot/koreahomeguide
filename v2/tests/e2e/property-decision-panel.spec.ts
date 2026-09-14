@@ -220,15 +220,20 @@ test('a failed research request can be retried while Seoul data and its selected
   });
   const query = '?transaction=jeonse&mode=rent&contract=renewal';
   await page.goto(`${seoulPath}${query}`);
+  const workspace = page.locator('[data-decision-workspace="true"]');
   const main = mainData(page);
   // A streamed not-found page may return HTTP 200. Require the real data surface
   // and hydrated cohort controls before testing the independent research retry.
+  // Suspense fallbacks must not mount a second interactive decision workspace.
+  await expect(workspace).toHaveCount(1);
+  await expect(main).toHaveCount(1);
   await expect(main.getByRole('heading', { level: 1 })).toContainText(helioReview.name.ko);
   const rentTab = main.locator('#building-mode-rent-tab');
   const renewal = main.locator('[role="group"][aria-label="Rent contract cohort"] a[role="button"]', { hasText: 'Renewal' });
   await expect(rentTab).toHaveAttribute('aria-selected', 'true');
   await expect(renewal).toHaveAttribute('aria-pressed', 'true');
   const mountedData = await main.elementHandle();
+  const mountedMain = await main.locator('main[data-building-detail]').elementHandle();
   if (isMobile) await page.getByRole('button', { name: 'View buying decision', exact: true }).click();
   const panel = isMobile ? modalPanel(page) : sidePanel(page);
   await expect(panel.getByRole('status')).toContainText('Loading the property analysis.');
@@ -244,11 +249,17 @@ test('a failed research request can be retried while Seoul data and its selected
   await expect(panel.locator('[data-property-decision="kr-helio-city"]')).toBeVisible();
   await expect(panel.locator('ol > li')).toHaveCount(5);
   expect(attempts).toBeGreaterThanOrEqual(2);
+  await expect(workspace).toHaveCount(1);
+  await expect(main).toHaveCount(1);
+  await expect(page.locator('[data-decision-panel]')).toHaveCount(1);
   await selectPerspective(panel, 'Rental / investment');
   expect(await mountedData!.evaluate(element => element.isConnected)).toBe(true);
+  expect(await mountedMain!.evaluate(element => element.isConnected)).toBe(true);
   expect(await mainEvidence(page)).toEqual(before);
   await expect(rentTab).toHaveAttribute('aria-selected', 'true');
   await expect(renewal).toHaveAttribute('aria-pressed', 'true');
   expect(await selectedControls.evaluateAll(links => links.map(link => link.getAttribute('href')))).toEqual(selectedLinks);
+  await expect(workspace).toHaveCount(1);
+  await expect(panel.getByRole('radio', { name: 'Rental / investment', exact: true })).toBeChecked();
   expect(new URL(page.url()).search).toBe(query);
 });
