@@ -10,8 +10,8 @@ import styles from './editorial-growth-home.module.css';
 
 const COPY = {
   en: {
-    title: 'Four cities.', titleEnd: 'Many ways to live.',
-    lead: 'Neighbourhoods, homes and the prices behind them.',
+    title: 'Four cities.', titleEnd: 'Prices grounded in signed contracts.',
+    lead: 'Reported contract prices from official sources. Not asking prices.',
     markets: 'Choose a city', explore: 'Explore', index: 'The city index',
     next: 'Take a closer look', tools: 'Tools', toolsNote: 'Budgets & buying costs',
     insights: 'Insights', insightsNote: 'Stories behind the numbers',
@@ -21,8 +21,8 @@ const COPY = {
     cities: { 'kr-seoul': 'Seoul', 'sg-singapore': 'Singapore', 'ae-dubai': 'Dubai', 'jp-tokyo': 'Tokyo' },
   },
   ko: {
-    title: '네 개의 도시,', titleEnd: '저마다의 생활.',
-    lead: '동네의 풍경에서 실제 거래 가격까지.',
+    title: '네 도시.', titleEnd: '신고된 계약가격에서 시작합니다.',
+    lead: '공식 자료에 공개된 실거래 가격입니다. 매물 호가가 아닙니다.',
     markets: '도시 선택', explore: '탐색', index: '도시 둘러보기',
     next: '조금 더 자세히', tools: '도구', toolsNote: '예산 비교와 매입 비용',
     insights: '인사이트', insightsNote: '숫자로 읽는 시장 이야기',
@@ -32,8 +32,8 @@ const COPY = {
     cities: { 'kr-seoul': '서울', 'sg-singapore': '싱가포르', 'ae-dubai': '두바이', 'jp-tokyo': '도쿄' },
   },
   'zh-CN': {
-    title: '四座城市，', titleEnd: '不同的生活。',
-    lead: '从街区风景，到住宅与成交价格。',
+    title: '四座城市，', titleEnd: '从已申报的成交价开始。',
+    lead: '价格来自官方发布的成交数据，并非挂牌价。',
     markets: '选择城市', explore: '探索', index: '城市索引',
     next: '进一步了解', tools: '工具', toolsNote: '预算比较与购房成本',
     insights: '洞察', insightsNote: '数字背后的市场故事',

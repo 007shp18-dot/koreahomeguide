@@ -190,10 +190,15 @@ Arrange possession, the reporting steps applicable to your residency status, the
 Photograph the handover condition, record meter readings and keep keys, receipts and the signed contract together. Revisit the cost comparison after the final fees are known so that the first month’s cash needs are not a surprise.`,
   },
   'korea-rental-contract-checklist': {
-    sources: [RESEARCH_SOURCES.protection],
+    sources: [RESEARCH_SOURCES.protection,
+      { ...source('kr-lease-priority', 'Ministry of Government Legislation / Easy Law', 'Possession, registration and preferential repayment', 'https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=4&cciNo=1&cnpClsNo=1&csmSeq=666'), checkedAt: '2026-09-14' },
+      { ...source('hug-deposit-return', 'HUG', '전세보증금반환보증', 'https://khig.khug.or.kr/websquare/websquare.html?w2xPath=%2Fcg%2Fae%2FCGAE027M.xml'), checkedAt: '2026-09-14' },
+      { ...source('hf-deposit-return', 'HF', '일반전세지킴보증', 'https://www.hf.go.kr/ko/sub02/sub02_05_01.do'), checkedAt: '2026-09-14' },
+      { ...source('sgi-deposit-return', 'SGI Seoul Guarantee', '전세금보장신용보험', 'https://www.sgic.co.kr/biz/ccp/index.html?p=CCPPRD030101F01'), checkedAt: '2026-09-14' },
+    ],
     body: `## Bring a record of the exact home
 
-Before the contract meeting, write down the address, building and unit you viewed. Match that identity to the title record, building register and draft lease. Similar names or a shared street do not establish that two records describe the same dwelling.
+Before the contract meeting, write down the address, building and unit you viewed. Match that identity to the 등기사항증명서 (property register), commonly called 등기부등본, the building register and the draft lease. Similar names or a shared street do not establish that two records describe the same dwelling.
 
 Keep the listing, photographs and agreed terms together. Where a translated description differs from the Korean document, resolve the difference before signing. A translation is useful for understanding; it should not leave uncertainty over the actual premises or obligations.
 
@@ -213,7 +218,13 @@ For example, a promise to replace a faulty appliance should identify the applian
 
 Ask when and how the deposit will be returned, what deductions may be made and how disputes will be handled. Consider whether your next move requires the money before it is due back. A cash gap between homes is a practical problem even where the paperwork looks orderly.
 
-If a guarantee is part of your plan, check eligibility with the provider before relying on it. A guarantee application, a fixed date and residence reporting are distinct matters. Confirm the process appropriate to your status and property with the responsible office.
+Check 전세보증금 반환보증 (deposit-return guarantee) eligibility before relying on it. Products include HUG’s 전세보증금반환보증, HF’s 일반전세지킴보증 and SGI’s 전세금보장신용보험. Eligibility, deadlines and coverage differ by institution, product, residency status and property; confirm them with the provider.
+
+## Arrange possession, 전입신고 and 확정일자
+
+전입신고 is the move-in/resident registration report at the local community service centre. 확정일자 is the official fixed-date stamp on the lease. Foreign residents should confirm the applicable foreigner-registration and 체류지 변경신고 (change-of-residence report) process with the responsible office.
+
+Take possession, complete the applicable 전입신고 or equivalent residence-reporting process and obtain the 확정일자 promptly, preferably on move-in day. Possession and the applicable registration establish 대항력 (opposability against third parties) from the following day. Preferential-repayment rights require those possession and registration requirements together with the fixed date; a fixed date alone does not establish them.
 
 ## Keep a closing file you can use later
 

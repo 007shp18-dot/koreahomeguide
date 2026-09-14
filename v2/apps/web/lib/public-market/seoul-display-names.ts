@@ -41,6 +41,10 @@ const neighborhoods: Readonly<Record<string, string>> = {
   '불광동': 'Bulgwang-dong', '녹번동': 'Nokbeon-dong', '수유동': 'Suyu-dong',
 };
 const buildings: Readonly<Record<string, string>> = {
+  // Samsung C&T: https://www.secc.co.kr/en/business/portfolio/housing
+  '래미안 리더스원': 'Raemian Leaders One',
+  // Project supplier: https://www.peikko.com/reference/bangbae-gran-xi-open-balcony/
+  '방배그랑자이': 'Bangbae Gran Xi',
   '한남더힐': 'Hannam The Hill', '나인원한남': 'Nine One Hannam', '타워팰리스2': 'Tower Palace 2',
   '서초그랑자이': 'Seocho Gran Xi', '용산푸르지오써밋(420)': 'Yongsan Prugio Summit',
   '반포자이': 'Banpo Xi', '래미안원펜타스': 'Raemian One Pentas', '용산시티파크(1단지)': 'Yongsan City Park 1',

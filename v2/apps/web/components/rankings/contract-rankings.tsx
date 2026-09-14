@@ -9,6 +9,11 @@ export function ContractRankings({ rows, checkedAt, city, kind, order = 'highest
 }) {
  const selected = rows?.filter(row => row.city === city && row.kind === kind) ?? [];
  const first = selected[0];
+ const seoulName = (row: ContractRankingRow) => {
+  const name = buildingDisplayName(row.name, 'en');
+  const district = row.district_slug?.replace(/^./, c => c.toUpperCase());
+  return name === row.name && district ? `${row.name} · ${district}` : name;
+ };
  const title = `${city === 'seoul' ? 'Seoul apartments' : 'Singapore condos'} · ${order} ${kind === 'sale' ? 'sale prices' : 'monthly rents'}`;
  return <section className={styles.section} aria-labelledby="contract-ranking-title">
   <RankingControls city={city} kind={kind} order={order} />
@@ -16,19 +21,21 @@ export function ContractRankings({ rows, checkedAt, city, kind, order = 'highest
   {first ? <>
    <p className={styles.meta}>Contract month: <strong>{first.month}</strong> · {first.sample.toLocaleString('en-US')} eligible records · Checked: {formatRankingDate(checkedAt)} (UTC)</p>
    <p className={styles.note}>Total reported prices · {city === 'seoul' ? 'Seoul apartments' : 'Singapore condominiums'}.</p>
+   <p className={styles.note}>This ranking uses individual reported contracts from the latest available completed calendar month. Building and district pages use a wider comparison period.</p>
+   <p className={styles.note}>Each row is one reported contract. Later cancellations or corrections may change this ranking.</p>
    <div className={styles.tableWrap} role="region" aria-label={title} tabIndex={0}><table>
     <caption>{title} — {first.month}. Amounts in {city === 'seoul' ? 'KRW' : 'SGD'}.</caption>
     <thead><tr><th scope="col">Rank</th><th scope="col">Property / district</th><th scope="col">Area, m²</th><th scope="col">{kind === 'sale' ? 'Sale price' : 'Rent / month'}</th>{city === 'seoul' && kind === 'rent' && <th scope="col">Deposit</th>}<th scope="col">Contract</th></tr></thead>
     <tbody>{selected.map(row => <tr key={row.id}>
      <td className={styles.rank}>{row.rank <= 3 ? <span className={styles.rankBadge} data-rank={row.rank}>TOP<br />{row.rank}</span> : row.rank.toString().padStart(2,'0')}</td>
-     <th scope="row"><details><summary>{city === 'seoul' ? buildingDisplayName(row.name, 'en') : row.name.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}</summary><div className={styles.detail}>
+     <th scope="row"><details><summary>{city === 'seoul' ? seoulName(row) : row.name.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}</summary><div className={styles.detail}>
       <p>Reported {kind === 'sale' ? 'sale' : 'rent'} · {row.contract_date}<br />{row.floor_value !== null ? `Floor ${row.floor_value}` : row.floor_range ? `Floor range ${row.floor_range}` : 'Floor not disclosed'}{row.bedrooms !== null ? ` · ${Number(row.bedrooms)} bedrooms` : ''}</p>
       <Link href={rankingHref(row)}>View property evidence →</Link>
      </div></details><small>{city === 'seoul' ? row.district_slug : `District ${row.district}`}</small></th>
      <td data-label="Area, m²">{row.area_range ?? (row.area === null ? 'Not disclosed' : Number(row.area).toLocaleString('en-US', {maximumFractionDigits:3}))}</td>
      <td data-label={kind === 'sale' ? 'Sale price' : 'Rent / month'} className={styles.price}>{rankingMoney(row)}{kind === 'rent' ? '/mo' : ''}</td>
      {city === 'seoul' && kind === 'rent' && <td data-label="Deposit" className={styles.deposit}>{row.deposit === null ? 'Not disclosed' : rankingMoney(row,row.deposit)}</td>}
-     <td data-label="Contract">{row.contract_date}</td>
+     <td data-label="Contract">{row.contract_date}<small>One reported contract</small></td>
     </tr>)}</tbody>
    </table></div>
    <p className={styles.unitGuide}>{city === 'seoul' ? '₩ = South Korean won. Full amounts shown; no multiplier needed.' : 'S$ = Singapore dollars. Full amounts shown; no multiplier needed.'}</p>

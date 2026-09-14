@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ToolResearchManagement } from '@/components/tools/tool-research-share';
 
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
@@ -93,13 +94,16 @@ export default function PrivacyPage() {
           <article>
             <p className={styles.meta}>09 · Your rights</p>
             <h2>Access, correction and deletion</h2>
-            <p>You can delete every historical product-research contribution owned by the current browser from the Tools page. You may also ask what personal information we hold about you, request correction or deletion, object to or restrict processing where applicable, and withdraw consent without affecting earlier processing. Email the privacy address above.</p>
+            <p>You can delete every historical product-research contribution owned by the current browser from this Privacy page. You may also ask what personal information we hold about you, request correction or deletion, object to or restrict processing where applicable, and withdraw consent without affecting earlier processing. Email the privacy address above.</p>
           </article>
           <article>
             <p className={styles.meta}>10 · Safeguards</p>
             <h2>Security, transfers and updates</h2>
             <p>We use access controls, secure transport and data minimisation. Service providers may process information in other countries under their contractual and legal safeguards. SignedPrice is not directed to children. Material policy changes will be dated and published here.</p>
           </article>
+        </section>
+        <section id="research-contributions" aria-label="Research contributions">
+          <ToolResearchManagement />
         </section>
       </main>
       <SiteFooter copy={homepageCopy.footer} />
