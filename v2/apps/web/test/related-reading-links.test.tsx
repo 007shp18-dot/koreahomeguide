@@ -1,10 +1,15 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { EDITORIAL_PORTFOLIO } from '../content/portfolio-manifest';
-import { localizeReadingLink } from '../content/related-reading';
+import { localizeReadingLink, relatedReading } from '../content/related-reading';
 import { NewsroomArticle } from '../components/newsroom/newsroom-article';
 
 describe('localized related reading', () => {
+  it('keeps translated rental guides in the rental reading group', () => {
+    const links = relatedReading({ slug: 'rent-in-korea-zh', marketId: 'kr-seoul', locale: 'zh-CN' });
+    expect(links.map(link => link.href)).toContain('/guides/wolse-vs-jeonse/');
+    expect(links.map(link => link.href)).not.toContain('/guides/seoul-apartment-buying-budget-guide/');
+  });
   it('uses the actual translated slug when English and Chinese slugs differ', () => {
     expect(localizeReadingLink({ href: '/guides/wolse-vs-jeonse/', label: 'Compare leases' }, 'zh-CN', EDITORIAL_PORTFOLIO).href)
       .toBe('/zh-cn/guides/wolse-vs-jeonse-zh/');

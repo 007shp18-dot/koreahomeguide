@@ -9,7 +9,7 @@ const readingGroups: readonly Readonly<{
   links: readonly ReadingLink[];
 }>[] = [
   {
-    slugs: ['rent-an-apartment-in-korea', 'wolse-vs-jeonse', 'korea-rental-contract-checklist', 'seoul-jeonse-market-monthly-brief', 'seoul-monthly-rent-market-brief', 'seoul-new-renewal-rent-gap', 'korea-deposit-monthly-rent-cost-structure', 'korea-rental-deposit-protection-status', 'seoul-district-price-distribution'],
+    slugs: ['rent-in-korea-zh', 'wolse-vs-jeonse-zh', 'rent-an-apartment-in-korea', 'wolse-vs-jeonse', 'korea-rental-contract-checklist', 'seoul-jeonse-market-monthly-brief', 'seoul-monthly-rent-market-brief', 'seoul-new-renewal-rent-gap', 'korea-deposit-monthly-rent-cost-structure', 'korea-rental-deposit-protection-status', 'seoul-district-price-distribution'],
     links: [
       { label: 'Choose between wolse and jeonse', href: '/guides/wolse-vs-jeonse/' },
       { label: 'Work through a rental-cost example', href: '/news/korea-deposit-monthly-rent-cost-structure/' },
