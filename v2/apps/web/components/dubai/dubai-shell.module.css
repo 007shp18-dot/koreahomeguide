@@ -10,3 +10,4 @@
 }
 .source a { color: inherit; text-underline-offset: 3px; }
 .source span { display: block; margin-top: 4px; }
+.source p { margin: 4px 0; }
