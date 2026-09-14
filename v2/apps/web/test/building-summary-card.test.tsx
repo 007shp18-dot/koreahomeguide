@@ -35,9 +35,9 @@ describe('building summary card', () => {
     const html = renderToStaticMarkup(<KoreaEvidenceBuildingDetail model={model} backHref="/zh-cn/kr/seoul/explore/?district=mapo-gu" locale="zh-CN" />);
     expect(html).toContain('期间成交价中位数');
     expect(html).toContain('最新合同月份');
-    expect(html).toContain('15笔合同');
+    expect(html).toContain('15笔');
     expect(html).toContain('data-building-summary="true"');
-    expect(html).toContain('data-building-summary-chart="reported-contracts"');
+    expect(html).not.toContain('data-building-summary-chart');
     expect(html).toContain('2026-06–2026-08');
     expect(html).not.toContain('Period sale price median');
     expect(html).not.toContain('Latest contract month');
@@ -54,17 +54,14 @@ describe('building summary card', () => {
     expect(html).not.toMatch(/신고가|직전 거래 대비|최신 매매가|세대수|용적률|건폐율/);
   });
 
-  it('only charts already reported contracts at one exact size with sufficient samples in each month', () => {
-    const complete = renderSummary();
-    expect(complete).toContain('data-building-summary-chart="reported-contracts"');
-    expect(complete.match(/<circle /g)).toHaveLength(15);
-    expect(complete).toContain('84.88㎡');
-    expect(complete).not.toContain('<polyline');
-
-    const mixedSizes = renderSummary({ recentTransactions: [...model.recentTransactions, row('2026-08', 950_000_000, 59.99)] });
-    expect(mixedSizes).not.toContain('data-building-summary-chart');
-    const insufficientMonth = renderSummary({ recentTransactions: model.recentTransactions.slice(1) });
-    expect(insufficientMonth).not.toContain('data-building-summary-chart');
+  it('keeps the summary readable and leaves individual contracts in the transaction table', () => {
+    const summary = renderSummary();
+    expect(summary).not.toContain('<svg');
+    expect(summary).not.toContain('data-building-summary-chart');
+    const detail = renderToStaticMarkup(<KoreaEvidenceBuildingDetail model={model} backHref="/ko/kr/seoul/explore/" locale="ko" />);
+    expect(detail).toContain('2026-06');
+    expect(detail).toContain('84.88');
+    expect(detail).toContain('building-transactions');
   });
 
   it('does not expose a price or chart for a withheld cohort, even when the model retains rows', () => {
