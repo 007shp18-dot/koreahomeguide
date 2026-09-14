@@ -1,3 +1,5 @@
+import { reviseCityStory } from './journey-editorial';
+
 export type StoryCity = 'seoul' | 'singapore' | 'dubai' | 'tokyo';
 export type StoryLocale = 'en' | 'ko';
 export type StoryText = Readonly<{ en: string; ko: string }>;
@@ -9,7 +11,7 @@ export { STORY_STEPS } from './city-journey-routes';
 
 export function cityStoryHref(city: StoryCity, locale: StoryLocale = 'en') { return `${locale === 'ko' ? '/ko' : ''}/news/city-stories/${city}/`; }
 
-export const CITY_STORIES: readonly [CityStory, ...CityStory[]] = [
+const BASE_CITY_STORIES: readonly [CityStory, ...CityStory[]] = [
   {
     "city": "seoul",
     "name": {
@@ -752,4 +754,8 @@ export const CITY_STORIES: readonly [CityStory, ...CityStory[]] = [
       }
     ]
   }
+];
+
+export const CITY_STORIES: readonly [CityStory, ...CityStory[]] = [
+  reviseCityStory(BASE_CITY_STORIES[0]), ...BASE_CITY_STORIES.slice(1).map(reviseCityStory),
 ];

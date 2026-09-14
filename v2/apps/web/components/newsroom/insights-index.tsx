@@ -21,11 +21,12 @@ const marketIds = { seoul: 'kr-seoul', tokyo: 'jp-tokyo', singapore: 'sg-singapo
 export type InsightTopic = 'all' | 'investment';
 type Insight = { investment: boolean; language: ContentLocale; id: string; title: string; deck: string; href: string; date: string; city: City | null; topic: string; type: string; photo?: NeighbourhoodPhoto; uploadedPhoto?:EditorialImage; requiresLocalPhoto?: boolean };
 
-function topicFor(title: string, type: string) {
+function topicFor(title: string, type: string, slug: string) {
+  if (type === 'neighborhood') return 'Neighborhood living';
+  if (/old-condo-costs|rental-yield-after-costs|rents-vacancy-landlord-income/.test(slug)) return 'Ownership costs';
   if (/maintenance|holding|ownership|ten years|costs|service charge/i.test(title)) return 'Ownership costs';
   if (/budget|premium|afford|JPY|price|rent|jeonse/i.test(title)) return 'Housing prices & costs';
   if (type === 'policy-update' || /eligibility|tax|buying rule/i.test(title)) return 'Buying rules';
-  if (type === 'neighborhood') return 'Neighborhood living';
   return 'Housing market';
 }
 
@@ -34,7 +35,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
   const notebook: Insight[] = listNeighbourhoodStories('all', storyLocale).map(item => ({ investment: false, language: storyLocale, id: `${storyLocale}:${item.slug}`, title: item.title, deck: item.deck, href: neighbourhoodHref(item.slug, storyLocale), date: item.publishedAt, city: item.city as City, topic: 'Neighborhood living', type: 'guide', photo: item.photosWithheld ? undefined : item.hero, requiresLocalPhoto: true }));
   // Investment includes explicit local financial analyses, published market/data/policy
   // records and reviewed buying-budget guides; lifestyle stories remain in All.
-  const local: Insight[] = CITY_JOURNEY_ARTICLES.filter(item => item.kind !== 'journey').map(item => ({ investment: item.kind === 'local-issue', language: storyLocale, id: `${storyLocale}:city-article-${item.city}-${item.id}`, title: item.title[storyLocale], deck: item.deck[storyLocale], href: journeyArticleHref(item.city, item.id, storyLocale), date: item.checkedAt, city: item.city, topic: topicFor(item.title.en, item.kind), type: item.kind === 'neighborhood' ? 'guide' : 'data-story', photo: journeyArticlePhoto(item.city, item.id), requiresLocalPhoto: item.kind === 'neighborhood' }));
+  const local: Insight[] = CITY_JOURNEY_ARTICLES.filter(item => item.kind !== 'journey').map(item => ({ investment: item.kind === 'local-issue', language: storyLocale, id: `${storyLocale}:city-article-${item.city}-${item.id}`, title: item.title[storyLocale], deck: item.deck[storyLocale], href: journeyArticleHref(item.city, item.id, storyLocale), date: item.checkedAt, city: item.city, topic: topicFor(item.title.en, item.kind, item.id), type: item.kind === 'neighborhood' ? 'guide' : 'data-story', photo: journeyArticlePhoto(item.city, item.id), requiresLocalPhoto: item.kind === 'neighborhood' }));
   const english = listPortfolioRecords('en');
   const englishTitles = new Map(english.flatMap(item => [[item.slug, item.title] as const, [item.translationGroupId ?? item.slug, item.title] as const]));
   const translated = listPortfolioRecords(locale);
@@ -46,7 +47,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
     language: item.locale, id: item.id, title: item.title, deck: item.deck,
     href: 'canonicalHref' in item ? String(item.canonicalHref) : `${item.locale === 'ko' ? '/ko' : item.locale === 'zh-CN' ? '/zh-cn' : ''}/news/${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`,
     date: item.publishedAt, city: cities.find(city => marketIds[city] === item.marketId) ?? null,
-    topic: isNeighborhoodEditorial(item.slug) ? 'Neighborhood living' : topicFor(englishTitles.get(item.slug) ?? ('translationGroupId' in item && typeof item.translationGroupId === 'string' ? englishTitles.get(item.translationGroupId) : undefined) ?? item.title, item.type),
+    topic: isNeighborhoodEditorial(item.slug) ? 'Neighborhood living' : topicFor(englishTitles.get(item.slug) ?? ('translationGroupId' in item && typeof item.translationGroupId === 'string' ? englishTitles.get(item.translationGroupId) : undefined) ?? item.title, item.type, item.slug),
     type: item.type, photo: insightPhoto(item.slug), uploadedPhoto: editorialImages(item.bodyMarkdown)[0],
   }));
   const seen = new Set<string>();

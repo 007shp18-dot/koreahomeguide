@@ -40,6 +40,7 @@ function sections(body: string): readonly Readonly<{ heading: string; body: stri
     return { heading: text.slice(3, end < 0 ? undefined : end).trim(), body: end < 0 ? '' : text.slice(end).trim() };
   }).filter(section => section.body.length > 0);
 }
+function isMethod(heading:string){return /^(자료와 제작|Sources and production)$/u.test(heading);}
 
 export function NewsroomArticle({ article }: Readonly<{
   article: PublishedContentArticle & Readonly<{ infographic?: InfographicSpec | null }>;
@@ -94,20 +95,21 @@ export function NewsroomArticle({ article }: Readonly<{
     {isMonthlyReport(article.slug) ? <MonthlyReportNavigation slug={article.slug} locale={article.locale} /> : null}
     <EditorialArticleHeader topic={`${market} · ${typeLabel}`} title={article.title} deck={article.deck}>
       <span aria-label={`${t('Publisher', '발행')}: SignedPrice`}>SignedPrice</span><time aria-label={`${t('Published', '발행일')}: ${article.publishedAt.slice(0, 10)}`} dateTime={article.publishedAt}>{article.publishedAt.slice(0, 10)}</time>
-      <a href="#article-sources-title">{ko ? `출처 ${article.sources.length}개` : zh ? `${article.sources.length} 个来源` : `${article.sources.length} source${article.sources.length === 1 ? '' : 's'}`}</a>
       {article.updatedAt.slice(0, 10) !== article.publishedAt.slice(0, 10) && <span>{t('Updated', '수정')} <time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></span>}
     </EditorialArticleHeader>
-    {buyingGuide ? null : <ArticleContents locale={article.locale} items={contentSections.flatMap((item, index) => item.heading ? [{ id: `section-${index + 1}`, title: item.heading }] : [])} />}
+    {buyingGuide ? null : <ArticleContents locale={article.locale} items={contentSections.flatMap((item, index) => item.heading && !isMethod(item.heading) ? [{ id: `section-${index + 1}`, title: item.heading }] : [])} />}
     {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} locale={article.locale} /> : null}
 {articlePhoto ? <div className={layout.hero}><NeighbourhoodPhoto id={articlePhoto} eager context locale={article.locale} /></div> : article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
     {figure == null ? null : <Infographic spec={figure} />}
     {buyingGuide ? <BuyingGuide guide={buyingGuide} locale={ko ? "ko" : "en"} /> : <article className={layout.body}>
-      {contentSections.map((section, index) => <section id={`section-${index + 1}`} key={section.heading}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}
+      {contentSections.map((section, index) => isMethod(section.heading)?null:<section id={`section-${index + 1}`} key={`${section.heading}-${index}`}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}
     </article>}
-    <section className={styles.sources} aria-labelledby="article-sources-title" data-editorial-event="article_complete">
+    <details id="sources" className={styles.sources} data-editorial-event="article_complete">
+      <summary>{ko ? '자료·계산 방법 보기' : zh ? '查看资料与计算方法' : 'Sources & methodology'}</summary>
       <h2 id="article-sources-title">{t("Sources","출처")}</h2>
+      {contentSections.map((section,index)=>isMethod(section.heading)?<section id={`section-${index+1}`} key={index}><EditorialMarkdown source={section.body}/></section>:null)}
       <ol>{article.sources.map((source) => <li key={source.id}><span>{ko ? (source.kind === "primary" ? "1차 자료" : "참고 자료") : zh ? (source.kind === 'primary' ? '一手资料' : '参考资料') : source.kind}</span><a href={source.href} rel="noreferrer" data-editorial-event="policy_source_open">{source.publisher} · {source.title}</a></li>)}</ol>
-    </section>
+    </details>
     {relatedHref === null && reading.length === 0 && !scenarioHref ? null : <aside className={styles.relatedAction}><p>{t("Related reading and tools","이어서 살펴보기")}</p>{relatedHref === null ? null : <Link href={relatedHref} data-editorial-event={relatedEvent}>{relatedLabel}</Link>}{scenarioHref && <Link href={scenarioHref}>{article.locale === 'zh-CN' ? '计算购房成本与租赁收入' : t('Model purchase costs and rental income', '매입 비용·임대수익 계산하기')}</Link>}{reading.filter(({ href }) => !href.endsWith(`/${article.slug}/`)).map((item) => <Link key={item.href} href={item.href} data-editorial-event="article_open">{item.label}</Link>)}</aside>}
   </main>;
 }

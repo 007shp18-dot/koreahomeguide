@@ -1,6 +1,7 @@
 import type { EditorialPortfolioRecord } from './portfolio-types';
+import { reviseEditorial } from './editorial-revision';
 
-export const TOKYO_RENEWAL_ARTICLES: readonly EditorialPortfolioRecord[] = Object.freeze([
+const SOURCE_TOKYO_RENEWAL_ARTICLES: readonly EditorialPortfolioRecord[] = Object.freeze([
   {
     "id": "en:tokyo-older-apartments-shinagawa-renewal-2026",
     "slug": "tokyo-older-apartments-shinagawa-renewal-2026",
@@ -113,3 +114,5 @@ export const TOKYO_RENEWAL_ARTICLES: readonly EditorialPortfolioRecord[] = Objec
     "infographic": null
   }
 ]);
+
+export const TOKYO_RENEWAL_ARTICLES: readonly EditorialPortfolioRecord[] = Object.freeze(SOURCE_TOKYO_RENEWAL_ARTICLES.map(reviseEditorial));

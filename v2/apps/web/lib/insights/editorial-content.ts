@@ -45,105 +45,101 @@ const FOUNDATIONAL_EDITORIAL_ARTICLES: readonly EditorialArticle[] = Object.free
   Object.freeze({
     slug: 'median-is-a-boundary-not-a-home-valuation',
     marketKey: null,
-    title: 'A median is a boundary, not a home valuation',
-    summary: 'A district median is useful context, but it cannot price a specific home. Here is the evidence chain that should sit between the two.',
+    title: "The median rose. Did the home become more expensive?",
+    summary: "A changing mix of sales can move the middle price without any individual home gaining value. Start with what sold, then narrow the comparison.",
     status: 'published',
     publishedAt: '2026-09-04T00:00:00.000Z',
-    updatedAt: '2026-09-04T00:00:00.000Z',
+    updatedAt: '2026-09-14T00:00:00.000Z',
     readMinutes: 5,
     sources: Object.freeze([S.realTransactions, S.uraPropertyData]),
-    bodyMarkdown: `## Start with the cohort
+    bodyMarkdown: `## Five sales, no price rises
 
-A median only describes the middle observation inside a defined group. Before reading the number, identify the market, transaction type, property type, period, size range and publication threshold used to create that group. If any of those boundaries change, the median can change even when no individual home has become more or less valuable.
+Imagine five hypothetical sales: three homes at 500,000 and two at 1 million, in the same currency. The median is 500,000. Next month, two homes sell at 500,000 and three at 1 million. The median doubles, although neither price level has moved.
 
-## Move from district to comparable buildings
+The mean also rises, from 700,000 to 800,000. Neither statistic is wrong. More expensive homes simply make up a larger share of the second month. Reading either increase as the appreciation of one home would answer a question the figures were never designed to answer.
 
-District figures are a map, not a destination. The next comparison should use buildings with similar age, use, scale, access and unit sizes. A new tower near a station and an older low-rise property can share a district while participating in very different buyer pools.
+## What changed inside the sample?
 
-## Read the distribution
+Before following a headline, look at the transaction type, period, size band and properties included. A launch, a run of larger units or a small number of expensive sales can change the composition. A district label does not make those homes interchangeable.
 
-The middle half of reported prices is often more useful than a single centre point. A wide range can signal mixed housing stock, unusually varied unit sizes or a thin sample. A narrow range can be reassuring, but it still does not explain renovation, floor, view or contract-specific conditions.
+The next step is to narrow the sample to homes that could genuinely compete with the one you are considering. Keep the total price and unit price together, and retain the contract dates. A nearby sale from another size band may provide context without being a useful comparable.
 
-## Inspect the exact building
+## The middle is not an offer price
 
-The building page should connect the official identity, address, reported transactions, size bands, nearby transport and building facts. Missing facts remain missing; they are not replaced with neighbourhood averages. That restraint is part of the valuation boundary.
+A range of compatible contracts is more useful than a single median when the unit still needs inspection. Floor, condition, layout, outlook and possession terms can explain why an asking price sits away from the centre. They need property-specific evidence, not a guessed premium.
 
-## Finish with a property-level review
+If there are too few compatible observations, say so. Broadening the period or adding another building can help, but label the change so the reader knows what made the sample larger.
 
-An asking price can be compared with reported evidence, but it should not be presented as a verified value. A property-level review still needs the exact unit, condition, floor, orientation, legal records, financing terms and current market competition. SignedPrice provides evidence for that review rather than a promise about the final price.`,
+A median can tell you where to look next. The offer still needs the actual home, its obligations and a price you can support without pretending the district statistic is a valuation.`,
   }),
   Object.freeze({
     slug: 'how-to-read-a-thin-building-sample-in-seoul',
     marketKey: 'seoul',
-    title: 'How to read a thin building sample in Seoul',
-    summary: 'A familiar apartment name can still have very few compatible reported contracts. Thin samples need a different reading method, not a more confident headline.',
+    title: "Only a few Seoul apartment sales? Read the contracts, not just the median.",
+    summary: "A large complex can have very few sales comparable to the home you want. The useful response is to widen the search carefully and keep the mismatches visible.",
     status: 'published',
     publishedAt: '2026-09-03T00:00:00.000Z',
-    updatedAt: '2026-09-04T00:00:00.000Z',
+    updatedAt: '2026-09-14T00:00:00.000Z',
     readMinutes: 6,
     sources: Object.freeze([S.realTransactions, S.realTransactionDownload]),
-    bodyMarkdown: `## The building name is not the sample
+    bodyMarkdown: `## A thousand homes can leave three useful contracts
 
-Large Seoul complexes may contain many buildings and unit types, but a useful comparison still narrows the evidence by transaction type, completed period and size. The name can be famous while the compatible sample remains small.
+A famous apartment complex may contain many homes, yet only a few reported sales may match the size and period you need. The number of households in the development is not the number of comparable contracts.
 
-## Keep sale and rent evidence separate
+Start with the actual rows. Keep exclusive area, contract date, floor and cancellation status visible, then identify what is still unknown about condition or possession. Sale, jeonse and monthly rent belong in separate comparisons; adding them together makes a larger count but not a better purchase benchmark.
 
-Sale, jeonse and monthly rent answer different questions. Combining them creates a larger count but removes the meaning of the comparison. Start in sale mode when assessing completed purchase contracts, then switch to the relevant rent mode without carrying the sale median across.
+## One new row can move the middle
 
-## Look for concentration
+Consider three hypothetical compatible sales at ₩900 million, ₩950 million and ₩1 billion. The median is ₩950 million. Add a fourth at ₩1.1 billion and the median becomes ₩975 million. That change alone does not establish that the first three homes appreciated.
 
-When several contracts fall in a similar size band and period, their range can provide a reasonable reference. If the observations are scattered across very different sizes or dates, the apparent median may be a statistical centre without a true peer group around it.
+With a thin sample, the dates and individual observations deserve as much attention as the summary. Recent reporting can still change the list. A quiet-looking month may reflect an incomplete reporting window rather than an absence of transactions.
 
-## Expand carefully
+## Widen one boundary at a time
 
-If the exact building is thin, expand one boundary at a time. First review a longer completed period, then comparable nearby buildings, then the neighbourhood or district. Do not widen size, geography and time simultaneously; you will no longer know which change produced the new comparison.
+First try a longer period while keeping the building and size band stable. If you then add another building, note why it is comparable and which differences remain. Widening time, geography and size together can make a confident-looking distribution out of homes that do not compete.
 
-## Treat missing as information
+Do not replace a missing value with a neighbourhood average. An unconfirmed identity, withheld statistic or absent fact marks the point where the evidence stops; it is not an invitation to complete the row by intuition.
 
-A withheld price, unattached official fact or unresolved address is not a blank to be filled with a guess. It tells the reader where verification stopped. The correct interface keeps the rest of the page usable while labeling that row as unconfirmed.
-
-## Record the decision boundary
-
-Before using the evidence in an offer discussion, write down which contracts were compatible and which were excluded. That small discipline makes it easier to update the comparison when a new filing arrives and harder to overstate what a thin sample proves.`,
+For an offer discussion, keep a short list of included contracts and the reason each belongs. When another filing appears, that list can be updated. A rounded median without its supporting rows is much harder to challenge, or to trust.`,
   }),
   Object.freeze({
     slug: 'read-singapore-project-evidence-without-mixing-market-layers',
     marketKey: 'singapore',
-    title: 'Read Singapore project evidence without mixing market layers',
-    summary: 'Private projects, HDB blocks and regional labels belong to different comparison layers. Keeping them separate produces a more honest market view.',
+    title: "A Singapore district median can hide the homes you are comparing",
+    summary: "Private condos, HDB flats and new launches do not form one comparable pool. Separate the housing and sale types before using a regional number to judge a home.",
     status: 'published',
     publishedAt: '2026-09-02T00:00:00.000Z',
-    updatedAt: '2026-09-04T00:00:00.000Z',
+    updatedAt: '2026-09-14T00:00:00.000Z',
     readMinutes: 6,
     sources: Object.freeze([S.uraPropertyData, S.hdbResaleData]),
-    bodyMarkdown: `## Choose the housing system first
+    bodyMarkdown: `## The region is not the property
 
-Private residential projects and HDB blocks are not interchangeable inventory. They have different eligibility, tenure, transaction context and buyer pools. A global search can help a reader find both, but the evidence should separate them before prices are compared.
+CCR, RCR and OCR help organise Singapore's private residential market, but a regional median can combine different projects, unit sizes and sale types. A change in which homes sold can move the number without changing the price of a comparable unit.
 
-## Use regions as navigation
+HDB resale flats need a separate analysis. Their ownership and eligibility framework is not interchangeable with private residential property. Finding both in a search interface does not make their prices one valuation series.
 
-CCR, RCR and OCR labels are useful for moving across the map. They are broad market regions rather than a verdict on an individual project. A regional median can be influenced by the mix of new launches, resale projects, tenure and unit sizes included in the period.
+## A project name needs an address
 
-## Compare project identity
+Check the exact development and location before attaching a transaction or photograph. Similar names and separate phases can create plausible-looking mistakes. A nearby streetscape is not evidence of the condition of the building being sold.
 
-Project-level evidence should attach to one verified name and location. Similar names, multiple phases and nearby developments can produce false matches if the address is not checked. This is also why a generic streetscape should never stand in for a confirmed project photograph.
+Then separate new sales, resales and subsales, retaining their periods and source definitions. Developer-issued options and lodged caveats observe different stages of a transaction. A larger mixed total is not necessarily a more complete answer to your question.
 
-## Read price and PSF together
+## The lower psf can need more cash
 
-The completed price shows the total contract amount. Price per square foot helps compare different unit sizes, but it can still move with floor, view, layout, condition and transaction mix. Neither number should be read without its filing count and completed period.
+In a hypothetical comparison, a S$1.8 million, 900 sq ft home costs S$2,000 per sq ft. A S$2 million, 1,100 sq ft home costs about S$1,818 per sq ft. The lower unit price requires S$200,000 more before duties and other costs.
 
-## Inspect sample depth
+That may be worthwhile if the extra space is useful. It is not a bargain established by division. Layout, condition, tenure and the household's full acquisition budget still matter.
 
-A project with many compatible filings can support a tighter distribution view. A project with few filings should show the observations and their dates directly. Hiding the sample depth behind a polished chart makes the product look more certain than the data.
+## Let the sample set the confidence
 
-## Keep the source boundary visible
+Read compatible observations and their dates before leaning on a polished chart. A handful of sales can be useful evidence when described honestly; a regional median cannot fill every gap at project level.
 
-SignedPrice can organize released transaction evidence and explain its limits. It does not convert external news, asking prices or unverified marketing material into completed transaction facts. The reader should always be able to tell which layer produced each statement.`,
+Keep asking prices and news commentary outside the completed-transaction series. Once those boundaries are clear, the numbers can help compare two real homes instead of giving a broad market label more authority than it deserves.`,
   }),
 ]);
 
 export const STARTER_EDITORIAL_ARTICLES: readonly EditorialArticle[] = Object.freeze([
-  ...FOUNDATIONAL_EDITORIAL_ARTICLES,
+  ...FOUNDATIONAL_EDITORIAL_ARTICLES.map(article => ({ ...article, readMinutes: estimateReadMinutes(article.bodyMarkdown) })),
   ...ENGLISH_KOREA_ARTICLES,
 ]);
 

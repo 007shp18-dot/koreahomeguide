@@ -88,7 +88,9 @@ describe('daily neighbourhood publication', () => {
       const html = renderToStaticMarkup(<NeighbourhoodArticle story={story} locale="ko" />);
       expect(story.title).toMatch(/[가-힣]/);
       expect(html).toContain('lang="ko"');
-      expect(html).toContain('출처와 참고 자료');
+      expect(html).toContain('<summary>참고 자료 보기</summary>');
+      expect(html).toMatch(/<details[^>]*id="article-sources"[^>]*>/);
+      expect(html).not.toMatch(/<details[^>]*id="article-sources"[^>]*open/);
       expect(html).toContain(neighbourhoodHref(original.slug).replace(/\/$/, ''));
       expect(languageDestinations(neighbourhoodHref(original.slug)).ko).toBe(neighbourhoodHref(original.slug, 'ko'));
       expect(sitemap().map(entry => entry.url)).toContain(`https://www.signedprice.com${neighbourhoodHref(original.slug, 'ko')}`);

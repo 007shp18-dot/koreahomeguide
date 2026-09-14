@@ -39,7 +39,7 @@ export function NeighbourhoodArticle({ story, locale = 'en' }: { story: Neighbou
   const explore = storyExploreLink(story.slug, story.city as DiscoveryMarket, locale);
   const livingTitle = ko ? '이곳에서 보내는 평일을 떠올려 보세요' : 'Picture an ordinary weekday';
   const jsonLd = { '@context': 'https://schema.org', '@type': 'Article', headline: story.title,
-    description: story.deck, datePublished: story.publishedAt, dateModified: story.publishedAt,
+    description: story.deck, datePublished: story.publishedAt, dateModified: story.updatedAt ?? story.publishedAt,
     inLanguage: locale, mainEntityOfPage: publicCanonical(neighbourhoodHref(story.slug, locale)),
     image: story.photosWithheld ? undefined : publicCanonical(story.hero.src as `/${string}`), author: { '@type': 'Organization', name: 'SignedPrice' },
     publisher: { '@type': 'Organization', name: 'SignedPrice' }, citation: story.sources.map(source => source.href) };
@@ -48,7 +48,7 @@ export function NeighbourhoodArticle({ story, locale = 'en' }: { story: Neighbou
     <nav className={layout.breadcrumb} aria-label={ko ? '현재 위치' : 'Breadcrumb'}><Link href={`${prefix}/news/`}>{ko ? '인사이트' : 'Insights'}</Link><span>/</span><Link href={`${prefix}/news/?market=${story.city}`}>{story.cityName}</Link></nav>
     <article data-editorial-content-id={`${locale}:${story.slug}`} data-editorial-content-type="guide" data-editorial-locale={locale} data-editorial-market={markets[story.city as keyof typeof markets]}>
       <EditorialArticleHeader topic={`${story.cityName} · ${ko ? '동네 생활' : 'Neighborhood living'}`} title={story.title} deck={story.deck}>
-        <span>SignedPrice</span><time dateTime={story.publishedAt}>{story.publishedAt}</time><a href="#article-sources">{ko ? `출처 ${story.sources.length}개` : `${story.sources.length} sources`}</a>
+        <span>SignedPrice</span><time dateTime={story.publishedAt}>{story.publishedAt}</time>
         <Link href={neighbourhoodHref(story.slug, ko ? 'en' : 'ko')} hrefLang={ko ? 'en' : 'ko'}>{ko ? 'English' : '한국어'}</Link>
       </EditorialArticleHeader>
       {!story.photosWithheld && <Photo photo={story.hero} hero locale={locale} />}
@@ -57,7 +57,7 @@ export function NeighbourhoodArticle({ story, locale = 'en' }: { story: Neighbou
         {story.sections.map((section, index) => <section key={section.title} id={`section-${index + 1}`}><h2>{section.title}</h2>{section.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}{!story.photosWithheld && <Photo photo={section.photo} locale={locale} />}</section>)}
         <section className={styles.living} id="living-here"><p className={styles.eyebrow}>{ko ? '이 동네에 산다면' : 'IF THIS WERE YOUR NEIGHBOURHOOD'}</p><h2>{livingTitle}</h2><p>{story.living}</p></section>
         <nav className={layout.nextAction} aria-label={ko ? '이 도시 더 살펴보기' : 'Continue in this city'} data-editorial-event="article_complete"><h2>{ko ? `${story.cityName}의 주거 지역 살펴보기` : `Explore homes in ${story.cityName}`}</h2><p><Link href={explore.href} prefetch={false} data-editorial-event="article_to_explore">{explore.label}</Link> · <Link href={journeyArticleHref(story.city as keyof typeof markets, 'where', locale)} data-editorial-event="article_open">{ko ? '동네 비교하기' : 'Compare neighbourhoods'}</Link></p></nav>
-        <section className={layout.sources} id="article-sources"><h2>{ko ? '출처와 참고 자료' : 'Sources and further reading'}</h2><ol>{story.sources.map(source => <li key={source.href}><a href={source.href}>{source.label}</a></li>)}</ol></section>
+        <details className={layout.sources} id="article-sources"><summary>{ko ? '참고 자료 보기' : 'Sources and further reading'}</summary><ol>{story.sources.map(source => <li key={source.href}><a href={source.href}>{source.label}</a></li>)}</ol></details>
       </div>
     </article>
     <NeighbourhoodStoryCards exclude={story.slug} locale={locale} />

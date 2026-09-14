@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { cache } from 'react';
+import { BILINGUAL_DATABASE_SLUGS, EDITORIAL_REVISION_DATE, reviseEditorial } from '../../content/editorial-revision';
 
 import { publicContentDatabase } from '../db/postgres.server';
 import type {
@@ -147,10 +148,10 @@ export function articleFromRow(row: Readonly<Record<string, unknown>>): Publishe
     relatedHref: isInternalHref(row.related_href) ? row.related_href : null,
     sources,
   });
-  return isPublishableContent(article) ? article : null;
+  return isPublishableContent(article) ? Object.freeze(reviseEditorial(article)) : null;
 }
 
-async function queryPublishedContent(query: PublishedContentQuery, slug?: string): Promise<readonly PublishedContentArticle[]> {
+async function queryPublishedContent(query: PublishedContentQuery, slug?: string, translationTarget?: 'ko'): Promise<readonly PublishedContentArticle[]> {
   const sql = publicContentDatabase();
   if (sql === null) return Object.freeze([]);
   try {
@@ -174,6 +175,10 @@ async function queryPublishedContent(query: PublishedContentQuery, slug?: string
       ) source_set ON true
       WHERE article.editorial_status = 'published'
         AND article.locale = ${query.locale}
+        AND (${translationTarget ?? null}::text IS NULL OR NOT EXISTS (
+          SELECT 1 FROM content_articles sibling
+          WHERE sibling.slug = article.slug AND sibling.locale = ${translationTarget ?? null}
+        ))
         AND (${slug ?? null}::text IS NULL OR article.slug = ${slug ?? null})
         AND (${query.marketId ?? null}::text IS NULL OR article.market_id = ${query.marketId ?? null})
         AND (${query.type ?? null}::text IS NULL OR article.content_type = ${query.type ?? null})
@@ -198,7 +203,27 @@ async function queryPublishedContent(query: PublishedContentQuery, slug?: string
 export async function listPublishedContent(
   query: PublishedContentQuery,
 ): Promise<readonly PublishedContentArticle[]> {
-  return queryPublishedContent(query);
+  if (query.locale !== 'ko') return queryPublishedContent(query);
+  const [native, english] = await Promise.all([
+    queryPublishedContent(query), queryPublishedContent({ ...query, locale: 'en', limit: 200 }, undefined, 'ko'),
+  ]);
+  const nativeSlugs = new Set(native.map(article => article.slug));
+  const translated = english.filter(article => hasCurrentKoreanEdition(article) && !nativeSlugs.has(article.slug))
+    .map(article => koreanEdition(article));
+  return Object.freeze([...native, ...translated].sort((a,b) => b.publishedAt.localeCompare(a.publishedAt) || a.slug.localeCompare(b.slug))
+    .slice(0, Math.min(Math.max(Math.trunc(query.limit), 1), 200)));
+}
+
+// The source edition must still pass the live publication, rights and withdrawal gates.
+// Translation does not create a static fallback for a withdrawn database article.
+// Any native Korean record, including a draft or withdrawal, blocks an automatic edition.
+function hasCurrentKoreanEdition(article: PublishedContentArticle): boolean {
+  return BILINGUAL_DATABASE_SLUGS.includes(article.slug)
+    && Date.parse(article.updatedAt) <= Date.parse(EDITORIAL_REVISION_DATE);
+}
+
+function koreanEdition(article: PublishedContentArticle): PublishedContentArticle {
+  return Object.freeze(reviseEditorial({ ...article, id: `ko:${article.slug}`, locale: 'ko' as const }));
 }
 
 export const getPublishedContent = cache(async (
@@ -207,5 +232,9 @@ export const getPublishedContent = cache(async (
 ): Promise<PublishedContentArticle | null> => {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(slug)) return null;
   const articles = await queryPublishedContent({ locale, limit: 1 }, slug);
-  return articles.find((article) => article.slug === slug) ?? null;
+  const native = articles.find((article) => article.slug === slug);
+  if (native) return native;
+  if (locale !== 'ko' || !BILINGUAL_DATABASE_SLUGS.includes(slug)) return null;
+  const english = await queryPublishedContent({ locale: 'en', limit: 1 }, slug, 'ko');
+  return english[0] && hasCurrentKoreanEdition(english[0]) ? koreanEdition(english[0]) : null;
 });

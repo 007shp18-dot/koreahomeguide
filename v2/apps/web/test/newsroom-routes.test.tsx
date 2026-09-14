@@ -153,7 +153,9 @@ describe('public Newsroom routes', () => {
     expect(html).toContain(article.publishedAt.slice(0, 10));
     expect(html).toContain(article.updatedAt.slice(0, 10));
     expect(html).not.toContain('data-article-takeaway=');
-    expect(html).toContain('href="#article-sources-title"');
+    expect(html).not.toContain('href="#article-sources-title"');
+    expect(html).toContain('<summary>Sources &amp; methodology</summary>');
+    expect(html).toContain('id="article-sources-title"');
     expect(html).toContain('href="https://rt.molit.go.kr/"');
   });
 
