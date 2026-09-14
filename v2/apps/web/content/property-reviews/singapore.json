@@ -7521,5 +7521,843 @@
         }
       }
     ]
+  },
+  {
+    "id": "sg-the-poiz-residences",
+    "marketId": "sg-singapore",
+    "name": {
+      "ko": "더 포이즈 레지던스",
+      "en": "The Poiz Residences"
+    },
+    "area": {
+      "ko": "포통파시르 · D13",
+      "en": "Potong Pasir · D13"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "역과 장보기를 한 번에 해결하는 포통파시르의 생활형 단지",
+      "en": "Station access and everyday shopping in one place"
+    },
+    "summary": {
+      "ko": "포이즈는 출퇴근과 장보기 동선이 짧아지는 집입니다. 상가 위에 살면서 포통파시르 MRT 연결통로를 이용할 수 있어, 차 없이 보내는 평일에 장점이 분명합니다.",
+      "en": "The Poiz brings the train and everyday shopping into the same routine. Living above the retail centre, with a link to Potong Pasir MRT, makes the location particularly useful on weekdays without a car."
+    },
+    "bestFor": {
+      "ko": "학교 입학 조건이 맞는다면 장보기와 단지 놀이터를 함께 쓰기 편합니다. 가족형 평면과 상가 반대편 침실 배치도 비교해 보세요.",
+      "en": "If school eligibility works, groceries and on-site play fit easily into family life. Compare family layouts and bedroom positions relative to the shops."
+    },
+    "holdFor": {
+      "ko": "상가 접근이 좋은 만큼 낮은 층과 출입구 근처 집은 사람과 차량이 지나는 방향을 살펴볼 만합니다. 단지 전체가 조용하다고 단정하기는 어렵습니다.",
+      "en": "Convenient retail brings passing people and vehicles. For lower floors and entrance-facing homes, the position of the bedroom matters; quietness cannot be assumed across the estate."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "퇴근길에 장보기까지",
+          "en": "Groceries on the way home"
+        },
+        "body": {
+          "ko": "포이즈 센터 상가 위에 집이 있어 장보기와 간단한 외식을 집 근처에서 해결하기 좋습니다. 출퇴근 때 역과 상가를 함께 쓰는 생활에 특히 잘 맞습니다.",
+          "en": "Homes sit above The Poiz Centre. Groceries and casual meals fit naturally around the journey home, especially for households that use the station daily."
+        },
+        "sourceIds": [
+          "poiz-sl"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "작은 집부터 가족형까지",
+          "en": "More than one kind of home"
+        },
+        "body": {
+          "ko": "731세대 안에 소형과 가족형 주택이 함께 있습니다. 같은 단지라도 재택근무 공간과 침실 배치에 따라 맞는 평면이 달라집니다.",
+          "en": "The 731 homes include compact and family layouts. Bedroom placement and space to work at home matter more than choosing by bedroom count alone."
+        },
+        "sourceIds": [
+          "poiz-mcc"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "상가와 가까운 집의 양면",
+          "en": "The trade-off beside the shops"
+        },
+        "body": {
+          "ko": "상가 접근이 좋은 만큼 낮은 층과 출입구 근처 집은 사람과 차량이 지나는 방향을 살펴볼 만합니다. 단지 전체가 조용하다고 단정하기는 어렵습니다.",
+          "en": "Convenient retail brings passing people and vehicles. For lower floors and entrance-facing homes, the position of the bedroom matters; quietness cannot be assumed across the estate."
+        },
+        "sourceIds": [
+          "poiz-sl"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "학교와의 거리가 입학을 보장하지는 않아요",
+          "en": "A nearby school still requires admission"
+        },
+        "body": {
+          "ko": "세인트앤드루스와 시더의 생활권이지만, 학교별 지원 자격과 입학 단계가 먼저 맞아야 합니다. 이 글은 특정 동의 1km 이내 자격을 인증하지 않습니다.",
+          "en": "St. Andrew’s and Cedar are local options, subject to eligibility and the relevant admissions phase. This review does not certify any block within the 1 km priority band."
+        },
+        "sourceIds": [
+          "poiz-sl",
+          "moe-distance"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "포통파시르 MRT와 지하 연결",
+            "en": "An underground link to Potong Pasir MRT"
+          },
+          "body": {
+            "ko": "포통파시르 MRT로 이어지는 지하 연결통로가 있어 비 오는 날의 이동이 편합니다. 집에서 연결통로 입구까지의 단지 내 거리는 동마다 다릅니다.",
+            "en": "An underground link to Potong Pasir MRT helps in wet weather. The walk inside the estate to that link still varies by block."
+          },
+          "sourceIds": [
+            "poiz-sl"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "역 접근과 집 안 위치를 함께",
+            "en": "Choose the block for your routine"
+          },
+          "body": {
+            "ko": "역을 매일 쓴다면 수영장 조망보다 현관에서 역 연결통로까지의 길이 더 자주 체감됩니다. 엘리베이터와 상가를 거치는 경로를 비교해 보세요.",
+            "en": "Daily train users may notice the route from their front door to the station more often than a pool view. Compare lifts, exits and the retail passage."
+          },
+          "sourceIds": [
+            "poiz-mcc",
+            "poiz-sl"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "세인트앤드루스·시더 생활권",
+            "en": "St. Andrew’s and Cedar nearby"
+          },
+          "body": {
+            "ko": "주변 학교 선택지에 세인트앤드루스 빌리지와 시더 프라이머리가 있습니다. 학교 이름만으로 집을 정하기보다는 자녀가 지원할 학교와 실제 교문을 먼저 정하는 편이 좋습니다.",
+            "en": "St. Andrew’s Village and Cedar Primary are nearby options. Start with the school your child can apply to and its actual gate when comparing homes."
+          },
+          "sourceIds": [
+            "poiz-sl"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "통학길과 입학 순위는 별개",
+            "en": "School walk and admission priority"
+          },
+          "body": {
+            "ko": "편하게 걸을 수 있는 길과 입학 우선순위에 쓰이는 거리는 다른 문제입니다. 주소별 거리와 시민권·입학 단계에 따른 조건을 함께 살펴야 합니다.",
+            "en": "A practical school walk and the distance used for admission priority are different questions. Eligibility depends on the address, citizenship and registration phase."
+          },
+          "sourceIds": [
+            "moe-distance"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "장보기는 아래층 상가에서",
+            "en": "Daily essentials downstairs"
+          },
+          "body": {
+            "ko": "포이즈 센터의 슈퍼마켓과 음식점이 생활의 중심입니다. 차로 큰 쇼핑몰에 갈 일이 줄어드는 편리함을 원하는 가구에게 어울립니다.",
+            "en": "The centre’s supermarket and eateries anchor everyday errands. The arrangement suits households that want fewer car trips for routine shopping."
+          },
+          "sourceIds": [
+            "poiz-sl"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "운동과 놀이는 단지 안에서도",
+            "en": "Room for exercise and play"
+          },
+          "body": {
+            "ko": "수영장·체육관·놀이터가 있는 단지입니다. 자주 이용할 시설이 내 동과 얼마나 떨어져 있는지에 따라 같은 단지에서도 일상은 달라집니다.",
+            "en": "Pools, a gym and play areas give residents options close to home. Their position relative to your block affects how often you will use them."
+          },
+          "sourceIds": [
+            "poiz-mcc"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "99년 임차권과 보유 기간",
+            "en": "Leasehold and your holding period"
+          },
+          "body": {
+            "ko": "99년 임차권 주택입니다. 준공 연도와 임차권 시작일은 같은 뜻이 아니므로, 남은 기간은 매매 대상의 권리 서류로 계산해야 합니다.",
+            "en": "This is a 99-year leasehold development. Completion and lease commencement are different dates; calculate the remaining term from the property’s title documents."
+          },
+          "sourceIds": [
+            "poiz-sl"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "소형과 가족형을 따로 비교",
+            "en": "Compare like-for-like layouts"
+          },
+          "body": {
+            "ko": "소형 주택의 높은 면적당 가격을 큰 가족형에 그대로 적용하면 비교가 흐려집니다. 같은 평면·층·방향의 거래에 관리비와 필요한 수리비를 더해 보세요.",
+            "en": "Compact homes and larger family layouts need separate comparisons. Match layout, floor and orientation, then add management charges and any work the home needs."
+          },
+          "sourceIds": [
+            "poiz-mcc"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "파크 콜로니얼",
+          "en": "Park Colonial"
+        },
+        "reason": {
+          "ko": "우들리 MRT와 몰을 쓰는 생활을 비교하기 좋습니다.",
+          "en": "Compare the daily routine around Woodleigh MRT and its mall."
+        },
+        "condition": {
+          "ko": "같은 면적과 수리 상태부터 맞춰 보세요.",
+          "en": "Match size and condition first."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "poiz-sl",
+        "title": "Sustained Land — The Poiz",
+        "url": "https://www.sustainedland.com/sl-projects/the-poiz",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "단지·상가·연결통로·학교 주변 소개. 홍보 도보시간과 투자수익 문구는 채택하지 않음.",
+          "en": "Project, retail, link and local-school description; promotional journey times and return claims excluded."
+        }
+      },
+      {
+        "id": "poiz-mcc",
+        "title": "MCC Singapore — The Poiz Residences",
+        "url": "https://www.mcc.sg/project-detail?id=Poiz",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "731세대의 혼합 개발 및 단지 시설. 준공 연도의 출처 차이는 확정값으로 쓰지 않음.",
+          "en": "731-home mixed development and facilities; conflicting completion dates are not treated as settled."
+        }
+      },
+      {
+        "id": "moe-distance",
+        "title": "MOE — P1 distance and admission priority",
+        "url": "https://www.moe.gov.sg/primary/p1-registration/distance",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "초등 입학 거리 우선순위. 특정 세대의 거리 인증이나 입학 보장은 아님.",
+          "en": "P1 distance priority, not certification of an individual address or a guaranteed place."
+        }
+      }
+    ]
+  },
+  {
+    "id": "sg-park-colonial",
+    "marketId": "sg-singapore",
+    "name": {
+      "ko": "파크 콜로니얼",
+      "en": "Park Colonial"
+    },
+    "area": {
+      "ko": "우들리 · D13",
+      "en": "Woodleigh · D13"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "우들리역·몰·학교를 일상에 묶는 단지",
+      "en": "Woodleigh trains, shops and school in one daily routine"
+    },
+    "summary": {
+      "ko": "파크 콜로니얼은 우들리 MRT와 주변 상권을 자주 쓰는 사람에게 편한 집입니다. 단지에만 머무르기보다 몰에서 장을 보고 비다다리 공원까지 생활 반경을 넓히는 모습이 잘 어울립니다.",
+      "en": "Park Colonial suits a routine built around Woodleigh MRT and the surrounding shops. It offers a base for groceries at the mall and time outdoors at Bidadari Park, beyond the estate itself."
+    },
+    "bestFor": {
+      "ko": "스탬퍼드 우들리 캠퍼스에 다니는 가족에게 위치의 이유가 분명합니다. 유아 자녀라면 추안 레인까지의 이동을 먼저 계산해 보세요.",
+      "en": "The location has a clear purpose for families at Stamford’s Woodleigh campus. For younger children, plan the Chuan Lane journey first."
+    },
+    "holdFor": {
+      "ko": "스탬퍼드 아메리칸 유아 과정은 추안 레인의 얼리 러닝 빌리지에서 운영됩니다. 학교가 옆에 있다는 이유만으로 유아 통학까지 가깝다고 보면 안 됩니다.",
+      "en": "Stamford American’s early years are at the Early Learning Village on Chuan Lane. Proximity to Woodleigh does not give preschoolers the same school journey."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "역과 동네 생활을 함께",
+          "en": "A station with a neighbourhood around it"
+        },
+        "body": {
+          "ko": "우들리 MRT 가까이에 있고 우들리 몰을 함께 이용할 수 있습니다. 주거단지 안 시설과 바깥 상권을 모두 쓰는 생활에 어울립니다.",
+          "en": "Woodleigh MRT and The Woodleigh Mall are close by. The location works well for people who use both the estate’s facilities and the surrounding neighbourhood."
+        },
+        "sourceIds": [
+          "colonial",
+          "mall"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "국제학교를 정한 가족에게 구체적인 장점",
+          "en": "A useful address for a Woodleigh school family"
+        },
+        "body": {
+          "ko": "스탬퍼드 아메리칸의 우들리 캠퍼스가 같은 우들리 레인에 있습니다. 이 캠퍼스에 다니는 자녀가 있다면 통학 동선을 짧게 잡을 수 있는 입지입니다.",
+          "en": "Stamford American’s Woodleigh campus is on the same road. Families with children attending that campus have a concrete reason to consider this address."
+        },
+        "sourceIds": [
+          "sais",
+          "colonial"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "유아반은 다른 캠퍼스",
+          "en": "Early years use a different campus"
+        },
+        "body": {
+          "ko": "스탬퍼드 아메리칸 유아 과정은 추안 레인의 얼리 러닝 빌리지에서 운영됩니다. 학교가 옆에 있다는 이유만으로 유아 통학까지 가깝다고 보면 안 됩니다.",
+          "en": "Stamford American’s early years are at the Early Learning Village on Chuan Lane. Proximity to Woodleigh does not give preschoolers the same school journey."
+        },
+        "sourceIds": [
+          "sais"
+        ],
+        "status": "documented"
+      },
+      {
+        "title": {
+          "ko": "역 주변의 활기와 집 안 정숙함",
+          "en": "Station-side convenience brings activity"
+        },
+        "body": {
+          "ko": "역·몰·학교가 모인 곳이라 출입구와 도로를 향한 집은 시간대별 통행이 중요합니다. 조용한 방이 필요하다면 단지 안쪽 방향도 비교할 만합니다.",
+          "en": "With a station, mall and school nearby, entrance- and road-facing homes need a closer look at passing activity. An inward-facing bedroom may suit a quieter routine."
+        },
+        "sourceIds": [
+          "colonial",
+          "mall",
+          "sais"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "우들리에서 MRT 이용",
+            "en": "Trains from Woodleigh"
+          },
+          "body": {
+            "ko": "주된 철도 이용 지점은 우들리 MRT입니다. 역이 가깝더라도 내가 고른 동에서 출입구까지 걷는 길은 별도로 살펴볼 필요가 있습니다.",
+            "en": "Woodleigh MRT is the principal rail access point. Compare the route from the chosen block to the station entrance, rather than the project’s map pin."
+          },
+          "sourceIds": [
+            "colonial"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "몰을 거치는 귀갓길",
+            "en": "Errands on the way back"
+          },
+          "body": {
+            "ko": "우들리 몰을 퇴근길에 함께 쓰기 좋습니다. 상가가 주거동 아래에 있는 포이즈와는 달리 외부 보행 구간이 있어 비 오는 날의 경로도 비교해 보세요.",
+            "en": "The Woodleigh Mall can fit into the trip home. Unlike The Poiz’s shops below the residences, this involves an outdoor leg worth comparing in wet weather."
+          },
+          "sourceIds": [
+            "mall",
+            "colonial"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "우들리 캠퍼스는 1~12학년",
+            "en": "Woodleigh serves Grades 1–12"
+          },
+          "body": {
+            "ko": "스탬퍼드 아메리칸 우들리 캠퍼스는 1~12학년을 받습니다. 가까운 국제학교를 실제로 활용하려면 해당 학년의 자리와 입학 조건이 맞아야 합니다.",
+            "en": "The Stamford American Woodleigh campus serves Grades 1–12. Its convenience depends on a place being available in the right grade and meeting admission requirements."
+          },
+          "sourceIds": [
+            "sais"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "공립초 입학은 주소별로",
+            "en": "Public-primary admission is address-specific"
+          },
+          "body": {
+            "ko": "국제학교와 별개로 공립초를 생각한다면 정확한 주소의 거리 우선순위와 입학 단계를 확인해야 합니다. 주변 학교 목록만으로 입학 가능성을 판단할 수는 없습니다.",
+            "en": "For a public primary school, check distance priority for the exact address and the relevant registration phase. A list of nearby schools cannot establish admission."
+          },
+          "sourceIds": [
+            "moe-distance"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "우들리 몰을 동네 상권으로",
+            "en": "The Woodleigh Mall as the local centre"
+          },
+          "body": {
+            "ko": "주변 생활시설로 우들리 몰을 이용할 수 있습니다. 주말에 멀리 나가는 쇼핑보다 평일 식사와 장보기에서 체감하기 쉬운 장점입니다.",
+            "en": "The Woodleigh Mall is a local amenity. Its most practical value is in weekday food and errands, rather than occasional destination shopping."
+          },
+          "sourceIds": [
+            "mall"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "비다다리 공원 산책",
+            "en": "Walks at Bidadari Park"
+          },
+          "body": {
+            "ko": "비다다리 공원에는 산책로와 알카프 호수가 있습니다. 단지 안 운동시설 외에 동네에서 걷는 시간을 보내고 싶은 가구라면 함께 볼 만합니다.",
+            "en": "Bidadari Park adds paths and Alkaff Lake to the neighbourhood. It is worth considering if your routine includes walks beyond the estate’s own facilities."
+          },
+          "sourceIds": [
+            "bidadari"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "805세대의 평면 차이",
+            "en": "Different layouts within 805 homes"
+          },
+          "body": {
+            "ko": "805세대가 있는 단지입니다. 같은 침실 수라도 공부방·수납·주방 형태가 다르면 실사용 가치가 달라지므로, 면적당 가격만으로 순서를 정하지 않는 편이 좋습니다.",
+            "en": "There are 805 homes. Study space, storage and kitchen layout can change the usefulness of similarly sized units; price per square foot is only part of the comparison."
+          },
+          "sourceIds": [
+            "colonial"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "임차권과 관리비를 함께",
+            "en": "Lease term and recurring charges"
+          },
+          "body": {
+            "ko": "99년 임차권 단지입니다. 남은 권리 기간에 더해 해당 세대의 관리비와 향후 공용부 지출을 확인하면 실제 보유 부담이 더 잘 보입니다.",
+            "en": "This is a 99-year leasehold estate. The remaining title term, unit-specific management fees and upcoming common-property spending shape the cost of ownership."
+          },
+          "sourceIds": [
+            "colonial"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "더 포이즈 레지던스",
+          "en": "The Poiz Residences"
+        },
+        "reason": {
+          "ko": "역 연결통로와 아래층 상가를 함께 쓰는 대안입니다.",
+          "en": "An alternative with a station link and retail beneath the homes."
+        },
+        "condition": {
+          "ko": "학교 캠퍼스와 같은 크기 평면을 맞춰 비교하세요.",
+          "en": "Compare school campuses and similarly sized layouts."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "colonial",
+        "title": "EdgeProp — Park Colonial project profile",
+        "url": "https://www.edgeprop.sg/condo-apartment/park-colonial",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "단지 이름·규모·위치·임차권. 포털 수익률·가격 전망 및 후기 평점은 사용하지 않음.",
+          "en": "Identity, scale, location and tenure. Portal yields, forecasts and review scores excluded."
+        }
+      },
+      {
+        "id": "sais",
+        "title": "Stamford American — campuses",
+        "url": "https://www.sais.edu.sg/about-us/our-campus/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "학년별 캠퍼스 구분 및 주소. 주택 구매가 입학 자격을 주지는 않음.",
+          "en": "Campus addresses and grade split; buying a home does not confer admission."
+        }
+      },
+      {
+        "id": "mall",
+        "title": "The Woodleigh Mall — mall information",
+        "url": "https://www.thewoodleighmall.com/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "몰의 현재 존재와 생활 상권. 단지와 지하 직결된다는 주장은 하지 않음.",
+          "en": "Current mall and local amenities; no claim of a direct underground link from the condominium."
+        }
+      },
+      {
+        "id": "bidadari",
+        "title": "NParks — Bidadari Park",
+        "url": "https://www.nparks.gov.sg/visit/parks/park-detail/bidadari-park",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "공원 및 알카프 호수. 세대별 도보시간은 산정하지 않음.",
+          "en": "Park and Alkaff Lake; no unit-specific walk estimated."
+        }
+      },
+      {
+        "id": "moe-distance",
+        "title": "MOE — P1 distance and admission priority",
+        "url": "https://www.moe.gov.sg/primary/p1-registration/distance",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "초등 입학 거리 우선순위. 특정 세대의 거리 인증이나 입학 보장은 아님.",
+          "en": "P1 distance priority, not certification of an individual address or a guaranteed place."
+        }
+      }
+    ]
+  },
+  {
+    "id": "sg-treasure-at-tampines",
+    "marketId": "sg-singapore",
+    "name": {
+      "ko": "트레저 앳 탬피니스",
+      "en": "Treasure at Tampines"
+    },
+    "area": {
+      "ko": "탬피니스 · D18",
+      "en": "Tampines · D18"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "시장 생활과 단지 시설을 함께 누리는 탬피니스의 대단지",
+      "en": "A large Tampines estate with market life close by"
+    },
+    "summary": {
+      "ko": "트레저 앳 탬피니스는 단지 안에서 운동하고 놀며 보내는 시간이 많은 집에 가깝습니다. 바깥으로는 라운드 마켓과 푸드센터가 있어, 시설이 많은 콘도와 오래 자리 잡은 동네 생활을 함께 누릴 수 있습니다.",
+      "en": "Treasure at Tampines is a place for making use of the estate: swimming, exercise and play close to home. Outside, the Round Market and Food Centre add the everyday life of an established neighbourhood."
+    },
+    "bestFor": {
+      "ko": "수영과 단지 놀이시설을 자주 쓸 가족에게 잘 맞습니다. 학교와 출입구에서 먼 동이라면 매일 걷는 거리가 장점을 줄일 수 있습니다.",
+      "en": "A good fit for families who use pools and play areas regularly. A block far from the relevant exit or school route can make daily life less convenient."
+    },
+    "holdFor": {
+      "ko": "29개 동에 걸친 단지라 출입구·수영장·차량 승하차 지점까지의 거리가 같지 않습니다. 단지 대표 위치만으로 도보 시간을 판단하기 어렵습니다.",
+      "en": "Across 29 blocks, the walk to exits, pools and pickup points varies. The project’s map pin is not a useful substitute for the route from your own building."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "단지 안에서 보내는 시간이 많은 집",
+          "en": "A home for making use of the grounds"
+        },
+        "body": {
+          "ko": "수영장과 놀이시설, 공용 업무 공간을 두루 갖춘 큰 단지입니다. 평일 저녁과 주말을 집 주변에서 보내는 가족에게 시설의 활용도가 높습니다.",
+          "en": "Pools, play areas and shared working space make this a substantial estate. The facilities are most useful to households that spend evenings and weekends close to home."
+        },
+        "sourceIds": [
+          "treasure"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "시장과 푸드센터가 있는 동네",
+          "en": "An established market neighbourhood"
+        },
+        "body": {
+          "ko": "탬피니스 라운드 마켓·푸드센터를 주변 생활시설로 이용할 수 있습니다. 대형 몰만 있는 신도시보다 시장 장보기와 호커 식사를 선호하는 사람에게 어울립니다.",
+          "en": "Tampines Round Market and Food Centre provide an established neighbourhood option for produce and meals, alongside the larger shopping destinations in Tampines."
+        },
+        "sourceIds": [
+          "treasure"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "큰 단지에서는 내 동의 위치가 중요",
+          "en": "The block matters in a large estate"
+        },
+        "body": {
+          "ko": "29개 동에 걸친 단지라 출입구·수영장·차량 승하차 지점까지의 거리가 같지 않습니다. 단지 대표 위치만으로 도보 시간을 판단하기 어렵습니다.",
+          "en": "Across 29 blocks, the walk to exits, pools and pickup points varies. The project’s map pin is not a useful substitute for the route from your own building."
+        },
+        "sourceIds": [
+          "treasure"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "역 바로 위의 생활은 아닙니다",
+          "en": "Allow for the journey to the station"
+        },
+        "body": {
+          "ko": "시메이·탬피니스 권역의 철도를 활용하는 입지입니다. 역에 도착하기 전 도보나 버스 이동이 매일 반복되므로, 역세권이라는 말만으로 선택하기는 어렵습니다.",
+          "en": "The location draws on rail access around Simei and Tampines. The walk or bus trip before reaching the station is part of every commute."
+        },
+        "sourceIds": [
+          "treasure-map"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "시메이와 탬피니스 방면을 비교",
+            "en": "Compare Simei and Tampines routes"
+          },
+          "body": {
+            "ko": "목적지에 따라 시메이 MRT와 탬피니스 쪽 역을 비교할 만합니다. 내가 사용할 출입구에서 출근 시간에 출발해 보는 편이 역 목록보다 도움이 됩니다.",
+            "en": "Compare Simei MRT with stations on the Tampines side for your destination. The useful test begins at the exit you would use during the morning commute."
+          },
+          "sourceIds": [
+            "treasure-map"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "PIE 연결을 쓰는 차량 생활",
+            "en": "Road access via the PIE"
+          },
+          "body": {
+            "ko": "PIE로 연결되는 진입도로가 있습니다. 동부에서 차로 출퇴근하는 가구라면 장점이지만, 도로 연결만으로 출근시간이 짧다고 단정할 수는 없습니다.",
+            "en": "A slip road connects to the PIE. That is useful for driving around the east, although road access alone does not establish a short peak-hour commute."
+          },
+          "sourceIds": [
+            "treasure"
+          ],
+          "status": "documented"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "준위안 프라이머리는 탬피니스 스트리트 91",
+            "en": "Junyuan Primary is on Tampines Street 91"
+          },
+          "body": {
+            "ko": "주변 공립초 후보로 준위안 프라이머리를 살펴볼 수 있습니다. 학교는 탬피니스 스트리트 91에 있어, 단지의 어느 문을 쓰는지가 통학길에 영향을 줍니다.",
+            "en": "Junyuan Primary, on Tampines Street 91, is a local public-primary option to investigate. The estate exit you use affects the school route."
+          },
+          "sourceIds": [
+            "junyuan"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "1km 자격은 해당 주소 기준",
+            "en": "Check the address used for admission"
+          },
+          "body": {
+            "ko": "단지 규모가 크다고 모든 동에 같은 입학 거리 조건이 적용된다고 가정하면 안 됩니다. 지원 전 해당 주소와 입학 단계의 조건을 확인해야 합니다.",
+            "en": "Do not assume every block in a large development has the same distance priority. Check the actual address and registration phase before relying on a school option."
+          },
+          "sourceIds": [
+            "moe-distance"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "수영장 수보다 자주 쓸 시설",
+            "en": "Choose around the facilities you will use"
+          },
+          "body": {
+            "ko": "여러 수영장과 공용 공간 중 실제로 자주 이용할 곳이 내 집 가까이에 있는지가 중요합니다. 아이의 놀이 공간과 어른의 운동 동선을 따로 살펴보세요.",
+            "en": "What matters is whether the pool or shared space you will use is near your home. Compare children’s play areas separately from your own exercise routine."
+          },
+          "sourceIds": [
+            "treasure"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "시장 장보기와 몰 쇼핑을 나눠서",
+            "en": "Market errands and mall trips"
+          },
+          "body": {
+            "ko": "라운드 마켓의 일상 장보기와 탬피니스 몰·센추리 스퀘어로 가는 쇼핑은 다른 동선입니다. 모두 집 앞 시설인 것처럼 한데 묶어 보면 편의가 과장됩니다.",
+            "en": "Routine market trips differ from outings to Tampines Mall or Century Square. Treating every Tampines amenity as being at the doorstep overstates the convenience."
+          },
+          "sourceIds": [
+            "treasure"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "2,203세대 안에서도 비교 대상을 좁히기",
+            "en": "Narrow the comparison within 2,203 homes"
+          },
+          "body": {
+            "ko": "세대수가 많아도 모든 매물이 서로 대체되는 것은 아닙니다. 같은 침실 수·층·방향과 출입구 위치를 맞춰야 가격 차이를 읽기 쉽습니다.",
+            "en": "Even with 2,203 homes, units are not interchangeable. Compare bedroom count, floor, orientation and position relative to the exits before interpreting a price difference."
+          },
+          "sourceIds": [
+            "treasure-map"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "시설이 많아도 관리비를 추정하지 않기",
+            "en": "Use the actual management bill"
+          },
+          "body": {
+            "ko": "시설의 개수나 세대수만으로 관리비가 저렴하다고 볼 수는 없습니다. 해당 평형의 관리비, 공용부 수선 계획과 세대 내부의 필요한 보수를 함께 계산하세요.",
+            "en": "Many facilities and many homes do not establish low fees. Use the unit’s actual bill, common-property repair plans and any work needed inside the apartment."
+          },
+          "sourceIds": [
+            "treasure"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "파크 콜로니얼",
+          "en": "Park Colonial"
+        },
+        "reason": {
+          "ko": "역 접근을 우선하는 생활과 비교할 수 있습니다.",
+          "en": "Compare with a routine that prioritises station access."
+        },
+        "condition": {
+          "ko": "같은 예산 대안은 확정하지 않았으며 출근지·면적부터 맞춰야 합니다.",
+          "en": "Not established as a same-budget alternative; match work destination and space needs first."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "treasure",
+        "title": "Sim Lian — Treasure at Tampines",
+        "url": "https://www.simlian.com.sg/property/treasure-at-tampines/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "준공허가 취득, 29개 동, 시설과 생활권. 예정 노선·과장된 차량시간은 현황에 포함하지 않음.",
+          "en": "TOP obtained, 29 blocks, facilities and neighbourhood; future lines and promotional drive times excluded."
+        }
+      },
+      {
+        "id": "treasure-map",
+        "title": "Treasure at Tampines — project and location facts",
+        "url": "https://treasureattampines.propertybook.sg/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "2,203세대와 위치·철도 후보만 사용. 개발사 현재 TOP 공지가 과거 예정일보다 우선하며 저관리비·수익성 주장은 제외.",
+          "en": "2,203 homes, location and rail options only. Current developer TOP confirmation takes precedence over old expected dates; low-fee and return claims excluded."
+        }
+      },
+      {
+        "id": "junyuan",
+        "title": "MOE — Junyuan Primary School",
+        "url": "https://www.moe.gov.sg/schoolfinder/schooldetail/junyuan-primary-school",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "학교 주소 확인. 단지별 1km 자격이나 입학 배정은 인증하지 않음.",
+          "en": "School address; no certification of a condominium address within 1 km or an allocated place."
+        }
+      },
+      {
+        "id": "moe-distance",
+        "title": "MOE — P1 distance and admission priority",
+        "url": "https://www.moe.gov.sg/primary/p1-registration/distance",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "초등 입학 거리 우선순위. 특정 세대의 거리 인증이나 입학 보장은 아님.",
+          "en": "P1 distance priority, not certification of an individual address or a guaranteed place."
+        }
+      }
+    ]
   }
 ]

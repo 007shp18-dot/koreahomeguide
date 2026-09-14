@@ -7677,5 +7677,839 @@
         }
       }
     ]
+  },
+  {
+    "id": "jp-park-tower-shinonome",
+    "marketId": "jp-tokyo",
+    "name": {
+      "ko": "파크 타워 시노노메",
+      "en": "Park Tower Shinonome"
+    },
+    "area": {
+      "ko": "시노노메 · 고토구",
+      "en": "Shinonome · Koto"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "공부방과 놀이공간을 일상에 들이는 시노노메 타워",
+      "en": "A Shinonome tower with places to study, play and spend time"
+    },
+    "summary": {
+      "ko": "파크 타워 시노노메는 집 안 평면만큼 공용공간의 쓰임이 눈에 띄는 단지입니다. 공부방·도서 라운지·놀이공간을 자주 이용한다면, 작은 집에서도 생활 반경을 넓힐 수 있습니다.",
+      "en": "Park Tower Shinonome stands out for spaces beyond the apartment. Regular use of the study room, library lounge and play areas can make daily life feel less confined to your own floor plan."
+    },
+    "bestFor": {
+      "ko": "공용 공부방과 놀이공간을 활용하는 가족에게 어울립니다. 학교 배정과 등하굣길이 맞는지 먼저 확인하세요.",
+      "en": "Suited to families who will use the shared study and play spaces. Confirm the school allocation and daily route first."
+    },
+    "holdFor": {
+      "ko": "43층 건물이라도 모든 집에서 같은 전망을 누리는 것은 아닙니다. 거실 사진만 보지 말고 침실 방향과 맞은편 건물도 함께 보세요.",
+      "en": "A 43-storey building does not give every home the same outlook. Look beyond the living-room photograph to bedroom orientation and neighbouring buildings."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "공용공간을 자주 쓰는 가족에게",
+          "en": "Shared spaces for everyday use"
+        },
+        "body": {
+          "ko": "도서 라운지와 공부방, 아이들 놀이공간이 있어 집 밖 활동을 건물 안에서도 이어갈 수 있습니다. 단지 시설을 자주 이용하는 가족에게 어울립니다.",
+          "en": "A library lounge, study room and children’s spaces extend daily life beyond the apartment. They are most useful to families who will actually use them."
+        },
+        "sourceIds": [
+          "shin-community"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "두 철도 방향을 선택하는 입지",
+          "en": "Two different rail approaches"
+        },
+        "body": {
+          "ko": "린카이선 시노노메역과 유라쿠초선 다쓰미역을 선택할 수 있습니다. 출근 방향이 다른 두 사람이 산다면 각자의 역까지 가는 길을 비교할 만합니다.",
+          "en": "Shinonome on the Rinkai Line and Tatsumi on the Yurakucho Line offer different routes. Couples working in different directions can compare each person’s station walk."
+        },
+        "sourceIds": [
+          "shin-outline"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "고층 조망은 세대별로 다릅니다",
+          "en": "A tower address is not a view guarantee"
+        },
+        "body": {
+          "ko": "43층 건물이라도 모든 집에서 같은 전망을 누리는 것은 아닙니다. 거실 사진만 보지 말고 침실 방향과 맞은편 건물도 함께 보세요.",
+          "en": "A 43-storey building does not give every home the same outlook. Look beyond the living-room photograph to bedroom orientation and neighbouring buildings."
+        },
+        "sourceIds": [
+          "shin-outline"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "수변 입지의 비상시 생활",
+          "en": "Planning for a waterfront location"
+        },
+        "body": {
+          "ko": "수변 생활이 좋다면 호우 때의 귀가와 비상시 물·전력 확보도 같이 생각할 필요가 있습니다. 고층이라는 이유만으로 건물 전체의 침수·정전 영향을 피하는 것은 아닙니다.",
+          "en": "Alongside waterfront living, consider the route home in heavy rain and arrangements for water and power interruptions. A high floor does not settle building-wide disruption."
+        },
+        "sourceIds": [
+          "koto-water"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "시노노메역은 광고 도보 7분",
+            "en": "Shinonome: a seven-minute advertised walk"
+          },
+          "body": {
+            "ko": "린카이선 시노노메역까지 광고 도보시간은 7분입니다. 현관·엘리베이터·승강장 이동을 포함한 실측 출근시간은 아닙니다.",
+            "en": "Shinonome Station is advertised at a seven-minute walk. This is not a timed journey including the apartment door, lift and platform."
+          },
+          "sourceIds": [
+            "shin-outline"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "다쓰미와 도요스는 다른 동선",
+            "en": "Tatsumi and Toyosu are different walks"
+          },
+          "body": {
+            "ko": "유라쿠초선은 다쓰미역 쪽 접근을 먼저 비교할 만합니다. 도요스 상권을 이용하는 편리함과 도요스역 바로 앞에 사는 편리함은 같지 않습니다.",
+            "en": "For the Yurakucho Line, compare the Tatsumi approach first. Access to the wider Toyosu shopping area is different from living directly beside Toyosu Station."
+          },
+          "sourceIds": [
+            "shin-outline"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "시노노메초 통학구역을 주소로 확인",
+            "en": "Check the Shinonome Elementary catchment"
+          },
+          "body": {
+            "ko": "2024년 통학구역표상 시노노메 1-9-4는 시노노메초 구역에 해당합니다. 입주 연도에 변경이 있는지는 전입 전에 확인해야 합니다.",
+            "en": "The 2024 schedule places 1-9-4 Shinonome in the Shinonome Elementary catchment. Confirm any entry-year changes before moving."
+          },
+          "sourceIds": [
+            "koto-schools"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "학교가 가까워도 교문까지 걸어보기",
+            "en": "Walk the route to the school gate"
+          },
+          "body": {
+            "ko": "같은 시노노메 1초메 안에서도 주소에 따라 배정이 갈립니다. 아이가 쓸 교문과 횡단 지점을 정해 두면 다른 단지와의 통학 비교가 더 명확합니다.",
+            "en": "Catchments vary within Shinonome 1-chome. Identify the relevant school gate and crossings before comparing a child’s daily journey with another estate."
+          },
+          "sourceIds": [
+            "koto-schools"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "읽고 공부할 공간이 집 밖에도",
+            "en": "Reading and study beyond the apartment"
+          },
+          "body": {
+            "ko": "1층 도서 라운지와 공부방은 집 안에 독립된 서재가 없어도 유용한 공간입니다. 실제 사용 가능 시간과 좌석 이용 방식은 관리 규정에 따릅니다.",
+            "en": "The ground-floor library lounge and study room can be useful without a separate study at home. Access hours and seat use depend on the management rules."
+          },
+          "sourceIds": [
+            "shin-community"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "소라플라자의 열린 공용공간",
+            "en": "The open spaces of Sora Plaza"
+          },
+          "body": {
+            "ko": "층 사이에 마련된 소라플라자는 이 건물의 특징입니다. 전망만 보는 집보다 공용공간을 오가며 시간을 보내는 생활을 원하는 사람에게 더 잘 맞습니다.",
+            "en": "Sora Plaza’s shared spaces are a distinctive part of the building. They suit residents who want places to spend time outside their own apartment."
+          },
+          "sourceIds": [
+            "shin-community"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "2014년 건물의 수선 계획",
+            "en": "Repair planning for a 2014 building"
+          },
+          "body": {
+            "ko": "2014년 건물인 만큼 지금의 내부 상태와 앞으로의 공용부 수선을 함께 봐야 합니다. 인테리어가 새로워도 배관·승강기 등 전체 건물의 부담까지 사라지지는 않습니다.",
+            "en": "For a building dating from 2014, compare the apartment’s condition with planned common-property work. A fresh interior does not remove future building costs."
+          },
+          "sourceIds": [
+            "shin-outline"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "관리비와 수선적립금을 나눠 보기",
+            "en": "Separate management and reserve contributions"
+          },
+          "body": {
+            "ko": "공용공간을 얼마나 쓰는지와 별개로 관리비·수선적립금은 계속 부담하는 비용입니다. 매물 한 건의 월 부담을 같은 면적의 다른 세대와 맞춰 비교하세요.",
+            "en": "Management fees and reserve contributions continue whether or not you use every shared space. Compare the actual monthly charges for similarly sized homes."
+          },
+          "sourceIds": [
+            "shin-outline",
+            "shin-community"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "프라우드 타워 시노노메 캐널 코트",
+          "en": "Proud Tower Shinonome Canal Court"
+        },
+        "reason": {
+          "ko": "시노노메 안에서 역·장보기·시설 구성을 비교하기 좋습니다.",
+          "en": "Compare rail approaches, groceries and facilities within Shinonome."
+        },
+        "condition": {
+          "ko": "같은 방향·면적·수선 부담을 맞춰 보세요.",
+          "en": "Match orientation, area and repair obligations."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "shin-outline",
+        "title": "Wangan Mansion — Park Tower Shinonome outline",
+        "url": "https://wangan-mansion.jp/property/27/detail",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "585세대·43층·2014년 건물 및 광고 도보시간. 지번과 주거주소를 구분.",
+          "en": "585 homes, 43 floors, 2014 building and advertised walks; parcel and residential addresses distinguished."
+        }
+      },
+      {
+        "id": "shin-community",
+        "title": "Toshikura — Park Tower Shinonome",
+        "url": "https://toshikura.jp/mansion/mansion-13/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": "2026-01-22",
+        "kind": "editorial",
+        "note": {
+          "ko": "2026-01-22 공용시설 취재. 현재 예약·요금·이용 가능 여부를 보장하지 않음.",
+          "en": "Shared-facility feature dated 22 January 2026; does not guarantee current booking rules, charges or availability."
+        }
+      },
+      {
+        "id": "koto-schools",
+        "title": "Koto City — primary school catchments, 1 April 2024",
+        "url": "https://www.city.koto.lg.jp/581101/kodomo/gakko/shuen/shogakko/documents/r60401shou-tsuugakukuiki.pdf",
+        "checkedOn": "2026-09-14",
+        "publishedOn": "2024-04-01",
+        "kind": "official",
+        "note": {
+          "ko": "2024-04-01 기준 주소별 표. 입주 연도 배정 확정으로 사용하지 않음.",
+          "en": "Address schedule dated 1 April 2024, not a guarantee for a later entry year."
+        }
+      },
+      {
+        "id": "koto-water",
+        "title": "Koto City — flood, inland-water and storm-surge maps",
+        "url": "https://www.city.koto.lg.jp/470601/20200701.html",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "재해 종류별 공공 지도. 특정 건물의 피해나 방재 성능은 추정하지 않음.",
+          "en": "Public maps by hazard type; no inference of damage or building-specific resilience."
+        }
+      }
+    ]
+  },
+  {
+    "id": "jp-branz-tower-shibaura",
+    "marketId": "jp-tokyo",
+    "name": {
+      "ko": "브란즈 타워 시바우라",
+      "en": "Branz Tower Shibaura"
+    },
+    "area": {
+      "ko": "시바우라 · 미나토구",
+      "en": "Shibaura · Minato"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "다마치 출근과 운하 주변 생활을 함께 고르는 집",
+      "en": "Tamachi access with a home in Shibaura’s canal neighbourhood"
+    },
+    "summary": {
+      "ko": "브란즈 타워 시바우라는 다마치·미타의 철도를 쓰면서 운하 주변 주거지에 살고 싶은 사람에게 어울립니다. 역 바로 위의 집은 아니지만, JR과 지하철 중 목적지에 맞는 길을 고를 수 있습니다.",
+      "en": "Branz Tower Shibaura suits people who want Tamachi and Mita rail access from a home in the canal neighbourhood. It is not above a station, but JR and subway routes offer different ways across the city."
+    },
+    "bestFor": {
+      "ko": "시바하마초 통학과 건물 내 보육원 위치가 매력입니다. 보육원 공석과 실제 등하굣길이 맞아야 가족 생활의 장점으로 이어집니다.",
+      "en": "Shibahama Elementary and the on-site nursery address are useful for families. The benefit depends on nursery availability and a workable school route."
+    },
+    "holdFor": {
+      "ko": "다마치역 광고 도보 8분은 집 안에서 출발한 시간이 아닙니다. 엘리베이터와 역 안 이동을 더하면 출근 때 느끼는 거리는 길어집니다.",
+      "en": "The advertised eight minutes to Tamachi does not begin inside the apartment. Lifts and movement within the station add to the daily journey."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "다마치와 미타를 함께 쓰는 입지",
+          "en": "Tamachi and Mita within reach"
+        },
+        "body": {
+          "ko": "다마치의 JR과 미타의 지하철을 이용할 수 있어 출근 방향을 고르기 좋습니다. 역까지 걷는 시간이 괜찮다면 도심 생활의 선택지가 넓습니다.",
+          "en": "JR services at Tamachi and subway services at Mita give different commuting options. If the walk suits you, the location supports a broad city routine."
+        },
+        "sourceIds": [
+          "branz-outline"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "운하 주변의 주거 생활",
+          "en": "A residential base among the canals"
+        },
+        "body": {
+          "ko": "시바우라의 운하 주변에 자리한 2021년 타워입니다. 역 상권을 이용하면서 수변 주거지에서 생활하고 싶은 사람에게 어울립니다.",
+          "en": "This 2021 tower sits in Shibaura’s canal neighbourhood. It suits people who want access to station-area amenities with a waterfront residential setting."
+        },
+        "sourceIds": [
+          "branz-outline"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "역까지 걷는 구간은 남습니다",
+          "en": "There is still a walk to the station"
+        },
+        "body": {
+          "ko": "다마치역 광고 도보 8분은 집 안에서 출발한 시간이 아닙니다. 엘리베이터와 역 안 이동을 더하면 출근 때 느끼는 거리는 길어집니다.",
+          "en": "The advertised eight minutes to Tamachi does not begin inside the apartment. Lifts and movement within the station add to the daily journey."
+        },
+        "sourceIds": [
+          "branz-outline"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "같은 타워라도 전망은 다릅니다",
+          "en": "The outlook depends on the apartment"
+        },
+        "body": {
+          "ko": "운하 주변 입지와 모든 집의 수변 조망은 같은 조건이 아닙니다. 마주 보는 건물, 창 방향과 침실 채광을 세대별로 비교하세요.",
+          "en": "A canal neighbourhood does not give every home a water view. Compare neighbouring buildings, window orientation and bedroom light for the actual apartment."
+        },
+        "sourceIds": [
+          "branz-outline"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "다마치역 광고 도보 8분",
+            "en": "Tamachi: advertised eight-minute walk"
+          },
+          "body": {
+            "ko": "다마치역에서 야마노테선과 게이힌토호쿠선을 이용할 수 있습니다. 광고 도보 8분을 기본으로 하되, 내가 쓸 역 출입구까지의 길을 살펴보세요.",
+            "en": "Tamachi provides Yamanote and Keihin-Tohoku Line services. The advertised walk is eight minutes; check the route to the entrance you will use."
+          },
+          "sourceIds": [
+            "branz-outline"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "미타역 광고 도보 9분",
+            "en": "Mita: advertised nine-minute walk"
+          },
+          "body": {
+            "ko": "미타역의 아사쿠사선·미타선도 선택지입니다. 같은 집이라도 목적지에 따라 JR보다 지하철로 걷는 길이 더 편할 수 있습니다.",
+            "en": "Mita’s Asakusa and Mita Lines are another option, with an advertised nine-minute walk. The better route depends on your destination."
+          },
+          "sourceIds": [
+            "branz-outline"
+          ],
+          "status": "documented"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "현재 통학구역은 시바하마초",
+            "en": "The current catchment is Shibahama Elementary"
+          },
+          "body": {
+            "ko": "시바우라 2초메는 시바하마초 통학구역에 포함됩니다. 2025년 4월부터의 구역 안내에 따른 것으로, 예전 시바우라초 소개와 혼동하지 않는 편이 좋습니다.",
+            "en": "Shibaura 2-chome is included in Shibahama Elementary’s catchment from April 2025. Older descriptions naming Shibaura Elementary should not be used for this address."
+          },
+          "sourceIds": [
+            "shibahama"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "건물 안 보육원, 입소는 별도",
+            "en": "An on-site nursery with separate admission"
+          },
+          "body": {
+            "ko": "태양의 아이 시바우라 2초메 보육원은 이 건물 2층 주소로 등록되어 있습니다. 가까운 보육시설의 장점은 있지만 입소 가능 여부는 별도 절차로 확인해야 합니다.",
+            "en": "Taiyo no Ko Shibaura Nichome nursery is listed on the building’s second floor. That is convenient, but a place remains subject to the separate admissions process."
+          },
+          "sourceIds": [
+            "nursery"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "역 상권과 운하를 오가는 하루",
+            "en": "A routine between station and canals"
+          },
+          "body": {
+            "ko": "장보기와 외식은 다마치역 쪽 생활권을 함께 쓰는 구성입니다. 역에서 귀가하는 길에 필요한 일을 해결할 수 있는지 보면 입지를 판단하기 쉽습니다.",
+            "en": "Daily shopping and meals can draw on the Tamachi station area. Consider which errands fit naturally on your route home."
+          },
+          "sourceIds": [
+            "branz-outline"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "집 안 복도와 공용부",
+            "en": "Indoor corridors and shared spaces"
+          },
+          "body": {
+            "ko": "실내 복도 방식의 주거동입니다. 현관 앞 환경이 중요한 사람이라면 층별 복도와 엘리베이터에서 집까지의 거리도 함께 살펴볼 만합니다.",
+            "en": "Homes are arranged along internal corridors. If the arrival experience matters to you, compare the corridor and lift-to-door distance on the chosen floor."
+          },
+          "sourceIds": [
+            "branz-outline"
+          ],
+          "status": "documented"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "2021년 준공과 현재 상태",
+            "en": "A 2021 building still needs a condition check"
+          },
+          "body": {
+            "ko": "비교적 최근 건물이지만 개별 세대의 사용 흔적과 설비 상태는 다릅니다. 준공 연도만 보고 입주 보수비를 0으로 두지 않는 편이 좋습니다.",
+            "en": "Although the building dates from 2021, wear and equipment condition vary by apartment. Age alone does not establish that no work is needed before moving in."
+          },
+          "sourceIds": [
+            "branz-step"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "관리비와 수선적립금의 앞으로",
+            "en": "Look beyond today’s monthly charges"
+          },
+          "body": {
+            "ko": "관리비와 수선적립금의 현재 금액뿐 아니라 향후 증액 계획도 비교하세요. 낮은 초기 적립금이 장기 보유비까지 낮다는 뜻은 아닙니다.",
+            "en": "Compare the current management fee and reserve contribution with planned increases. A low initial reserve contribution does not establish low long-term ownership costs."
+          },
+          "sourceIds": [
+            "branz-step"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "시바우라 아일랜드 그로브 타워",
+          "en": "Shibaura Island Grove Tower"
+        },
+        "reason": {
+          "ko": "다마치 출근과 수변 생활을 비교할 수 있습니다.",
+          "en": "Compare Tamachi access and waterfront neighbourhood life."
+        },
+        "condition": {
+          "ko": "연식·면적·수선적립금을 함께 맞춰야 합니다.",
+          "en": "Account for age, size and reserve contributions."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "branz-outline",
+        "title": "Tokyu Livable — Branz Tower Shibaura",
+        "url": "https://www.livable.co.jp/mansion/library/000000810864/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "건물 개요·실내 복도·광고 도보시간. 실측 이동시간이나 모든 세대의 조망을 뜻하지 않음.",
+          "en": "Building outline, internal corridors and advertised walks; not timed journeys or universal views."
+        }
+      },
+      {
+        "id": "branz-step",
+        "title": "Sumitomo Step — Branz Tower Shibaura outline",
+        "url": "https://www.stepon.co.jp/mansion/library-detail/12200065/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "482세대·2021년 건물. 준공 월 차이는 연도만 사용.",
+          "en": "482 homes and 2021 building; month discrepancies avoided by using the year."
+        }
+      },
+      {
+        "id": "shibahama",
+        "title": "Shibahama Elementary — school and catchment",
+        "url": "https://shibahama-es.minato-tky.ed.jp/about",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "2025년 4월 적용 통학구역, 2026년 재학생 현황 페이지.",
+          "en": "Catchment effective April 2025; page includes 2026 enrolment information."
+        }
+      },
+      {
+        "id": "nursery",
+        "title": "Minato City Board of Education — nursery list",
+        "url": "https://www.city.minato.tokyo.jp/documents/145233/r6dai2kaiteireikaisiryou1.pdf",
+        "checkedOn": "2026-09-14",
+        "publishedOn": "2024-02-14",
+        "kind": "official",
+        "note": {
+          "ko": "2024년 자료의 시바우라 2-9-1, 브란즈 타워 2층 보육원 주소. 현재 공석·입소는 별도.",
+          "en": "2024 listing of nursery at 2-9-1 Shibaura, Branz Tower second floor; current vacancies and admission separate."
+        }
+      }
+    ]
+  },
+  {
+    "id": "jp-proud-tower-shinonome-canal-court",
+    "marketId": "jp-tokyo",
+    "name": {
+      "ko": "프라우드 타워 시노노메 캐널 코트",
+      "en": "Proud Tower Shinonome Canal Court"
+    },
+    "area": {
+      "ko": "시노노메 캐널 코트 · 고토구",
+      "en": "Shinonome Canal Court · Koto"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "이온 장보기와 운하 생활이 가까운 캐널 코트 타워",
+      "en": "Canal-side living with AEON close to home"
+    },
+    "summary": {
+      "ko": "프라우드 타워 시노노메 캐널 코트는 운하 주변 주거지에서 장보기와 여가를 가까이 두는 집입니다. 이온 시노노메와 라운지·공용 정원을 자주 쓰는 생활이라면 장점이 분명합니다.",
+      "en": "Proud Tower Shinonome Canal Court puts groceries and shared leisure spaces close to a home beside the canal. Nearby AEON, the lounge and communal gardens are useful parts of an everyday routine."
+    },
+    "bestFor": {
+      "ko": "마트와 아이들 공용공간을 자주 쓰는 가족에게 편합니다. 학교 배정과 등하교 때 걷는 길을 주소 기준으로 확인하세요.",
+      "en": "Convenient for families using the supermarket and children’s spaces. Check school allocation and the daily walk for the exact address."
+    },
+    "holdFor": {
+      "ko": "도요스역 광고 도보 11분의 입지입니다. 마트가 가깝다는 장점과 역을 매일 걷는 부담을 따로 비교하는 편이 좋습니다.",
+      "en": "Toyosu Station is advertised at an eleven-minute walk. Grocery convenience and the daily station journey are separate trade-offs."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "운하와 공용 정원이 있는 타워",
+          "en": "Canal setting and shared gardens"
+        },
+        "body": {
+          "ko": "다쓰미 운하 옆에 자리하고 중간층과 옥상에 공용 정원이 있습니다. 집 안 전망 외에도 건물 안에서 바깥 공간을 이용하고 싶은 사람에게 어울립니다.",
+          "en": "Beside the Tatsumi Canal, the tower has shared gardens on intermediate floors and the roof. These offer outdoor spaces beyond an individual apartment’s view."
+        },
+        "sourceIds": [
+          "proud"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "장보기와 공용시설을 가까이",
+          "en": "Groceries and shared facilities nearby"
+        },
+        "body": {
+          "ko": "이온 시노노메와 가깝고 건물 안에는 라운지·운동·아이들 공간이 있습니다. 가족의 평일 생활을 집 주변에서 해결하기 좋은 구성입니다.",
+          "en": "Nearby AEON Shinonome and the building’s lounge, fitness and children’s spaces support a family routine centred close to home."
+        },
+        "sourceIds": [
+          "proud",
+          "ietan"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "도요스역까지는 걸어야 합니다",
+          "en": "Toyosu still involves a walk"
+        },
+        "body": {
+          "ko": "도요스역 광고 도보 11분의 입지입니다. 마트가 가깝다는 장점과 역을 매일 걷는 부담을 따로 비교하는 편이 좋습니다.",
+          "en": "Toyosu Station is advertised at an eleven-minute walk. Grocery convenience and the daily station journey are separate trade-offs."
+        },
+        "sourceIds": [
+          "proud"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "운하 조망과 비상시 대비",
+          "en": "Canal views and disruption planning"
+        },
+        "body": {
+          "ko": "수변이 가까운 만큼 호우 시 이동과 건물의 물·전력 비상대응을 함께 봐야 합니다. 이 지역의 공공 재해지도는 건물의 실제 피해 이력을 뜻하지는 않습니다.",
+          "en": "A canal setting makes heavy-rain access and building arrangements for water and power interruptions relevant. Public hazard maps do not establish the building’s damage history."
+        },
+        "sourceIds": [
+          "koto-water"
+        ],
+        "status": "needs-check"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "도요스·다쓰미 광고 도보 11분",
+            "en": "Toyosu and Tatsumi: advertised eleven-minute walks"
+          },
+          "body": {
+            "ko": "유라쿠초선 도요스역과 다쓰미역까지 각각 광고 도보 11분입니다. 엘리베이터와 신호 대기까지 포함한 실측 시간은 아닙니다.",
+            "en": "Toyosu and Tatsumi on the Yurakucho Line are each advertised at an eleven-minute walk. These are not measured journeys including lifts and crossing waits."
+          },
+          "sourceIds": [
+            "proud"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "역을 고를 때 장보기 동선도",
+            "en": "Choose a station with the rest of the day in mind"
+          },
+          "body": {
+            "ko": "두 역 중 하나를 고를 때 출근 방향뿐 아니라 귀가 때 마트에 들르는 경로도 비교해 보세요. 평일마다 반복하는 길이 이 집의 편리함을 결정합니다.",
+            "en": "When choosing between the two stations, include the route past the supermarket on the way home. The journey you repeat each weekday defines the convenience."
+          },
+          "sourceIds": [
+            "proud",
+            "ietan"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "시노노메초 구역은 주소별 확인",
+            "en": "Address-specific Shinonome Elementary catchment"
+          },
+          "body": {
+            "ko": "2024년 구역표상 시노노메 1-9-50은 시노노메초 구역에 해당합니다. 가까운 캐널 코트의 다른 주소와 구역이 같다고 가정하지 말고 입주 연도를 재확인하세요.",
+            "en": "The 2024 schedule puts 1-9-50 Shinonome in the Shinonome Elementary catchment. Do not assume nearby Canal Court addresses share it; reconfirm for the entry year."
+          },
+          "sourceIds": [
+            "koto-schools"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "그란차 시노노메가 인근에",
+            "en": "Grancha Shinonome nearby"
+          },
+          "body": {
+            "ko": "인근에 어린이·고령자 시설이 함께 있는 그란차 시노노메가 있습니다. 집 가까운 시설이라는 장점과 보육 입소·프로그램 이용 자격은 따로 봐야 합니다.",
+            "en": "Nearby Grancha Shinonome combines children’s and older residents’ facilities. Proximity is useful, while childcare admission and programme eligibility remain separate."
+          },
+          "sourceIds": [
+            "ietan"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "이온 시노노메에서 일상 장보기",
+            "en": "Everyday shopping at AEON Shinonome"
+          },
+          "body": {
+            "ko": "이온 시노노메는 광고 도보 3분 거리입니다. 차 없이 자주 장을 보고 간단한 생필품을 사는 생활에서 체감하기 쉬운 장점입니다.",
+            "en": "AEON Shinonome is advertised at a three-minute walk. It is a practical advantage for frequent groceries and household essentials without a car."
+          },
+          "sourceIds": [
+            "ietan"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "카페 라운지와 공용 정원",
+            "en": "A café lounge and communal gardens"
+          },
+          "body": {
+            "ko": "1층 카페 라운지와 공용 정원이 있는 건물입니다. 친구를 만나거나 잠깐 쉬는 장소가 집 밖에도 있다는 점이 특징입니다.",
+            "en": "The building includes a ground-floor café lounge and communal gardens, offering places beyond the apartment to meet or take a break."
+          },
+          "sourceIds": [
+            "proud"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "2012년 건물, 수선 이력이 중요",
+            "en": "A 2012 building: repair history matters"
+          },
+          "body": {
+            "ko": "2012년 12월 건물입니다. 매물 내부 수리뿐 아니라 공용부 공사 이력과 앞으로의 수선적립금 부담을 함께 살펴야 합니다.",
+            "en": "The building dates from December 2012. Look at common-property works and future reserve contributions alongside renovation inside the apartment."
+          },
+          "sourceIds": [
+            "proud"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "주차장과 시설비를 실제 조건으로",
+            "en": "Parking and facilities on actual terms"
+          },
+          "body": {
+            "ko": "주차장과 여러 공용시설이 있지만 매물에 따라 사용권·공석·추가 요금이 다를 수 있습니다. 자동차가 필요하다면 이용 가능한 주차 조건부터 확인하세요.",
+            "en": "Parking and shared facilities exist, but rights, availability and extra charges may differ. If you need a car, establish the actual parking arrangement first."
+          },
+          "sourceIds": [
+            "ietan"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "파크 타워 시노노메",
+          "en": "Park Tower Shinonome"
+        },
+        "reason": {
+          "ko": "린카이선 접근과 공부·놀이 공용공간을 비교할 수 있습니다.",
+          "en": "Compare Rinkai Line access and study and play facilities."
+        },
+        "condition": {
+          "ko": "건물 연식과 실제 수선 부담까지 맞춰야 합니다.",
+          "en": "Include building age and actual repair obligations."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "proud",
+        "title": "Nomu — Proud Tower Shinonome Canal Court",
+        "url": "https://www.nomu.com/mansion/library/id/P0024757/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "정확한 건물명·600세대·52층·2012년 및 광고 도보시간·공용 정원. 호가는 실거래로 쓰지 않음.",
+          "en": "Exact identity, 600 homes, 52 floors, 2012 date, advertised walks and gardens. Asking prices are not treated as completed sales."
+        }
+      },
+      {
+        "id": "ietan",
+        "title": "Taisei Yuraku — Proud Tower Shinonome Canal Court",
+        "url": "https://www.ietan.jp/contents/tower_toyosu/detail/20",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "이온·그란차 시노노메와 시설. 내진 방식 표현은 출처 간 차이가 있어 채택하지 않음.",
+          "en": "AEON, Grancha Shinonome and amenities. Conflicting seismic-system descriptions are excluded."
+        }
+      },
+      {
+        "id": "koto-schools",
+        "title": "Koto City — primary school catchments, 1 April 2024",
+        "url": "https://www.city.koto.lg.jp/581101/kodomo/gakko/shuen/shogakko/documents/r60401shou-tsuugakukuiki.pdf",
+        "checkedOn": "2026-09-14",
+        "publishedOn": "2024-04-01",
+        "kind": "official",
+        "note": {
+          "ko": "2024-04-01 기준 주소별 표. 입주 연도 배정 확정으로 사용하지 않음.",
+          "en": "Address schedule dated 1 April 2024, not a guarantee for a later entry year."
+        }
+      },
+      {
+        "id": "koto-water",
+        "title": "Koto City — flood, inland-water and storm-surge maps",
+        "url": "https://www.city.koto.lg.jp/470601/20200701.html",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "재해 종류별 공공 지도. 특정 건물의 피해나 방재 성능은 추정하지 않음.",
+          "en": "Public maps by hazard type; no inference of damage or building-specific resilience."
+        }
+      }
+    ]
   }
 ]

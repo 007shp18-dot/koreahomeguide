@@ -1098,5 +1098,107 @@
       "costs:0": "不同面积和楼层的挂牌租金差异明显",
       "costs:1": "租客无另列共益费不等于业主无储备金"
     }
+  },
+  "jp-park-tower-shinonome": {
+    "family": {
+      "ko": "공용 공부방과 놀이공간을 활용하는 가족에게 어울립니다. 학교 배정과 등하굣길이 맞는지 먼저 확인하세요.",
+      "en": "Suited to families who will use the shared study and play spaces. Confirm the school allocation and daily route first.",
+      "zh-CN": "适合使用公共自习和游乐空间的家庭，先确认学区与每日上学路线。"
+    },
+    "couple": {
+      "ko": "두 사람이 서로 다른 철도 방향으로 출근한다면 역 선택지가 유용합니다. 낮에 비는 집이라면 조망보다 출근길을 먼저 비교해 보세요.",
+      "en": "The rail options help if two people commute in different directions. If the apartment is empty during the day, weigh the journey before a view premium.",
+      "zh-CN": "两人通勤方向不同时有不同铁路选择，白天不在家则可先考虑通勤而非景观溢价。"
+    },
+    "investor": {
+      "ko": "2014년 건물의 수선 계획과 월 부담이 가격 비교의 핵심입니다. 동네 익명 거래를 이 타워의 실거래로 간주하지 마세요.",
+      "en": "Repair plans and recurring charges matter for this 2014 building. Anonymous neighbourhood sales cannot be treated as transactions in this tower.",
+      "zh-CN": "2014年建筑的维修计划和月度费用很重要，地区匿名成交不能当成本楼成交。"
+    }
+  },
+  "jp-branz-tower-shibaura": {
+    "family": {
+      "ko": "시바하마초 통학과 건물 내 보육원 위치가 매력입니다. 보육원 공석과 실제 등하굣길이 맞아야 가족 생활의 장점으로 이어집니다.",
+      "en": "Shibahama Elementary and the on-site nursery address are useful for families. The benefit depends on nursery availability and a workable school route.",
+      "zh-CN": "芝滨小学和楼内保育园有便利性，但需确认保育名额和上学路线。"
+    },
+    "couple": {
+      "ko": "두 사람의 출근지가 다르면 다마치와 미타를 나눠 쓰기 좋습니다. 매일 걷는 거리와 원하는 침실 방향을 함께 고르세요.",
+      "en": "Tamachi and Mita can serve two different work destinations. Choose around both the daily walk and the bedroom setting you want.",
+      "zh-CN": "田町和三田可服务不同工作地点，选房兼顾每日步行距离与卧室朝向。"
+    },
+    "investor": {
+      "ko": "2021년 건물이라는 점만으로 관리 부담을 낮게 잡기는 어렵습니다. 같은 크기 세대의 거래와 수선적립금 증액 계획을 함께 비교하세요.",
+      "en": "A 2021 completion date alone does not establish low ownership costs. Compare matched homes and planned increases in reserve contributions.",
+      "zh-CN": "2021年建成不代表持有费用低，应比较同面积房源和维修储备金增额计划。"
+    }
+  },
+  "jp-proud-tower-shinonome-canal-court": {
+    "family": {
+      "ko": "마트와 아이들 공용공간을 자주 쓰는 가족에게 편합니다. 학교 배정과 등하교 때 걷는 길을 주소 기준으로 확인하세요.",
+      "en": "Convenient for families using the supermarket and children’s spaces. Check school allocation and the daily walk for the exact address.",
+      "zh-CN": "方便经常使用超市和儿童空间的家庭，需按地址确认学区和上学路线。"
+    },
+    "couple": {
+      "ko": "운하 주변에서 쉬고 집 가까이 장을 보는 생활에 어울립니다. 두 사람 모두 출근이 잦다면 역까지의 거리가 먼저 맞아야 합니다.",
+      "en": "Suited to canal-side downtime and groceries near home. If both people commute often, make sure the station walk works first.",
+      "zh-CN": "适合运河边休闲及近家购物；两人频繁通勤时，先确认到站距离能否接受。"
+    },
+    "investor": {
+      "ko": "층과 조망이 다른 매물의 호가를 실거래처럼 비교하면 가격 판단이 흐려집니다. 수선 이력과 월 부담을 맞춘 뒤 같은 조건의 거래를 보세요.",
+      "en": "Asking prices across different floors and views are not matched sales. Compare repair history and monthly obligations before judging transaction evidence.",
+      "zh-CN": "不同楼层景观的挂牌价不是可比成交，应先匹配维修历史和月度费用。"
+    }
+  },
+  "ae-park-ridge": {
+    "family": {
+      "ko": "공원과 놀이시설을 자주 쓸 가족에게 어울립니다. 학교 자리와 파크 리지 승하차 경로가 먼저 맞아야 이사가 편합니다.",
+      "en": "Suited to families using the park and play areas often. Settle the school place and Park Ridge pickup route before relying on that convenience.",
+      "zh-CN": "适合常去公园和游乐设施的家庭，需先落实学校名额与接送路线。"
+    },
+    "couple": {
+      "ko": "퇴근 후 공원을 걷는 생활을 원한다면 매력적입니다. 두 사람의 일터가 알카일 로드 경로와 맞는지도 함께 보세요.",
+      "en": "Appealing if evening park walks matter to you. Check how both work destinations fit the Al Khail Road approach.",
+      "zh-CN": "重视下班后公园散步会较合适，也要看两人的工作地点是否顺路。"
+    },
+    "investor": {
+      "ko": "공원 조망과 승인 관리비는 건물·세대마다 다릅니다. 지역 평균 수익률 대신 같은 조건의 거래와 냉방 포함 보유비로 비교하세요.",
+      "en": "Park outlook and approved charges vary by building and unit. Compare matched transactions and ownership costs including cooling, rather than a district yield.",
+      "zh-CN": "公园景观和核准管理费因楼栋房源不同，应匹配成交及包含制冷的持有费用。"
+    }
+  },
+  "ae-creek-horizon": {
+    "family": {
+      "ko": "공원과 실내 놀이공간을 자주 쓸 가족에게 어울립니다. 학교의 타워별 승하차와 하교 일정이 맞는지가 우선입니다.",
+      "en": "Suited to families using the park and indoor play space. School pickup for the actual tower and the return schedule come first.",
+      "zh-CN": "适合常用公园和室内儿童设施的家庭，应先确认具体塔楼接送和放学安排。"
+    },
+    "couple": {
+      "ko": "퇴근 뒤 공원과 마리나를 걷는 생활이라면 매력적입니다. 두 사람의 일터까지 현재 이동이 무리 없는지 함께 비교하세요.",
+      "en": "Appealing for park and marina walks after work. Compare whether today’s routes to both workplaces are manageable.",
+      "zh-CN": "适合下班后公园或码头散步，需同时比较两人的现有通勤路线。"
+    },
+    "investor": {
+      "ko": "공용 전망대 사진을 해당 집의 조망으로 가격에 넣을 수는 없습니다. 같은 방향 거래와 타워별 승인 관리비를 기준으로 보세요.",
+      "en": "Observation-deck photographs cannot price an apartment’s view. Use comparable orientations and tower-specific approved charges.",
+      "zh-CN": "公共观景台照片不能用于给住宅景观定价，应匹配朝向成交及塔楼管理费。"
+    }
+  },
+  "ae-creekside-18": {
+    "family": {
+      "ko": "아이와 차로 오가는 가족이라면 로비 연결 승하차와 놀이공간이 유용합니다. 학교 버스가 해당 타워를 어떻게 지나는지 먼저 확인하세요.",
+      "en": "Lobby-linked drop-off and play spaces help families arriving by car. Confirm how a school bus would serve the actual tower.",
+      "zh-CN": "连接大堂的下客区和儿童设施适合开车接送的家庭，需确认校车如何服务具体塔楼。"
+    },
+    "couple": {
+      "ko": "집 가까이 운동하고 물가를 걷는 생활에 어울립니다. 직장까지의 현재 이동 시간이 맞으면 시설의 장점을 누리기 좋습니다.",
+      "en": "Suited to exercising close to home and walking by the water. The facilities work best if the present commute is manageable.",
+      "zh-CN": "适合近家运动与水边散步，现有通勤可接受时更能享受设施。"
+    },
+    "investor": {
+      "ko": "미래 쇼핑몰과 철도를 지금의 임대료 근거로 쓰기는 어렵습니다. 같은 타워·조망 거래와 승인 관리비, 실제 주차 조건으로 비교하세요.",
+      "en": "Future malls and rail do not establish today’s rent. Compare tower and outlook, approved charges and the actual parking terms.",
+      "zh-CN": "未来商场铁路不能证明当前租金，应比较塔楼景观、核准管理费与实际车位条件。"
+    }
   }
 }
