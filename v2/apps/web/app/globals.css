@@ -3771,13 +3771,13 @@ body { background: var(--canvas); }
 .site-header__more .site-header__context-panel a { display: flex; align-items: center; min-height: 44px; padding: 10px 14px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 14px; }
 .site-header__more .site-header__context-panel a:hover { background: var(--surface); }
 :where(button,select,input,textarea) { font-family: inherit; }
-:where(button,[role='button'],input,select,textarea):focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+:where(button,[role='button'],input,select,textarea):focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
 :where(button,[role='button']) { transition: background-color 160ms ease,border-color 160ms ease,box-shadow 160ms ease; }
 :where(button,[role='button']):disabled { cursor: not-allowed; }
 .explorer-workspace { background: var(--surface); border-color: var(--line); border-radius: 16px; overflow: hidden; }
 .explorer-map { border-radius: 12px; }
 .explorer-rail { background: white; padding: 12px; }
-.explorer-marker { border-radius: 9px; color: var(--accent); font-weight: 650; }
+.explorer-marker { border-radius: 10px; color: var(--accent); font-weight: 650; }
 .explore-page-heading h1 { font-weight: 700; }
 .market-tabs__list { background: var(--surface); border-color: transparent; padding: 5px; }
 .market-tabs__trigger[aria-selected='true'] { background: white; box-shadow: var(--shadow-sm); color: var(--accent); }

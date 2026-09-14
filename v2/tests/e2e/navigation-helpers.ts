@@ -25,7 +25,10 @@ export async function openPrimaryNavigation(page: Page): Promise<Locator> {
     name: 'Primary navigation',
     exact: true,
   });
-  if (await desktop.isVisible()) return desktop;
+  if (await desktop.isVisible()) {
+    await openDesktopContextMenu(header, 'site-header__more');
+    return desktop;
+  }
   await openMobileMenu(page);
   return header.getByRole('navigation', { name: /^(?:Site menu|전체 메뉴)$/, exact: true });
 }

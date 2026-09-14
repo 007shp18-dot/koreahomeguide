@@ -161,7 +161,7 @@ describe('editorial growth design-review route', () => {
     const markup = await renderReview('home', { locale: 'en' });
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
-    expect(markup).toContain('Four cities.');
+    expect(markup).toContain('Find your place.');
     expect(markup.match(/data-primary-action="explore"/g)).toHaveLength(4);
     expect(markup).toContain('href="/news"');
     expect(markup).not.toContain('data-home-section="insight"');

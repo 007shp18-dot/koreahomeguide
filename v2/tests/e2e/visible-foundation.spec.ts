@@ -102,7 +102,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: /Four cities.\s*Prices grounded in signed contracts./,
+      name: /Find your place.\s*See the bigger picture./,
     }),
   ).toBeVisible();
   await expect(
@@ -217,10 +217,11 @@ for (const route of publicRoutes) {
 test('desktop exposes published analysis and the city destinations', async ({page}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1, name: /Four cities.\s*Prices grounded in signed contracts./ })).toBeInViewport();
-  await expect(page.locator('main form')).toHaveCount(0);
+  await expect(page.getByRole('heading', { level: 1, name: /Find your place.\s*See the bigger picture./ })).toBeInViewport();
+  await expect(page.getByRole('search')).toHaveCount(1);
   const markets = page.locator('[data-home-region="markets"]');
   await expect(markets).toHaveAttribute('aria-label', 'Choose a city');
+  await page.getByRole('heading', { name: 'What the transactions tell us' }).scrollIntoViewIfNeeded();
   await expect(page.getByRole('heading', { name: 'What the transactions tell us' })).toBeInViewport();
   await markets.getByRole('navigation', { name: 'Choose a city' }).scrollIntoViewIfNeeded();
   await expect(markets.getByRole('navigation', { name: 'Choose a city' })).toBeInViewport();
@@ -235,9 +236,9 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await page.goto('/');
 
   let primaryNavigation = await openPrimaryNavigation(page);
-  await expect(primaryNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Rankings', 'Insights', 'News', 'Tools', 'Guides']);
+  await expect(primaryNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Insights', 'Community', 'Rankings', 'News', 'Tools', 'Guides']);
   await expect(primaryNavigation.getByRole('link', { name: 'Rankings', exact: true })).toHaveAttribute('href', '/rankings/');
-  await expect(primaryNavigation.getByRole('link')).toHaveCount(6);
+  await expect(primaryNavigation.getByRole('link')).toHaveCount(7);
   const primaryLinks = await primaryNavigation.getByRole('link').all();
   await expectContainedTouchTargets(page, primaryLinks);
   await expectTargetsNotToOverlap(primaryLinks);

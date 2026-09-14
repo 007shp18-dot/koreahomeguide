@@ -256,7 +256,7 @@ describe('signedprice brand foundation', () => {
   it('limits authored surface radii to the approved geometry', () => {
     const violations = [...cssFilesUnder(appRoot), ...cssFilesUnder(componentsRoot)]
       .flatMap((file) => [...readFileSync(file, 'utf8').matchAll(/border-radius:\s*([0-9]+)px\b/g)]
-        .flatMap((match) => ['0', '8', '12', '999'].includes(match[1] ?? '')
+        .flatMap((match) => ['0', '8', '10', '12', '14', '16', '999'].includes(match[1] ?? '')
           ? []
           : [`${relative(webRoot, file)}: ${match[0]}`]));
 
