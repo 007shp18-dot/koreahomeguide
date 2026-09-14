@@ -199,13 +199,15 @@ for (const route of publicRoutes) {
   });
 }
 
-test('desktop exposes the city index and photo-led city destinations', async ({page}, testInfo) => {
+test('desktop exposes published analysis and the city destinations', async ({page}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1, name: /Four cities.\s*Prices grounded in signed contracts./ })).toBeInViewport();
   await expect(page.locator('main form')).toHaveCount(0);
   const markets = page.locator('[data-home-region="markets"]');
   await expect(markets).toHaveAttribute('aria-label', 'Choose a city');
+  await expect(page.getByRole('heading', { name: 'What the transactions tell us' })).toBeInViewport();
+  await markets.scrollIntoViewIfNeeded();
   await expect(markets.getByRole('navigation', { name: 'Choose a city' })).toBeInViewport();
   await expect(markets.locator('[data-contextual-action]')).toHaveCount(4);
   await expect(markets.locator('[data-primary-action="explore"]')).toHaveCount(4);

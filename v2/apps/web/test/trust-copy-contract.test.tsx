@@ -14,6 +14,11 @@ describe('Trust publication copy contract', () => {
     ].join('\n');
 
     for (const required of [
+      'Who publishes SignedPrice?',
+      'How do we use AI?',
+      'AI output is not a source for property facts',
+      'SignedPrice remains responsible for published content and corrections',
+      'not a firsthand property inspection',
       'Where do the prices come from?',
       'When is the data updated?',
       'source rights explicitly permit each use',

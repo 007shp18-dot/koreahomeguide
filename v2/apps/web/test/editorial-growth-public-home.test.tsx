@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 
 import Home, { metadata } from '../app/(en)/page';
+import { getPortfolioRecord } from '../content/portfolio-manifest';
 import { PropertyHome } from '../components/design-review/editorial-growth-home';
 
 vi.mock('../lib/design-review/editorial-growth-review-model.server', () => ({
@@ -21,7 +22,7 @@ describe('public editorial homepage', () => {
     expect(markup).not.toContain('/design-review/');
   });
 
-  it('makes all four cities reachable without embedding tools or article feeds', async () => {
+  it('makes all four cities reachable alongside curated analysis without embedding tools', async () => {
     const markup = renderToStaticMarkup(await Home());
     const markets = markup.indexOf('data-home-region="markets"');
 
@@ -80,6 +81,20 @@ describe('public editorial homepage', () => {
     }
     expect(markup).toContain('data-home-region="markets"');
     expect(markup).toContain('href="/ae/dubai/explore"');
+  });
+
+  it.each(['en', 'ko', 'zh-CN'] as const)('renders existing published analysis with the matching language and dates for %s', locale => {
+    const markup = renderToStaticMarkup(<PropertyHome locale={locale} />);
+    const analysis = markup.slice(markup.indexOf('data-home-region="analysis"'), markup.indexOf('data-home-region="markets"'));
+    expect(analysis.match(/<article/g)).toHaveLength(3);
+    for (const slug of ['seoul-monthly-2026-09', 'singapore-monthly-2026-09', 'dubai-monthly-2026-09']) {
+      const record = getPortfolioRecord(locale, slug)!;
+      expect(record).toBeDefined();
+      expect(analysis).toContain(record.canonicalHref.replace(/\/$/, ''));
+      expect(analysis).toContain(`dateTime="${record.publishedAt}"`);
+      expect(analysis).toContain(renderToStaticMarkup(<h3>{record.title}</h3>).slice(4, -5));
+      expect(analysis).toContain(renderToStaticMarkup(<p>{record.deck}</p>));
+    }
   });
 
   it('keeps the root canonical and indexable', () => {

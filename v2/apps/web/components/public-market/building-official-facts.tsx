@@ -114,18 +114,18 @@ export function ReportedNearbyFacts({ places, facts, locale = 'en' }: Readonly<{
 
 export function reasonCopy(reason: Extract<OfficialBuildingFacts, { status: 'unavailable' }>['reason'], locale: ProductLocale = 'en') {
   if (locale === 'ko') {
-    const reasons = { unsupported_housing_type: '이 주택 유형은 K-apt 제공 대상이 아닙니다.', configuration_missing: '공식 건물 정보가 아직 연결되지 않았습니다.', apartment_not_found: '주소가 정확히 일치하는 K-apt 단지를 찾지 못했습니다.', ambiguous_apartment_match: '동일한 후보가 여러 개여서 단지를 확정하지 못했습니다.', identity_mismatch: '공식 자료 간 건물 식별 정보가 일치하지 않습니다.' };
+    const reasons = { unsupported_housing_type: '이 주택 유형의 추가 건물 정보는 제공되지 않습니다.', configuration_missing: '공식 건물 정보가 아직 연결되지 않았습니다.', apartment_not_found: '이 주소에 해당하는 추가 건물 정보를 확인하지 못했습니다. 실거래 내역과 건물 정보는 별도 자료입니다.', ambiguous_apartment_match: '비슷한 정보의 단지가 여러 곳이어서 추가 정보를 표시하기 전에 주소 확인이 필요합니다.', identity_mismatch: '자료의 건물 식별 정보가 서로 달라 추가 건물 정보를 표시하지 않았습니다.' };
     return reasons[reason as keyof typeof reasons] ?? '공식 건물 정보를 일시적으로 불러올 수 없습니다.';
   }
   if (locale === 'zh-CN') {
-    const reasons = { unsupported_housing_type: 'K-apt不提供此住宅类型的数据。', configuration_missing: '尚未接入官方楼盘数据。', apartment_not_found: '未找到地址完全匹配的K-apt楼盘。', ambiguous_apartment_match: '存在多个匹配楼盘，无法确认唯一对象。', identity_mismatch: '不同官方来源的楼盘标识不一致。' };
+    const reasons = { unsupported_housing_type: '暂不提供此住宅类型的补充楼盘信息。', configuration_missing: '尚未接入官方楼盘数据。', apartment_not_found: '未能核实此地址的补充楼盘信息。成交记录与楼盘信息属于不同资料。', ambiguous_apartment_match: '多个楼盘的信息相似，添加补充信息前需要核实地址。', identity_mismatch: '资料中的楼盘标识不一致，因此未显示补充楼盘信息。' };
     return reasons[reason as keyof typeof reasons] ?? '官方楼盘信息暂时不可用。';
   }
-  if (reason === 'unsupported_housing_type') return 'The K-apt apartment service does not cover this housing type.';
-  if (reason === 'configuration_missing') return 'The official building-data connection is not configured.';
-  if (reason === 'apartment_not_found') return 'No exact K-apt complex match was found.';
-  if (reason === 'ambiguous_apartment_match') return 'More than one K-apt complex matched, so no facts were attached.';
-  if (reason === 'identity_mismatch') return 'The official identity keys did not agree across sources.';
+  if (reason === 'unsupported_housing_type') return 'Additional building information is not available for this housing type.';
+  if (reason === 'configuration_missing') return 'Additional building information is not available yet.';
+  if (reason === 'apartment_not_found') return 'We could not confirm additional building information for this address. Transaction history and building information are separate records.';
+  if (reason === 'ambiguous_apartment_match') return 'Several complexes have similar details. Their addresses need to be checked before adding building information.';
+  if (reason === 'identity_mismatch') return 'The source building identifiers did not agree, so additional building information is not shown.';
   return 'The official building services are temporarily unavailable.';
 }
 
