@@ -1,0 +1,1702 @@
+{
+  "kr-acro-river-park": {
+    "sources": "0aa149e2d011ae8b190eb0c082c98024fba4d2935fa9dbdecdc55770cfa42e7e",
+    "points": {
+      "transport:0": "133d06086dff1cf630f53e709f424a336d3e156d700893248e106e2b8da3c477",
+      "transport:1": "f3c30d11a2a543b8782ace631cf6d5cf72ab0a5361d04aa04916593c7c8a9ac0",
+      "schools:0": "3c7d77255fd8d39562f63b75e7d9dbf98a5cc8e8f61e937e4071395d619c31f5",
+      "schools:1": "a0c1edf791b6fe600d0838af7befb497d7a99de7b9fa3a6b80f4867c1762538f",
+      "daily:0": "f576a4a516e8559cbdc52952c41844299d7f4f4b2ae47c5f7ee41d3b76d4c5da",
+      "daily:1": "7701cded14b7cbc1f82c82ea7f31bdea01c2ea42868eccfe1fbd156ec75cbd9d",
+      "costs:0": "6f0dd8d5334c9e5d5907c1d2762ed1bfbde5650ae9ce3117722a3af9f610f2f3",
+      "costs:1": "e99806ada3f990d9415f18d3b90516cb21c42bdcff9b39d05b672f7d4dc63dcd",
+      "strengths:0": "ac513d64509298863be4133e57492324e4e6f58314759504fe1e47832021174f",
+      "strengths:1": "97882e41c50e2ef06794674404971b3313756a535fd9fbc31b5b8784ec06a7bd",
+      "tradeoffs:0": "c180acd4d75d607ec5e94487ed85bd55730237f7f504a07a3b3d1f2fda621b96",
+      "tradeoffs:1": "5d76103f9bd2fbd2ca231c6b568a0ec67f2cc5561835f547c1f14bb69ae5d0b9"
+    }
+  },
+  "kr-acro-seoul-forest": {
+    "sources": "7a735f8687b6bcca64174c6c30ebdbf43c099d77d5fdd79a8582345d190ff2fb",
+    "points": {
+      "transport:0": "ad573266646ca3a280db2789b39ec5954a143415a770052eb73855241d1df19c",
+      "transport:1": "d871c1cd285ac679c1ebab5632927024e286611ccda3c108ce8c32b74de96b91",
+      "schools:0": "fdb5dac30972234a24ba0d9b2001ae7fffa0781c6287e33e0d7442cf279969c1",
+      "schools:1": "5c1cb05ad32a521e76ea133e6c0bcf5a8b106983b0a464894f214902ca38ad30",
+      "daily:0": "b3bab085b663bddc898b83505df4faa09ba21c3e26c7bc583aa31254d5c7da13",
+      "daily:1": "e0fb6b51da474f9058e96ff8420a80f8f33ec1569587494578654c57c74d4e25",
+      "costs:0": "4b27c23be83af1d13e900b3efcc0aeb142fb5e6bd7a2efe78221db05db36dbfc",
+      "costs:1": "692ba574041a26c553db34fdcb7ffc6d504481aee93a0b81b487a080501d50a2",
+      "strengths:0": "21f8c96745da165813d689cd238592a0de45464773b9eefb9de105a4db6f0d8b",
+      "strengths:1": "4b115cfe131721504d20d77b0355a858b6baea7e5a4825f30929697c5a766ff3",
+      "tradeoffs:0": "1b9562a4ac80caf64ee07f023775f6f5b0f77dd469680c7e73c578bae8c67b7f",
+      "tradeoffs:1": "2612011172b640ec217fa671924cdb72e84da82d3486d3f569d571c1ff67f2d8"
+    }
+  },
+  "kr-mapo-raemian-prugio": {
+    "sources": "ba124044010436b0b4cd9589bef26d214376b99b5ea3ab7ffaff06becb83ca59",
+    "points": {
+      "transport:0": "c1d6dd98a04661a48c56e2aa2d4a9b18c2451ff5a038d426b8fbc416eb0a4ac5",
+      "transport:1": "35fd186ae6ba1a7162d1ba00fc3fda27143b5ad47a23e61a3349290c724e5a6a",
+      "schools:0": "a9160fa510ed3663057fcde82e123b6f7a7a689fbc9269cc831883e1246fefa2",
+      "schools:1": "4acdfd8f31f0cb0aab06950ceb941c7bc2bdc8ba093787432a874ed2a4aaad8e",
+      "daily:0": "6ad3a79bf539d2998868cff469cca0d62721fc0c9cbdd9f3e9b57746d5150c77",
+      "daily:1": "92932dad51ece481e202de18eaf814a1aa1549d08f9bd3367c73f10290e4ad0b",
+      "costs:0": "59512b9e0617f67ccdab722a2d354fc16262a2cb431e84d9fc7a46c991598e63",
+      "costs:1": "d2bcb236f4ed5d648ccecd0ac04fb645172f4ca8395f19e09c915b04d6b0885c",
+      "strengths:0": "8fdc3cfc2fc98775ebe4dbc7972c3b3202a2370abf8c7f8ea49699daec92e55c",
+      "strengths:1": "c2b0a146775dcdb209db6d73bb7a68c2a9201e2929c2423679ec1fc1358e23ee",
+      "tradeoffs:0": "f3116ffdc2b15e711f2d0360a6771aaa5f73f5c1f5a4b9d3455158ad90e6da67",
+      "tradeoffs:1": "542ebfe66ecb53faa69838f01256be4f3b19d592df165247e0a2237ed24c80c9"
+    }
+  },
+  "kr-helio-city": {
+    "sources": "90931401249d5f7f325cf8abd99b6d57104980992749f4bc588923972832110f",
+    "points": {
+      "transport:0": "51e223b19a1e6d3edc23072669d3d1cd39c36b51aacf349d9a7ec913c48c64f4",
+      "transport:1": "7e07f4e6117ae95f442bbbbeaa6a83f8e9e9d92ad62192a55bf2d8938cdb1482",
+      "schools:0": "8d7eaa595215d273a04ad53e57aca48cd61893fcb86ce4967ddc0be9d08986c3",
+      "schools:1": "bc563491ce739e01651de89358893bdea4fb349511e46b82bd98729a555b99c8",
+      "daily:0": "b170a84fe84af0f5b7ab0fee0731e8e00d2e3ae5c3a995cc3ee9a311f784d176",
+      "daily:1": "9e90682761b5810990c72230ae62891a0829a8420bce9cad019d497d4983f8b1",
+      "costs:0": "6117ce016c94034afa9ab58e48f1ee6aab5df23e42e7b8d303d7c4d7f71742ed",
+      "costs:1": "ff1376602738593ed51dedf081bef33c33dbdcb0e96ca46d95885df91588ed5b",
+      "strengths:0": "63b25d7f6bbd87bf3118bc52ac6739e305cc9cc11d6028bf53dec09c70b2378a",
+      "strengths:1": "b574543011531baed82216ba6e142765cc9a467e04e3998b4a002cda12788114",
+      "tradeoffs:0": "512556bb3772c336c2ee6f4a5da6c178177b4c27e9a2ad4ddd1f6176633c6534",
+      "tradeoffs:1": "86631e47cacb8e82dc1997a276787e14ce63966d4c2cdb276bd911318aa4af9e"
+    }
+  },
+  "kr-parkrio": {
+    "sources": "553fcddc3cd5ced075f71f86e9a18ca1c8becb4c5f00f9bbed469ac72eabdd3f",
+    "points": {
+      "transport:0": "1445678c84676615b8990754cef13ac1a1c91d548c399c26eef755d03a629938",
+      "transport:1": "e39c66a28863c1d62276e0abd632e065d09aa607ed90eafb4f013db58a19df12",
+      "schools:0": "e2e783b22a6baf60f7ffc4b79a536e6f6c85b75af873f9b0bf5ba609adfe1c6b",
+      "schools:1": "913e91d15e009871d4ff38401bd60c91678368757be7c22a0ff7203184353f44",
+      "daily:0": "f21fa1338c613ede808117db834e04640bee0c1268a78cb29b526932babf0127",
+      "daily:1": "7b8e2b265b7aecb66e1bfa762dd12e4ca438ab1400e2cddec51701bf0bf672f2",
+      "costs:0": "9b4c7417b361b7c09830bbbee77b1ceb0f9a289adeef4071bbcc966fe9787c18",
+      "costs:1": "3df3b57c0f24a5c4ddf96cc2705e4c1e1e397e93f9489977e27053bb4495cd2a",
+      "strengths:0": "adfa7f65c06dd3173838d48e8641affd5e5bddafa5e58a62df963948be6d2156",
+      "strengths:1": "e0b4a7abd33a36a3fb4a46b4cbd17be88b55b46b5ffda0018a8bd347db49571e",
+      "tradeoffs:0": "f953464f2f90d197890727d64a1b60f6e2e6f65aa2705b16f9283d76ebdb2214",
+      "tradeoffs:1": "57b7f10b0c406afe762f9e6767e2d9c4917d315a19ed184ccb7b4451d11accfb"
+    }
+  },
+  "kr-jamsil-ricenz": {
+    "sources": "65a19c059182d59aea7145782c890566c022292e915e3ca7c3d92a0b57ed7139",
+    "points": {
+      "transport:0": "0175fe36242372d3b6f784123c0a8f77463b7656a7a750fbbc6a4bf278189c70",
+      "transport:1": "6aebdde1183603515c3d3026d8d83834fe8ff2a1e524e1ea788b9e94a9342b92",
+      "schools:0": "398d0f205f37f3e3945d3ebf10d27544a4fc92600a40c9f29e22c0058b36d5b5",
+      "schools:1": "304551bcad181ac079b6d55649b57110a6e07c8f9f83a0e4bb225e241c68dc1a",
+      "daily:0": "d0a48309dabf59fadae60eded104c003d21b6bc92d6884c5998b615bcefefc22",
+      "daily:1": "9011df35154ac389c3b0dfb553ae1b2de0332520cd82082f1f3c65b2d17b908e",
+      "costs:0": "250870482013418d65de2e60da2f3cbb0ba6faeb446ef22e721ad4737dba1ead",
+      "costs:1": "871b5bce6dfe1ee0faed45c67ec199040920ef36a9ce8a8b6a4d75cf7313077d",
+      "strengths:0": "34e6aac1e45392e4eef9e9225468a07e74c73a22ad0ec94345cac824354f4da8",
+      "strengths:1": "b5e7c86c56cadac1b45a30858fb39e6aa1d5f02e8140377802c08e999a27c97f",
+      "tradeoffs:0": "e579cf3ef81295b26fe5a0957b686731cfc8280ec2f2431a5ba12b185a560545",
+      "tradeoffs:1": "3d0351fbd275f791cdfdc7d8bc60d5e1ad5f079b99aa38967bf3571b3b05edca"
+    }
+  },
+  "kr-jamsil-els": {
+    "sources": "2a61034f5c54d1f9dd0f57de37133f24e4ab1d15976ed5efa0e985aee340a8e8",
+    "points": {
+      "transport:0": "93a397aa268d07594246a6c4c00393052ce06866d6508e69aa8fe947dd060f35",
+      "transport:1": "dcec9b29200d33aeeb5cd534a4cf73dc61d1612ad29a9db14a67153ed69b3d55",
+      "schools:0": "1cc5667f4cbd48fdc92b421b3f72e5647d223b7d6d27fb782f07d087ced94a7e",
+      "schools:1": "5886303d27b1b4e5eceeeecd3520be839f3da948069c857f942cb3be967e733d",
+      "daily:0": "49833e552b09d86152d082c6a2efaac0b6b748a7ee2e65faad6d0b0c4d449538",
+      "daily:1": "6b52f0703369902998028b06d12d0c97ebe40a3298675d8ce42f86dca60989ea",
+      "costs:0": "3bdf81d9cdbe4421052425dc4c7080c7e00f4f0f8d0b04bda4536554db2fd97b",
+      "costs:1": "28c62ff0ac4e3e238471eba5d181189e6b1384d9b973246a1fe8a575b44238f7",
+      "strengths:0": "41b8fa59cbc8d6cd6bf97e79ce68542405b2e92ba0b589d500ba13be37a99280",
+      "strengths:1": "f2ba146a075ead0ec2b3363849372e892a7be1f5d71f60f4f399a03e9db1ba3d",
+      "tradeoffs:0": "55353c085ba372655d9d9c7ea6a8c0d0decfd017cd02f5706462710e36332849",
+      "tradeoffs:1": "73cd13e1e685207632d95f0f83365a3537c74c8895902fa344b787c9c97ab6f4"
+    }
+  },
+  "kr-raemian-daechi-palace": {
+    "sources": "89e28cddd97835eb8462c7097c65de263bf26fbf5bd524b8b10f84fd4862169c",
+    "points": {
+      "transport:0": "af95198028bc76f366ccb79f9dbcab7f321805c8bae9136738305a5609da1b2b",
+      "transport:1": "9494a8bf8da7397ee3eb278e4e1e742cc2c393a141729ecf07391bd8d6bdd1b2",
+      "schools:0": "6f980a04a3ceabea47ef916e20fdd4837dbb1044463e86f4a4b5240a47693645",
+      "schools:1": "5466afb49f7d7e9460e932a788143b790cee7d94386c213d651364a5ffa61309",
+      "daily:0": "5e7934ee752763a0fe505220cb47a3d06ce39a02608d662a35de923d3cdc3d07",
+      "daily:1": "95d23f55fa2159fd17d9613f00203cc49f7eb88e59abe54048de4b96d360d52e",
+      "costs:0": "f224c5bb13f19eaab7e6393e2e8fb3d3c0e6bcfd96a54bc0da473f78e02cee14",
+      "costs:1": "ad04970ca23a1fabc1114faf8bcf58bcc609aa83cfe1982aaa6e94f2a93243ee",
+      "strengths:0": "efaca5219f0fb21394bce77707351680cb99f074adf589f5254a456e94f574f3",
+      "strengths:1": "f94836e7c4178241452cd82fe20228ed1ac6a8bb85e09b776fb51f40fcf1ba98",
+      "tradeoffs:0": "dd91a741efcb3effb1d808e770e71812789e7bc5be0053e35c5cb9a98c339690",
+      "tradeoffs:1": "977af294a968873490363807100d008a2714603f5ca24bfcb3cdf02a5923f1f8"
+    }
+  },
+  "kr-dogok-rexle": {
+    "sources": "8eba06d3654d6b98e3cde8d3eac04f0d25cb4258a42cd114879d95e4fd8f9dd6",
+    "points": {
+      "transport:0": "72117a980232e2fb60105f982a2e544d67e47a4c3a410f02882c1b65a3c7a412",
+      "transport:1": "60800b26cff6fdd517106cd9e5363c823ec752095816df9f86c095e5dea12479",
+      "schools:0": "ba7a8d389b8a7bc48ce93d80251c05a13ab4f7d30279582cf8d233eb213e9e3f",
+      "schools:1": "d5a65de78da74e69850985997bb4914b0a220428f4281286a051a70660b16dc6",
+      "daily:0": "438f7c50fabb32107f20102f08f9cb67b57808fa6c4ee8972b3a9fd2a78e381e",
+      "daily:1": "4d1b939e658d198cd0cc0169431b3b386a51092f9a0a7baae5f9d96123cb8dda",
+      "costs:0": "08fdc06e6fcde172437fc4bf6564c113d76c5255c7a87f9e7695782786c8c4d9",
+      "costs:1": "c3d902bf1a24adcb8d7918e22cf4e3a6a44f242635558b234e233f7a782422b6",
+      "strengths:0": "efabd0ce9addea26177a949fbba3a376ceefc16986628a27d2e4e580e4fa89d2",
+      "strengths:1": "bd202570393fa4ed6b4f7f55765d4e92fba6e01cca77f6b30b88292905465e70",
+      "tradeoffs:0": "f222fc6d65cfeaace07237d174545e1d31ea2d77420fecf6c85f66ebe1064c43",
+      "tradeoffs:1": "015d5f0ef8eb24d76852385a5353b12dc91804add0f5cfe693ae9034b67a158f"
+    }
+  },
+  "kr-eunma": {
+    "sources": "bd7af3a8bb7fb059e8b9d1fe6d9da34705f9f38064a632464473fa258f23caec",
+    "points": {
+      "transport:0": "ea25129c8ebe812bb0a2a445938f25a28650994d0c812a7c77061db5baeb9a80",
+      "transport:1": "101172e0f2fa903eb4f42958fd572ca0f700c541423f5f346fe3c53c5d005146",
+      "schools:0": "451f763e348302805b50f74284d596c0fb3ff53e0ff3f3a13c5879637f7056fc",
+      "schools:1": "52fa0344b191f50d3c1b805204b44e446608c6c33e9f57598a5c7bcb2689175d",
+      "daily:0": "52354d8650ead2d3b600106ff4d53311313b8eae82ed0e28154cf8c2e4d2fd81",
+      "daily:1": "19b83fddefd5152ce1f338c9c4250b0bb9d17c1625868e9f7eddbb59803c174d",
+      "costs:0": "61107122952f4ccb95b6cf3c6c462496a9fa0466baf133eb4f8cebe9e9c2c127",
+      "costs:1": "266c69b27b89d2f1527fd1a10378eb409634b35c40849aa7a0c2ae66bfc64ba1",
+      "strengths:0": "df065a0794099e7f4f64773201f53ec5e7695756432546dc3ffcbd15038ad871",
+      "strengths:1": "b26c9baaa7666ca5c36c61728fb2a281ec41001e12e90631f82c77cc796157c2",
+      "tradeoffs:0": "255a84fdd3a40f6828278591013576b01f90d84a28fe8f1773b4724a80e622c4",
+      "tradeoffs:1": "741b1580c60e0baf49ee9d685e73a469b883817887d268bbaa21cc54aa8d52b2"
+    }
+  },
+  "kr-raemian-la-classy": {
+    "sources": "b830ef66e109bea40759001058c31fef45e776174ace429b44ee358aed91a9c3",
+    "points": {
+      "transport:0": "472f471b0575ffdc90974dbf367a314cbf86c1fd745a4ed81ac66d9b69a16e26",
+      "transport:1": "ca7040b3102d4483d9776ca0d2a326b4d88ab29e02921da5367b2ebdc6b0b2ff",
+      "schools:0": "0662dabf7201e37f54caeae74364e44e1b923c343172c099d3631506fe0946e3",
+      "schools:1": "b742550ee183024e24d03f8b23c5049fbec1c13cefedfd7895c2860bd919f59d",
+      "daily:0": "0e14239f18cba670cf8eb61e31f606a89be6b1d96b5cf92694f7b1b836d93a31",
+      "daily:1": "629f73966c9c4a8e81e55cfe3424ffa5f653e1175a1f1333b01c2c04ff28fd7b",
+      "costs:0": "62a012af15e28bc2f356140f3a121e8a445f3570a25580936943fe60cf6dbaad",
+      "costs:1": "ac990fc9db06e78eb41b40ad86968eb98c4d10badb044ddc38c7e08a3c5873db",
+      "strengths:0": "8b36ac00abc1595408d5b7fd8570fcf60774ddda56d1cba8fcf8281190522133",
+      "strengths:1": "b303da3bfd5c40c3918d75671463da6664df97c8994d4eae80495ee7578018e8",
+      "tradeoffs:0": "57436cb7955a6bc05d640fcda39ce789461327755c00c35b72a3f87192371e2a",
+      "tradeoffs:1": "e85179978fbaac2aac48984728e657de8a1cc27157985ef61afe3061e9eb2b4c"
+    }
+  },
+  "kr-banpo-xi": {
+    "sources": "fd4e61bffdf51e22f0b479413ea5b8d94b21e6ca84e696faa47849656fadea84",
+    "points": {
+      "transport:0": "0bc2296141b28fe52b9d1078530367640e20a885c2a44c062367a6f440159e7a",
+      "transport:1": "d77d384d22677d221c15b70b601708d7cefa585f53ea2ba927bdcdc6fb81244a",
+      "schools:0": "a916c5f289c27e5456514768b5dbddee2d97e859d53e57de26a4284971a832c4",
+      "schools:1": "2b586c63601eadefba4c80dce11abc170dba1318e5f9ba6ad514038ff2ae76cd",
+      "daily:0": "925807943d4232155292f3707c275c6d9fa46f7af9223222b4cd4170c01bc60f",
+      "daily:1": "8b8f0d9b3bfbe226dddb6de1942bd149b88497da028b3251c8973552049579d4",
+      "costs:0": "471a604116f84cd56567121b6a23c4f1c81814223278c5309e109f69c5dc6d9d",
+      "costs:1": "8d95f7b9217c25c44281bf0f261ffa1ff8460a735acffc97c28712cbe7c6633a",
+      "strengths:0": "919940dee7785b148c98cd6534d0063e2925ae4a217b5f50b78d3ebc545feafa",
+      "strengths:1": "d0fea6053cf3eef502f64b621f9187eff03612dcd01c799f6961625e22d119fc",
+      "tradeoffs:0": "a49f48a6a58715ad7447c8ed89207b7ecbbfaee5c99940c822299f05c467fc60",
+      "tradeoffs:1": "d1474598d76c80f6bcbea7e8f8a731a1cd1e84e24878d1db054e6ef8d95c4a77"
+    }
+  },
+  "kr-banpo-riche": {
+    "sources": "a4e0ef24b01224b94abb5fdc7837684a64c789ac3b051a8dce5f401c9bad7c61",
+    "points": {
+      "transport:0": "ff4dde7dbcb5ea96eac59a49c506b08d7ccd7209b27bddea2980fb77dcb6f8c4",
+      "transport:1": "e23693352db511d2a75ea7c51645d8cc1165df7eebacdede3d0f025ca8e6df97",
+      "schools:0": "9c4c78df53b7f9a37ed54e84cc53940081b76a918614a1a536c9f1815d77d177",
+      "schools:1": "28d88184f04b5d6d3f15e76b39c7ddc21bef28c4e04fa9f694a2492e22f06275",
+      "daily:0": "f084fbe5b4afba87b357b22ba77bdca5a6d60a5f5170985c17e037f9439917ca",
+      "daily:1": "c709ded1d983583d0d25ce50b48af558260a3a786c8d5cb25c6eaf43ec1a18df",
+      "costs:0": "1a949d18c0ef4eec30f6a5100485707eb0610724c5b2a72dc5cb5bfbf27da7db",
+      "costs:1": "97eae6e3e1905ba435a8c5c99161534f1ea6c0a38280c0e9486ae01e046b6b78",
+      "strengths:0": "afe0954da7a71840629d4205bda58cab83677292ec5d55b157413e4f53a7c8cc",
+      "strengths:1": "fd91e140e5d6120b103173173f693bfefdb98a7cfa4df17aa1a07c8d5e76cdfa",
+      "tradeoffs:0": "df483e2052bd3f3d7e149dc0baa41d57ca48e323be22a5f4737c41ec41ff524d",
+      "tradeoffs:1": "d6be92787cfbb823e2ec6d1a81ad9e8a7246e84d941f22400c9e5568c81dca89"
+    }
+  },
+  "kr-raemian-firstige": {
+    "sources": "ee4c73a1686af272524248da1c1fb2f66db504a88e6a1b6cce01cc1e37508b2b",
+    "points": {
+      "transport:0": "884d765d549f13ee6170cc02129ffae63c24392e87b7e5aca137f73ecc3f4b5e",
+      "transport:1": "4c24f98cab153cf575f70751da15750e7702d84a1936768e5aacc5fa01293abf",
+      "schools:0": "f1b73978829b7e600a15b99ecc8fd498478d290aef3e4a22149bd869af2b6e32",
+      "schools:1": "c93c80b88650faf76b6be12a0401351192114545eba821296d2787af19a9de5c",
+      "daily:0": "6b22d54b9a70c62a877c46d670fa31621d66f39e5926e4186297267b4d30dbf9",
+      "daily:1": "5e3ee2f5d77abc69704ed9b8695d1384e7c1873576c0b57a1df738c6b6d2803b",
+      "costs:0": "0455fb4dc52e80f3782bc15c49fc0ca7c1b9fd6fae281a8f2f1c4c0f374732d3",
+      "costs:1": "3b56a9dee8dade93df0772c6e2f42f61791ad675b7bc5b4a07ddbb465cf6ca7c",
+      "strengths:0": "6c7f2ee522fd6030129c0f180bc0a95a300e2fb7440a254138dbf49dbdccfe94",
+      "strengths:1": "3295cb77aaaaaba10b0e8626db429cdba806552efd72800a4deff24af77c8cf0",
+      "tradeoffs:0": "d4c007bd0a8758ad529d16af80271bc34a1ea7628b70df797bee6a1564fdb8b3",
+      "tradeoffs:1": "21be26fe5076df0866bea49f972776ba6e42c6d11b92727153e13ae0108fff13"
+    }
+  },
+  "kr-raemian-one-bailey": {
+    "sources": "a1d33973c403b632fdae49b9b0aaa8c8670300284dbbcf2848a675dfe966961c",
+    "points": {
+      "transport:0": "23c0c5f23c15e033adeee5c9f7943b27ac7f3b2d14ac7edd9447d1f435f94c3c",
+      "transport:1": "efc2d531873719da4ceb0355cd0444b6e324916d2e2012119ec4f54efa94f1c8",
+      "schools:0": "b4561bcb27110c767c960df7a216d3702b5a47699a5dd3df827a67c790a9abb0",
+      "schools:1": "99e9deaa01289b9bb64d248cabf59d60789397eaa08effa3f3d12f6286c6b16c",
+      "daily:0": "e31d4eb46abfcf9c5454e6ea60b865280cf808a6fee6a36778d41d2069456f3c",
+      "daily:1": "5ce09908cfc732cc0f94d1a00a620925009096d7fcf5a7d462d3f711545a6ffe",
+      "costs:0": "2acb10792d58e82a2ad2393afe40c84b25ac7e561fd902d12ae1229842bbc3fb",
+      "costs:1": "3e9e79033db6962621d83590d56a1f7797797a2d53c6f57d6283d2a462ad2536",
+      "strengths:0": "b19da671516890b306f5c7303ea15039dc8480a9181dc6df79babe024bb34874",
+      "strengths:1": "90d08cc89529d26b3290e4614a0d84e62ffe4ab8735159150bd179f9b0f7946c",
+      "tradeoffs:0": "67d72cdafd9d394ea8d642cbe3b4e58b3b808dda2cd2f01e212c5de6e62437cf",
+      "tradeoffs:1": "da90d42b3a96bf05f5dfa14c422faee89e3c1c0bf560edee73e85bd377edf316"
+    }
+  },
+  "kr-jamsil-trizium": {
+    "sources": "c97b99f52769b0d416697c915694e3f84826f30c668798f74e1376fc733b2435",
+    "points": {
+      "transport:0": "893f1c3bbe8e8a4d947c457ebcd53521f77c6a858a9186d2ec667927909ffe5e",
+      "transport:1": "da527a97cf66c0a62a53e17d1b0158e5b993c740fd23a0bf564088ffdcfb3825",
+      "schools:0": "28b23e41ce1cb979f57a55f6a5859471acbab6e3ddb8a4247dc019d0eb06d31f",
+      "schools:1": "921e186514566f6ab1038845240cfdd7d736ab3837f45c2d8802ba50c43aaadd",
+      "daily:0": "c5f7f1810032c688de078f7d51189093789f1a908ea47a1769fc0d08cd47db22",
+      "daily:1": "5e8ec42f0d20f71542763ac9b0c4b8224a94e54615c197207e92cc6cfa9861f3",
+      "costs:0": "b72b0457d53fc562d518a5ed1764869b5cb126e5c8ba4238ed3db4d9c0ac4be4",
+      "costs:1": "50cf1da84cc96ddf4c9b058be21d87c5f7555b7c93b85c52e211021c274ef793",
+      "strengths:0": "c1a23ab705ef784d08293d6d46a363ebfd7d781eb8cb2fa3ee2e205e395a9e37",
+      "strengths:1": "09f94d1d47ad3207556d22c6567f1304e82c4e3b2439c8aa346e2396316dee59",
+      "tradeoffs:0": "2dde57652e8d5fed3877ab75843a7b4b0383a623919c4d0176b5af1bd1bd40fc",
+      "tradeoffs:1": "f7ea66055ca517db4b63d4026deee62206c31afd52960d1443b1be0bbbd159af"
+    }
+  },
+  "kr-godeok-gracium": {
+    "sources": "8b5d0539ab8ebd2a230bc7e77bfa303107fd42b5ad9f25b961cb9da81042dc69",
+    "points": {
+      "transport:0": "4b7ac7f230c5a0be787e4fdc03e5500f67e551e74dae9772fa20c09334c1b7ad",
+      "transport:1": "18d4e9d219ecaf18510cf342a14cd66443929deee7020944b450bc46ace82693",
+      "schools:0": "acdbfeae5af0ca7dc149dbdc9a10113e9a0a42d94db1b8c8b9e1308372c5e64a",
+      "schools:1": "3a8fe2b1ce9b0a9465bdd536aa98770515dab83eb0ffe270ca55eacb1e908a34",
+      "daily:0": "8d04d41ba1aeba26b189a0e36e10cc660d11020c73f8ae692a9e09d8cfa2f09a",
+      "daily:1": "86b85aedfcc30e621ae432a6b210dc172f5c9e1e132271d667c0d6f2c58d1886",
+      "costs:0": "4c230fabe61405d40c9dc44ceb2b3904ee15e2e00250745d32bc099df8f20df4",
+      "costs:1": "3d333c27ea5b411125328baab0fa8669a3e6a14e55b9bbea3d40716c6034a3fe",
+      "strengths:0": "f561dc5c0d3f7436ef963d35735f692dc7b34b88c744854dc1d35718b14ca21b",
+      "strengths:1": "0e28d2d929c1fa9acc91d0953b238db5b6a7cbccc1d7175d19420e415ed4ab21",
+      "tradeoffs:0": "bc5a07f28916370ff5efc8043f0b4a9f75d83c8ba78cc5635e7d95872d814097",
+      "tradeoffs:1": "649ecc67d6298116cc5c256fc07e624d8559651d07ec2d6e22aee3ac0e9bceaf"
+    }
+  },
+  "kr-godeok-arteon": {
+    "sources": "4972c2f84caa7c7e90ee3bca43a75220f205c6432205aa9f86ffdaca960a4ff1",
+    "points": {
+      "transport:0": "d571e9337cb5af7137157d52a3bac9c168fc302dfa44bc24403223647badc373",
+      "transport:1": "6262f2c1eb99a3379269cac00d67dfc2e43d649f185edc9caa981b5251ac6b97",
+      "schools:0": "28aeadcae8c2511ec12cce8755200d64a73d547c0e8e981f0add6ca1de690751",
+      "schools:1": "1c213d03b951920ac13e307f4bcd448df222536b4609e9feb219ae6e4d0c4e93",
+      "daily:0": "be72d072c008971b337703524cf88eb88e45306ca181edba7d6942f865505af5",
+      "daily:1": "df279c6934248f80814fac9ec5c281ed9682b672896e17108101190f5db7c51b",
+      "costs:0": "f26a95ac492650a4a4f9dfaf89ec78bb306b55f6254debbc3e5e459bddfdf580",
+      "costs:1": "301999e1d2a8a1b258217aaa1e9508e2b202466c0f60f86f67755d9b09818c3c",
+      "strengths:0": "4a45594bff6394ab70e1a06c436c382226c465652bc00a4f5ce10d583ed502cb",
+      "strengths:1": "7cab435d403bda323efd428b1bb1dc9a70afa4aff840db772cf60c28cba40d66",
+      "tradeoffs:0": "36fd8c4f89182c25cc83bd6ba56082717b1aa89f289e730e90806468e139dccc",
+      "tradeoffs:1": "e508116ee093003892af1ccedc3ac48af978f61afcc66bb3a02bf7bcc7378048"
+    }
+  },
+  "kr-olympic-park-foreon": {
+    "sources": "d4eb51306becc9fd931585afe859213a817a45a6add846032828a6f278f0de67",
+    "points": {
+      "transport:0": "ba49dc2f90bddbc9588fb2a7b521647ea8a2b0c59e77b6b9fee3232d43918b6f",
+      "transport:1": "51780d8f203b5a843d8a9c1c2b5b0ce8433fd9a096f8526aeb47b3f5716c5c57",
+      "schools:0": "efbc9b8382e4c7877f4fd2ba605ae1cdb75ba77229b769c9d37ca5a59a60eef6",
+      "schools:1": "bd2276381d9e60a70b973fef5c3e20caa2a3b6d7e15223ca357f24c087b18b71",
+      "daily:0": "d6508c26e5b50ea6a173dc0d6596d49b55a756a62cb303236994a60775e270e1",
+      "daily:1": "55fba0942e6cf2e804232592e2180b12bb3727ba3d3e961c248b9d3782200926",
+      "costs:0": "4dbbf1827cbbd68c2754654c106f405afbd1711379223bedfc8f5ba3c1826c24",
+      "costs:1": "a78e3d5442f711eb9cda54e21accd26f6a064b8569dedb27d7a68ee88678e14f",
+      "strengths:0": "330c3961fd7150593a93f78b39ed5ae068adf3bdfc68f5b50a0d396922958380",
+      "strengths:1": "ee05a8b0675cdb56c2e5fa1bac6c444c5955ed013926b07e7717b4ad203a4b32",
+      "tradeoffs:0": "855abf9a5709313788a04d285d82ab4879e629d7ce136b86605fa13b98900033",
+      "tradeoffs:1": "bbadbe6423544f65c2e0cf746ba9a25bfd02559b737f5ff75eb8609dc45a9cdb"
+    }
+  },
+  "kr-gyeonghuigung-xi-3": {
+    "sources": "5b6b85add01a11f8976f31b93e2a1f98bc07a3b7a6650ab968feb1e9b95bdef7",
+    "points": {
+      "transport:0": "a8f53c7e1d858bb480cc84411bff381948d3414d8c717ce24a185e1be4e1668a",
+      "transport:1": "38500411a925c99bcb1efe7e133a05d9ff92506405f18df193b6c65b64194dba",
+      "schools:0": "1db14c4e0819be9e35284d53fef4711a833602483c547a22d6670fbafdccda35",
+      "schools:1": "223113335fe3e3720696eb4b25be334b450441567acd650f95a67e1ff9f6d090",
+      "daily:0": "3d2b90c5220a22e9a530456c032cfd66626ba2603c5f3c3910c515d2af5271ab",
+      "daily:1": "73bc8611034d9bf41aee4e2f13b00520ac98c49824e2720267958387a4174f29",
+      "costs:0": "ce2ac4ecd60af77442d7b86ed48aa963ba6aa740f0c21835591da3a3a7ec38fc",
+      "costs:1": "fef367a1f5375d373f831746503dc3c24bc1e659ea930cf6d523773dad07f720",
+      "strengths:0": "b4775ed0b5d73f5b2359c2b3bfa30d40490f4c17e55fbc63966b19edb4bf4d26",
+      "strengths:1": "c527ffc14e7f99c797d79f038cd081b413095ed240bd3612ac6fd4331b626890",
+      "tradeoffs:0": "4d5ad9b39a30a51c2484c41c3dc50b073537b46a41064d4b466a9fe8c350f0c8",
+      "tradeoffs:1": "6b038743a227ba186ab557fbb90646217a39e039061fac1a14a26b25b4135f9d"
+    }
+  },
+  "kr-mapo-prestige-xi": {
+    "sources": "271195dac35ec728fd6228a90664d0b196f4140c75676805e0fec556c7bd346d",
+    "points": {
+      "transport:0": "0d5322c5e1e6cceb52fe13742858c0023eba03957dd8402db63da7c0123dd959",
+      "transport:1": "b8004facff106f89d2c11fa9a40478fb50ab0549c700a3b72e2e6153b6919181",
+      "schools:0": "14df1b904a829a8c115793c56cd1533d40930435a84b7881f98f62f1640d9e74",
+      "schools:1": "fdabc59afd8774e51ee4c78b88d9e7637b5001e9b27b582b7e35ac564a731c11",
+      "daily:0": "7171c5455040fb03e474b4abbe7027dfa1945734449d61a327cfa59e71915d80",
+      "daily:1": "6be874a458f36fc156ccd257af626cad9a1e610dffbace9767034655c45fc16d",
+      "costs:0": "6709cd3e94e1c81158d1e627bdaf820ada82654fa5c9027a1cc825487843ec98",
+      "costs:1": "2276ac8d26a159223d9c0546b97d4b11c411a5420901fd3e07cbc7858b0c8947",
+      "strengths:0": "0ac2303f63c0b19be72cabc28c60b251e1284050d1d5e3b487bbc5e8aff5f589",
+      "strengths:1": "11a52b9d9cc56b1fbfd576d3614801e66e259d8985ad44e3fd54cdb6de9a2f25",
+      "tradeoffs:0": "05d30ab9627e39747fd7646108c948bbe7ca640d5a34694740b1584c8cb91093",
+      "tradeoffs:1": "1d72ba403ad91af88fda200347ac06f4fe54c867900754f19920852da1ed9afa"
+    }
+  },
+  "kr-heukseok-xi": {
+    "sources": "95b95bf1ca6db137706c86c8612ed548d32281f29e2a49ca2b6660e166b68f61",
+    "points": {
+      "transport:0": "1a50b14f49e466f898da6982febafea66376bdc8a5b4969ac7d8dccb20e52178",
+      "transport:1": "f274946068560648dc19ae29369677fc02af5965d40d898fc0ec0d6a3f9ff31c",
+      "schools:0": "ed86628833195ed91b89d2a9afe1a4fdf8b75b44319070db251e885dd269bbc5",
+      "schools:1": "da592bd9b5e010d6b344c7982ed9ce92f53ed0ba28b635a94b8c38dc7acff572",
+      "daily:0": "a0ebfdcb384e1e97d5832bd92dd7f59c52856ee52783e6c15daad95798c20244",
+      "daily:1": "bc85e776914442639a4aa8cacab5d2574d16b57aa0c0e65ed102e320bebd3e65",
+      "costs:0": "8c0510917310542ca84b9cd943c54da604aa16b9875c89b77fa88fb63cc986be",
+      "costs:1": "3ca8ea3a72ed0663f0abd7f4c63c898b362907eae8aeee3a44e6d83ad7a31ed2",
+      "strengths:0": "49f2899606aa2852278a02e388cfe8147454569607d14af6e935e41c090a4c6e",
+      "strengths:1": "ca4d1599b2b5cfe451b8e9c2c36b5fd6780d8e894a132bac58ac21c45e5545dd",
+      "tradeoffs:0": "e0f52456267f82fed3236aee3a0b824a748cea09b47dccb596a429ef359638ce",
+      "tradeoffs:1": "567880af7f5337e4b6cf9d87f59eceac3d3f3ea49d2dcf40b55b2bcd2a833512"
+    }
+  },
+  "kr-oksu-park-hills": {
+    "sources": "dd4e099473595267e77058c513f542d97bb6e5591fcbd4d94fa58b99bc0096f1",
+    "points": {
+      "transport:0": "6fd22565d3c41bb3908f7239ad1ed4d6404729d33ab1f9dd6295691f8693da79",
+      "transport:1": "ecf666b61c08c62695758ef09973281ed6d004a011fa2c1c04c09e84d5e1a64a",
+      "schools:0": "16ab247c16b85f5db497af978a4211a9de46c6561a0be55b9841cb94019fb84c",
+      "schools:1": "8eb36425d3c456c38698b9e42b02c0fd401cba1e72c47237bdbe5440c1ba3ae2",
+      "daily:0": "a371efe58985472609ebe4c05dd589855fbf5f1ed1adca9ad943db746595cb30",
+      "daily:1": "f2f223bc904d580ccc1b6dd5e6a04ffddf63b2d1d50865301eafea3981f9a277",
+      "costs:0": "1c5c01f0731302934606ae7e03b5a37d0a8b90e0e1a61e980bd0de3a2b42fd99",
+      "costs:1": "17c629ba110c81477c44a64337fc45c82480ebfbbe8e78ea4358747ceae352c9",
+      "strengths:0": "6291540307a5f831303c511882a90064ec69fa4a098bbdbc2da4090e1f3c321a",
+      "strengths:1": "002bbebb56e25d1e6ca39a4c22c90186d0828db51aec2c5ac27f36a682193a56",
+      "tradeoffs:0": "ee6883e93a644a0ff66f52146f09cadd5f51e9e4cf6dba75ee87a2d008a53348",
+      "tradeoffs:1": "8c9e9c783e4c2ec1f021b54a2dfcc81d20a227a837f0ba85c94624bea55c7471"
+    }
+  },
+  "kr-centras": {
+    "sources": "f231f84114c82950844c1bdde565d2f4d1484616af7750383b0ac936b847d4cb",
+    "points": {
+      "transport:0": "ce28abf6189b011438ec3d10f8c9c114c67efe914b9a2708e270fb2cb72c416d",
+      "transport:1": "6511c530fc3f0980a00d0c72b19e650f07be8cbece206d642186c2fd16217778",
+      "schools:0": "733097fb3d5f309addf73cf7afb8dbcee066fb801aa05efa5c95d68cebc9456e",
+      "schools:1": "9b18bab19e13ea6eab7176af594511379c7312c1d872c7f1e2ab5dbe20b02ca8",
+      "daily:0": "edba2249648ff8db1f39c5a1e9a5f10284426fd8f5d4652b6b924d93c440b541",
+      "daily:1": "499b3d26fd422ea1ce5453bf6a8972f3fe21ff86592d7b66c1327eb9de15bf3d",
+      "costs:0": "5c0f5167f3e571dc77dfe0e256bd8b3dc2ff1794531d1dc3fbe9a9040aac40a7",
+      "costs:1": "2a3f24ee439068f8b919934f314924af52eec23a187e0523c9919af79e83f020",
+      "strengths:0": "81f866ed76400ad367a3209434fadfac5693cceff68342987b76db24ee702d7c",
+      "strengths:1": "5857edaaea6fb37f2dc47b82da40f215dc784b77784db9cfd75def0f049b7b15",
+      "tradeoffs:0": "9ce24e7946a1c6936e1638947c2811d1f2bd09a3e6b64c56ce726a07e5941861",
+      "tradeoffs:1": "6140c06457786468d17cde22cba6d7da6ebede38f0af951a7c02f4102988ea86"
+    }
+  },
+  "kr-tenz-hill-1": {
+    "sources": "da900be616a9ff724d02349114b5026c2782efbb0664f3f6aeb781e8212fe0f7",
+    "points": {
+      "transport:0": "acfc7c305964d912717d7683a1bf194d8442e4a176f5b6947dd5eb35c2493195",
+      "transport:1": "22feeb39119963685d74c2377be5496f72e548a5f1b31cec63636c6e419ad9d0",
+      "schools:0": "57317e885bfa5517d78d57e6377296f8bd9c525f09e73f47328ba5f4345ae891",
+      "schools:1": "6f29bf5fc8b74fa923a7529507feffbc7043cb8caaab325ecff7ebae749352a2",
+      "daily:0": "d625d26973198ce57df69031767aeff4ad1dae38e60a24d20d925a14dccf3918",
+      "daily:1": "9005b31de45cc996adf5dab84bd039f9c32ebedbbb6b7b46a73380c9bfadc1b8",
+      "costs:0": "ea2e25be1922dd1e9d54c1608e7155322cb95dd1d518babcea81815e2c2ee98a",
+      "costs:1": "960cf84eb2c801b72c3f96216587acee07d1974e5d4669493c4fb629a0126897",
+      "strengths:0": "cfed978237d1eabcbb024afb4274680c425177e5ef8057f17acc12027a9db96e",
+      "strengths:1": "ae23c07eac822df14f61ab704a0b80f35f005333c1392dd3333763ee38330506",
+      "tradeoffs:0": "e7cef69f840214e4c5a99ceceb60f9f3608233958b4cf9d64273294420059a97",
+      "tradeoffs:1": "b2c50494c89773c506ca92affa1e8633e450d2d0fee994d82d97d33facbd1e50"
+    }
+  },
+  "sg-marina-one-residences": {
+    "sources": "d7947f6d74d55e77f398796c538345ca8b7cdb7b6e3ccadb5a97e743594c1385",
+    "points": {
+      "transport:0": "95205a43428f6213a91cfbfbaf381c6942785125b078660729a0b42f039bc4ef",
+      "transport:1": "1f7181a7076d60064efd02ade3b8224cedb45ad9445b4c0b26d8e879b85b3161",
+      "schools:0": "67cbd88764bf86bbff444da1a525686c19ac71325b09da49f974b7953e040165",
+      "schools:1": "4d091b2616e176d22fe34b3440bcbed31d4a2155f20a6c8a1e330a696a8f0fbf",
+      "daily:0": "f08e18f16e3e969e5b07d3f4b0cacfa091abdec9e0710f7639becb9f0bc8583e",
+      "daily:1": "dece8a62c4b733130cd4332cc047623e38467735f9ab08d6e4703e3cc10101c5",
+      "costs:0": "265591b26f3d72351a511db22f3f2ec9a81404aa2aef0bc26724bd38ef9ed63d",
+      "costs:1": "b91ff72789812eaf7a9d754bac6c6ceba61fddf3953c47e1bdc4afc98da5e0de",
+      "strengths:0": "575e22991585d71b442db079d57c84383a3a422f6249710106ba33fe7a0335f2",
+      "strengths:1": "438ae9f84e96dc5528b81b9b54d78321ea7bfad01f8164eb7b695529f201df5b",
+      "tradeoffs:0": "812dedf88c69391a84ca21c1074fbd4c3bdf8f2c24b9a8f09153b1fd6954dbde",
+      "tradeoffs:1": "428a5d2d047101399fa394f681c3d3ea87cb1dc78a990e79c864f1c467f4049b"
+    }
+  },
+  "sg-park-place-plq": {
+    "sources": "31e98ca1aef72acccfb666d7a9b2bb7b55edc14dd9959a2d2b863245133b3c0a",
+    "points": {
+      "transport:0": "0474a6e1277b53057836499ea7b5143791e13ba49725903685eb2f882e23ad01",
+      "transport:1": "bd23c8526f77553bd37f07962627259ee2cfb97d9c94f1ae5d20dd0a859e6758",
+      "schools:0": "b203fd388561664ef525e6010719bbff98f45d6326c117bdd3ff53e830bd5663",
+      "schools:1": "4d091b2616e176d22fe34b3440bcbed31d4a2155f20a6c8a1e330a696a8f0fbf",
+      "daily:0": "a7fcc67e0c1b463822652afa209f3da318801ac3cf2f792f2e22a0529724adf3",
+      "daily:1": "466fd78b255f5c3b9d0b20c8201da0317c6aafb555ad2a81ce9abf7b1d6053dd",
+      "costs:0": "da75cf5416c2f6cc7a48aaa4db63d3beb5386b19de8b71510b59b053dbcb18e2",
+      "costs:1": "7cef3795024b128960a4bf9e7ee0b0778c085b7ea8f2e1a3fb68026a423f2e8a",
+      "strengths:0": "2c09f5070534aab11f963d7409fb4192ef4612c58ba9fb154a0c09cd170f38e7",
+      "strengths:1": "ad551e272b766e28d34a4aa368bf3cbfa163659352c808d91e7342806b250120",
+      "tradeoffs:0": "4bbf5deac487c79666f55174b2dfe83e87fa1ebff954ca85ab4da90b5f407d61",
+      "tradeoffs:1": "beca7ddb5c12a0b20317769613978bfc11b01764119af6b7e5b509e7eab2272d"
+    }
+  },
+  "sg-wallich-residence": {
+    "sources": "df3db7963bf714584bd1a0e25ee87f3ff5e06e2c8f95644e7bcbd9e161c793b9",
+    "points": {
+      "transport:0": "28cdf69ac7ff0b2ab5fb17ebf06e1fcc5bbf6431dce57d830d320dbd053c5309",
+      "transport:1": "072ec380275083056990e1498a915b87535d890249c2c5c73c0bd3ac24da9c54",
+      "schools:0": "2e8e33013e929ee01aaa04ea17084e6eec0bbbc7a8cea8311d75f1b6363d86ef",
+      "schools:1": "4d091b2616e176d22fe34b3440bcbed31d4a2155f20a6c8a1e330a696a8f0fbf",
+      "daily:0": "351524989c1504e933192f9bef5bc3156c95c93dcf73210cabbc18bedd341cb3",
+      "daily:1": "22c680f0921b710ff234cdaa52414aa318429225e374d564656cd20b0d8ea603",
+      "costs:0": "07403efd155363636959af1f94eeaf9657baf886f3b9770167ee481621ea5c50",
+      "costs:1": "c09ab3e98e344f43826607005449880f8f89bc284d15a4fd969144b4ae022abb",
+      "strengths:0": "418b937d313cb0e6df1cd8ddd67b9f869399e3ddeb3545a6a558c4bee14fe2f7",
+      "strengths:1": "f8208273d2d24f3d38dbed101bd5d207012cbdf1d70ad6dfd9ac4be52c8c8594",
+      "tradeoffs:0": "370955405db999c40f8cc44d2ae7f6f0509e5d3914a905748fe5d8c2da25ecf1",
+      "tradeoffs:1": "a806f7e0c9cb59be5456576b8b91029ef549ee14635fa8651b0ce379e52e4ae5"
+    }
+  },
+  "sg-the-sail-marina-bay": {
+    "sources": "fb3c656d9d3eff08a761271de9439d3e6c6942c138b789f75e7a3d982224ad6a",
+    "points": {
+      "transport:0": "8999f90e6a2e1ddb4d9d442861cf6f70491bfa999f0f8589a76e5376b6a09a91",
+      "transport:1": "c81b710e06120f4a6957f3016ea2b118a51485aff5ba86d9106ddfebf17b73ec",
+      "schools:0": "ec1983e4bd357a55ce66a00ef2b67928c3d1a1a0f4b35feba03387d78ecda093",
+      "schools:1": "81ded54b9837f4e6e8387b9456a2b916faccd7bfbea49a109cafe5c1e3da9250",
+      "daily:0": "11c95ade3f51840355db738723f13b2fa2d24f53c73d6204a72dcc8999cfa3cb",
+      "daily:1": "ff60fce78430b68e200a2b79902e4f8d0131ab473d0ccbc0607123127e53eedd",
+      "costs:0": "7551b18667a18a083919ec6ce8d652a51aa8de89b58c11349364d01063f40e74",
+      "costs:1": "2e775ac81295349e3914d641196da837015a0abe5c77efb9165a2fe12427cc18",
+      "strengths:0": "bfc3a894f5bbbccd4598d06e567fde31192a94d083b7a13f52b8e0195523a83b",
+      "strengths:1": "a0bcb758f4299cb7e2f254d92d93f0975cee4397e472c4c87a4048e7a43446a9",
+      "tradeoffs:0": "75969b95cbb3d67f2df90a658c1a3918cca37924e39315306245c0421d96e199",
+      "tradeoffs:1": "82124fa17ccfe5ad1f42ef903bbdcd93132f98f400e23efe35bd548302a025a7"
+    }
+  },
+  "sg-duo-residences": {
+    "sources": "5c2fcf48ea90aee5f2c3cdce0b4db880263fc991b4575ac408d073495b32b8e5",
+    "points": {
+      "transport:0": "649f4e60de657d7cf1f6a56028406db981c0223a2d1a4ef6667ab74e926169d5",
+      "transport:1": "48137b87be5282af3454cfc99337d6b235d24ad3596134b97ac204331ad7819b",
+      "schools:0": "9b549b5e42919213aa07d5fd9e2f6970f95b96acbd467fb488cf71887f0cbfbe",
+      "schools:1": "cbe169aa7aa120c2ca5d1701eaceb26f2d137b572d24d702e098a6a5da9b7b4a",
+      "daily:0": "e2dc9b51a4eb394e58381b43480c04eedc46a4a10e6cf76f516941ef2e09091a",
+      "daily:1": "70a6662683a636056e8c3fa5b4d4f976ec5d83665ceb63cf03b02d644a6f9559",
+      "costs:0": "b6e3bb69e102fda1aa6438830b736e9d444f465640032e88afe6f1831f533ff4",
+      "costs:1": "0baba375e49280dbb6a264eaaeeced166a0b254ad4f9da47dac9c101bc05355e",
+      "strengths:0": "ec8787dd455f0bdfb2e6a42aef1a65464e7bd04cbe2a54c5fee3e85f52233dcc",
+      "strengths:1": "c1f1ae5138474c0b94f3691080215d004213f901973541ead98beb99d1810dcc",
+      "tradeoffs:0": "09db7b707c6c982593b3436052f183148a29d5cb3697f90b735d268c62bf4b68",
+      "tradeoffs:1": "baa1b5d6ff075bdfd48b7a70643d5375071adb5588c4defbdffff6e988e0ae2d"
+    }
+  },
+  "sg-the-interlace": {
+    "sources": "c09c2b349d897aee4fa463305bef0e2681df2674e0291165d94bc6919aca8779",
+    "points": {
+      "transport:0": "cfa7e278e838cc0e57d91bbf9d71c32b57b39418b43e2740434c4b66575786eb",
+      "transport:1": "c21c7eec6ff4b735eca6e1c7f2f520f9988123714eb3a9bd8b672b840eb9ee25",
+      "schools:0": "cc46b6ada616cd16fd3fbb6946dd771421822b7d1ffd45d4b20668dea34892a9",
+      "schools:1": "dffb92c10d334d8d99dba074634a0aeea94be0b9f8fb53bece14f6d862e11296",
+      "daily:0": "0ca73ff8f77e93e0c937d757da689276d92e39dc604269b215f5e1324c26974c",
+      "daily:1": "77e917300344fca5e481a25e6062ef2f9b566ab0e07a41bbc7dc10a5d26fb72d",
+      "costs:0": "6d7e1321fdb4ca97345d82dcee94551886ebd5e688debdc3046ed6933c06730b",
+      "costs:1": "ff2b5ee3f7c3941b51eabdd3dce8d1ef611965093ae52a181d8dabea2986812d",
+      "strengths:0": "abbe66d1832715ab2de9a95141d5626c8741393613e35b7f5c8d24ae593d11a3",
+      "strengths:1": "13b70462402d4378af5c28c6094553288139947e1dba3ff087cfa7c6a5ae10e5",
+      "tradeoffs:0": "fc756878f3163ddeff517786c8588f5cdea0ba2d3494a7f4656d70f8f630d56a",
+      "tradeoffs:1": "32f5976da80eb4c18effc8e182c4e72507ceaa58393159638a16e85a713c33e1"
+    }
+  },
+  "sg-seaside-residences": {
+    "sources": "bb617c58e395a15caef9bf8ba8a805ab9001a21e1156a5581d28b70ca49541c9",
+    "points": {
+      "transport:0": "f9bd59bcf51ba521c9dbdb4daa5677f536daafa05d2a77bf8b3a33776b1cc4a9",
+      "transport:1": "6b331d7518a2b4a40786429fc00a60dbec4a79eb537d178e0c24f9ed9d2a233c",
+      "schools:0": "e4e62151f6f8b914e95813e77f4f2b05046b30374f7e61dc23688df0c0a4caea",
+      "schools:1": "85b7a2c2afbad991996190fd668907e9cd89a8655600ec322c6b5b0bece81dc4",
+      "daily:0": "e81224dc8ac45297316c8c261154781660623c60f7708748abaed05b48c85b1c",
+      "daily:1": "159d2ae45843bd485610315a4a5e4e7a32daf78d8e57c73e99e5f7522eddb61e",
+      "costs:0": "bd3bacaa6317b73f1bc3dfbf5fc2fd5a1fb24435680106d938658795b059a246",
+      "costs:1": "36ea6cb7e58281db26efcedef053a5cfc38dc75b79e61ad7d25ae160b9e38d42",
+      "strengths:0": "618cb47ddf02666e171a45f18ff9e34dd6df928651bd1ca5c8dd1c0147463a2c",
+      "strengths:1": "f184115368f04a27fd65232eef680c56cc9dfc1b86314c397ebe3796565556cf",
+      "tradeoffs:0": "62210af72eebc92ab0db22b9c9e03db9d84fff5b457c53ba0b518522093d68ce",
+      "tradeoffs:1": "896c9ef9d8428946738d3960871087fa92307a900f2e9c6e5a9f8bab1cc749c3"
+    }
+  },
+  "sg-marina-bay-residences": {
+    "sources": "24d06c66529b40f37a60a7ce8869656d8bf7ce2ada15bceca2788aba34ac1d92",
+    "points": {
+      "transport:0": "9d3b8102d861503f9229ddb4cdc2e6f685a9d242134a319d7b4057c8e6ea5179",
+      "transport:1": "46c355ceb357c86934f5b88aaf5016dbf640debd10d48c9af289b39b23003faf",
+      "schools:0": "41128b442bb4089e347c990a61a37b496244a934dcec05a466a701d3d2ad8b28",
+      "schools:1": "0434de559d05175697bb742ff588ce5cffb8e42d973f07581999a633be6d41c6",
+      "daily:0": "d8e8e3ebf08923dd9542f0e6043f966bb8081878df718f6d336f8faa26250b15",
+      "daily:1": "61f84b9745814013e999c9574526f7711190e3bc0ecb978c80c33ae95101df4c",
+      "costs:0": "2155f3757d2d22e0365281e4070fe5470da6fe8c9a5fd94a84f13e052ca82cb2",
+      "costs:1": "7f23b0bb6699cc49d97f6e0e1822c88641ba05dd85dfeae0d4672dd5150aaa17",
+      "strengths:0": "8d89799779c54e2b3fcc791331a5254fe41d1f01afb5fe001683e927769e2457",
+      "strengths:1": "f208c13b856852273180859ea769b1bc20c35a0e4914bc0ec92e3e988f4112c3",
+      "tradeoffs:0": "de278e5e92202faf0f95844cc3e482d550c90f8c9b8fc2a34c2bc4237d9cfa75",
+      "tradeoffs:1": "9ccd393266d6319be4298bd77a1ec372246c8a5f073c26c899a0e895e5ab5145"
+    }
+  },
+  "sg-marina-bay-suites": {
+    "sources": "2af8c914fbd4ad6971982874c5240e6039b8e9d10032fa14ef4cc88142c5d23f",
+    "points": {
+      "transport:0": "5579025ad8d3813f74498244542cf62b4797cc4248ac44a741175eda004a78b7",
+      "transport:1": "27661cd25788422b44be27a26495b75f2589289097b26c137b974e55ed6be098",
+      "schools:0": "13a44e1329dd3f8f30e1c1ca846072831d71fbb3684cc01fb8a3b4081e8b79bd",
+      "schools:1": "fc4b2f66fd3f63952e85e947323b14156053a0c2ddfe70eca3ab2def239b2715",
+      "daily:0": "37445b783f7ef65d9a2ade997f7d896852162804e32f5a833ec6316e13610fbc",
+      "daily:1": "a75547a2e36335083026ec17babfdbc5bddb8915d98037437da5da0f9ee5ce27",
+      "costs:0": "7818eaa6b5b02525ac461008503804f0d9b2bc551db8ee694eb6fd523ecb2d24",
+      "costs:1": "54b9a0658206a0e05319e485232e205a7e3d0fd96dc657ba1b847bf44396ea75",
+      "strengths:0": "7a7fbbd96804a84830b80ada853da895f4ad5bb88888211ca6afe84a9ee2689e",
+      "strengths:1": "8e57b1753ebd0b4182c927490031f3a5646d41f7b79d49dbf257682ecceee164",
+      "tradeoffs:0": "4391bc33a958b81442ac3c5d8e816eb4d17f27a9f369392ba28718ec889458df",
+      "tradeoffs:1": "c32d654e73db9a4edcf8cd968dfedb14152fa9a28738923d3ccf3597a748f44e"
+    }
+  },
+  "sg-icon": {
+    "sources": "3f3036de273d12c4e3b40c9d10db050a906b4b62f861d353228d7862c9d4f5c6",
+    "points": {
+      "transport:0": "cac3cdb667132757c34ea4690ace3d91db6001961dd4a19cf9c0121f53569708",
+      "transport:1": "12260cbf7c4261d1fc7c8cfc89015d6c51faf92a16f3dca973d98adf6cca9d72",
+      "schools:0": "e477c9ebb147dcc5e16868acb810be007093294ad7781ca452a7bff20e3b4aa9",
+      "schools:1": "e3683ab97ec5aa1486abe40fac520d83fdb110f73a647107525812f6c68dae9b",
+      "daily:0": "58aa53b7345e552321ad290972a9558e2d8bf51b8747b1b792154d61cc10e3b7",
+      "daily:1": "15d11d89b13dbdb8de3c6b3e64ad4a8795d120ae8384d7e27bc32a69003fd88d",
+      "costs:0": "4da67fabeb1047d33e1536186ee835c19089499319cadeac666c79bbd720b739",
+      "costs:1": "69082141221237b00fc8e3c3e0e3f98923e4ed0757905526c0af999027b24804",
+      "strengths:0": "e32ebaacc1eba9dc50b3eb26fff87cf3ad3dab3b828c8941fa911280284dac3d",
+      "strengths:1": "3ae46461768f05d9986be65bd9bfd770f162e74c19d67db4cfb631c2aea82136",
+      "tradeoffs:0": "9fd1525399508adc29f14a50d747f6649991cf468f9d873206266cb960420489",
+      "tradeoffs:1": "604d06b170d92d09410b7f43b4fcccff5e417428847710fd93e3416796d7d4ab"
+    }
+  },
+  "sg-one-shenton": {
+    "sources": "32eedaf1286f7e969202891ee29cb0c5026d97aa5a92b7db904ef5629274828e",
+    "points": {
+      "transport:0": "d8ab71f791563d435f68480462b56b0e0815b47e6d82f883fcf561fa339da718",
+      "transport:1": "d56110cd8efeb026464e32fd32a7a7f1aa3703441c3ef594d52630565b662d2f",
+      "schools:0": "dac741a48a315ec6dab972788a84ddb26989144c42cb679136c76f8f389f53da",
+      "schools:1": "47bf5281ff28994e45c5dec3335683b279fd45a45f813b7782304a036b59ab2d",
+      "daily:0": "7a0e58eb809836a0aff2c5bda1dfb1e05e5c35b1ee962e2f4e432d1ace86a159",
+      "daily:1": "b371b57aeb918fb94da038cad96b43fab95d528bac98aaa457628ceffae9414d",
+      "costs:0": "b854fa22da0df2b45678fbc632a28b24bd55a1530569388f06dd7344002ac904",
+      "costs:1": "1943fa02aa9744058ece64690af7ecac336a059fcd28264d08b00b3e6bfed6f0",
+      "strengths:0": "15b26fd4263d3780a9333358429040739f78e104dd962c098ee2acf12d0baf2f",
+      "strengths:1": "62aec5e8438c91164470d5d4f2ae794088a4b28e2098f5fd9018d946e714266f",
+      "tradeoffs:0": "efc4266f26992b82fa971bc35e724172e3c5451cbfed0c40957731618183340e",
+      "tradeoffs:1": "3c7e69194793211ac2eb2647111575f43739d8e79c2147a2663b204eb2ce0395"
+    }
+  },
+  "sg-altez": {
+    "sources": "f823a98552a8730a4fb1c8abf68462a3e3ae29d32816f1b6e1e465226ea65e44",
+    "points": {
+      "transport:0": "c8fe06fa977ee15d48d2ca5bf6e16850c927e1e12a4586c3041ff38e8b538ebd",
+      "transport:1": "5ef2938f9df689efda0750aa5554c60c75f225ccf455a2c97cf913ddf12c93fe",
+      "schools:0": "7a532131b506b937f223a9651453dff44b9b215ab42286b52449c93e33a28948",
+      "schools:1": "be995f7f7689abb0ad4841c308bd9618b56a7ad61650be493f7eeecce1e84fdd",
+      "daily:0": "a050b06b52edb2b5db2df9afb8496b7a1f20f43e41c3f019b81f8b545e5ed82a",
+      "daily:1": "408bed0ab2d3e8aa3ddc4b6635b2cd4a71b855cc885b428930d4d325fd52f4e2",
+      "costs:0": "01fc3c2c4b9564be60a3735b0413f90608c023daeb3fed10bd8af822546bf573",
+      "costs:1": "392476c493ed58751ad533f3fb4a0715022ea7783d8aca9eff8de265fb6ee60b",
+      "strengths:0": "0a0e2f6f77763c9dabfb326e27183bece910ab86792f3326783da546fb332c4b",
+      "strengths:1": "03d58c066930259bc78eabf896021db1adca59162b66ea3688f660084e6c3c4f",
+      "tradeoffs:0": "5395f5af433455e8a86556776182d7deac8db559805659ee9ff6991ca6bfc5b4",
+      "tradeoffs:1": "a3d206477e41640cf8b1d2f9935ef013369863fc275220ef7cf8f12b233ed360"
+    }
+  },
+  "sg-skysuites-at-anson": {
+    "sources": "c6ff2af3675b2ee5ed2035589737ed96d5a04db11ef024cab4700cd1b0100006",
+    "points": {
+      "transport:0": "acd8a23c3272aaf82452d7cf79a67a5b7065e8abbdea8564731e6577c0e1e468",
+      "transport:1": "49811dca10b5b67f8c7cbee0c628a0573ecac15ab9539d3b3de5d5c6c9a07566",
+      "schools:0": "b3af8489b5b9c95ceac9b288a7179005e472e3f78a1a210b122fda57b757ea46",
+      "schools:1": "4f4a168b6f89a3a0b5ca46eb20dd4832eae2fa41463c0ee69e01c179f05f16cc",
+      "daily:0": "75e1d0b584f41ee884f36836975027e483826b3e1c64ffb1ef1408cca85b2572",
+      "daily:1": "091507a6d10cb026fa8befcfdfd096a65ceac04e7e219534829ee0690cacba1b",
+      "costs:0": "dda5af087bf80e30b10ab9ea9a664c875f7c78aa2c65917f51d8f23d49739d7a",
+      "costs:1": "15c80fe84998c4d6eef73a5a6866a76ffa9ed94126b5efc9a0d55f88b3ac7636",
+      "strengths:0": "b04eae2199181efe017c8a276243b65164095f69784a716665a38a7fd804be8d",
+      "strengths:1": "130911a9aabc98ce8ccf165a18ae14780c9bf95ec9b406303438088aa0814cdc",
+      "tradeoffs:0": "2276dd59a0ea7477433cf7e6aacdcdecf5655b00071af5e74ac46dbdf0e2259c",
+      "tradeoffs:1": "99434ea1367e1875a23c94bbad12d0ef27f548c96e95d27d8e5a1aab40e05fc4"
+    }
+  },
+  "sg-midtown-modern": {
+    "sources": "ea54ca67bf4e0ed97d98c343396219cb9821aeee546a0c3a08a011fa4f906960",
+    "points": {
+      "transport:0": "329bf7cded63f98ec245928bc12eb5555bf3e6dec30044e4bcf338f9897a0912",
+      "transport:1": "ec7965a19703410fb615b1b7900207d3a9562c3fc28f8d029e54875670958f5d",
+      "schools:0": "6f6ad63554a4b38ac00dcbe7175cee8217200bdbf5f4a7c274bc76a8b6744d4f",
+      "schools:1": "4fb51ebd4a27e5e4770636a6a035e61545c81fe0210e64b1bb0677e124e2e79a",
+      "daily:0": "f6319db4e28cc02a2828ad46c6110b9644f81ed332c969b06437296104ff174f",
+      "daily:1": "f14a636ee0628ad60456558a11abec9afa784e399f95ef2eb42bcb2130b0dcf5",
+      "costs:0": "433cb4520bf03296c2a53cbf9b098d03965d81385c9e4fcdc69744426bbb5f8c",
+      "costs:1": "08ac6b35b4d42e4813b7bbe59d68103023913ca9eb42d03c4885fd2d1bcad9aa",
+      "strengths:0": "ca681f0058c33a9d2e92d6ae0dca0ae381dac12ff462d82c714ac664eb646f5d",
+      "strengths:1": "56f08bdec9d670df09fe5aa53b75826fa340a322a77c8e67fb2ed6b4f9d8e5f0",
+      "tradeoffs:0": "9d1820f175eeabc341c5b96a9af4293feba2d5451a5a2c50cd5153631a980197",
+      "tradeoffs:1": "f7b7faa0a021920b588ddc21336fd818cf8cc079d350c87f595bd0ce5c5df558"
+    }
+  },
+  "sg-midtown-bay": {
+    "sources": "6ee2666ac0e5e35b7ab77e2e68ca6dc92adfa15941dc9e17b23e019423a2dc41",
+    "points": {
+      "transport:0": "2aa3504555f9d368377e4479ec809e643ef43e19e8651757a97298e25a13c967",
+      "transport:1": "051964ad0771a82c9cfe78fc2446a5521e43a2994e2ed80e80833a7eafdb7fdf",
+      "schools:0": "11b8c1c8575f91e11ce4f2ef18f80afa510d3c7ef6440540af027335b0f03968",
+      "schools:1": "87848d015bb0c6a70d01f0b340fa582b875bcf151c6ff2a4f43a76bab23fe96d",
+      "daily:0": "96ef181a8a53f48bef6f5db9223002b892f3ad9e075462fca1df3f0ebdb78da9",
+      "daily:1": "fc83dfb92a6f39a0924f1a684a9f4c5dbab27c0426dceb37d08ab1f68b6369e6",
+      "costs:0": "617913454dece2b58982fa092c45a9eff64fb9ae0a5594ff439c430cb4d66b2a",
+      "costs:1": "e621771a3d6446e77c3af8d20eb49df1d55ed6431e331bab443af951a0086e6b",
+      "strengths:0": "d8f56d9ca26020e070b60313a804e546506910e8b06d54ead44de7ee809ed170",
+      "strengths:1": "0cbac76e923b270864e2b765a001361f63fa527a850cf753a1ebeacbaafd3f5b",
+      "tradeoffs:0": "06dc2a274655349575cf14d49d81a9d10b878b4f0105af3ae6c79a9aa42422ba",
+      "tradeoffs:1": "98c9162113604c1100b460bc8e2855b579490773b677b91f89ccb70abeaab87c"
+    }
+  },
+  "sg-south-beach-residences": {
+    "sources": "58e770040bc7fa6a8e11202f19ac645aebd8c5ff63cd1eed88bc41bf411f07be",
+    "points": {
+      "transport:0": "379e32ece82ca9fc7b06724a026056469b504593e30cf28121cf7afcfbe7ad8a",
+      "transport:1": "61ba8ff74b9da60e95af5d93704655091bede34841b09c05cf17d43f2c94fbca",
+      "schools:0": "6afcc14cd5ba81d02593895da5dd7cc0de8dad7402fe0677b2d876900bb424ab",
+      "schools:1": "e21501d97ae6a9c03062740154783c2a61598a1630393af51f75ef40d6a8c59c",
+      "daily:0": "cfcce2474a0c32eb6cca9a1c4eae6a34abc6738d7f60bd5ad7e6c82505f4e398",
+      "daily:1": "1bdadfaa19ca95eba35b86e1742c79b2cdea10d1cbb0e033a5fa23c22a11fec2",
+      "costs:0": "be3d98da465e2cb69e9e05989c8353d8cb3891eb5bb52c7dd86a75c19a279c39",
+      "costs:1": "0b5f7c23df3933e0f707513254916faa18cce8f11d626b78424adde53d8e8dee",
+      "strengths:0": "7c69f6d3c3dd363f9cce5bd50e6613a023d20ec4a5d583592e83e26c4de3190f",
+      "strengths:1": "f3b39627a83bfffa7117f4a62964b8c39a8fbbf965c6401ce82cc2c169ee4f53",
+      "tradeoffs:0": "772364d98ad50968ca6d82a1968ea3e14b38ce601985ba2597eb625d5481b71e",
+      "tradeoffs:1": "c054d3ef9a23f296948e6289b249440bdd56519d00699d7479868b31930d90fc"
+    }
+  },
+  "sg-concourse-skyline": {
+    "sources": "777d2c7dca9c7bb93cf8aca31bd5210c8cbe61039968a50e8bee2920735ad681",
+    "points": {
+      "transport:0": "5815f6a26ddf7c05215f6efbe0cb8c9e1ef82da2fed3b65e528060b8a2a8a7f7",
+      "transport:1": "581c7d0aa894b80370da9328527b1db5fda5ffe1c43498a4479678f060754ce2",
+      "schools:0": "4f95263da88188f907f5f0b229c41dbdd35f51a4ff9794f4bcf1fff151ca310b",
+      "schools:1": "5a5f25962ce281dc028023547f5b62d23454872476667e619f49b0cc08be1167",
+      "daily:0": "bacfe021d53b29d0398e004227e68a836a6ecb4b6ae4fdfb0a33a8c7546b05f5",
+      "daily:1": "7c5bd0ef8734c88d462e29c13edfd0a20438353fef0032b5d34093cb194c33c5",
+      "costs:0": "b89098c7b69add3a83dee92459e41c38280563fe56b14b8e37e4f9756b60844d",
+      "costs:1": "e0d7e7f00315cca5c50f8294774a1eb3efe6e302bee078fcc3975b03bab73a44",
+      "strengths:0": "c769373af61bb29d645eb70b7a0b1674752335bc2137525eb405a0dfa90f6d51",
+      "strengths:1": "2bf0a9c785698271a54d2556d733dd01dd67e828c87d7e598ad64a586cc71ad3",
+      "tradeoffs:0": "0a59443cbb5e7737aa7f0aab9600c2f993577c2de389b64b270be8afae93eb64",
+      "tradeoffs:1": "c73cb5c080a544ec7d5257d8c08c7e4bdbe99434205e5c565f95891c87439f03"
+    }
+  },
+  "sg-martin-modern": {
+    "sources": "195c194c353b90d6a155778f52bb1289fe93680ba6d17f6807eadb8d06c47169",
+    "points": {
+      "transport:0": "b4e5ca94ea2e40f2b1866303240a8e59024eb1b0bf25a4d658b80115ff4356cd",
+      "transport:1": "5ce2dcbc58d6bcbf343f9548786711b23b9af39e832b410e54060c65bf2a65dd",
+      "schools:0": "4ca877c8c137d28fac7016635b33e24f7b6773d84a88c627f5ae373baeda03e4",
+      "schools:1": "a133698d666279ca067f5a573521a4c7ef92f9b7b8a838ea8973e31f57d43253",
+      "daily:0": "7551756f29a2ecca3e573fd443d5fb6217fd33c8c568dc8f864f538aa558a5ea",
+      "daily:1": "9d7cad8bce04c129964d73d7384767f3e6948da36bba188abb794856776c07dd",
+      "costs:0": "a2f6636ba6fdb81fd78db22bee1126afe4f73593d6291a1c7846f784d241f057",
+      "costs:1": "12432e9cea25e209306746a50179f124e2e1492af26a0d3cf721e6ca7b4341b6",
+      "strengths:0": "12f5d0b2af8865ebdf6ca3a2a9786d9727970aa539a2e36dcb5678157ba41a59",
+      "strengths:1": "59509f893693401ea85b959d5a2145170ad2e424ab60db10d1e33978523e048b",
+      "tradeoffs:0": "baa523e693f0e8fdb51d973e787268dc927548e9096be1f01015c7d7fa69beea",
+      "tradeoffs:1": "50fb7732e73091404b053d252cd95c9186e56ce3bbaa636e6dc0f3a51b440519"
+    }
+  },
+  "sg-rivergate": {
+    "sources": "547920df97bb03755d66679ad37a26dcb8cda7bf7b15574958abb45d44701244",
+    "points": {
+      "transport:0": "8aec627de12d0404469c51c32b9c5df1caf114b39449ab69d922037258126d40",
+      "transport:1": "27d128449b74fee4371a81055c9877a1a927ad3f9ba130820614c5d7f77c9ed3",
+      "schools:0": "1cb3703059dac7309c18d62ca46989570ae450d76166f86168a2eafacab89a10",
+      "schools:1": "d3c4d541c45d256a91bc4938ecb40224aa5342bfd6a25e96241e2b08cef099ea",
+      "daily:0": "0739fa88e335b8bf4100cbc1b56949971015efd48e1ce2d8b8688d0df67aa447",
+      "daily:1": "f7a335628bf65aad57be829c9bd355160688d642890c11c9d90a6ee16358001b",
+      "costs:0": "83149f5b39bcccaac83f2fd366548fbb644c9e3a29db0d2adce0ee5b143c524a",
+      "costs:1": "26c8337e86a63d85f70a1fdfb8c141a3347d7537f3a60814440461f687c71159",
+      "strengths:0": "6b169e4475a856ec037d573028072aab64ea8d0b7ffa087781c91dd253839a98",
+      "strengths:1": "eb593bffc8af856b49a582f245c25eaaf7f65b524f1e0675d49b1f93ed2219a7",
+      "tradeoffs:0": "f2eb4bc60f9e32aa278095a36a919054448615d9908fae2cf908bd96a96669a4",
+      "tradeoffs:1": "037786b567bb87a341da24bedc333affd3ff9a211393777941eba9903afa8c30"
+    }
+  },
+  "sg-the-trillium": {
+    "sources": "9d8c3ea65198b3dcfad8b76cfc44ced6e23baba5194ca32487a2651efab29492",
+    "points": {
+      "transport:0": "e9399c5a81553ba2001617e0b07f60ca63dd24f6bb30efebf7314a2eb7e72f2c",
+      "transport:1": "111d1a069e8c4a34cbad87acf42a7861816d02ebcffcf7d291e7ffe939339293",
+      "schools:0": "f7d3382047a6c5f69a1e23dd2c9d8a95913eda6b660e7e2ae6315f339d9af86a",
+      "schools:1": "02d3c2269929949e47ba0140bc5c99dba0b917ebefeef417f07afa396b6eec5b",
+      "daily:0": "72ce5fd594d2f300c8b0b80158ba946e3f0e07d44ef943ba24a543a1b8804c2c",
+      "daily:1": "142f2320eed33d34fa9d11f6cf9f157b8a30d3df7df0191d2c79ed95e4d2908f",
+      "costs:0": "e5fa00cd7ff9eea48d562183251346acbd7e75b691a6ec49d1121a13e0eebada",
+      "costs:1": "5f25a3cdcf01341bcf0178bd6f4d1ca20b6f39bf126ba68227291f58a9042eeb",
+      "strengths:0": "6fa95d071b1bc27cc171f0f9cc6ce7939de77e1fef577385e4cd26d51f462137",
+      "strengths:1": "21513747ee032df1f1cfab1247d9ae272281931bd7d40d86f084bb6dcecc7c02",
+      "tradeoffs:0": "960c2bb95d0a97a8649313ce1c7e92bf1304579c7f5a5e24903e3b4266afe158",
+      "tradeoffs:1": "2dc983caddb2fe8703a307ee90ab8c52eba6d54681ccc9a08bd7bda5448327aa"
+    }
+  },
+  "sg-d-leedon": {
+    "sources": "df300e6864ae3b2e1e32e54361cf62578d7c9be88ecf168763f580a48f0e0e84",
+    "points": {
+      "transport:0": "1dc8fdeb02e25747c1e43e6f21a6dac18346f5d2b4dc0aa1d64663af912195f4",
+      "transport:1": "582b318ca84dd30ac217b1c01b34df70375407b2806ff2d3ca7c3c27fdd3824a",
+      "schools:0": "58ca83b2281d7b18dc4a9f9f4df2b5e6da03e7d1f8f6163591383c93a23f89c3",
+      "schools:1": "55ba979c3de002139e96770e1f70eaee6929973104424991b405252a5bc662fd",
+      "daily:0": "490270ee498137d7cbea872d5c336d2628282c94d65f20ddc89ad45d2f58a7f6",
+      "daily:1": "f45359ea7e2473d9a396c7e989fafcaefb76a4991ac3cf3ee07ab287f90518a7",
+      "costs:0": "efa3d492a8ed2213c0e16ad102b70981a11fd3ec05c6786a5470c9116eb24fae",
+      "costs:1": "cc7da639a118226b83812469ae0e196c0dfdc366d219a188df5043853006c6db",
+      "strengths:0": "9fd4ba6db32845f0f9739c5478421dd758fbb24f9db6b9e83ba228110c5b369e",
+      "strengths:1": "7928373e7bbd2d971afb5d78291ee7e8e59a0f0dc033f4ed8b3381a61e981456",
+      "tradeoffs:0": "82807ff15e0cd74419fd4fb2da94ae979abf366142fb694d9a44d9090e741628",
+      "tradeoffs:1": "d0c5284c4959c37d8708354801253065cf204d36f07b00a6360412b6fa16c253"
+    }
+  },
+  "sg-reflections-at-keppel-bay": {
+    "sources": "2e5c3e0874c59e30174eb8979fb7f58d65d12560cd749c9a8153ccbb84c0cb22",
+    "points": {
+      "transport:0": "b5327e7a4a0c1909fffabb25ca6d5446133370a7b30eda1aed028e0dd65d0bfa",
+      "transport:1": "6d18de5e9ac4bb4fb0d4bc0ff461a423b6eaf1d5369c83e2bcc90020a785e755",
+      "schools:0": "d25d7c1e82992cbca6c92a2ee99fb946b142c5799e9a5130da01bd5437d6535b",
+      "schools:1": "e03ee5f03ca9317e432609209ec83bdf9c144e32e432a87a9f6a7c149b4a1c60",
+      "daily:0": "ad6ece4538ecfc6e3fd5cdd354213d63e77281c163b6f00357dcfa027cae3c94",
+      "daily:1": "5bfb7932963c5d827202f08fc06b56f902b29f053e2837c538e75d1151eab7fa",
+      "costs:0": "b954db9bc2574c1c83c9899aa5d2979425baaaa6fededa7d1650a7946c0063e4",
+      "costs:1": "cb47932c7b85c6f119cc8d97da20c35fb9e8bdf302304a441329b51d1a7c4b04",
+      "strengths:0": "c61157f1c8f3ac11b4d7b34320aba6336e796f8131b7196e99fca11c120b8704",
+      "strengths:1": "8317a81c9e35beb3a2dd2a55d238f6affc95c07cfe3839aa11e2e272d73b17ff",
+      "tradeoffs:0": "b222505c8a0b1e1973b8e8c04e3b261969c3ef99edd37a121c735152d9ac799a",
+      "tradeoffs:1": "d218952bf58a41bfc5ec800866c7378b30c10d4e2599d57906617be4c7ee5100"
+    }
+  },
+  "sg-corals-at-keppel-bay": {
+    "sources": "3b881e2a65345d8a6bd92a96e6ffbed377f45af3f45ec33c79b0e314800b3960",
+    "points": {
+      "transport:0": "a6796e7abe6dd138e78f763a77cc06feccb3e21f1a7ae7c0e907df8e18f59107",
+      "transport:1": "7080e4f9d959e2f392c866a23c3594e9dcfc0869b5f5434f466edc8382ee5b88",
+      "schools:0": "2880c442d132b99364f8475d46c37a71cb5098ee794ddeb998f590975650d6eb",
+      "schools:1": "1079ea061eed69f0f54587a19b646faab66d2b49b224fe1331f6d03617694e4b",
+      "daily:0": "9b98cc8ab3fe72c74c2c77bea9481f08468b01ae8cbc8e8ba71d8b654715f735",
+      "daily:1": "78feed1597550c3a6429e085896015ff56a3ddecdfdc65efcf1e875c71f87502",
+      "costs:0": "2f9a90bda01db22c3ec79073ad30752cfdfed6a6f944bb858520b9bd4d45d939",
+      "costs:1": "f4fc09ae9f0b5ffb4f8038ac10f3fa22b80c753d62b84183a964946af019a3d0",
+      "strengths:0": "28d3637b469fd8d45ae0be07a71325d3bc035ace36d3e614be7126130ed28016",
+      "strengths:1": "7a0e6557d1250729ac3bf69fa95b9b72f6aa4f7b25f7f3c61b695f612260997d",
+      "tradeoffs:0": "7483f3fcbc943b46d413a56fb0db12fccadcadaade24fa668880e12fa59ed6c4",
+      "tradeoffs:1": "9750ddce5b7698cbbb70caa0eaeaa03d01f634bc476c42b0c1a2c0bf1b6724ff"
+    }
+  },
+  "sg-parc-esta": {
+    "sources": "a86485a7e02e2dc9e19476fd0e6d54647de563dded3d1232d25ef785678992e2",
+    "points": {
+      "transport:0": "4ab3a98a22ea61a0db68ac732b40a1f58dfc406f8e86fb5e31d89f284b35a99b",
+      "transport:1": "87e99bf4226cdacfc88a5e7578621a4ed3fa14500851979089361d9708629741",
+      "schools:0": "e9c605a05c7871b0156dceb33c570efee241ec0b9c71d0fee3b0f5492e7b4558",
+      "schools:1": "4340a1b4956af1d129e595d1550f5e0c1b98a3ea6ce8d31ce3969d63d62c214b",
+      "daily:0": "657feb3523a42782ab0a59740f4f2339ba36d34c93cf481cb3e12ab22d562095",
+      "daily:1": "12bb7c9e7a1ee34ebbef9975a3099208c59edd767184708b0205a7395510186f",
+      "costs:0": "2ce087543ec0dc5bbb2a4382d3a1a9bc8645ea7d5d060ea18e977628060ba389",
+      "costs:1": "401e3a49849f9de3bf09a00bf6b272b71b86f52214eb163131c1e44baa3389a3",
+      "strengths:0": "97f00e37297acd8e4b73a84a644d6918204f49047121aad47cc56993f2842b50",
+      "strengths:1": "0e15fd9dcec2049a3b7c89f540d24f47ed2a9bac671d382a6b83f5422ede8c55",
+      "tradeoffs:0": "dfdebe59efc622339d03bbdae09825d07655c9706c7df7735352128fecf9c87f",
+      "tradeoffs:1": "755ad1ff0b2e17091782940c8aeb612d27fd61568332e27b54f11490fd08d7e5"
+    }
+  },
+  "sg-jadescape": {
+    "sources": "69c4cba041888db9a8927951613c7bee78ea829d1709ff186a4dcba5e4e693dc",
+    "points": {
+      "transport:0": "dcaa5acf100290d50b398c06302b9a9cb941676cbc7dfcc26250d91f951fe26d",
+      "transport:1": "470e81ff371e8deaee71de0d84bf8c064350eb88205a5373132b7c1ac6646cd8",
+      "schools:0": "77325a72beae2a351931a2ff5e64779c0c3d38defd2cc47a69969f9f372f521d",
+      "schools:1": "9531881b3832bd3e3a2fb34ce958c796e6769378e7fcda1c1ac65253ea5c2eef",
+      "daily:0": "7d36034dc6a58cf396a7205a084f0558f2a64ef219b526f59ea1e279646681cc",
+      "daily:1": "13b4615cadfd384e2d46ae0f06032ccddf6a47cc23b5b6635a96620128e5801d",
+      "costs:0": "6b127d07f8bdd400af3c37bddf0a7bbc0b4b63869a5c483b78469ebdc2c6f8a8",
+      "costs:1": "1926242398aa0d355cee5ba2d7d2639a9028cbfc53d3c7068458b195dff70150",
+      "strengths:0": "39d6c7791ba11ea0c0bb8863c575d50bee216aeeadbd534c3532ff8750d6588b",
+      "strengths:1": "9101aa541b4b0f66117e17aca885a64f54003681cc1bf4708814fb9de839e9e5",
+      "tradeoffs:0": "77e7da6de36414735d8e18e3e3e59d1826b571f66126757e443b9538dae22839",
+      "tradeoffs:1": "ac001bb0f47f4669177dbf09dbc6df8fdda8213942cbaef087382e65a29a0e2f"
+    }
+  },
+  "ae-skyflame-1": {
+    "sources": "b6edf2610cebf7d436f93457143559c10f1a15ebb12a0640e0a33936acaaecb9",
+    "points": {
+      "transport:0": "853dda3cd1b0c2649b52bc08d4be3270a20fb795436fca9abca6fed9c94e6dc4",
+      "transport:1": "2fbcd740651d5b58c0c0d526c4312ccc560570da3458822aebea1cc270a43f75",
+      "schools:0": "bde6b310da5973e13a8c65f02d66c27923ca4539ea8a459d31ecfbe57c8d8a6a",
+      "schools:1": "b032bbf02072920b5de9cc5c5f398f29e90050563a87d0f00581294c28e488fe",
+      "daily:0": "1c02398d19ffd71dcd554fcbe7de386aef5fda74e617973661235a39904c7dd1",
+      "daily:1": "10a606c6a103f35de8a285e1bafb7165f925bab78699eccdb95b75c4e2228ae6",
+      "costs:0": "7bc5793765d63cace898cd62e8ae1b91acaa0c0343d8ff28ddb9e86a773a0372",
+      "costs:1": "4a70854c5844bf68f6eb2d72f80a12b6eb087d825f11aacd6f40260869d8f7f7",
+      "strengths:0": "6da884b750b2dc83bd8c7e53671e078a8f28d9db0a8ab411c96d3328cdd9af9b",
+      "strengths:1": "506a8d7a4d7bae612ddea9c2802883e7e744edf26630b744d2a545b25003ce79",
+      "tradeoffs:0": "a4c9f9cfb87f0f6efe53b548749c3fb8f8a06811d7d99cbb73aba1ba6a180a8e",
+      "tradeoffs:1": "61848b01ffca56985dbbab30398efb8b93a012118c4b983af11368ea9a70679d"
+    }
+  },
+  "ae-skyterraces": {
+    "sources": "06ee78924aff9f5e21a69ed7a884f8a447dcc21df6217484bb83ed6bed516837",
+    "points": {
+      "transport:0": "7dfb7c0b66bfd05d789bbf007df6b23cd1813b3928d3c497125ec244b57393b3",
+      "transport:1": "eaaece620465bcd1625496583e3aaff9e7eeb50e457f0d997109f3f30fd7466e",
+      "schools:0": "07b929ab25909b99e849ae4b3d3d83ab33275c3a4e5cf1e6518a206dea505edc",
+      "schools:1": "bc086f89adbe93ff12785f5cf1a45f4926f2f5a85bcdac0f9d88f720a97c6851",
+      "daily:0": "389d878b8076c5daad0949211c4f8df138274583d4717644eee77588e8b8a703",
+      "daily:1": "041e84985d4b0a524b55bddc24103d1e5ef3abeee4970d8fb0a2adad483f83fe",
+      "costs:0": "fd719156066fc6c855e576ee5ea353174d84f92beeff2733b01fe0066a973399",
+      "costs:1": "5b616cd66af6af8479c139745b624f7f14d09c683884ab5026ac395eba44ee52",
+      "strengths:0": "1a539407659b1e93103e63bb0b9ce2a4da88eb45093061492da35b58ec45bf57",
+      "strengths:1": "ed6849b139d6b440911edd2c76b90812a72eb2f01dce720ac2d8a8d7a61df903",
+      "tradeoffs:0": "775dfc11115c95299c981b077f4b6f5b42e97a7dcf64ed74a29516808570783d",
+      "tradeoffs:1": "17c2774b4dc625f09d4ef55c4614b3088a07ea1c175207cf410abbf3796ebd73"
+    }
+  },
+  "ae-valia": {
+    "sources": "96e57cfc7050ee5dd2da0677f575777b5a2fc9923e68548c4a2cc9e5d462141c",
+    "points": {
+      "transport:0": "d470a280ac87d86ddcd0297e549f04ba822ab435035b1b121335083456e5f76e",
+      "transport:1": "ec3537c5f46ec5aaa4e184121777064ff92c337766a8b9276d9265b0650b203d",
+      "schools:0": "105279aebd985eceaf11e81529d9520aa665de316247d3ff00f042fbf35dfd95",
+      "schools:1": "4d05a83dfd66bf18f749bb3b01c1ef98387c87921d420b0e3c826df93220c2e8",
+      "daily:0": "4af20dffc7c06e3b28c9db02f1deae0dbdceb34f6c56c291dd788910afe2399c",
+      "daily:1": "9bda8cd29ee5f214a1293c13ab042d969bab54bbd50fec77377eab1c42890a3a",
+      "costs:0": "e1159f4e1fa2d4c588da9417dfe5ecf8a73f7eb6428e9d18f5fd15603fc13146",
+      "costs:1": "1fa6fc69d69ec53c330b22db1ea862f93e56ba5835699a41450ba1aa1744cb4b",
+      "strengths:0": "06348e1088be35e7ee439be4ce36c80ea02639f5d459ae9bd9949bc63402ed79",
+      "strengths:1": "f18ade9b2dd32391be35ca6db6925e9e0e1f1f40a5f3017a6d4fbf9702563f61",
+      "tradeoffs:0": "9b4a2f9a6bf89aa70a8d53067170d498598d8804fc38dfecc487d22990bb19d0",
+      "tradeoffs:1": "b9555779eb876eb73152fd43e07103e4c358b37ba32fd73977166beacdf522cf"
+    }
+  },
+  "ae-peninsula-three": {
+    "sources": "e19233c91fe92a7db13370208ada0bd4d2ec021d60db6df97c2c8378b8cb3b04",
+    "points": {
+      "transport:0": "0efdf7b6ecde902f84cc6aee59dd2d387c85c54a8b5dba6958db8f98e53f7567",
+      "transport:1": "f069ad94f7c5ca4e468e1b60410746d60f28c984e9e9c9b0446d5e249fd821c8",
+      "schools:0": "86dded4045aece3ca46db9b00f4f5440286bf0c58363666572249df6f3393e8b",
+      "schools:1": "7f467b7598234a9a1034e98ad0b8ad6cb59cee6ce791ab3443fd372cd809ad72",
+      "daily:0": "4c32c1045344fc86d7737dd9fbb9e5dc12cd90a47070ff9035ac32e2a5f86ff0",
+      "daily:1": "8089e0804711cc94d06742fc2d4d3fbf2abd694def89923f66a68f1a7f7bfd0b",
+      "costs:0": "c4d94d1e038c9a0ed5376f9bb87ea07cfe11ce93514a83eb405d37070dfa304a",
+      "costs:1": "f5a48f2c1f0f651efe1691fa44f35272425586461f08cd2c352d13a7b2e8a0de",
+      "strengths:0": "bf784f6682b968dffb0d66a5b145f9864142c870baa7148a9c32a40ee13f3282",
+      "strengths:1": "8635e3329a07c2d10d871cc40957ecd177311c8fd9118e53a2111a4792b32a16",
+      "tradeoffs:0": "f768dd04a60864a5b91bab5b80157ebb3ed32d5a4e4743ab8b92d08e7d8688d5",
+      "tradeoffs:1": "8eadaee8155ce8ae8bebe88d289cacc6c2062fe16deac4d9650b280162d7a686"
+    }
+  },
+  "ae-the-edge": {
+    "sources": "d1c42fc378c2aa5ad3e493e7315abe1d05a1673c0529ee28299a3c6576f63996",
+    "points": {
+      "transport:0": "060216d6891d9e6aecb7e07925475d81646a9a5c115fefa34e4d01494ab9b70f",
+      "transport:1": "d7a2ddf73f2c43ec3e22de2866ea9b55e8c0d20a6d36de97b572cee26acec35e",
+      "schools:0": "0efcfa21723053244891d189f61a5aa16e2bf354b5d2c602d2705346fec7ee4f",
+      "schools:1": "86edf9cc12ca0bf4469b25600c49c703cd7b66b13114bc4e43082fd91080d976",
+      "daily:0": "3cba0cabe09e4c62790e1a483150aa5623fe88053553063ebaae4976685c28be",
+      "daily:1": "1ff4f9571724b9eee09c6ae52751e4dacf3e339a18b77f0cd6e4cb55e618e0c7",
+      "costs:0": "767f946c7fca7af9fb706e675544e214209f33bc1da4cf6dfb7e215b1c43248e",
+      "costs:1": "4cb445f6754c969d5d12227280c732effe49bfe7dcf53c518e174d1bd3566297",
+      "strengths:0": "953851cfde600167e541078d4ddd6dbab633c4943695bf9c3a33832dd0192f71",
+      "strengths:1": "5ef8fb69b3c78883f85e4b1b943d75a10d8a293753306e1d98f687e8feb62c64",
+      "tradeoffs:0": "7a59cec93a2456cf36fa772320e12d99834a46dc2b2b89aa23afbab7fbf6fca1",
+      "tradeoffs:1": "418765d230fbbc6b1e9ea8fc69796c58c62c49f357a18ec77112c964e6883f63"
+    }
+  },
+  "ae-regalia": {
+    "sources": "111a72c3cd4a206461bea3940bbca22cea182f100839503428e9948fd7835de9",
+    "points": {
+      "transport:0": "829f2b50d28aa69bb4b3bfa50c0b94b233398ff53bfe498608701e0c889e4224",
+      "transport:1": "b3d0346605c07f4d1e99be1e533f26de4c46052ddd64e25ab9127e850013fd91",
+      "schools:0": "4754e75d41432ca3c2cfbbdb5b4ec844f603d3395616635934c03f9cb80f343a",
+      "schools:1": "5854789392ce3f605f7658ae174e4da0422d58df940e1c604faa26c7a284bc11",
+      "daily:0": "f7dff3521ee17ae84015169cd0f4efa82514351b602a046d13bbfb4a09be5bfe",
+      "daily:1": "3a8400f2524b0b77cb4e4aa5a63e44fb07b2786fe2f8846dc7ab51e5cd5ee9a1",
+      "costs:0": "d2916bc4334277683c44887011559cef38b39559e6ea97cbf1dccf48be6cd0de",
+      "costs:1": "8fb8be43b0eca837bd97534b4cf9afe18182c062f425c960dc2b50f96c33e43a",
+      "strengths:0": "5c490f71ff0b24ad3457771357025075ccabe7dc023cc68b21bef1b13932899d",
+      "strengths:1": "905cda3be85d7d45d5d620c756a14f8ecab6fc9802657dcf14e3ba82d58404b1",
+      "tradeoffs:0": "d0c3eb15c12103cb5d342ef6679033c1b8ad0311449ec35c82b9193f03ef6b39",
+      "tradeoffs:1": "a51d8be203a77dfee03876cfddc0dbfffeb3425d59a1bc0a2e6f809b29f36815"
+    }
+  },
+  "ae-one-by-binghatti": {
+    "sources": "e17e9aac238a65a21e015f37523d8bbe9a770b7982ef4573bf2a66f94dc17b1e",
+    "points": {
+      "transport:0": "68f74d8f891926bb91f8a1d7949e795afb59886ae11142c85249c76c9d574de5",
+      "transport:1": "7f7325920c281f27b4f04ebb0049da182d8046e017cc0001ddeaf25cf8adc5af",
+      "schools:0": "a3c37cc3574830ab48937f3cdf5737e81106ee32f9ac4111af0fbe32d5b50f30",
+      "schools:1": "7c2035517234b22a3c38cdf3609dfb8633f4b9786e969a4f5d534c0e978f32b0",
+      "daily:0": "473bbd3734568d8ec4224964d2925781dca50840be382d9b404bc3ff1f452735",
+      "daily:1": "b53f9b6c6329d049bfd7679b58b6e4d7ae66ef8a7af23c2d4aca0fa5eb50a9b1",
+      "costs:0": "65956eccfe1935c596334dece6621f25c51e4f5a51bca423bd94508088129ba5",
+      "costs:1": "34cc908786c79521382b98037ba350a56cdda34ba8a8a582073b3dd2d8d31012",
+      "strengths:0": "ef894852408c327527848db62b7d700e1be4edadbbd8fd59eeca454c9d5788d6",
+      "strengths:1": "7e49adb626f80369d1ee1652658c1af14a6818dfbf845ced574548d615de69ef",
+      "tradeoffs:0": "5d8fe502591cb0a5aa6926c56ef957a806acbed7a48e3f50aceb9f04ce610570",
+      "tradeoffs:1": "862235f7570a55a98803f002932b474ac435f79974faee05be4057147ecac500"
+    }
+  },
+  "ae-eltiera-views": {
+    "sources": "d8da3e049ea40f039a1a8f5fc706c295b18478439150e6dd93c3e8de0034d1f7",
+    "points": {
+      "transport:0": "8bbc4007ba5f16ef8cab853ee8075e35943045d4d954f9b0e9c31375c88f711b",
+      "transport:1": "3c6493ac927a325c5c3d6f90da759edecd6c39ca0e6e195476d60c837c8f9cac",
+      "schools:0": "401e881e27875f6bf61d6679e2ffaaab562110e9c0fb3fd9febdd1de8da8cd1f",
+      "schools:1": "e8ca2de9b100f48720e2e1793707403f28fbdbe3f0cf8d59573fc50aa79fc9d6",
+      "daily:0": "d639f0cb103cc9b828ac03cf6ceb748f98941bf16415932b56116b84ab449f16",
+      "daily:1": "b075c28eaefd50611b1367f106e544e2e80c34090d2472a8a53f4d93cd8711bd",
+      "costs:0": "539dc66a5796d06fc15c1a7adae19bd476a90eb3b41e0d7adce783868aa18e0a",
+      "costs:1": "64384040717ca0de4f06d36a07267f50dd5a7620c8c61e749db075bd0cefad98",
+      "strengths:0": "9c4fe4e3af3686b645399a58c2629e08fc924ce9c4bafc8a6813b69dd232dffd",
+      "strengths:1": "4208f43c5e46296bcf40b8081f784730d8fb5ee85835ac7aa45037306463c7e3",
+      "tradeoffs:0": "051c678f57ee87e721e478ebe9c6453e8cd23a2ca6f7d3dae576924c0081f0de",
+      "tradeoffs:1": "1dbd72b3fc8eb5335fc190bf321f96e73ce16a4b0f3e1eb0fb21ea885db60015"
+    }
+  },
+  "ae-serenia-district-east": {
+    "sources": "e08b1ba4026f9db6a6c455a66d27b862ca66adb8348b47839a7ab88a95e327bc",
+    "points": {
+      "transport:0": "241b0da2f5fa6895ef28d961e5f35b6e1ceeaec035f74dcf9a98a797c42b719c",
+      "transport:1": "1fba8a20d46c09731bec5e541eb14008a7e5e6a31266747b06cff9de68ad97cc",
+      "schools:0": "6d85f89c368932543ea4c9bec5b0cdb2926f8d43fd99f70cf9547f84a26178cb",
+      "schools:1": "9ccfc8cf37b50ebbf4ef2ae5d2318a6c43e8a006f19fca4b017c420ca24feb84",
+      "daily:0": "290c2ff9a379ec2a895551a341c03882d8844dd85e98d2d20f525026bb8a35ff",
+      "daily:1": "67a22473e04608aecb5720e949ba8a351753064ab78009f2a12020918da7d635",
+      "costs:0": "f2102a5ac4ec78d392eff6e1aa29aba44884648b33926fa0a574d06aa539d3ed",
+      "costs:1": "f87fc6fbc9b6e9ce353aab537fafb62c567763b7c41e418bee182d7a3893cdee",
+      "strengths:0": "01a64d8ebcf22088ea5609c99b279fe4edc0a059e91eb9117cdcad4f03fa2389",
+      "strengths:1": "6afadb6d6baff0c66c391888ca1cf67cee72f5110d7166743a6b9c1b774bb1e4",
+      "tradeoffs:0": "b7c1591d7632ccb0cc68b557976c2255434ef67bbe2fca7661d3f35f0a9b2504",
+      "tradeoffs:1": "a59ffb5d965ce73dc4e6747bf35e6c154bb2c247ed41ecb607ea09862f7e6031"
+    }
+  },
+  "ae-sobha-central": {
+    "sources": "b64b1c3a9cf53bcac7c5d2a6f094432671b3dbadafe626b27aa7677d58953658",
+    "points": {
+      "transport:0": "7cdc078028e7f33198e0a0742209113b04ae9fb7b62090073b560135177234d8",
+      "transport:1": "62aa5e7c955fd9b315a740df5d0e301c30f7f0172194c2fb8bd43e5fec129676",
+      "schools:0": "242013529e61ed312492bea2d873854735dbab7ce687792511b2026cca309cae",
+      "schools:1": "f471f121a8f989c714b6a221cc98dbb8f8b9ae7d49b6cc1547468d9ecf59712a",
+      "daily:0": "167625501f16e56b19372d658357137f9103f98fc0b13ccc468e6bbafd8e6604",
+      "daily:1": "c308a05929305501adf1c4503cb8455521c1c1575174c38f125c94e09450aee1",
+      "costs:0": "0dfdc55237a72c1222f8090497d5caf074b1804da77bcf559fd977e75220c782",
+      "costs:1": "66943a7dc88c54f1a97c5df6ebeaa3d34a0d1e08a8a16cf19ba9b16a60e5d7b1",
+      "strengths:0": "82cdf35955029458f4f19b905185a97ea85b8875237e85fb407c56d7d9981f04",
+      "strengths:1": "4bbeb1db46eb39da22fb3374363189631441fc5bbeda42f9d262c9d49d872d10",
+      "tradeoffs:0": "0079896a904810bcaf358dee021cdb47894c17e73f6326d372d4fdaa19a9be9f",
+      "tradeoffs:1": "682848b136b2a601687d826248923dba693cb233da33c150ea246aec87ac5750"
+    }
+  },
+  "ae-golf-fields": {
+    "sources": "c039132f3e169348ba00efd3b72b1198053643b0e0345f4752d4eba3b181d239",
+    "points": {
+      "transport:0": "b29a5080a52bf66ab788d2abf686c62f6fbc37b418c938d95bfa9af14c3f9628",
+      "transport:1": "7dcd247583eebf1b7a0477c264dd98ce26409252c9bff56ff2883393763849d2",
+      "schools:0": "796de973fc68d3e9b25178f1afc33d96b34da97a17706bc1682319114f3641e3",
+      "schools:1": "e537878591a4c0240f52e3a7304d704480b042930d81672c72cd7313c9893ccf",
+      "daily:0": "bab2fb8a0cda845fd40b7d04548c5eb3a2e9dae2b999b113e84a6bef2f83a5a0",
+      "daily:1": "724c48f1c02c37f643eb624d6f18b683fe9578f28537269088e52bd7b6b82059",
+      "costs:0": "7ad21c0ad25abfc31ae1bbef410b6a6fb4e6b78da9baf236df3afafdd086af28",
+      "costs:1": "7c7e2519e57f8ebb1ae84e63c7db3eee43feed1a4b5008a3e075a419494bb4c2",
+      "strengths:0": "5e0db418ea1f052add3ad86024a184a7d72830056a01cb33dfe796d83983d7ff",
+      "strengths:1": "df6fbc1cbc1beb83b2f12712fa5e9967818d8360268045eb1d80fb26f52fedc2",
+      "tradeoffs:0": "b6a06157d8365dc10de4a251e11df321ee56c2e27854191d5a80b74de1d72226",
+      "tradeoffs:1": "be4972d9f1e8960dd96e466ec04697476e08ebaa7eda72d7d18e82a2ed29d57d"
+    }
+  },
+  "ae-terra-woods": {
+    "sources": "7326473c82507f01882b0115645d3444e9a9cf4c939c850994b918cf2fcbdc91",
+    "points": {
+      "transport:0": "871f165e02708e5835d0765d9d36045cecdc3fe47ea0377e544b5e4f47e137f4",
+      "transport:1": "270ff900cc0a4bb83a144b766c6a61cf173a1058c8c6ddc85aa5ca03369d9cab",
+      "schools:0": "6b138f6b5bed13810ab29e04ae752ed05079b4c12bee73dfcbbf4384c6753e4b",
+      "schools:1": "e1ad3ee60c80efc544c149a662ae34caa0c4b11bae70d2eadb20b1c49c1bdbdf",
+      "daily:0": "f9506e17a426842a67ff1bdcea3b8597a8135491cf5c9b987c9175a73ca9de0e",
+      "daily:1": "72d9da7d411b226fc66fd089dc5d2db9cce027a0515c83da874dabe9e44d94fc",
+      "costs:0": "bd912a9873520821145203e76f540688fa7c053f3e137166bf3383072de63aa4",
+      "costs:1": "cd8e15f37f66d3ee348003aafb1ec5626374ff82ecbb2640f7262ce30f609928",
+      "strengths:0": "ebb20bf42b4fa8e0bdf8dcf888a2c2852e357460532c3627369a32dc99e527a5",
+      "strengths:1": "73bd578c6244a79f924be92f074e4c1cbecdf0d954e65f86e6b33c91be630c6e",
+      "tradeoffs:0": "83b1079e83aec6ddd215d804ea17800925a3e4f4ac7ff18f051a371fc056294f",
+      "tradeoffs:1": "995d1fbde5371982130cdd2d16014e0637cc024d9a1393bb839c668407fa0446"
+    }
+  },
+  "ae-creek-bay": {
+    "sources": "a92832ba7245fa2def4b13520b7a42671ecd06e47a2b26cb84908f88a9998162",
+    "points": {
+      "transport:0": "e55edb868d135614b50b49d3f7009e338504487d9dac2ed708f393e7f9e90a2b",
+      "transport:1": "3995e1bc9a64b472d145d5e872654656debe8016861b6cf2f2675f574eb825cd",
+      "schools:0": "6f6ca9b1b21274871bb262157c3895282e0df193134d5294496949217a169876",
+      "schools:1": "4a7d30f470d502955eccba6df6ea5bd004863db0bbd17b167314096975585d23",
+      "daily:0": "32ed882bc5d1b29d6c8e729f99feca7ea3d02b42fb0f90615a7dd3cef9d9c4eb",
+      "daily:1": "4ab7ffa889b0ea0844344841a02f197695f101dfb696ba1834fa8e60a130322d",
+      "costs:0": "4a19ab686c8e974586e5aa2a9388005108a88700e3284230684d109605188cfb",
+      "costs:1": "09e78c79e0bf05e5ae5be8875bac1e8e760e7d951cca024c96a3f948ebbd96ad",
+      "strengths:0": "18e93e7f89514d1b28097a8aa8ba0a812622ab3c03360b992179ae4d5cc3aabf",
+      "strengths:1": "d5caa956fd511e10242a833d8d9d1d4e72c6dfa29029217673880a8348857831",
+      "tradeoffs:0": "bfa2069c7f2bdf51084669c2e1c39aea602427cbed08deb98bfe33b5633d020d",
+      "tradeoffs:1": "02380395e149404a79ec925bfbf4cce06dcb7c9920603a751d41b39de887c3f6"
+    }
+  },
+  "ae-creek-haven": {
+    "sources": "44055c930ad92e4b70d442f09aeb3792f6d7fe94bba26e5304605f14322ad307",
+    "points": {
+      "transport:0": "5a1523bfcb333065b8821b69be191cdec0a785a1d3f0be04125f08c8c78b1aff",
+      "transport:1": "61aab7f7cd1c39c79a7320307a4520cc56c2a9550cdce798be268bff44b9491c",
+      "schools:0": "3484057faee8c41db5db39156bbfa886e9e407f3bd7ac4c28b5900ce67698dc9",
+      "schools:1": "da43a5bcdea4b7cba589ab3bb741af4afd136c58a788ee4a7902a589c6997a11",
+      "daily:0": "0810b89d000c508b4b7685176ff6d9a96c20c1c79a2f37981ad1e83aca8e671b",
+      "daily:1": "964d2853fadd1e9decd6e3956b9e214854299b5a5a3d010c6a9772608dd71842",
+      "costs:0": "ce0bcf6bdf31d67735b23a01cd963317ba637af7072220107318368f263a0824",
+      "costs:1": "e1f813290aa806e131218597b8a8642efa5156d42f57d968ccec5ef9dba10035",
+      "strengths:0": "ddb4466428d3e2d1fd5a04312b6c1478c141588b9cb56f1d5e6383209cd8d1c4",
+      "strengths:1": "1990caa3339096baa06f38a31a165eec5f4ee17cc4c94b42c534105c65942362",
+      "tradeoffs:0": "06463b0fdda50da41ba63007cdb206790e992961b5709b9b745bfe8ab2e13420",
+      "tradeoffs:1": "e1d4b6aa2b86b880f1706daf303187365b2a327bb427cb7238aa11c76ea451c4"
+    }
+  },
+  "ae-the-wilds-residences": {
+    "sources": "dc0ed0ebf5d236dce9c2ada4cf35b1fd70ff5bc6373a6944aa1033a42da83d98",
+    "points": {
+      "transport:0": "7040a86cb1539a13ff91230139fa712712bf5c3444596cb8978b3aee12a0516d",
+      "transport:1": "646ba1387722a11fb7d3b6f2cf13d9195a9923b601b28157169e5594ae2470d7",
+      "schools:0": "a36060538c3268a2ca35a7fddd849b49a0a182288121a40d765b4eaef59e8b24",
+      "schools:1": "cd9e31442af3eaf0f702fe6e0ae7fa0b468c0039ffffd76a8cbba85296393b53",
+      "daily:0": "81cc246bfc5ad1ee6d68487353084b4a629973e54242be66bb44fafca2bf5364",
+      "daily:1": "bf5cc6c9145576f81b6743581890342b2301c27c7d2f1200793c9fa9f3d56cc5",
+      "costs:0": "b4a4b949b5bbe943555c2bd6b381990aac61050d76a98e28d1ecd13152e216c7",
+      "costs:1": "16e46449470439213fdc8ff020d88d11f425848fa848cf49b22aa3340d530361",
+      "strengths:0": "21a5b3907a268fcdca56a09f62c24ebfa919eaca73d52a79156d86f30517d12e",
+      "strengths:1": "cddf784a9c8bc978d2b5f15d25e2eeeab61c46cf5c0222f506b374a4f0842351",
+      "tradeoffs:0": "77697f9eb6bda39fc940b00033c1e4cee000297f8e38431d5a7751a581458896",
+      "tradeoffs:1": "a0722330cce985ceb58c0d143ede4adfbe373af0a7a1df14183b7ead15a310c4"
+    }
+  },
+  "ae-reportage-hills": {
+    "sources": "6d3913068f61a7a80bbfc1ce8968186e9a27961dac0932b5bf105ae65c8da17f",
+    "points": {
+      "transport:0": "d210240b44d8fb7702158fad16caa8655e493f5fbf669308853e8b1e1b7b7acd",
+      "transport:1": "edad6513fa5fba5d3e699a8f8c2606ddb01dc5c10761b0102b6936bb7c403058",
+      "schools:0": "7aa7af648b8528d6a85a4f0225303174ab63bfbaa0055d30560fa984225cc357",
+      "schools:1": "22a11eda880c7b32dcb2d24b546e0c289267a7e1be71cb1ba7164a4e1493df89",
+      "daily:0": "62eb3096ed5e6d459a760079cb6daa80097df26f6ff6819c3ee640d1bd9fb591",
+      "daily:1": "8977a01a37aba89be65a496ad420ee33f3a059cf3cf4a8b9cd9c342571cadd5d",
+      "costs:0": "872d8d586b8e0eaf6f2f7147e4bdf5066d61334f93c875d3c2e1eaafd92c2cab",
+      "costs:1": "22e64e24e87e6446f8794c5a9af985da9f1188d371f724264d5c127d550a418c",
+      "strengths:0": "ff03981745437c67e4371da41c3583382db7e412564cc2c2d4b182e2c5bb674c",
+      "strengths:1": "8b5e8c7c268a64a254f273f43c5c31d7e3af7a7ec15a955e68e12bd18d02294e",
+      "tradeoffs:0": "274b1dbbe36d9c5ea67948aba701237b4e3c6b721a1554f78607aade775272fb",
+      "tradeoffs:1": "162820f11c14278c28dfdcf7ce213e54b382a808fd541cec701162fcc6e9eef7"
+    }
+  },
+  "ae-taormina-village-1": {
+    "sources": "7c122ffc4b51cb3aa0c48eb16a82da64e1cb63a0365cb37ce6d590225fd74e10",
+    "points": {
+      "transport:0": "3c911029337dd2ce0b073d0f5aa2725ab0f4372259776d354e3f0045066e85a3",
+      "transport:1": "16fd7bd879b06a94bb9256705e633454b5a002c6f33639dc99cd439b350af448",
+      "schools:0": "10dc0664134971e7c174d50fe742b7a0fdb008105620ed44deda3dd4bdc95551",
+      "schools:1": "1f68cd2d7694922d30f03928d6361e6c3d28bb2a851e6af7b935facb341673fe",
+      "daily:0": "883370daa585385db49237a4a89c3e626c1aee3c3bd0be5484bf8f9fa5743571",
+      "daily:1": "2009a05d18c90f0ce1e88f97f1d87a29efc3cb729b847452af7f44c84810827f",
+      "costs:0": "53d3be220afb88e79bf84731d7eb3e0ad4e08876c8956e7d3e0033fd7b099ee8",
+      "costs:1": "8c087d93534bf610b59e7ee0a5c59e8838acbacaa47ff890ffe679f38d35f298",
+      "strengths:0": "c53aad04a54068666e46af5f12deb1f37ccb13ad927b4eae51ef417e7e459bf6",
+      "strengths:1": "e581659f017c93f367a953da1b0ce56fd81cee81cbf7da87bfd3ac24df0683ac",
+      "tradeoffs:0": "d80839818f9f7c31427f382a4f10bfa137e6828b21370f6a8ef5136047ffb189",
+      "tradeoffs:1": "71043d81ad1acac1fc0b81d8eac83c44b57106c514507b5a36765495edcaf6f6"
+    }
+  },
+  "ae-hayat-1": {
+    "sources": "e161eaa41dfb9a7b3c3bd8199f3470d090fa37194efc33f5bd3faa683203ed1c",
+    "points": {
+      "transport:0": "7f49a83f23f2bd4c39f3aac2462b8ce4ec26aeb61616a1fa3ddb4783af2c79f4",
+      "transport:1": "af9d27913290ec09e96489420e1177926f2d937299412961f40f31cd8f4baf33",
+      "schools:0": "a6d17a52dbc85283a6a276b5d1d144065b2bc0e34359d0b41074d4a7d91dc980",
+      "schools:1": "07b104b12bdc5724979a395befb5a989e603a62919e1892470d98843f733332c",
+      "daily:0": "d92c96377323bf29b1737cbaca099881e968607988bea45b11f33bcca8bfa60e",
+      "daily:1": "f5554a693a1116ff0d06eca611f132be3692ce66a43addb11f0e755232ede00a",
+      "costs:0": "a8b131f6e96d2430ee10cd8d5212c7ef9ba29181de7560283b86ab8d057f5239",
+      "costs:1": "ef87275388746b6820e95c83e9b15e6c25c7a6d0759d04fae109f5e0bd5f4165",
+      "strengths:0": "cbd13084f1f57342bef55ac195df8bc2c372121b77b94f522d2f74bf23b860a5",
+      "strengths:1": "641ecf8e4fc3663f12db9364e6217bcdbec8562bb10cc4472a8e1c689c4bc26c",
+      "tradeoffs:0": "21d53f191a165d3a2fc9a6586e3e1e597250b7f6ac9a8d40b35d4d6dca9caafb",
+      "tradeoffs:1": "9f6c9024db2411c4a14bd05f85e5a987945edc16ed959552a3b96ba6420118c1"
+    }
+  },
+  "ae-boulevard-park-1": {
+    "sources": "3f5d56c5ba998d359402a74e0b1c49c40dc6f70a27d26d75488cff8031fe2b58",
+    "points": {
+      "transport:0": "239bc4faf4941f40d7dad04279ee284504c12bff545893e6c0c56ef79e9d9126",
+      "transport:1": "385c324d6fead1fa121dbee411ab6e036e52bdc7908a8b17482d9a920522256f",
+      "schools:0": "34bad5a76e82271357c10579a18ab53588aa7218461474c216b0965054a8603e",
+      "schools:1": "11da82a3570b1febbd5c8433db2578b79a9f826d9746258d5584aff2b13db1b6",
+      "daily:0": "5dfde3a8847326e64dbf5ff30ef2639e9c6e40dee6c001717b2e418917b51e73",
+      "daily:1": "4270f5876080a2a40c0e51db2a2a43f1df6f8b0c327e6233277d1f45791caea8",
+      "costs:0": "2e3cc6694249fc30f1add5fe99fb9929a7eb4e9b23e1002328ef4253509721c9",
+      "costs:1": "186a3d345248c01884afe1736511b4c0f1d66de2eca8ef863228f1cf43f716d2",
+      "strengths:0": "3f74206074474d169b86274a57b79a61e0ecba4169cd5b756e20295970d2e0ec",
+      "strengths:1": "b7642218b14152c7730179f62f6686525e3a97ea00029d516ae718e5a9b42a73",
+      "tradeoffs:0": "ece0841b4cbf0f396168d04c4025cda576face6402a6961be505ba52301489a3",
+      "tradeoffs:1": "5e4f502225626e6b3153486db43203f16d40b58e0f1aca18c1215b1779bfd760"
+    }
+  },
+  "ae-reportage-village-1": {
+    "sources": "2ff8c30891d5d709d93c473d40d3bde01fe2f09fbf43a20c0b68decb59c4a18f",
+    "points": {
+      "transport:0": "99384a0d458e6b14fcfd8376d30054f2eaef79d9c36e9f1d12779730dc42bd14",
+      "transport:1": "d96cef2330f2f4646351c2de2589567f16d89bc0981f78757e98c11721ccbae3",
+      "schools:0": "5a1474336d503d86d200eeb713495a81f5d7dd8450c7792c2b2b30fa1d00bacf",
+      "schools:1": "cdff73a2abb4adcb3b8fa9ac53d2df19c1b267b83d3068f0958fcdb16262be69",
+      "daily:0": "b43633e290e26f34ac4c27dba60d3113abc1c42a8d10d86dc1ef40142ecc44ca",
+      "daily:1": "081a53811436509bfe31617bbd617341afa0e3c0ac0ff3de6d4ed3437bd3d3e2",
+      "costs:0": "ead3bbd6c77258c9d4e29566c22502a2219d18ba7bc788c99ba0c1ab90a8b7df",
+      "costs:1": "88d718b4b49ecfa51a754b2ac8c9857c12737652effd5a8ae81841357ab6c39d",
+      "strengths:0": "e5dc2d35ba774108a17057863c80836549e7b31a3ec8dd12f0784c01e4f150aa",
+      "strengths:1": "742b13475c3c5dfeaf9bbebb94d86996ec46a963a68f2494b9c39c1abf2ead9f",
+      "tradeoffs:0": "c5bd37d9c38ecd50aa9723e0ccbd9575e09b9f900a6a3f2a3542424e16466112",
+      "tradeoffs:1": "ce95791c9b355ba3c83db42709de1807e87ceb9cbe068cec8815f324efe3e04f"
+    }
+  },
+  "ae-raw-district-r": {
+    "sources": "f6f29ce705760386a1f0e54de27d9a0f7ddbead257714d00240e0f9cbba03bbc",
+    "points": {
+      "transport:0": "05e06d432bd95cc25692eff25ccc3741b47af0d491863d275e55ef3f32bd433f",
+      "transport:1": "674f659487c482dec8edc473221e948d0c43a777b49f16a82440f9a3476bb5e9",
+      "schools:0": "f06c7dfd4bfc2b2f5a62f4335b76b5eb867575f6fa5e79f99a2c6e4bce61a0c7",
+      "schools:1": "81b5c9b81a55a9b3e8014e89cdc99ab4cce5663b3dee6450246f436345e677c6",
+      "daily:0": "3673912a2b5affbb9978cddd1cef3ea2528ce948573529d1f295d41681bfcfca",
+      "daily:1": "657d5a5e9e0661261a2c44e540e12f79fc03b7af855303967f6889d012832f51",
+      "costs:0": "c200bcbd6f39f7bb3f6b033f633546361baf8be05ee3cfd6eaa83bc2acc05b30",
+      "costs:1": "5523ee13410bfc7622998fe8ed89b2997ae8e13c231056e5e82cc808ed1346d9",
+      "strengths:0": "bb5369a2088fb3f1724a2a87611468e49fe111b4f1a52a66f451b71d2d6e0a82",
+      "strengths:1": "a9f33e0f9d5f15615fa108272d7597be6eeeb5202e2e5722bb3f86987875e5b9",
+      "tradeoffs:0": "62320e050b5efd14201f51ffdcae4751e335adcb913ce58421d1e6c3d77a449b",
+      "tradeoffs:1": "a18ce0491dab7bbc1344b63c1ade1aca490a0e5360e6846051a95f8585085587"
+    }
+  },
+  "ae-binghatti-aquarise": {
+    "sources": "0a4a3d774b988215b7538216b2a9e5d45acea0990287a2b6bb00db3753a69f98",
+    "points": {
+      "transport:0": "77470ac6edc7b1d85def361158d47d2787bc4b5648903d2126ec34a595ae6cf7",
+      "transport:1": "b1c7e559da4ed364d99b2a5ab733172c4c446dda830832e57c53f5acda4f0a81",
+      "schools:0": "03c2e6f79d71209ef02bb2b28126dd4cd7fb9c7664bbe7f306fadb7853cf8b62",
+      "schools:1": "8dcf32687fa67e158ec62cecc140a805a60edbb6389dd0cea15f799d711c0dfb",
+      "daily:0": "61a148b28d38e09a79d462657a92813da3a3a8c7ff3abed9de6fff5817f686da",
+      "daily:1": "5ab71bce5e01a476cbd373e3af0305d260186e865d9016396fa9e56b19ff5865",
+      "costs:0": "f3384165634360d085c2dff7cba99f865f74b1b64cac2ac2292cfd406525921b",
+      "costs:1": "613d84891be8ae996a9d5d76625287058c29ab2dc56b46e4853333b7857d197f",
+      "strengths:0": "8a6ad850f53a65f03f230dfac382c3f7b798c97a92df788fa64dd477be2ece0a",
+      "strengths:1": "da390d831509a010abd5909ba7757c9066d085e4c45b990dd838b0a26c4025c0",
+      "tradeoffs:0": "8f452e73e7d7c869e3c1f4e822b1237d274e874e18d98c3f56c3b73c878a5772",
+      "tradeoffs:1": "5e058bb097907dc0b7b2abf91244b48921f8548ec75197bee0233cb9a92cd2b5"
+    }
+  },
+  "ae-rise-by-athlon-1": {
+    "sources": "1d07baf9ebd1038c9a04fd30d3430e26b683a65daed89a78964d4f12eca81cb5",
+    "points": {
+      "transport:0": "86c06d31eab65d615f85111bc6c74eb7f942505ee44406873a50e2492bdc620a",
+      "transport:1": "2129bf546e9a58e4de0e0b4af1c4e73da5a69dadc72fe2e75da0c552811ce183",
+      "schools:0": "8550cea43908e4fd54748577513cbcf433f978f99d9cde748d619e91233823e5",
+      "schools:1": "ee02145857687f8f2ad56f3abeccd2ff774f4f4638b13dd819f6923ba1dd5039",
+      "daily:0": "510fbb42d0d2b6ca2f7a9c1704d46b3a990124bb92ab9b23302e49264e046d8f",
+      "daily:1": "6c78f97c0470e0c0defae8823405d6e6ff286299cf2494ea06663e49734c1ab1",
+      "costs:0": "4ae73a0042fce85d1a6e63163bcd844b875e244c67991e3acfece6eccfc1483c",
+      "costs:1": "d59dec4d3374b65b647e81e520deebe586b0bae4fb050150b10de288a1661f33",
+      "strengths:0": "5e035a286fabbfc8876a9b9936263fabff9665b81ee4587c854c3ae718816c23",
+      "strengths:1": "007287f666d5efd29251ad6bf81f85dc08078e924cb130689cc24196186ca177",
+      "tradeoffs:0": "0ce61555931bda5f637ef1045da33efbb03c0b671215abf57410e4223cb74f7c",
+      "tradeoffs:1": "f418c70e25253470b102487b5f398951a289683a0ecac21c3f65554a15537580"
+    }
+  },
+  "ae-passo": {
+    "sources": "0552f4598a8ad7c3d8777498109ed3eb505e34edbbb0e3007fbb2e142413af39",
+    "points": {
+      "transport:0": "a9d6b579126822810033664082026186bd505972b76ff603b3a9f248c56d993a",
+      "transport:1": "6eb7f816d410843b7dfdc5d1dda76f1d7b33684b0ea619f0cb1cf545cb0da681",
+      "schools:0": "0389a8928125a125dc854323f92e2f1fed4b2d112b3e6373eea07a647e8df6a9",
+      "schools:1": "c6a5667c4c1b656a9824be2023e35c4e583fc371cc24f48c33f7a19219456bc2",
+      "daily:0": "9477bc0a56d7dceb0f31fc2d3728cf909e842f157f1cfcd7217c968325d4a87e",
+      "daily:1": "74cd95612efd0977db3162693adfa43bf228ecff46e12bf5b66e50312512db87",
+      "costs:0": "459c39aee8a6c45f5f5f5587c9fc2ef2d413a3baa7921a05ba9c6a2dbf7ab1d2",
+      "costs:1": "abfd938afc84b1d624157f616a6813247ae9e6fea8bd83d214a7e5329156ddfa",
+      "strengths:0": "097ae3b8c02ddaba992e382e830a2c2bafd48553006b2c0f1fb635ba27d83928",
+      "strengths:1": "d5176a27bda4e708e3cde3b925565bfa2305ab197caa90afe176bc05963aff2f",
+      "tradeoffs:0": "9472aa297a242a94ddc4421b453d72c1116146cbeac79d7d9884e8d23d263749",
+      "tradeoffs:1": "d5cc212e8568b4fa004a45e619617b9effeb1482e918e4d71a01ef984e31f31a"
+    }
+  },
+  "ae-azizi-venice-6": {
+    "sources": "aea1d9785b205cb52ae0e9f38fd9898adfdef49c49c7cf56ac9b9ce351f6f742",
+    "points": {
+      "transport:0": "001c2d872d635d07f5faaa1a52a5f60aa096913cc6de06377de604be2d73b380",
+      "transport:1": "70ef7c1724396a7fe8e49c1686fe86c684abab6cc975ef8436a61c52736c224f",
+      "schools:0": "fe4a29f0d108641b70939cfdfbc792d23037575bd02a39311be504d52e67d015",
+      "schools:1": "2596a969999e678d06d423ce836de816e8a54e5d029a03f65e4d354765fde3a7",
+      "daily:0": "47341616b5ca17c3ce3dd96149c3d14baf7361f842656e0915b33b43a9730a19",
+      "daily:1": "34675556011009ec418780b7a3f96ab7b2247e66e8752c88271d68d06fa6dedf",
+      "costs:0": "7462ad7e2b019a0b0589507cf6e5d2b654d07444b941bf584a41bd11a7021d02",
+      "costs:1": "3390b6a68f8d73b25a29ff65dee65f169d7b2133e7686a2e5e351fa7734db71d",
+      "strengths:0": "4ab8322420e150c1c9a50c5b5f7dda58ad6bacf56b29e9a035c433af3856abed",
+      "strengths:1": "933fe572a13b4b4a5f0accf10bf6308a4d2e9a67795e1bb8eac9cce467b841ca",
+      "tradeoffs:0": "1dc3db73d8792dcb452162b29f0419fefd3bbe539b6179f219ef56713edf9e10",
+      "tradeoffs:1": "f8d826e4ccd4697ad59172bf9fa4aa2ef202010e121d2ac9663e19198a1329cc"
+    }
+  },
+  "jp-park-city-toyosu": {
+    "sources": "aaf9aa1e001072e7390cfdc449f27f4fecae358a50215746e52da9375fb2cdee",
+    "points": {
+      "transport:0": "edc2a6d4c37e5fd889e16374eedf46972d35ad0d7ca3203e4e3c8cfd9a680e51",
+      "transport:1": "6d3d0b439c964ca006ca662e38e929585d96adf5753c9420ddbb1c564897752a",
+      "schools:0": "4c5f9fadf6fcb429d24b9696c262f72714bcc21af12047ce02cf298af05634d9",
+      "schools:1": "8fe66044c176b04ae1e110986df23371f7dc3a200833c8064bc95749edadc149",
+      "daily:0": "16f4e3fd898b83a5f9b0f00699fc203518ac424888875079618206bfe0ee3f63",
+      "daily:1": "8c3380e9bd45b9e3e6a39b7daeeef75f6a9431490e06bb3116a648bbecc9c940",
+      "costs:0": "b2f29244a534e976e13a1167bb74d3a632cff80dfea56e8e73162e479145d7ea",
+      "costs:1": "32d3fea2d00bcc480fe56dff327dc3df69f85283fb42158297ece3039f58a63f",
+      "strengths:0": "74ea64d5c29b3989d4c01aaaf461479b8b540d54e0a685f4b4c1c1022e1e7321",
+      "strengths:1": "fbca6e630cc64e0fc9ed6305bf1c5d341d414157724dd654c0e96d99df5d8380",
+      "tradeoffs:0": "6ca72326ef0f35558a45b674382cb8d1b451fc68b6607f0a72640b59ffe35bcb",
+      "tradeoffs:1": "ef93e414d6c6a5603be2be820148cc65585f68dbbf559047d7cf42bb2dba796d"
+    }
+  },
+  "jp-brillia-towers-meguro": {
+    "sources": "19731b6ee8acb4f00629499b15d4b37d5173c6e5707febc114247164f3fca4e9",
+    "points": {
+      "transport:0": "5f23eabdeff709bca21db5208091eee38884befbc2e0dab6d02485d0e789e89e",
+      "transport:1": "3acf962d8fc65e705cd2111a886c5f559962d13249076a5c4a7727848d059811",
+      "schools:0": "d703b065dcfd8ad80a16c1f99025fa1db9025d363258d211e031ef6b2526c4cd",
+      "schools:1": "ece854237223e24abe5c5c7191b38c159b03ff66643773d628c98157501938b5",
+      "daily:0": "81829ce8caf3de72f49d17cb4c53db3a2e39e7f6e49f190cf73a15a94946640c",
+      "daily:1": "a3cddbedd3b5c7c107e7441c5786bd7f9710819f141e35c8394dab10bc2bf2f5",
+      "costs:0": "101f04926546e5c75edb6d376eaa4bf879654fd9e80e7b9c2baf166595845bb5",
+      "costs:1": "0b02c5cd2a77849fd8a3f6eb59cf54f5deb2ec767fd232b32d36557f440602df",
+      "strengths:0": "fa5565275960e43e89e58c07303b108bfcf075c0f6a00f0cb3f877c7d822495e",
+      "strengths:1": "c2e36f22f2f2d597ab33260f18c50e0bc297928678114849c6a609e30a517602",
+      "tradeoffs:0": "27c64e38c83a2f30f86f480cbe318c61d2f5b69cc245934deed05af3a32a95a7",
+      "tradeoffs:1": "ca898420c7d4d334bffe15acfca3923572e0ad30bbacbf7adcc459f36de76520"
+    }
+  },
+  "jp-park-court-shibuya": {
+    "sources": "aef5be6d84fd94eec97de8126022243a83ca63e4da69e58c1741d20546d84567",
+    "points": {
+      "transport:0": "6f2e3a16e8c0c679ebfbe93aa37cd59af2c563454d05a5036cf2b37ffc617da8",
+      "transport:1": "2feaa564ef9bc170ca14ea2a3d5c0cbf65ff3b498af9311a2cf22a2d3b93d268",
+      "schools:0": "328c14441b73c0ec9dff992f99aa9f610ecc66ec96e84c155b2b779805bd594c",
+      "schools:1": "232c4c71f2295901dc55ac01dadff761a1f98f5e0f8ab8619eee79838748fdf4",
+      "daily:0": "dd5cd972cf5249f714c1630880a0b6672f98c156a4c2249d5535788c00b36e5b",
+      "daily:1": "8a51956cc8c16c2b100f289a9367dce63dc30e0815da76487388155edd898f13",
+      "costs:0": "52a03e2b9c4dcfa8e536d302056b0a73c17f6a0c1746048fc8cb294a4ee46220",
+      "costs:1": "cea4150c45f986c1267f35bb44fff9ee6813ff738a28732cebfa9e6c081afc24",
+      "strengths:0": "122990e8682857796b5ba0fe9387d312d30c1bc147a226421fba0299600ac539",
+      "strengths:1": "352ff5799e067f2f6e8df95ab99b6509db84c78cec19d973ce96dd2a8d078d11",
+      "tradeoffs:0": "0b4ff90261fa055263949e89c0e410d2a6f5102332fad4f2f39ec1ff4da6c199",
+      "tradeoffs:1": "a611d2f83c8773d2082d01463ac65557768f2ff85afc5ee9b2d909b01468d7cc"
+    }
+  },
+  "jp-shirokane-the-sky": {
+    "sources": "badf9ad2858620241956580ae3b63987f1e76f9ad1e709750a9bb41c3e42d080",
+    "points": {
+      "transport:0": "3ec2087815b0fc88ce0d3a1ec668a99ec6fc91b2228155eace54b051922d3dfc",
+      "transport:1": "1926a159937fee8c22012603716352447db8bee4a76a6bc3600f3bf286094e3f",
+      "schools:0": "bc7ce1d83d9ae80a072128aaa101f98db5218cff1571d579facd32ab7b340939",
+      "schools:1": "3d0aa775e52ae3b4eafe9742114a0dc9e01159305aec923c46bcf9aaedc9a10f",
+      "daily:0": "4dba910a1e61e24da2a18a8172f12d573dfab42b404c4713250dfbd9ea4e800c",
+      "daily:1": "1c58713b1eb55ed4bc687657d6bbe673886fad4a13a7cc0689afc01bf1a4cf56",
+      "costs:0": "8762f0b724872f43f9b9f91a563a0275a232181ad23facd288f5c58a58883bb3",
+      "costs:1": "5d176f25b997347a37201f53f81aa5d387fc225f0e66a1ba4e009f30dea34376",
+      "strengths:0": "991c25fc8a52a5c8a9fcde152a1f71f7823cfde40c23d118c7651927091a5889",
+      "strengths:1": "fc9a1bed9f642727170c093648ddf7e2b79e5b60ea2de93299e3e37651d165c7",
+      "tradeoffs:0": "4baaad88febdc5c04751b84313371ce7738d8aca4a7fa860bb0229461d7bc148",
+      "tradeoffs:1": "5a4a9ce63e7c5b913a4aae43dbb6cc22cfe9a60b1211bf89b5aac83cf9aa7408"
+    }
+  },
+  "jp-the-tokyo-towers": {
+    "sources": "d6a8838de2a4197cc6d1031d58b263d56f9dd40458468f89e915d214082a7d74",
+    "points": {
+      "transport:0": "ac9509d1ce25ddf0e8119b98bea5d34f5b16b74e3d846a67677f17019f89aa21",
+      "transport:1": "8ea4df81677b139f18b20d868fc992e5e43efe38dfc541d102ac863648aab2b5",
+      "schools:0": "b3483f375bd3221fc4f7cf244b43670788f7c92236afabb1efd64cdd9599dec8",
+      "schools:1": "b09e9c96ff9ab8d5739561e806b960151b84447ccafe01479a35936460d8d0bf",
+      "daily:0": "45614589bfceeae06f14e77a74b15a13a4493f926ebabb82b2f3d6cdf91db690",
+      "daily:1": "3bcfd858ebcfacb7302cbad343b44bf7321941a9932cb5c30b47815485f8c078",
+      "costs:0": "5878b4f1708ca31c08384be022d20413c051f28a8750c32e9846eb3aade31175",
+      "costs:1": "ded9bdcf58812fed560f999deaf2b7e0fd366d685e6f716e81b2865c7c6d03db",
+      "strengths:0": "54eeee9d9e9f0e64fe8ef4347766708eacc3778b4676eb832940364f8d86b935",
+      "strengths:1": "b624aaa81c0272fdfe10616f10874feff31487c3ba0c40461d96d0087cb65074",
+      "tradeoffs:0": "c1cdcabc3afd6d830b5dcbfe22be87ba55beadc83737526ec56afc3ee0e59426",
+      "tradeoffs:1": "85cd3b3548265ca207185513e5fc970250f204f9cbdc527ac66c0e56f23e0b44"
+    }
+  },
+  "jp-kachidoki-the-tower": {
+    "sources": "6fc34be8f191b8413843a9b0a8207d6b45585a5507712cb1f27173efc4bfe66a",
+    "points": {
+      "transport:0": "550d644391bbc31d9e56f775a95e11ac23223d939628a49d361c698d34a659ea",
+      "transport:1": "a686a0839cad2e5d9b809c725108dbc9090398bd3e910b64f33540009bac93e7",
+      "schools:0": "d166b021ee113005ac5e579b2d35c8026d98a9752d2953dc4d32eba44bf2ea31",
+      "schools:1": "2b05a297f831737c145d1e85cc85d930348eb3de8b0ac7669fe8f9937d6c6264",
+      "daily:0": "597bbf4515b68108bd63af160d1e843f2ed4ce9c7a029d29c73bf8624a999c99",
+      "daily:1": "c62dbdf9c70fab8ab7d57a60edebbf0daca3c4f4358eada2dce378b54dda40bb",
+      "costs:0": "a2772516c2091e87e84b10eda2eb688e987ecb068d86c843a363fdb68c868b26",
+      "costs:1": "6c185b3b4216c97eed3a09c59861018c39eae2ea64fa7af8cdb5be2a30059f0b",
+      "strengths:0": "fbbee4439bef9255e15930bfd34b8502b1b9cb0b6cae4cb7962ec01cb7d209fd",
+      "strengths:1": "2e63146f69628d590ceec388509ce78e92752f980fca547129634856261a9e10",
+      "tradeoffs:0": "0b942c0646ed27bf8da154a992143ffb48acb80c2622e2dacfe428e1713e7038",
+      "tradeoffs:1": "3f1719b717da2e07f0bb7903461b277e9be0713efa9ba386900c95d51f0c0124"
+    }
+  },
+  "jp-park-tower-harumi": {
+    "sources": "b34f20f00194c70ef4c587d0380e626241b6202e07a714da3a415a7a280c8f39",
+    "points": {
+      "transport:0": "a8afc3cce6813d18ca9923b4a67426aee6d7fd78140898fac29dffc08cda452a",
+      "transport:1": "5f55311ffe457b40767553f339d9d8d1cca38b0049db95a9e0c76af25954d40f",
+      "schools:0": "0ff87f8b48c77b994398bdec245a2889e7dc74e90eee039b913729a203a463d8",
+      "schools:1": "6634886f64e016ada059aed88331d915ae79b4405f8f2f98f2e12548e10a6c15",
+      "daily:0": "5e96ea33c5d5d8eef9a801387a1d54c12bd56c716988e388f5e4c2661dde0121",
+      "daily:1": "9fd3c4b186af8534c71f78e8d7b909938b5c0eb4ab6ea06c4280a44e6ee83093",
+      "costs:0": "0e7ae904d72ee41b2c8b07f18d36925cf6b3f0d241ec3e274bcbb1b39cdf7ace",
+      "costs:1": "007b940edc4748ca79b5573d04b7fc08c5cb6c7c80de25bec53a25e43e741e89",
+      "strengths:0": "68c58b50436811ea5b28e4b62bfb7cde98558eb4fce999d9d91699406c598521",
+      "strengths:1": "05bc48cd148e48a73dfb0cf556c842f238e7a6cda9b730c93f94140e704d3495",
+      "tradeoffs:0": "b0f46a3cc2761569fb037596a161ddd34605a172659641f75a28f925a1ca19b9",
+      "tradeoffs:1": "dd5ef54f723e541f446597146dd339b2b7a8580f3aaba58394a6c1d9c099759a"
+    }
+  },
+  "jp-skyz-tower-garden": {
+    "sources": "9ab8aed62f737f057b7c97d394cb6787eb4fc4d9cdd0eb4ff44e2fe809cae584",
+    "points": {
+      "transport:0": "93a65ee882d0365207941b2125a1679c466ac034201c93377eb4e728fd106f9f",
+      "transport:1": "83efa130d2ac6c61bac37633e4b02ff8143ee677d26f6948ef8e6d4ec7313dfe",
+      "schools:0": "402b9747139facdd42e7b8a880e697b18ac997173a58b19c93f578927cecbf25",
+      "schools:1": "84694310bb8636ca6de8b1bd1e411e96079a3f0b6a0801b1e22bf3d9b42b0585",
+      "daily:0": "c317e89959ac5519557d0ec8671361a84e1c160cae0b4132cca3b458bd8cd132",
+      "daily:1": "44d4cedc070dee286f04d2e94eb9cea4cf172f120aa87b6307dc5e2993b19cc2",
+      "costs:0": "a8ea06f0564448e5d3e21646d12e056a2a633bb4819b27bf00fd57c036352fb6",
+      "costs:1": "643690b375c0557f0dff85c011e62382b41b9e63e36b77b6ce3b55928630c192",
+      "strengths:0": "60e24ae9da697e7dd4be3d030dcbcc1b6eaf53107501a63253ae0414939150a3",
+      "strengths:1": "3ca1ec4d129c34893b115e19109e9093de1452e61b2299b7a441d0ede6abd752",
+      "tradeoffs:0": "6b73699f757f6c51f1529b81c427e0d9981f5512974b8942738b5c7ed5d0bd08",
+      "tradeoffs:1": "9615462d7c2cc6f91751de653183fd988606963c241501b9f0c08f39673ecbcf"
+    }
+  },
+  "jp-bayz-tower-garden": {
+    "sources": "e4436572348c3c8da17fefe49cc1e6f4c1483bef9c2b04c4f9a93654db5af4d5",
+    "points": {
+      "transport:0": "77f45bdf5dd8184e16ef2bb52423b417b15d2ee0c04801c40afc0c513e5d2c0c",
+      "transport:1": "42f4c94411e33a0d98cb8cbc70f49d6514b4af092db351ae46854d46934763b7",
+      "schools:0": "6007d0e9d2cc209006ceedc9fefa276da8e8be2c80db95c0207b8fab72e361c9",
+      "schools:1": "6bf0cabf9cee495529bbc3ddb0edb449be5d2ada2422ec1ad221709293ba7a30",
+      "daily:0": "327ae57e92b14abe34bc2528a86a0cc17f92435554ebec8f07aa319c873082bf",
+      "daily:1": "c8539add2e5f10c187af0ed5ab9ec988f32646935f1223a4917fc6ea39c4cfba",
+      "costs:0": "8c5d533069b93f282cae1e31f16340df717a80ba7a23627f5c0e15ba97fbc0d4",
+      "costs:1": "0672e70db5e08b0de97bbbf537ccf4c6f0aaeb6319de271683c74d82dc8fb58c",
+      "strengths:0": "451892bf1b4e3183ed3d1b36e3867edb021d40c86100d6b61fcb4a4b61b9d197",
+      "strengths:1": "f881af2d0af7554d63815beb73ae33877a9de7104e71cf95dcce749965d07319",
+      "tradeoffs:0": "0733f7e11490a0d9a4cbea810f07cd48414e1fc23bdeca53ae5758179672e6d8",
+      "tradeoffs:1": "585578eb0d7714272003880b68f368f87864e89903968450831ce2c0c38357f8"
+    }
+  },
+  "jp-city-towers-toyosu-the-twin": {
+    "sources": "6618f8730f3f63b401942c2b05c6507598bedd051c6b81ee6d75612b9e1d4d10",
+    "points": {
+      "transport:0": "5bc855f4b5561b553d02dbef6256117b58cafbacecb97268252a14d34b8e3e74",
+      "transport:1": "6cb51e0ac1c7e0bdf7feb0be02d5e60a6af98cedf8b1d29997effb4e58bd2957",
+      "schools:0": "0aa312144493cd29c179528d9564aa3933cff14017e930a2d87e490ab7f30339",
+      "schools:1": "7d1e21c00ffcaafaabbb8114e9bf40285f232f242b481353bf8e63c898b01b8e",
+      "daily:0": "1dc1f44798c9f9b8e0d34fd26238372275e8c667f65d18883a48e57e7de50141",
+      "daily:1": "41ff54e75fee1cae26cdbdcf65b1266ea50ed2af7d2e3fe19a4554c066079427",
+      "costs:0": "b1b309dec8562b099aac55e3282e26e931e114841302dfbbacb4592115661e40",
+      "costs:1": "17a0df30e66dfb2fe5394efe4f5f44e0ffd914ecddee2669e3d345fd78bd7887",
+      "strengths:0": "45cfb48d1c70701e8a6807c6fd28c2999872c5b005073d85fccee5d986bb7490",
+      "strengths:1": "e4454c900486ecaddc4d15d1ff4a689703e1afa7814e021e64347a44bbd7eaea",
+      "tradeoffs:0": "7d28232e96de298092bec774c5d23b6b7e533f0db0db090f2a38b7e5523a3e18",
+      "tradeoffs:1": "92bf1990e9ec6feeac022d77c99141685f7c60b16a7adfa35051fd411e018d60"
+    }
+  },
+  "jp-city-towers-toyosu-the-symbol": {
+    "sources": "5834aee7550f2e0dd71a5d4b47bc39cb642b3fc12997d89d7b4d723f8c29e2a4",
+    "points": {
+      "transport:0": "b5ae8892b3f35cc0f3cf77eeb31b7de1a3d578a71bbb063a611745f2ed00e602",
+      "transport:1": "ee594b293d0b59a2cc9870d1ba91fb2f4d2b840b8f19db2456b1478cb1587c66",
+      "schools:0": "3d392819ecb37a2d0ed68a5fcafd5de3ee2a55a11752ddeb15201d9e59c5ae5f",
+      "schools:1": "426e939dcbf7a34b4d4da69eb4835a34120007f1d7a81ea4bf2af5404761d546",
+      "daily:0": "80e082df4b704f4f9b208735f205d15fc9981d08008d840d601a4f3eacd20463",
+      "daily:1": "a0b39ce74b19438b8c90bc8064833c96fbf81acef7b4c34254215c52e85d0942",
+      "costs:0": "9d38123f0ff0509f100eeece31e3d4ce8f01553d2913c0a404c7185799373310",
+      "costs:1": "28513c4c36fda88b71df1065f78772f318a931915b9d0aaa77d80d4b04cc1e91",
+      "strengths:0": "63e9f192737f7bc584c742b6e60834d7c67303a954dfa9ec77124cb753418aa0",
+      "strengths:1": "e88ac3071ee76b81530db9affb3a8963de4adc2dece6d0f920f8d669f70600ef",
+      "tradeoffs:0": "f73f769a6bc621ea0f56a20ec8187a26470a9a60351adb30441e4c4766e3bc8f",
+      "tradeoffs:1": "48278a71e05784e98d1f67e5eef3f07093b2656c4c2bfb5402653b30510e7c07"
+    }
+  },
+  "jp-deux-tours": {
+    "sources": "9ed594404595cc9184bc60fa020c5f831aa805939dbedcb24f3be9207d968726",
+    "points": {
+      "transport:0": "e5e255df0e6dce5d542b6a7c273ab712192fec3cde5ac0c6581e5e0968904ab5",
+      "transport:1": "05866e25613a6e08046665bdb63532a30cac039be487601e18037ee1807efe60",
+      "schools:0": "135ed4dc6a1516c33b33d41fa4c9ff695d7e70302b58911c0c643c5b8892edd3",
+      "schools:1": "de7a2e2e92fcb65a16ea02e08c9d55f3abfa9dfd88779952bd7c6eea2b81d5a1",
+      "daily:0": "39516d56eca83812462da5a9a4519d76439b635a69c2aab862f333c721c228df",
+      "daily:1": "6316356f1c551a17f8342012d16d0102165a12c89d419165169cec9845879740",
+      "costs:0": "32de794c4bae276e8d007f388b5cdddc71a13219e2826c906b5ebc79a1be1dac",
+      "costs:1": "665fbbde155d0b339b6a874aed321ee0264d2e89a6a6287f74df4193350a56b7",
+      "strengths:0": "399b228ac80d28c4e6259ae48e466f7d4d1d11fde17f67f71da5562e12db7c84",
+      "strengths:1": "d4068eb56b133a71e1074ec1bafd8b5ac500dd09d2b8c18d302ed4f02069ff13",
+      "tradeoffs:0": "a1d50b9a96709f6535c37dfb380ac51d6fe6330c35a4aad2502e466905abcba6",
+      "tradeoffs:1": "180beca8ae51f70842da142f77deadbaf8fda4f2e60ab1c5f5fc1b616dc3c445"
+    }
+  },
+  "jp-brillia-mare-ariake": {
+    "sources": "c79084f548a83235f0b30aad37399b07a5ddd0fa966774da77ecc3e4d06953ca",
+    "points": {
+      "transport:0": "1c3ede28ce6e73cb8a5e9f2000b72f23a46e740ddddca52829a6f0dbddd7679a",
+      "transport:1": "3f44eb76d2b0dee8efb434d7a78b725c495b2bd9febb19d4b6fada761d1fd86f",
+      "schools:0": "d49ae553d4b60c3ee7bf024dc33080657c660dc4e619f03fdc9a8a6f097aa4df",
+      "schools:1": "3e2cc04b72887784301bc53ca20f7a17d82119caf54ab600828f4656ed833b26",
+      "daily:0": "58c6c575ed2dbc6598d2fc7179aedb3565d87f0fa6493ad32d7ee87eee10b3f5",
+      "daily:1": "46adefac506b971a30bc03047a5f952af0ddeb3c7e9c74eb57096e379bccbb85",
+      "costs:0": "478ba0a4c343f2a8c651014f49a0b537cc83c0bc170d29ff8d7d1a6ff41ac4d7",
+      "costs:1": "3e445afee96ba105a9752f3724e003711cfd4516070f971d7bc066c3b97d0612",
+      "strengths:0": "c3d8923210d0ef26c2437341c773bf58d5db7d86c3a84b9898443e8d9cc43bd6",
+      "strengths:1": "9126a448d5bddc8b1c98f45976e97b9dd122cf7ccbaf36a1511b6bd483dbe67e",
+      "tradeoffs:0": "ea4e26cbfa3e45bda414be7ed8f690edf40690abad5be09239bfed5a826e6134",
+      "tradeoffs:1": "81e23711c115107dbdb40c61fc9d13cc6e8b1e9f2e15c78fff290021d115c1bc"
+    }
+  },
+  "jp-brillia-ariake-sky-tower": {
+    "sources": "404426022dde47d0c33a21d04ac58d408dcc9d4e853c7f74fd5ab33530706f1e",
+    "points": {
+      "transport:0": "96db03f359c118e50954e00406e9921cb7338a570c4f3c6aed0a6e6c703ef6ed",
+      "transport:1": "1c1609976d4ad69146e677030383294adfac6dc8d01c56ecbe1e89de023912d4",
+      "schools:0": "2950627161df19c705e49a8be22d0610e3d003cd358b78d630b8151b74d3dbdf",
+      "schools:1": "19bcac4879fa2f8fa7a9a2bea151c0a7971166b313b3db432afb0e7228ac49a8",
+      "daily:0": "a589cba1ad9d11060ccee34cd9144877f3624c2d1e6f4c2daeac6a72f6923551",
+      "daily:1": "4d24106f3bb4ee47cb6c367f99986ac5c46153aca304a18cd57a1b344b2e2a31",
+      "costs:0": "7d3927992a683fd5fe826de3ee1d4d6aaf283d5943a1c53ad01a17bc43081429",
+      "costs:1": "4dcf4d771844fec86c58e96b636ec524419b96603acd7e137e92357c36363607",
+      "strengths:0": "532c02e5753504e3a9d7c7f24205bc6a07651e242d0445803fc3d45f2e6fc0da",
+      "strengths:1": "683c4d102a735cf27a8295d0a5a0f5fc1a9b72bb8f5d02839390018b14b82836",
+      "tradeoffs:0": "1d53cded967a0836c84048ae14c586c60c05190ee40fb4a87fa69491b7d672e8",
+      "tradeoffs:1": "fc43921275e6c27f181da71cc878f3ae8e25706f6f05d1ac4011712a552af007"
+    }
+  },
+  "jp-branz-tower-toyosu": {
+    "sources": "929ac6773bb398cf7c07ed11e9b78bd7779cdfe6991272ab5b368082c74baf12",
+    "points": {
+      "transport:0": "8e4364a287b2f8c4c32425699bccd4be6e3e6a40e9cb0a41c803f034ebd2bada",
+      "transport:1": "c5bc17049d14663a761f448af24289d7faa22a8ade40f992e1da9dbdcc34b362",
+      "schools:0": "1d902cb811581c054a0ad7aae4c950c92ca499ff494b10193461265ad0e485bf",
+      "schools:1": "489c206a007ba68b94fb6e00ddc65e5fbbaa338fff071a95e793d87b6e86f630",
+      "daily:0": "f5be648c4faf2b7adff5a541a844b71e2a2c4e88661c07da4586f742d78c9d11",
+      "daily:1": "0cb75fc278cc8c912df8a258025e7c9fcc5a509464c29e3ab8e9dcdb93c6654b",
+      "costs:0": "3734b74c4b05041b3b3cb56b1ef214d8c2b319ea782bde13b6e5d4b52afa9283",
+      "costs:1": "eb1b4fdfadb5302daf7ee4df4e2695a887a780ade343cd79ce39acecb782ee01",
+      "strengths:0": "7a879be97963da8a981e631f1be48e473b74cf7a9b74b9c2d965e2110938a45f",
+      "strengths:1": "0089fe5dd1f59f8f8e71f40fdc1d555beee86ea21db21fa854aa182d0c66445f",
+      "tradeoffs:0": "a785f52b320430f9c2f52c2828ed4fa4f26c41e7d789ae93ee4c4fdd9f3cb14c",
+      "tradeoffs:1": "1ccb32a9b40a75af10e2bb1a0b3dc896044702d69f68b053e5c6435bd6c55361"
+    }
+  },
+  "jp-park-tower-kachidoki": {
+    "sources": "fdd8dddb785610c2660dd86877ba0df1f173673e9b2232a42336c09ac4e7a862",
+    "points": {
+      "transport:0": "b244d519132ebe8ffccbcd2ad4f24ad73c617c54d4a1fef862c6d22ae80373f0",
+      "transport:1": "e670228b60cb7b4dc805b74ff68752ddac557e42d19e63df1ccb48445b8e97bb",
+      "schools:0": "5195c8366e98b35ba962491e2b493365465da20173bd33ae4deb51b1761764f6",
+      "schools:1": "954a064ec1c1bd95464ce61f6231603a8bbad16242356bbcd0a8d06f7a8bfa65",
+      "daily:0": "7fea19abd4c0ae565ef400fdb3e3289d8bf2dcf3b8e6558a68cb3885220ed38a",
+      "daily:1": "b93fa814df62fcc3a3f01bf36fc1b6d392f3403112279fc01a149c74ae44ba4d",
+      "costs:0": "bc09ac9a12b306aa5178d69d28bf9bb415f9d6eafe832ea3d91c682596a19b15",
+      "costs:1": "8d95831365741eca0f93f5d3d04ac4e6c34b8568243e9c7920ca952fe1bdb2ee",
+      "strengths:0": "4be3bbd5f170182ef801959a0de7ecd0c805428dbe28674fc2c7ac68ebb8cc1a",
+      "strengths:1": "212e33a1d8f92f31cf0af07c0363ec3842b4924263033bd56793d6a1c3ba1a61",
+      "tradeoffs:0": "dc660d5ff16230fedc5e43105a1dabd93edc28b000e5c1f851cef377f1a6d841",
+      "tradeoffs:1": "e41c781087bd2183c1a7a55c243f59d710901c7bcb410e84fdc66268d7341492"
+    }
+  },
+  "jp-harumi-flag": {
+    "sources": "8f568f32ac6ce92cf00b01ce1f1d06ae8e0378034ae6304063c9fbd0178ce248",
+    "points": {
+      "transport:0": "19ed7d03d4ad4992c6f236300d082dd7d87addab794caa1782de05b699bdca8d",
+      "transport:1": "db0c8c20fe96aab0088aaa8d3b89ad64d25308f642e633a91db6e08ef6923848",
+      "schools:0": "3e85bf8447b0248767aca7f88eeaa60cb4889f579333bd0bf0a3481a16c46cb2",
+      "schools:1": "f4cb37a481b8cf6ea022fc0e744f0fb70703f0c840aba177298515e2611f2d75",
+      "daily:0": "658f7553e14aec446ba982f408f20da2d8730a733b098cdd9334cf0f19b7ef61",
+      "daily:1": "0de2325635d8acb96ff45a4b361ff80705204da71addb8bc951acb3402acc498",
+      "costs:0": "84c14ed6f1a8f17072cec3658fdae40a35c5bdec11c131152d5e5cf91eb59339",
+      "costs:1": "9361f9654965896ff69b176ec396ff8aef9c026d9a6799797de3611400fd4343",
+      "strengths:0": "ccede69079205d82bf7c0de64e631f2a1742db22aad43db6146cc412abe8b136",
+      "strengths:1": "c916fb1917524b1764dee86ddce667561e5ed71990cef3c25b838df8c59fb409",
+      "tradeoffs:0": "f5ac3f155b841b9a1cc9aff5f78be43cd21d7a6d3c47a86529ebc7693d96821d",
+      "tradeoffs:1": "bcb8be3935e3f862831985d677e118d272299f4089085242af644b9febe58a91"
+    }
+  },
+  "jp-capital-mark-tower": {
+    "sources": "f85f314b65c0cb2b96df64007b930f4a94c77a364320b8e5f3f99de1c43cb6c5",
+    "points": {
+      "transport:0": "5a6fee577d105e2176ad12649d4b6b1e71e15a170b228e7475b711e5969701f5",
+      "transport:1": "85969a8ea1ac2fc5fb795ce85050fd7cba319db17b82b7af1a2abefff9f4cfbe",
+      "schools:0": "977f78b9ac9a8bd531c4f0cf1e25b7081bc132ce769515329e90209350b9851f",
+      "schools:1": "395cb79d5d3cb0ca3e6b510db6af64be76ebdece49b79b9924d7630ead605b51",
+      "daily:0": "c97bec3aaba60a24c323848ea5ba0b81e0ab7870120c50679e99bfc848382264",
+      "daily:1": "2f31f94ec74fdf04ff6e27f9a0e7a391899933ce1ac53d8799ddb8ddd5dad6db",
+      "costs:0": "2b16d5fbd594eb67a83ca4e8be278db2d279f8e0e49d069054844d14e267ad50",
+      "costs:1": "b5537ef3153bc8411b75517545aed0df2e13002bda6d0e788dcd06852c720089",
+      "strengths:0": "7aac223b2921a958c80921c7b0fcdc4b3f18d36ed872d0c66dec9e303d58ea75",
+      "strengths:1": "5c21cc9ee00dbee8e909c1414b900de010a0fc03794f6022a5fcbbc93e40f931",
+      "tradeoffs:0": "f5878b4916ebd974be8c2847380b5b3d964f8d4973c64f0d41d925ea9af6929c",
+      "tradeoffs:1": "3db868c1e62b4099b40e895dcb6c6f2e1bec978dfce146b1913cf0653e42ad82"
+    }
+  },
+  "jp-shibaura-island-grove-tower": {
+    "sources": "7528d8958549a997f262e8f6cc7c025f8f769ba2704629cbb1ddb3df7862911f",
+    "points": {
+      "transport:0": "6465b7472e264777b79b19b470998902022059d0a654fd091980eb84b377cec4",
+      "transport:1": "a36fdb97f02dafc1506494b6bf448f8c4eaffc8bc3ed5b3f47688d6376033c05",
+      "schools:0": "c1b70949def18c4f38f7acb595aa5d4463bb8c374b65894c8d8758c26167c966",
+      "schools:1": "debb81cd3bf1e218acda03f3141b53d4936bbcf7201bedadce245d2d2d707a6b",
+      "daily:0": "a9a7bbae4e81335b6350dd43688f5ecb8840bce297852114233453a63f6420fc",
+      "daily:1": "e7027706947a756074d63f65334ba0a46de7a56d62df88634c61fe12e9abf811",
+      "costs:0": "c21f5e89ccbf7005230a31eee4b0624681d0cbd25d91b58da827ee6fb860eca5",
+      "costs:1": "465ccdc8905ec89f5f2836c44829fd9f1ef627e66aa8e3ea116b8f62b56a6b3b",
+      "strengths:0": "4c8e207301c08d4f598794c1bef128450a3ffd3d0ee1b265cbee8940520e99be",
+      "strengths:1": "99c24184e6bf0097749113fdf08560701211a315fba124cb3fa6492d72a11702",
+      "tradeoffs:0": "fcfe1b98e660f6906ba9bdc7fe324cb2d846c80f4f03b894ecd9df74c484a38c",
+      "tradeoffs:1": "7a683586971d40a7956d7f5deb8eaef6f8a12e9439db423aab043b27c75f2a93"
+    }
+  },
+  "jp-shibaura-island-cape-tower": {
+    "sources": "7ad26b359b63a6bd98ed381996bfe8d3614feb95b480badb59ea58c65d86479e",
+    "points": {
+      "transport:0": "a035e3fd8bde348b9b5681caf554c76a1fe82a8bebd4385d4acf061127273eb1",
+      "transport:1": "5c78bb59e328a98a4f1867cad23b19a9ab85b9e589546671fd5d41d548d62901",
+      "schools:0": "bfab6f6415a35f4a2e76a1e50f53b45511c1bef4c0dea8e756d75631b7bd9fcc",
+      "schools:1": "7bf5d2bc9b37e09fec4be8c0182a5a3c3d13bd63a5f9495d586a8b24149f2acd",
+      "daily:0": "69253ea8ce06b51600cf89b12a83ea49f1935bd94707d5180cf7c1775cd6b0fc",
+      "daily:1": "35371a54f8beb0ac6b3d6130fee75e5fdc4d0a1fa5181ab7926186a65d862960",
+      "costs:0": "90af2641f17a69e7cc34eb055c1cc959d946d314724f5a388361ab5be6dd0089",
+      "costs:1": "79f0eedfd11f3772f86a0d63e0dd141b244e5905e76be45bc876684715c6b030",
+      "strengths:0": "c052552e1e0a01c9b5a68cee93e723da4821ae1d723479ae5c20fe2e8eefb0d5",
+      "strengths:1": "551bfc30ea0b3e1a0f71e45c814a665bdf1ad9a2416e6d9965026e622f3f03a9",
+      "tradeoffs:0": "8b39ae5d108bc2f8b40e22ff8949644c38d004972433d97304a59c77b86a9be4",
+      "tradeoffs:1": "68768b10722a31fd1a4a88aa18826105d1a50d6302ffff639f92d8a6139f38f6"
+    }
+  },
+  "jp-world-city-towers": {
+    "sources": "1d56f3fac3fb6636f4f968ca878f52bb5c811fb8677ac726ba2576e24871add1",
+    "points": {
+      "transport:0": "5276dc9287c21bba4bd6d6d3a5dd3c39ccab809b3ec6f7be6b7e03ff19c370f9",
+      "transport:1": "5d4fae9bf089ba6acd797bb28b3b6e39a4ef34d9e58bb07c0975eecd079e08f5",
+      "schools:0": "7721cd3dfc51ecb15fe1576e96156603ea3bbe3b3e86dcd89fb3c587cfd763a0",
+      "schools:1": "8b2f9442b4dadb8e05f9a5beaf88e0a25c942612ec9cbf94faf546b13b45e189",
+      "daily:0": "2af22fa48e695f7dbecb6065a6166ca1c3f6c8c3228db0967d472decf1d4527d",
+      "daily:1": "1ec2d41796d6706876b5d2177570253a95466d2931e17a3acb57d4a2c2de98cd",
+      "costs:0": "9f2c637972c0301b5672962bee5f911bed5270585a2f8427d85c0bd661972818",
+      "costs:1": "d913fccfd225c9639c709bcc5b8aca4258edd6423e6b7934b11c8a57980b6363",
+      "strengths:0": "19c2f45e39f7481fd5286edf842ddcf31d9176dccc79c3ddb0ed3a78cff42a6f",
+      "strengths:1": "3788e7f66cfe24cf3b7472dc187fd4b508ca8cbcc08bc3c872ba8d810e13199a",
+      "tradeoffs:0": "7da5f9dbb5bf4ecf5595936e318076c395002467eb1efe485cda2ecbedc22c21",
+      "tradeoffs:1": "f2a2ab920a0d581e64ed02f7dea05b3ca69982e1f3b423f7a52f72d8be5032eb"
+    }
+  },
+  "jp-park-city-osaki-the-tower": {
+    "sources": "a4e86ed4f7b046a80928722fb70728986521d697f8165bcbf5df3c884fcd6c7b",
+    "points": {
+      "transport:0": "c0a2eefbaee7a4019e14dfff8b743da179923e24b5f9b79d586772e6f0198efe",
+      "transport:1": "844e948ae18c1507f0721c357d96dfc844be551672d729a0701eab976ac8d7dc",
+      "schools:0": "a048f5149d9ca74f234bddd216dd27350975526e4adfb7dd0e438a3db4b32b88",
+      "schools:1": "9af8a8c269f12b531adef6888d8cb77194ca3b1aef0a408c85b206394a6d5b1a",
+      "daily:0": "f1181ee802b86660e44d75e4473a3f752bc553eaec273aec75802910ead8b2d9",
+      "daily:1": "b870140e2c7e03c17b796a2caced815a0b002feb5404cc4baab034f64d566d89",
+      "costs:0": "dab3ca368b83417354e3865eb31fe2acc07015a0e82e3dd1eb63241e598ccd76",
+      "costs:1": "c1ca8653a8c645a7ee23553e5f21d0198c5c8c57997a4719ff9af0e091e6c986",
+      "strengths:0": "54c91e8527413474ace8cd0b69384b5268b8539e85e210744eb4093aae426c92",
+      "strengths:1": "9c1b5287dc03d49565d2747e4c5861c9cb5c0b45a7b59807c8928dd66dff8601",
+      "tradeoffs:0": "751d3ef648176cf0db632a154c9c2a774cb7ac2ad6c4c3a27736cfc341874bfa",
+      "tradeoffs:1": "cdd932143e05ab49f649f924ed17c018b950d0bffe8c3677a522e8a1bff945ca"
+    }
+  },
+  "jp-brillia-ariake-city-tower": {
+    "sources": "a99fda51f57f69bae2374dfae9149ce7e63c7e492a6f4e2a6cb92112b2898f1b",
+    "points": {
+      "transport:0": "0a142c952d7e64f85c9f862c4db143db6144c39f9886f8268206a737d9df68bb",
+      "transport:1": "97cfdbfbcd69784c3237234c5a9d4f4f3b92549ecb3b8c04e85cb2147f8fe106",
+      "schools:0": "948b04bc915168d488d4af25203f077c003430101248384437eeba3f7999d8df",
+      "schools:1": "b587021b0af73e470924440d8eb3f187000a734cc7f1a5d11dfb65517422f4dd",
+      "daily:0": "088cadad9ac98418c3d2282d9174c46297cfee2c526ec01966dba3306958deb9",
+      "daily:1": "acfdd2ac073cda6a8b04643055aa96c97ff7173b933228a783aa91edf7fce73b",
+      "costs:0": "f4894a1654cbdbb38f671f74abd15064264f37794ac286d1708e208ee1b5ba9d",
+      "costs:1": "32564a58b8b2ecda3ced054acb0afca17802c7be8ba3511ebeddfb29f4df71a2",
+      "strengths:0": "81fe584153915e7be5c9c67815fb7b845b550fe9d81d136ef01ec7a1483411a6",
+      "strengths:1": "2c2d86d96a2a78bfa4e9c427d481997eeb0b412e6bc687237b8ee288b5d968c3",
+      "tradeoffs:0": "503ba5e3246d7c154c62f5bcdb2e497bae36ed1cc578d0af7e7c4fd243740e31",
+      "tradeoffs:1": "968630d09582d2b113cf2b3553d5dcedbde87ac40ee23c63a69066cbb9be25da"
+    }
+  },
+  "jp-tomihisa-cross-comfort-tower": {
+    "sources": "affec8b79a611e9d5c08d098a25bf32359720e387f8767ad7968fa70fec65a88",
+    "points": {
+      "transport:0": "1c70f401e61d03c1c5643beb253d8b290fe77462ed152aa1b73bb25ae7c1e10c",
+      "transport:1": "50fa8f75f8940ca64b8a20eaddc141ec3c6d21178724f2e25d3a8dc6f41bb03f",
+      "schools:0": "445fdbf84f5cdc0c0e6fd246f4c13b0e59471b9a692c853f34001776fe8400f7",
+      "schools:1": "bf19f9f1467da36d7f4eb95bc431c3d3f2fa259d6009d0c3775ea90f7b34d3b8",
+      "daily:0": "de2d4db4fa0e2cf840d7a04654c7fa2448e3d6deaac808a16dc472106875ed51",
+      "daily:1": "2c28d767a956e0a69829704e5fbe788aafa7fae73a1fc712c5a5347e6570d3f0",
+      "costs:0": "f8ba708688478208dc2cd0f03d03b791b2885ff08629b8fe74c0172ddc333a77",
+      "costs:1": "c30f1be52a66ddde63bf3dd383e382e92d850518c739754165201ddbe99c25db",
+      "strengths:0": "c4b26f1a7c6973ea6973cc3ebcd084fe8934a292b4f25c50a35c35e502b0cb82",
+      "strengths:1": "bfebd0a50ccbeacb405b98e597129980bc88b5414cffd8a0b37848245ff1abe2",
+      "tradeoffs:0": "c8fe97f7bc5cdd8845e7e0d697b6c520cdd9da7f48b3e45b930fa0c3b76f8329",
+      "tradeoffs:1": "266ad22fc663d27d7bbd23081d5710b8fa4e14f1545c16c862e9339d035f120f"
+    }
+  },
+  "jp-park-court-hamarikyu": {
+    "sources": "cf51c9d20ee712d10caf9fb85cf57606ad646406496d9854b8a61ed64b7b7ed7",
+    "points": {
+      "transport:0": "2aca69d2db6a01b33c3ab3678e684978aed046c82fa8d7576c8958413d521df4",
+      "transport:1": "2f078403546d126b55147985b6b8d4cca474d71c38f41e55b94b7f3960d0718f",
+      "schools:0": "f4d970fe99d11a0b896bba03c5cadce102566aee0b46e91edd39cbb36ff2c7d1",
+      "schools:1": "dbf83a2d178c21de62c699e6aead7cdb8ecc99be82bd9e1c454a584bfea678d7",
+      "daily:0": "91bbab0c6315586552679bc47fc53662e09ea89868b05c2318c778b6edfb9665",
+      "daily:1": "f23bd7aeb78078e84ee5053f96e32109149efb4a23af68c41dc996c3589d9452",
+      "costs:0": "7ac8cbffea3b1c3773fca049c4bf04011a8231581aeed29d50a431054b49338e",
+      "costs:1": "2c9361b115c5a4eac6ade2ab0718f98f2254fe8e60bfd68cc7dd7c59d6bb0842",
+      "strengths:0": "9d38adf442ad57766758aaf69cd7a388fcae132618fda0beaead76ba3c76e22c",
+      "strengths:1": "db69c295e3a03f8d7d5c8648011d60b03a6164cf018667fa74f198bd2f935385",
+      "tradeoffs:0": "a29365a0a4306454a6168851cbd39a3913dae8c08c331c24e5e5483fd55bf3ac",
+      "tradeoffs:1": "d9b784b17aff8350f557992d834bb4f12d074098714f1871bb811a8294014232"
+    }
+  }
+}
