@@ -17,6 +17,19 @@ describe('evidence admin surfaces', () => {
     expect(html).toContain('등록된 자료가 없습니다'); expect(html).toContain('출처 관리');
     expect(html).not.toContain('Dubai Marina');
   });
+  it('offers focused tasks on the admin home without showing the evidence table', () => {
+    const html = renderToStaticMarkup(<EvidenceAdmin initialAuthenticated initialData={empty} initialView="overview" />);
+    expect(html).toContain('운영 현황');
+    expect(html).toContain('기사 발행 대기');
+    expect(html).toContain('최근 수집 처리');
+    expect(html).not.toContain('등록된 자료가 없습니다');
+  });
+  it('keeps evidence statistics out of the editorial workspace', () => {
+    const html = renderToStaticMarkup(<EvidenceAdmin initialAuthenticated initialData={empty} initialView="operations" />);
+    expect(html).toContain('도시');
+    expect(html).toContain('초안 저장');
+    expect(html).not.toContain('aria-label="전체 자료 현황"');
+  });
   it('prevents evidence submission without a source and separates value bases', () => {
     const html = renderToStaticMarkup(<EvidenceForm sources={[]} busy={false} submit={async () => false} />);
     expect(html).toContain('먼저 출처를 등록하세요'); expect(html).toContain('disabled');

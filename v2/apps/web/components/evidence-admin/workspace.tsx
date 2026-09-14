@@ -1,6 +1,7 @@
 'use client';
+import { OverviewPanel } from './overview-panel';
 import { EditorialOperationsPanel } from './editorial-operations-panel';
-import React, { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
 import Link from 'next/link';
 import { bases, markets, metrics, readiness, sourceKinds, statuses, tiers, units, type Command, type Evidence, type PoolData, type Source } from '@/lib/evidence-pool/contract';
 import { EvidenceForm, Options, SourceForm } from './forms';
@@ -11,6 +12,19 @@ import { BulkReview } from './bulk-review';
 import { CollectionPanel } from './collection-panel';
 import { ResearchPanel } from './research-panel';
 import styles from './workspace.module.css';
+
+const views = {
+  overview: ['운영 현황', '수집 결과와 확인할 항목, 발행할 글을 한곳에서 확인하세요.'],
+  operations: ['글 작성·관리', '기사를 검색하고 초안 저장부터 발행까지 진행하세요.'],
+  evidence: ['자료 검토', '검토할 자료를 찾고 상세 내용과 이력을 확인하세요.'],
+  sources: ['출처 관리', '자료를 가져온 출처를 등록하고 검토하세요.'],
+  create: ['자료 등록', '확인한 값과 관측 시점, 출처를 함께 남기세요.'],
+  research: ['공유 조사 자료', '조사 자료를 검색하고 활용할 근거를 확인하세요.'],
+  collection: ['수집·데이터 상태', '도시별 수집 결과와 데이터 상태를 확인하세요.'],
+} as const;
+type AdminView = keyof typeof views;
+function subscribeView(callback: () => void) { window.addEventListener('hashchange', callback); return () => window.removeEventListener('hashchange', callback); }
+function currentView() { const value = window.location.hash.slice(1); return Object.hasOwn(views, value) ? value as AdminView : null; }
 
 const endpoint = '/api/internal/evidence-pool/';
 const errors: Record<string, string> = {
@@ -29,11 +43,14 @@ async function api<T>(url: string, init?: RequestInit): Promise<T> {
 }
 function post(body: unknown): RequestInit { return { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }; }
 
-export function EvidenceAdmin({ initialAuthenticated, initialData = null, initialView = 'evidence' }: { initialAuthenticated: boolean; initialData?: PoolData | null; initialView?: 'evidence' | 'operations' }) {
+export function EvidenceAdmin({ initialAuthenticated, initialData = null, initialView = 'evidence' }: { initialAuthenticated: boolean; initialData?: PoolData | null; initialView?: AdminView }) {
+  const [editorialSearch, setEditorialSearch] = useState({ value: '', revision: 0 });
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const expireSession = useCallback(() => setAuthenticated(false), []);
   const [data, setData] = useState<PoolData | null>(initialData);
-  const [tab, setTab] = useState<'evidence' | 'sources' | 'create' | 'research' | 'collection' | 'operations'>(initialView);
+  const tab = useSyncExternalStore(subscribeView, currentView, () => null) ?? initialView;
+  function setTab(view: AdminView) { window.history.pushState(null, '', `#${view}`); window.dispatchEvent(new HashChangeEvent('hashchange')); }
+  const needsPool = !['overview', 'operations', 'research', 'collection'].includes(tab);
   const [selected, setSelected] = useState<{ entity: 'source' | 'evidence'; id: string } | null>(null);
   const [filters, setFilterValues] = useState({ market: '', status: '', quality: '', q: '', page: 1, sourcePage: 1 });
   const [checked, setChecked] = useState<string[]>([]);
@@ -58,7 +75,7 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null, initia
     }).catch((cause: unknown) => { if (id === requestId.current) showError(cause); })
       .finally(() => { if (id === requestId.current) setLoading(false); });
   }, [filters, showError]);
-  useEffect(() => { if (authenticated) void load(); return () => { requestId.current += 1; }; }, [authenticated, load]);
+  useEffect(() => { if (authenticated && needsPool) void load(); return () => { requestId.current += 1; }; }, [authenticated, needsPool, load]);
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = event.currentTarget; const secret = String(new FormData(form).get('secret'));
     setBusy(true); setError('');
@@ -94,36 +111,37 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null, initia
     {error && <p role="alert" className={styles.error}>{error}</p>}<small>EVIDENCE_ADMIN_SECRET에 설정한 전용 비밀번호를 입력하세요. 기존 운영 키와는 별개입니다. 로그인은 8시간 유지됩니다.</small>
   </section></main>;
   return <div className={styles.shell}>
-    <aside className={styles.sidebar}><Link href="/" prefetch={false} className={styles.brand}>signedprice<span>INTERNAL</span></Link><p className={styles.eyebrow}>사이트 관리</p><nav aria-label="관리 메뉴"><button type="button" aria-current={tab === 'operations' ? 'page' : undefined} onClick={() => { setTab('operations'); setSelected(null); }}>글 작성·관리</button><a href="https://app.metricool.com/planner/calendar?blogId=6895114" target="_blank" rel="noreferrer">SNS 예약 · Metricool</a>
-      <button type="button" aria-current={tab === 'evidence' ? 'page' : undefined} onClick={() => { setTab('evidence'); setSelected(null); }}>자료 검토 <span>{data?.counts.pending ?? '—'}</span></button>
-      <button type="button" aria-current={tab === 'sources' ? 'page' : undefined} onClick={() => { setTab('sources'); setSelected(null); }}>출처 관리</button>
-      <button type="button" aria-current={tab === 'create' ? 'page' : undefined} onClick={() => { setTab('create'); setSelected(null); }}>자료 등록</button>
-      <button type="button" aria-current={tab === 'research' ? 'page' : undefined} onClick={() => { setTab('research'); setSelected(null); }}>Tool 공유 데이터</button>
-
-      <button type="button" aria-current={tab === 'collection' ? 'page' : undefined} onClick={() => { setTab('collection'); setSelected(null); }}>정기 수집 운영</button>
-    </nav><div className={styles.sidebarFoot}><p>내부 전용 · 공개되지 않음</p><small>수집·원문 검토·자료 승인·사이트 공개 시점을 구분해 확인하세요.</small><button type="button" disabled={busy} onClick={() => void logout()}>로그아웃</button></div></aside>
+    <aside className={styles.sidebar}><Link href="/" prefetch={false} className={styles.brand}>signedprice<span>INTERNAL</span></Link><nav aria-label="관리 메뉴">{([
+      ['시작', ['overview']], ['콘텐츠', ['operations']], ['자료', ['evidence', 'sources', 'create', 'research']], ['운영', ['collection']],
+    ] as const).map(([group, entries]) => <div key={group} className={styles.navGroup}><p className={styles.eyebrow}>{group}</p>{entries.map(view => <button key={view} type="button" aria-current={tab === view ? 'page' : undefined} onClick={() => { setTab(view); setSelected(null); }}>{views[view][0]}{view === 'evidence' && <span>{data?.counts.pending ?? '—'}</span>}</button>)}</div>)}</nav><div className={styles.sidebarFoot}><p>내부 전용 · 공개되지 않음</p><small>수집·원문 검토·자료 승인·사이트 공개 시점을 구분해 확인하세요.</small><button type="button" disabled={busy} onClick={() => void logout()}>로그아웃</button></div></aside>
     <main className={styles.main}>
-      <header className={styles.header}><div><p className={styles.eyebrow}>EVIDENCE WORKSPACE</p><h1>{tab === 'operations' ? '글 작성·관리' : tab === 'collection' ? '정기 수집 운영' : tab === 'research' ? 'Tool 공유 데이터' : tab === 'sources' ? '출처 관리' : tab === 'create' ? '자료 등록' : '자료 검토'}</h1><p>{tab === 'operations' ? '글을 선택해 수정하거나 새 글을 작성하세요. 초안을 저장한 뒤 미리보고 발행할 수 있습니다.' : tab === 'sources' ? '자료를 가져온 출처부터 확인하세요.' : tab === 'create' ? '원문 대신 확인 가능한 값과 출처를 남기세요.' : '검토 대기 자료를 확인하고, 분석에 쓸 근거를 정리하세요.'}</p></div><button type="button" disabled={loading || busy} onClick={() => { setLoading(true); void load(); }}>{loading ? '불러오는 중…' : '새로고침'}</button></header>
+      <header className={styles.header}><div><p className={styles.eyebrow}>SIGNEDPRICE / 관리</p><h1>{views[tab][0]}</h1><p>{views[tab][1]}</p></div><div className={styles.actions}><Link href="/" target="_blank" rel="noreferrer" prefetch={false}>사이트 보기 ↗</Link>{needsPool && <button type="button" disabled={loading || busy} onClick={() => { setLoading(true); void load(); }}>{loading ? '불러오는 중…' : '자료 새로고침'}</button>}</div></header>
+      {tab === 'overview' && <OverviewPanel onUnauthorized={expireSession}
+        onReview={(city, quality) => { if (city === 'tokyo') { setTab('collection'); return; } setSelected(null); setFilters({ market: city === 'all' ? '' : city, status: 'pending', quality, q: '', page: 1, sourcePage: 1 }); setTab('evidence'); }}
+        onEditorial={(slug) => { setEditorialSearch(previous => ({ value: slug ?? '', revision: previous.revision + 1 })); setTab('operations'); }}
+        onCollection={() => setTab('collection')} onRules={() => setTab('sources')} />}
       {error && <p role="alert" className={styles.error}>{error}</p>}{message && <p role="status" className={styles.success}>{message}</p>}
-      {tab !== 'operations' && data && <section className={styles.stats} aria-label="전체 자료 현황">{([['pending', '검토 대기'], ['approved', '승인 자료'], ['expired', '유효기간 만료'], ['withdrawn', '철회']] as const).map(([key, label]) => <button type="button" key={key} disabled={busy} onClick={() => { setTab('evidence'); setSelected(null); setFilters({ ...filters, status: key, page: 1 }); }}><span>{label}</span><strong>{data.counts[key]}</strong></button>)}</section>}
-      {tab !== 'operations' && !data && <section className={styles.panel}><p role="status">{loading ? '저장된 자료를 불러오고 있습니다…' : '자료에 연결하지 못했습니다. 설정을 확인한 뒤 새로고침하세요.'}</p></section>}
-      {tab !== 'operations' && data && (data.sourceTotal ?? 0) > 100 && <div className={styles.pagination} style={{ marginBottom: '1rem' }} aria-label="출처 페이지"><span>선택할 출처 {filters.sourcePage} / {Math.ceil((data.sourceTotal ?? 0) / 100)} 페이지</span><button type="button" disabled={loading || busy || filters.sourcePage <= 1} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage - 1 }); }}>이전 출처</button><button type="button" disabled={loading || busy || filters.sourcePage * 100 >= (data.sourceTotal ?? 0)} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage + 1 }); }}>다음 출처</button></div>}
-      <section hidden={tab !== 'operations'} className={styles.panel}><EditorialOperationsPanel /></section>
-      {tab !== 'operations' && data && <div className={selectedRow ? styles.split : ''}>
+      {tab === 'evidence' && data && <section className={styles.stats} aria-label="전체 자료 현황">{([['pending', '검토 대기'], ['approved', '승인 자료'], ['expired', '유효기간 만료'], ['withdrawn', '철회']] as const).map(([key, label]) => <button type="button" key={key} disabled={busy} onClick={() => { setTab('evidence'); setSelected(null); setFilters({ ...filters, status: key, page: 1 }); }}><span>{label}</span><strong>{data.counts[key]}</strong></button>)}</section>}
+      {needsPool && !data && <section className={styles.panel}><p role="status">{loading ? '저장된 자료를 불러오고 있습니다…' : '자료에 연결하지 못했습니다. 설정을 확인한 뒤 새로고침하세요.'}</p></section>}
+      {['sources', 'create', 'evidence'].includes(tab) && data && (data.sourceTotal ?? 0) > 100 && <div className={styles.pagination} style={{ marginBottom: '1rem' }} aria-label="출처 페이지"><span>선택할 출처 {filters.sourcePage} / {Math.ceil((data.sourceTotal ?? 0) / 100)} 페이지</span><button type="button" disabled={loading || busy || filters.sourcePage <= 1} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage - 1 }); }}>이전 출처</button><button type="button" disabled={loading || busy || filters.sourcePage * 100 >= (data.sourceTotal ?? 0)} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage + 1 }); }}>다음 출처</button></div>}
+      <section hidden={tab !== 'operations'} className={styles.panel}><EditorialOperationsPanel requestedSearch={editorialSearch} /></section>
+      {tab === 'collection' && <section className={styles.panel}><CollectionPanel onUnauthorized={expireSession} /></section>}
+      {tab === 'research' && <section className={styles.panel}><ResearchPanel /></section>}
+      {['evidence', 'sources', 'create'].includes(tab) && data && <div className={selectedRow ? styles.split : ''}>
         <section className={styles.panel}>
 
-          {tab === 'collection' && <CollectionPanel onUnauthorized={expireSession} />}
-          {tab === 'research' && <ResearchPanel />}
+
+
           {tab === 'create' && <><h2>새 자료</h2><EvidenceForm sources={data.sources} busy={busy} submit={mutate} /></>}
           {tab === 'sources' && <><h2>출처 등록</h2><SourceForm busy={busy} submit={mutate} /><h2 className={styles.sectionTitle}>등록된 출처 <small>{data.sourceTotal ?? data.sources.length}건 · 현재 페이지 {data.sources.length}건</small></h2>
             {!data.sources.length ? <p className={styles.empty}>아직 등록된 출처가 없습니다. 위에서 첫 출처를 등록하세요.</p> : <ul className={styles.sourceList}>{data.sources.map((source) => <li key={source.id}><button type="button" onClick={() => setSelected({ entity: 'source', id: source.id })}><strong>{source.name}</strong><span>{sourceKinds[source.kind]} · {statuses[source.status]}</span></button></li>)}</ul>}
           </>}
           {tab === 'evidence' && <>
-            <form className={styles.filters} onSubmit={(e) => { e.preventDefault(); const values = new FormData(e.currentTarget); setSelected(null); setFilters({ ...filters, market: String(values.get('market')), status: String(values.get('status')), quality: String(values.get('quality')), q: String(values.get('q')).trim(), page: 1 }); }}>
+            <form key={JSON.stringify(filters)} className={styles.filters} onSubmit={(e) => { e.preventDefault(); const values = new FormData(e.currentTarget); setSelected(null); setFilters({ ...filters, market: String(values.get('market')), status: String(values.get('status')), quality: String(values.get('quality')), q: String(values.get('q')).trim(), page: 1 }); }}>
               <label>시장<select disabled={busy} name="market" defaultValue={filters.market}><option value="">전체 시장</option><Options values={markets} /></select></label>
               <label>상태<select disabled={busy} name="status" key={filters.status} defaultValue={filters.status}><option value="">전체 상태</option><Options values={statuses} /><option value="expired">유효기간 만료</option></select></label>
               <label>수집 점검<select disabled={busy} name="quality" defaultValue={filters.quality}><option value="">전체</option><Options values={qualityLabels} /></select></label>
-              <label>지역·건물·출처<input disabled={busy} name="q" defaultValue={filters.q} maxLength={120} placeholder="검색어 입력" /></label><button type="submit" disabled={loading || busy}>조회</button>
+              <label>지역·건물·출처<input disabled={busy} name="q" defaultValue={filters.q} maxLength={120} placeholder="검색어 입력" /></label><button type="submit" disabled={loading || busy}>조회</button><button type="button" disabled={loading || busy} onClick={() => { setSelected(null); setFilters({ market: '', status: '', quality: '', q: '', page: 1, sourcePage: 1 }); }}>초기화</button>
             </form>
             <div className={styles.actions}><button type="button" disabled={loading || busy} onClick={() => { setChecked(data.evidence.map(r => r.id)); setBulkScope('selected'); }}>현재 페이지 선택</button><button type="button" disabled={loading || busy} onClick={() => { setChecked([]); setBulkScope('selected'); }}>선택 해제</button><button type="button" disabled={loading || busy || !data.total} onClick={() => { setChecked([]); setBulkScope('filter'); }}>필터 전체 {data.total}건 선택</button></div>
             {(checked.length > 0 || bulkScope === 'filter') && <BulkReview key={JSON.stringify([filters, checked, bulkScope, bulkRevision])} scope={{ market: filters.market, status: filters.status, quality: filters.quality, query: filters.q, ids: bulkScope === 'filter' ? null : checked }} disabled={loading || busy} run={runBulk} />}
@@ -141,7 +159,7 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null, initia
           {selected.entity === 'evidence' && selectedRow.status !== 'withdrawn' && <details className={styles.correction}><summary>등록값 정정</summary><EvidenceForm key={`${selectedRow.id}-${selectedRow.version}`} sources={data.sources} busy={busy} submit={mutate} existing={selectedRow as Evidence} /></details>}
         </aside>}
       </div>}
-      <footer className={styles.footer}>승인 건수에는 만료·출처 철회 자료가 포함될 수 있습니다. 실제 활용 여부는 각 자료의 준비 점검을 확인하세요.</footer>
+      {needsPool && <footer className={styles.footer}>승인 건수에는 만료·출처 철회 자료가 포함될 수 있습니다. 실제 활용 여부는 각 자료의 준비 점검을 확인하세요.</footer>}
     </main>
   </div>;
 }

@@ -4,5 +4,5 @@ import { adminSecret, SESSION_COOKIE, verifySession } from '@/lib/evidence-pool/
 export const dynamic = 'force-dynamic';
 export default async function AdminPage() {
  const token = (await cookies()).get(SESSION_COOKIE)?.value ?? '';
- return <EvidenceAdmin initialAuthenticated={verifySession(token, adminSecret())} initialView="operations" />;
+ return <EvidenceAdmin initialAuthenticated={verifySession(token, adminSecret())} initialView="overview" />;
 }
