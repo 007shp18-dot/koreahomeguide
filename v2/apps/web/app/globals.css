@@ -3742,3 +3742,45 @@ h1 {
 .market-local-nav__link { padding-inline: 12px; color: #59645f; font-size: 13px; font-weight: 560; }
 .market-local-nav__link[aria-current='page'] { border-bottom-color: var(--accent); color: var(--accent); font-weight: 650; }
 .tokyo-navigation{display:flex;gap:24px;border-bottom:1px solid var(--line);margin-block:24px}.tokyo-navigation a{display:inline-flex;align-items:center;min-height:48px;color:var(--muted);font-size:14px;text-decoration:none;white-space:nowrap}.tokyo-navigation a[aria-current=page]{color:var(--accent);box-shadow:inset 0 -2px var(--accent)}
+
+/* SignedPrice product system: shared with home, discovery and community. */
+:root {
+  --accent: #087f73; --accent-soft: #e8f5f2; --focus-ring: #087f73;
+  --brand-orange: #087f73; --ink: #172b2a; --muted: #637370;
+  --canvas: #ffffff; --surface: #f4f7f6; --surface-strong: #ffffff;
+  --line: #e3ebe8; --divider: #d4dfda; --control-selected-border: #a8d4c9;
+  --control-hover: #f0f6f3; --navy: #153d38; --petrol: #153d38;
+  --radius-control: 10px; --radius-card: 14px; --radius-panel: 16px;
+  --shadow-sm: 0 3px 12px rgb(18 58 48 / 4%);
+  --shadow-md: 0 14px 40px rgb(18 58 48 / 10%);
+  --content-frame: 1200px; --workspace-frame: 1360px;
+}
+body { background: var(--canvas); }
+.site-header { background: rgb(255 255 255 / 97%); border-bottom: 1px solid var(--line); box-shadow: none; }
+.site-header__inner { max-width: 1360px; min-height: 76px; gap: 32px; padding-inline: 32px; }
+.site-header__links { gap: 24px; }
+.site-header__product-link { font-size: 14px; font-weight: 550; min-height: 48px; letter-spacing: -.01em; }
+.site-header__product-link[aria-current='page'] { color: var(--accent); }
+.site-header__actions { gap: 12px; }
+.site-header__action,.site-header__context-menu > summary { border-radius: 10px; font-size: 14px; gap: 8px; }
+.site-header__action--saved { padding-inline: 14px; background: var(--surface); border-color: transparent; }
+.site-header__action--offer { background: var(--accent); color: white; border-color: var(--accent); }
+.site-header__more { position: relative; }
+.site-header__more > summary { color: var(--muted); min-height: 48px; padding: 0; border: 0; display: flex; align-items: center; cursor: pointer; }
+.site-header__more .site-header__context-panel { min-width: 180px; right: auto; left: 0; display: grid; padding: 8px; }
+.site-header__more .site-header__context-panel a { display: flex; align-items: center; min-height: 44px; padding: 10px 14px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 14px; }
+.site-header__more .site-header__context-panel a:hover { background: var(--surface); }
+:where(button,select,input,textarea) { font-family: inherit; }
+:where(button,[role='button'],input,select,textarea):focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+:where(button,[role='button']) { transition: background-color 160ms ease,border-color 160ms ease,box-shadow 160ms ease; }
+:where(button,[role='button']):disabled { cursor: not-allowed; }
+.explorer-workspace { background: var(--surface); border-color: var(--line); border-radius: 16px; overflow: hidden; }
+.explorer-map { border-radius: 12px; }
+.explorer-rail { background: white; padding: 12px; }
+.explorer-marker { border-radius: 9px; color: var(--accent); font-weight: 650; }
+.explore-page-heading h1 { font-weight: 700; }
+.market-tabs__list { background: var(--surface); border-color: transparent; padding: 5px; }
+.market-tabs__trigger[aria-selected='true'] { background: white; box-shadow: var(--shadow-sm); color: var(--accent); }
+@media(max-width: 1100px) { .site-header__inner { gap: 20px; padding-inline: 24px; }.site-header__links { gap: 16px; }.site-header__action--offer { display: none; } }
+@media(max-width: 700px) { .site-header__inner { min-height: 64px; padding-inline: 16px; gap: 12px; }.explorer-workspace { border-radius: 12px; } }
+@media(prefers-reduced-motion:reduce) { :where(button,[role='button']) { transition: none; } }

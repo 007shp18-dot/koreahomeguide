@@ -64,6 +64,7 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
   if (href === '/guides/') return !budgetAnalysis && (currentHref.includes('/guide') || currentHref === '/guides/');
   if (href === '/tools/' || href === '/ko/tools/') return currentHref.includes('/tools/') || currentHref.includes('/check/') || currentHref.includes('/passport/') || currentHref.includes('/shortlist/') || currentHref.includes('/saved/');
   if (href.includes('/rankings/')) return currentHref.includes('/rankings/');
+  if (href === '/community/') return currentHref.startsWith('/community/');
   if (href === '/prices/') {
     return currentHref.includes('/explore/') || currentHref === '/prices/';
   }
@@ -73,7 +74,10 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
 
 export function SiteHeader({ copy }: SiteHeaderProps) {
   const locale = copy.languageLabel === 'ZH' ? 'zh-CN' : copy.languageLabel === 'KO' ? 'ko' : 'en';
-  const primaryLinks = globalNavigation(locale);
+  const navigation = globalNavigation(locale);
+  const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
+  const primaryLinks = [...navigation.filter(link => link.href.endsWith('/prices/') || link.href.endsWith('/news/')), { label: locale === 'ko' ? '커뮤니티' : locale === 'zh-CN' ? '社区' : 'Community', href: `${prefix}/community/` }];
+  const moreLinks = navigation.filter(link => !primaryLinks.some(primary => primary.href === link.href));
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
   const context = headerMarketContext(copy, currentHref);
   const visibleMarkets = markets.map(market => ({
@@ -119,6 +123,14 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
                 </Link>
               </li>
             ))}
+            <li className="site-header__nav-item">
+              <SiteContextMenu className="site-header__context-menu site-header__more">
+                <summary>{locale === 'ko' ? '더보기' : locale === 'zh-CN' ? '更多' : 'More'}<UiIcon name="chevron-down" /></summary>
+                <nav className="site-header__context-panel" aria-label={locale === 'ko' ? '추가 메뉴' : 'More navigation'}>
+                  {moreLinks.map(link => <Link key={link.href} href={link.href} prefetch={false} aria-current={isCurrentGlobalLink(link.href, currentHref) ? 'page' : undefined}>{link.label}</Link>)}
+                </nav>
+              </SiteContextMenu>
+            </li>
           </ul>
         </nav>
 
@@ -169,7 +181,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           summaryText={isKorean ? '메뉴' : locale === 'zh-CN' ? '菜单' : 'Menu'}
         >
           <nav aria-label={isKorean ? '전체 메뉴' : locale === 'zh-CN' ? '网站菜单' : 'Site menu'}>
-            {primaryLinks.map((link) =>
+            {[...primaryLinks, ...moreLinks].map((link) =>
               <Link
                 key={link.href}
                 className="site-header__product-link"

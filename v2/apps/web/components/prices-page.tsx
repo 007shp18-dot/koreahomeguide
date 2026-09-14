@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { ResearchPageHeading } from './market-ui/research-page-heading';
 import { SiteHeader } from './site-header';
@@ -18,17 +19,17 @@ export async function PricesPage({ locale = 'en', searchParams }: { locale?: Sit
   if (q) redirect(`${prefix}${selected.href}?q=${encodeURIComponent(q)}`);
   return <div id="top">
     <SiteHeader copy={{ ...homepageCopy.header, homeHref: `${prefix}/`, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', links: [{ label: t.title, href: `${prefix}/prices/`, isCurrent: true }] }} />
-    <main className={styles.main}>
+    <main className={`${styles.main} ${styles.pricesMain}`}>
       <ResearchPageHeading title={t.title} description={t.description} actions={<><Link href={`${prefix}/passport/`}>{t.budget}</Link><Link href={`${prefix}/tools/`}>{t.tools}</Link></>} />
       <PriceMarketSearch locale={locale} />
+      <section className={styles.section} aria-labelledby="price-products-title">
+        <div className={styles.sectionHeading}><p>{t.choose}</p><h2 id="price-products-title">{t.find}</h2></div>
+        <div className={styles.productGrid}>{priceMarkets.map((market, i) => <Link key={market.id} href={`${prefix}${market.href}`}><div className={styles.cityPhoto}><Image src={`/assets/home/${['seoul-ethan-yoo.jpg','singapore-filipe-freitas.jpg','dubai-waqas-sultan.jpg','tokyo-pjh.jpg'][i]}`} alt={t.markets[i]![0]!} fill sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 25vw" /></div><span>{t.markets[i]![0]} · {market.currency}</span><h3>{t.markets[i]![1]}</h3><p>{t.markets[i]![2]}</p><strong>{t.explore} →</strong></Link>)}</div>
+      </section>
       <section className={styles.section} aria-labelledby="read-prices-title">
         <div className={styles.sectionHeading}><p>{t.comparison}</p><h2 id="read-prices-title">{t.check}</h2></div>
         <div className={styles.productGrid}>{t.tips.map(([title, body]) => <article key={title}><h3>{title}</h3><p>{body}</p></article>)}</div>
         <p className={styles.researchSources}>{t.source} <Link href="/trust/">{t.trust}</Link> · <Link href={`${prefix}/tools/property-scenario/`}>{t.calculate}</Link></p>
-      </section>
-      <section className={styles.section} aria-labelledby="price-products-title">
-        <div className={styles.sectionHeading}><p>{t.choose}</p><h2 id="price-products-title">{t.find}</h2></div>
-        <div className={styles.productGrid}>{priceMarkets.map((market, i) => <Link key={market.id} href={`${prefix}${market.href}`}><span>{t.markets[i]![0]} · {market.currency}</span><h3>{t.markets[i]![1]}</h3><p>{t.markets[i]![2]}</p><strong>{t.explore} →</strong></Link>)}</div>
       </section>
     </main>
     <SiteFooter copy={homepageCopy.footer} locale={locale} />

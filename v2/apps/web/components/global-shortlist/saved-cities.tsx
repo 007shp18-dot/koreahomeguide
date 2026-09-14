@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { UiIcon } from '../ui-icon';
 import { useMemo, useState, useSyncExternalStore } from 'react';
 import { cityPaths } from '@/lib/global-shortlist/model';
 import { parseGlobalSaved, readGlobalSaved, subscribeGlobalSaved } from '@/lib/global-shortlist/storage';
@@ -56,7 +57,7 @@ export function SavedPlacesView({ locale, places, city, onCityChange }: { locale
       <span><small>{cityName(place.market,locale)} · {place.reviewId ? (ko ? '단지' : zh ? '住宅项目' : 'Property') : place.market === 'tokyo' || place.market === 'dubai' ? (ko ? '지역' : zh ? '地区' : 'Area') : (ko ? '주택' : zh ? '住宅' : 'Home')}</small><strong>{place.name}</strong></span>
       <span className={styles.open}>{ko ? '보기' : zh ? '查看' : 'Review'} <span aria-hidden="true">↗</span></span>
     </Link>{place.reviewId ? <button type="button" className={styles.open} onClick={() => toggleReviewSaved(place.reviewId!)} aria-label={`${ko ? '단지 저장 해제' : zh ? '取消住宅收藏' : 'Remove saved property'}: ${place.name}`}>{ko ? '저장 해제' : zh ? '取消收藏' : 'Remove saved'}</button> : null}<ResearchNote market={place.market} placeKey={place.key} placeName={place.name} locale={locale} /></li>)}</ul> : <div className={styles.empty}>
-      <span className={styles.bookmark} aria-hidden="true">♡</span>
+      <span className={styles.bookmark} aria-hidden="true"><UiIcon name="bookmark" /></span>
       <h3>{ko ? '관심 있는 곳부터 모아보세요' : zh ? '尚未收藏，先找到感兴趣的地方' : 'Start with a place worth revisiting'}</h3>
       <p>{ko ? '예산으로 지역·단지를 찾아 저장하면 이곳에서 다시 볼 수 있어요.' : zh ? '按预算寻找地区或楼盘，收藏后即可在此继续查看。' : 'Find an area or project within your budget, save it, and pick up your research here.'}</p>
       <Link href={city === 'all' ? shortlistHref(locale,'/tools/') : cityHref(city as City,locale)}>{ko ? '관심 지역 찾기' : zh ? '寻找感兴趣的地区' : 'Find places to save'} →</Link>

@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { HomeSearch } from '../home/home-search';
 import { HomeAnalysis } from '../home-analysis';
 import { ExploreLink } from '../market-ui/explore-link';
 import Link from 'next/link';
@@ -11,7 +12,7 @@ import styles from './editorial-growth-home.module.css';
 
 const COPY = {
   en: {
-    title: 'Four cities.', titleEnd: 'Prices grounded in signed contracts.',
+    title: 'Find your place.', titleEnd: 'See the bigger picture.',
     lead: 'Reported contract prices from official sources. Not asking prices.',
     markets: 'Choose a city', explore: 'Explore', index: 'The city index',
     next: 'Take a closer look', tools: 'Tools', toolsNote: 'Budgets & buying costs',
@@ -22,7 +23,7 @@ const COPY = {
     cities: { 'kr-seoul': 'Seoul', 'sg-singapore': 'Singapore', 'ae-dubai': 'Dubai', 'jp-tokyo': 'Tokyo' },
   },
   ko: {
-    title: '네 도시.', titleEnd: '신고된 계약가격에서 시작합니다.',
+    title: '세계의 집을,', titleEnd: '더 넓은 시선으로.',
     lead: '공식 자료에 공개된 실거래 가격입니다. 매물 호가가 아닙니다.',
     markets: '도시 선택', explore: '탐색', index: '도시 둘러보기',
     next: '조금 더 자세히', tools: '도구', toolsNote: '예산 비교와 매입 비용',
@@ -33,7 +34,7 @@ const COPY = {
     cities: { 'kr-seoul': '서울', 'sg-singapore': '싱가포르', 'ae-dubai': '두바이', 'jp-tokyo': '도쿄' },
   },
   'zh-CN': {
-    title: '四座城市，', titleEnd: '从已申报的成交价开始。',
+    title: '探索世界的家，', titleEnd: '看见更广阔的选择。',
     lead: '价格来自官方发布的成交数据，并非挂牌价。',
     markets: '选择城市', explore: '探索', index: '城市索引',
     next: '进一步了解', tools: '工具', toolsNote: '预算比较与购房成本',
@@ -92,14 +93,22 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
 
   return <main className={styles.homePage}>
     <header className={`${styles.section} ${styles.hero}`}>
-      <div>
-        <p className={styles.kicker}>Signedprice / {copy.index}</p>
+      <div className={styles.heroCopy}>
+        <p className={styles.kicker}>GLOBAL REAL ESTATE · SIGNEDPRICE</p>
         <h1>{copy.title}<span>{copy.titleEnd}</span></h1>
+        <p className={styles.lead}>{copy.lead}</p>
+        <HomeSearch locale={locale} />
+        <nav className={styles.heroCities} aria-label={copy.markets}>
+          {markets.map(market => <ExploreLink key={market.id} href={`${prefix}${market.primaryAction.href}`}>{copy.cities[market.id]}</ExploreLink>)}
+        </nav>
       </div>
-      <p className={styles.lead}>{copy.lead}</p>
+      <div className={styles.heroVisual}>
+        {(['jp-tokyo', 'sg-singapore'] as const).map((id, index) => <Link href={`${prefix}${markets.find(market => market.id === id)!.primaryAction.href}`} key={id} className={styles.heroPhoto}>
+          <Image src={CITY_PHOTOS[id].src} alt={CITY_PHOTOS[id].caption[locale === 'ko' ? 'ko' : 'en']} fill priority={index === 0} sizes="(max-width: 700px) 50vw, 30vw" style={{objectPosition: CITY_PHOTOS[id].position}} />
+          <span><small>{CITY_PHOTOS[id].country}</small><strong>{copy.cities[id]}</strong><UiIcon name="arrow-up-right" /></span>
+        </Link>)}
+      </div>
     </header>
-
-    <HomeAnalysis locale={locale} />
 
     <section className={styles.section} data-home-region="markets" aria-label={copy.markets}>
       <nav className={styles.cityIndex} aria-label={copy.markets}>
@@ -111,14 +120,14 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
         {markets.map((market, index) => {
           const city = copy.cities[market.id];
           const photo = CITY_PHOTOS[market.id];
-          const href = `${locale === 'ko' && market.id !== 'jp-tokyo' ? '/ko' : ''}${market.primaryAction.href}`;
-          const englishDestination = locale !== 'en' && (locale === 'zh-CN' || market.id === 'jp-tokyo');
+          const href = `${prefix}${market.primaryAction.href}`;
+          const englishDestination = false;
           return <li className={styles.marketCard} key={market.id} id={`city-${market.id}`} data-market-id={market.id} data-contextual-action={market.id}>
             <ExploreLink href={href} className={styles.cityLink} data-primary-action="explore" aria-label={`${copy.explore} ${city}${englishDestination ? ' · English' : ''}`}>
               <div className={styles.photo}>
                 <Image src={photo.src} alt={photo.caption[locale === 'ko' ? 'ko' : 'en']} fill
                   loading={index === 0 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'}
-                  sizes={index % 2 === 0 ? '(max-width: 700px) calc(100vw - 40px), (max-width: 1392px) 60vw, 780px' : '(max-width: 700px) calc(100vw - 40px), (max-width: 1392px) 34vw, 440px'}
+                  sizes="(max-width: 700px) 50vw, 25vw"
                   style={{ objectPosition: photo.position }} />
               </div>
               <div className={styles.marketBody}>
@@ -131,6 +140,8 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
         })}
       </ol>
     </section>
+
+    <HomeAnalysis locale={locale} />
 
     <nav className={`${styles.section} ${styles.directory}`} aria-label={copy.next}>
       <p className={styles.kicker}>{copy.next}</p>
