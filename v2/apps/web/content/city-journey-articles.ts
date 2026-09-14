@@ -1,6 +1,7 @@
 import type { StoryCity, StoryLink, StoryLocale, StoryText } from './city-stories';
 import { JOURNEY_ARTICLE_ROUTES, STORY_STEPS, journeyArticleHref, localIssueHref } from './city-journey-routes';
 import articles from './city-journey-articles.json';
+import { reviseJourneyArticle } from './journey-editorial';
 
 export type JourneySource = Readonly<{ id: string; title: string; href: string }>;
 export type JourneyTable = Readonly<{
@@ -16,6 +17,7 @@ export type JourneyArticle = Readonly<{
   title: StoryText;
   deck: StoryText;
   checkedAt: string;
+  editedAt?: string;
   sections: readonly Readonly<{
     id: string; title: StoryText; paragraphs: Readonly<{ en: readonly string[]; ko: readonly string[] }>;
     sourceIds: readonly string[]; table?: JourneyTable;
@@ -23,7 +25,7 @@ export type JourneyArticle = Readonly<{
   sources: readonly JourneySource[];
 }>;
 
-export const CITY_JOURNEY_ARTICLES: readonly JourneyArticle[] = articles as readonly JourneyArticle[];
+export const CITY_JOURNEY_ARTICLES: readonly JourneyArticle[] = (articles as readonly JourneyArticle[]).map(reviseJourneyArticle);
 
 export function getJourneyArticle(city: string, id: string): JourneyArticle | undefined {
   return CITY_JOURNEY_ARTICLES.find(article => article.city === city && article.id === id);

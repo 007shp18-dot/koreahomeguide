@@ -25,7 +25,13 @@ test('Guide index and documents remain complete, indexable, and keyboard reachab
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(new RegExp(`${href}$`));
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Sources', exact: true })).toBeVisible();
+  const sources = page.locator('details#sources');
+  await expect(sources).not.toHaveAttribute('open', '');
+  await sources.locator('summary').focus();
+  await page.keyboard.press('Enter');
+  await expect(sources).toHaveAttribute('open', '');
+  await expect(sources.getByRole('heading', { name: 'Sources', exact: true })).toBeVisible();
+  await expect(sources.locator('a').first()).toHaveAttribute('href', /^https:\/\//);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index,\s*follow$/);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://www.signedprice.com${href}`);
   await expectContained(page);

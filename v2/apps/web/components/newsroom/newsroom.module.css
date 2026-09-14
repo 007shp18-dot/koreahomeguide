@@ -777,4 +777,6 @@
 .standardArticle > :not(script):not(header):not(nav) { max-width: 700px; margin-inline: auto; }
 .standardArticle > .articlePhoto { max-width: 900px; }
 .standardArticle > .sources { margin-top: 40px; }
+.sources > summary { cursor: pointer; min-height: 44px; padding-block: 12px; font-size: 14px; line-height: 1.5; }
+.sources > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .sources, .sources li, .relatedAction, .relatedAction a { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }

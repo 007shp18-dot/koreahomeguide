@@ -34,6 +34,7 @@
 .body .eyebrow { margin-bottom: 12px; font-size: 12px; }
 .related h2, .sources h2 { font-size: 21px; }
 .sources { padding-top: 26px; border-top: 1px solid var(--line); }
+.sources > summary { cursor: pointer; min-height: 44px; padding-block: 12px; font-size: 14px; line-height: 1.5; }
 .sources ol { padding-left: 22px; font-size: 13px; line-height: 1.75; overflow-wrap: anywhere; }
 .sources li { margin-bottom: 12px; scroll-margin-top: 150px; }
 .article a:focus-visible, .tableWrap:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }

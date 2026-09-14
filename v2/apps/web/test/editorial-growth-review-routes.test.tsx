@@ -131,6 +131,7 @@ describe('editorial growth design-review route', () => {
     expect(markup).toContain('aria-label="Design review languages"');
     expect(markup).toContain('Design review · not a public page');
     if (surface === 'content') {
+      // Non-public typography review uses its fixed, approved sample copy.
       expect(markup).toContain('A median is a boundary, not a home valuation');
       expect(markup).not.toContain('Where did Seoul 84 sqm homes sell');
     }

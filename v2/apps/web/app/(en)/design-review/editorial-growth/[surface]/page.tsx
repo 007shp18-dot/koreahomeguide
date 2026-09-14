@@ -8,6 +8,7 @@ import {
 } from '@/lib/design-review/editorial-growth-review-model';
 import { buildEditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model.server';
 import { STARTER_EDITORIAL_ARTICLES } from '@/lib/insights/editorial-content';
+import { TYPOGRAPHY_REVIEW_ARTICLES } from '@/lib/design-review/typography-review-articles';
 
 export const metadata: Metadata = {
   title: 'SignedPrice editorial growth design review',
@@ -35,6 +36,7 @@ export default async function EditorialGrowthReviewPage({
   // Keep visual review content stable as the public newsroom publishes new stories.
   const model = await buildEditorialGrowthReviewModel(query, {
     articles: async () => [...STARTER_EDITORIAL_ARTICLES]
+      .map(article => TYPOGRAPHY_REVIEW_ARTICLES.find(fixture => fixture.slug === article.slug) ?? article)
       .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt)),
   });
 

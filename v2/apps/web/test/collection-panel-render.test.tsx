@@ -9,6 +9,7 @@ it('distinguishes successful collection from publication and exposes failures an
  expect(html).toContain('공개 연결 기록 없음');expect(html).toContain('성공 2026-09-09 00:00:00 UTC');
  expect(html).toContain('연속 실패 2회');expect(html).toContain('http_503');expect(html).toContain('content_size_drop_over_50_percent');
  expect(html).toContain('검토 대기 3');expect(html).toContain('지금 변경 확인');expect(html).toContain('사이트 공개는 별개');
+ expect(html).toContain('<select aria-label="도시"');expect(html).toContain('<select aria-label="확인할 상태"');
 });
 it('never offers page collection for a blocked/manual source', () => {
  const html=renderToStaticMarkup(<CollectionPanel initialData={{sources:[{...source,mode:'blocked'}],publication:'review required'}}/>);

@@ -49,7 +49,7 @@ describe('global roadmap routes', () => {
     expect(news).toContain('<h1>Insights</h1>');
     expect(news).toContain('Property markets, investment decisions and life across four cities.');
     expect(news).toContain('data-public-editorial-frame="content"');
-    expect(news).toContain('Singapore condo prices: CCR vs RCR vs OCR compared');
+    expect(news).toContain('Before comparing Singapore condo prices, choose the compromise');
     expect(news).toContain('aria-label="Insight cities"');
     expect(news).not.toContain('Live external news');
     expect(externalFetch).not.toHaveBeenCalled();

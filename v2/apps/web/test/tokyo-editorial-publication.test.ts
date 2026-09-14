@@ -34,6 +34,6 @@ describe('Tokyo editorial publication', () => {
     const article = TOKYO_RENEWAL_ARTICLES.find(a => a.locale === locale)!;
     const found = buildInsightItems([], 'tokyo', locale, 'investment').find(item => item.href === article.canonicalHref);
     expect(found).toMatchObject({ title: article.title, language: locale, city: 'tokyo', investment: true });
-    expect(article.bodyMarkdown.match(/^## /gm)).toHaveLength(4);
+    expect(article.bodyMarkdown.match(/^## /gm)).toHaveLength(locale === 'zh-CN' ? 4 : 3);
   });
 });

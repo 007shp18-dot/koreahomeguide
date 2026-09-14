@@ -1,5 +1,46 @@
 import { test, expect } from '@playwright/test';
 import type { Evidence, PoolData } from '../../apps/web/lib/evidence-pool/contract';
+import type { CollectionStatus } from '../../apps/web/lib/data-operations/repository.server';
+
+test('collection operations separates failed, unrun and unpublished states without writes', async ({ page, baseURL }) => {
+  test.skip(!baseURL?.includes('127.0.0.1') && !baseURL?.includes('localhost'), 'Synthetic admin session is local-test-only.');
+  const origin = new URL(baseURL!); origin.hostname = 'localhost';
+  const source: CollectionStatus = { sourceId:'fixture-seoul',name:'서울 검증 출처',market:'seoul',category:'fees',url:'https://example.com/source',mode:'page-monitor',intervalDays:7,limitation:'검증용 자료',lastSuccessAt:'2026-09-09T00:00:00Z',lastAttemptAt:'2026-09-09T00:00:00Z',nextDueAt:'2099-01-01T00:00:00Z',lastPublishedAt:null,consecutiveFailures:0,lastError:null,anomaly:null,newCount:0,changedCount:0,pendingCount:0,latestSnapshotId:null,probe:null,pendingCandidateCount:0,recordCount:0 };
+  const sources = [source, {...source,sourceId:'fixture-singapore',name:'싱가포르 실패 출처',market:'singapore',consecutiveFailures:2,lastError:'http_503',pendingCount:3}, {...source,sourceId:'fixture-tokyo',name:'도쿄 미실행 출처',market:'tokyo',lastSuccessAt:null,lastAttemptAt:null,nextDueAt:null}];
+  let writes = 0; let publicationFails = true;
+  await page.route('**/api/internal/**', async route => {
+    const request = route.request(); const path = new URL(request.url()).pathname;
+    if (request.method() !== 'GET') { writes++; return route.fulfill({status:500,json:{error:'unexpected_write'}}); }
+    if (path === '/api/internal/data-collection/') return route.fulfill({json:{sources,markets:[],publication:'review required'}});
+    if (path === '/api/internal/singapore-publication/') return route.fulfill(publicationFails ? {status:503,json:{error:'unavailable'}} : {json:{publication:null}});
+    if (path === '/api/internal/evidence-pool/') return route.fulfill({json:{sources:[],evidence:[],total:0,page:1,counts:{pending:0,approved:0,rejected:0,withdrawn:0,expired:0}}});
+    return route.fulfill({status:503,json:{error:'fixture_not_configured'}});
+  });
+  const login = await page.request.post(`${origin.origin}/api/internal/evidence-session/`, {headers:{Origin:origin.origin},data:{secret:'playwright-only-evidence-admin-secret-32-characters'}});
+  expect(login.status()).toBe(200);
+  await page.goto(`${origin.origin}/admin/evidence/`);
+  await page.getByRole('button',{name:'정기 수집 운영',exact:true}).click();
+  const panel = page.getByRole('region',{name:'정기 수집 운영',exact:true});
+  const table = panel.getByRole('table',{name:/출처별 수집 상태/});
+  await expect(table.getByText('서울 검증 출처',{exact:true})).toBeVisible();
+  await expect(panel.getByRole('button',{name:/싱가포르.*공개 상태 조회 실패/})).toBeVisible();
+  await panel.getByLabel('확인할 상태',{exact:true}).selectOption('failed');
+  await expect(table.getByText('싱가포르 실패 출처',{exact:true})).toBeVisible();
+  await expect(table.getByText('서울 검증 출처',{exact:true})).toHaveCount(0);
+  await panel.getByLabel('도시',{exact:true}).selectOption('tokyo');
+  await expect(panel.getByText('선택한 조건에 맞는 항목이 없습니다.')).toBeVisible();
+  await panel.getByRole('button',{name:'필터 초기화'}).click();
+  await panel.getByLabel('확인할 상태',{exact:true}).selectOption('unrun');
+  await expect(table.getByText('도쿄 미실행 출처',{exact:true})).toBeVisible();
+  await expect(table.getByText('실행 기록 없음 · 정상 여부 미확인')).toBeVisible();
+  await expect(table.getByText('싱가포르 실패 출처',{exact:true})).toHaveCount(0);
+  publicationFails = false;
+  await panel.getByRole('button',{name:'수집·공개 상태 새로고침'}).click();
+  await expect(panel.getByRole('button',{name:/싱가포르.*공개 버전 기록 없음/})).toBeVisible();
+  await expect(panel.locator('details').filter({has:page.locator('summary').filter({hasText:'검증·공개·건물 보강 작업'})})).not.toHaveAttribute('open','');
+  expect(writes).toBe(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
 
 test('evidence filters, bulk confirmation and consent dashboard are usable', async ({ page, baseURL }) => {
   test.skip(!baseURL?.includes('127.0.0.1') && !baseURL?.includes('localhost'), 'Synthetic admin credentials are only used on the local test server.');

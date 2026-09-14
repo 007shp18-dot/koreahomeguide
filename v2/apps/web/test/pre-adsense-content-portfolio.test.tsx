@@ -41,7 +41,9 @@ describe('pre-AdSense reviewed launch portfolio', () => {
       .map(({ slug }) => ({ slug })));
 
     for (const article of EDITORIAL_PORTFOLIO) {
-      expect(sectionCount(article.bodyMarkdown)).toBeGreaterThanOrEqual(4);
+      // A short brief may use two substantive sections plus its methodology.
+      // Do not require filler headings to imitate a fixed four-part template.
+      expect(sectionCount(article.bodyMarkdown), article.slug).toBeGreaterThanOrEqual(3);
       expect(article.sources.length).toBeGreaterThanOrEqual(1);
       for (const source of article.sources) {
         const url = new URL(source.href);

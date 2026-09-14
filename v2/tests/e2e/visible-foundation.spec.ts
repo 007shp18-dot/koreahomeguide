@@ -386,14 +386,20 @@ for (const path of [
   '/zh-cn/news/',
   '/zh-cn/guides/rent-in-korea-zh/',
 ]) {
-  test(`${path} keeps reviewed editorial metadata and sources visible`, async ({ page }) => {
+  test(`${path} keeps editorial metadata and keyboard-accessible source disclosures`, async ({ page }) => {
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index,\s*follow$/);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://www.signedprice.com${path}`);
     if (!path.endsWith('/news/') && !path.endsWith('/guides/')) {
       await expect(page.getByText(/Reviewed by|Reviewer|SignedPrice (Research|Chinese)/i)).toHaveCount(0);
-      await expect(page.getByRole('heading', { name: path.startsWith('/zh-cn/') ? /^来源$/ : /^Sources$|Source and verification/ }).first()).toBeVisible();
+      const sources = page.locator('details#sources');
+      await expect(sources).not.toHaveAttribute('open', '');
+      await sources.locator('summary').focus();
+      await page.keyboard.press('Enter');
+      await expect(sources).toHaveAttribute('open', '');
+      await expect(sources.getByRole('heading', { name: path.startsWith('/zh-cn/') ? /^来源$/ : /^Sources$|Source and verification/ }).first()).toBeVisible();
+      await expect(sources.locator('a').first()).toHaveAttribute('href', /^https:\/\//);
     }
     await expectNoHorizontalPageOverflow(page);
   });

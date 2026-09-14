@@ -52,7 +52,9 @@ describe('standalone city article publication', () => {
       for (const [city, id] of [['seoul', 'buy-jeonse-rent'], ['tokyo', 'old-condo-costs']] as const) {
         const html = renderToStaticMarkup(<JourneyArticle article={getJourneyArticle(city, id)!} locale={locale} />);
         expect(html).toContain('data-article-contents');
-        expect(html).toContain('href="#source-');
+        expect(html).not.toContain('href="#source-');
+        expect(html).toMatch(/<details[^>]*id="article-sources"[^>]*><summary>/);
+        expect(html).toContain('id="source-');
         expect(html).toContain('<table>');
         expect(html).toContain('data-editorial-event="article_complete"');
         expect(html).toMatch(/data-editorial-event="article_(?:open|to_explore|to_check)"/);

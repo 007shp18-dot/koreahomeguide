@@ -6,19 +6,41 @@ import singapore from '../content/property-reviews/singapore.json';
 import dubai from '../content/property-reviews/dubai.json';
 import tokyo from '../content/property-reviews/tokyo.json';
 import { propertyReviewSchema } from '../lib/research/property-review';
+import { withPropertyEditorial } from '../lib/research/property-editorial';
 import { LivingContextCard } from '../components/market-ui/living-context';
 import { actualDetailHref } from '../lib/research/property-review-locations';
 import { propertyReviewMetadata } from '../lib/research/property-review-metadata';
 
 it('renders every published review in English without leaking Korean body copy', () => {
   for (const value of [...seoul,...singapore,...dubai,...tokyo]) {
-    const review = propertyReviewSchema.parse(value);
+    const review = withPropertyEditorial(propertyReviewSchema.parse(value));
     const profile = {id:review.id,market_id:review.marketId,name_ko:review.name.ko,canonical_name:review.name.en,area:review.area.en,headline:review.verdict.ko,checked_on:review.checkedOn,identity_note:'',publication_status:'published' as const,linked_entity_ids:[],facts:[],analysis:[],field_checks:[],sources:{},review};
     const html = renderToStaticMarkup(createElement(LivingContextCard,{profile,locale:'en'}));
+    expect(html).toContain('data-property-editorial');
+    expect(review.editorial?.paragraphs.en.length).toBeGreaterThanOrEqual(3);
+    expect(html).toContain('Facts, photographs &amp; evidence scope');
     expect(html.replace(/<[^>]*>/g,'')).not.toMatch(/[가-힣]/);
     const outbound=[...html.matchAll(/<a[^>]*href="(https:[^"]+)"/g)].map(match=>match[1]);
     expect(outbound.every(url=>/^https:\/\/(creativecommons\.org|commons\.wikimedia\.org)\//.test(url!))).toBe(true);
     expect(html).not.toContain('/living/');
+  }
+});
+
+it('revises all 100 reviews in both languages without changing evidence or its check date', () => {
+  const values = [...seoul, ...singapore, ...dubai, ...tokyo];
+  expect(values).toHaveLength(100);
+  for (const value of values) {
+    const original = propertyReviewSchema.parse(value);
+    const review = withPropertyEditorial(original);
+    expect(review.editorial?.revisedOn).toBe('2026-09-14');
+    expect(review.checkedOn).toBe(original.checkedOn);
+    expect(review.sources).toEqual(original.sources);
+    for (const locale of ['en', 'ko'] as const) {
+      expect(review.editorial?.paragraphs[locale].length).toBeGreaterThanOrEqual(3);
+      expect(review.verdict[locale]).not.toBe(original.verdict[locale]);
+      expect(review.summary[locale]).not.toBe(original.summary[locale]);
+      expect(review.editorial?.paragraphs[locale].join(' ')).not.toMatch(/운영 사례가 있다는 점이 구체적|각자 확인하는 후보/);
+    }
   }
 });
 it('gives a selected review its own canonical URL and English/Korean alternatives', () => {

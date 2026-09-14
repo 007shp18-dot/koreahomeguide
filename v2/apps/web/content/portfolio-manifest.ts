@@ -1,4 +1,5 @@
 import { SEPTEMBER_13_EDITORIAL } from './september-13-editorial';
+import { reviseEditorial } from './editorial-revision';
 import { TOKYO_RENEWAL_ARTICLES } from './tokyo-renewal-2026-09-11';
 import { KOREAN_EDITORIAL_PORTFOLIO } from './ko/portfolio';
 import { KOREAN_BUYING_GUIDES } from './ko/buying-guides';
@@ -101,7 +102,7 @@ export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Obje
   ...CHINESE_MONTHLY_REPORTS,
   CHINESE_DUBAI_RENTAL_YIELD,
   ...TOKYO_RENEWAL_ARTICLES,
-].filter(article => article.slug !== 'compare-seoul-district-prices'))));
+].filter(article => article.slug !== 'compare-seoul-district-prices').map(reviseEditorial))));
 
 export function listPortfolioRecords(locale?: EditorialPortfolioRecord['locale']): readonly EditorialPortfolioRecord[] {
   return locale === undefined ? EDITORIAL_PORTFOLIO : EDITORIAL_PORTFOLIO.filter((record) => record.locale === locale);

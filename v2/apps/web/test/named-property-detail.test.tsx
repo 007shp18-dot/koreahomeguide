@@ -37,8 +37,9 @@ describe('named property details in Explore', () => {
     expect(html).toContain('data-named-property-detail="jp-park-city-toyosu"');
     expect(html.match(/<h1\b/g)).toHaveLength(1);
     expect(html.match(/id="property-review"/g)).toHaveLength(1);
-    expect(html).toContain('Getting around');
-    expect(html).toContain('Schools &amp; daily life');
+    expect(html).toContain('data-property-editorial');
+    expect(html).toContain('Facts, photographs &amp; evidence scope');
+    expect(html).not.toContain('role="tablist"');
     expect(html).toContain('MLIT publishes transactions without building names.');
     expect(html).toMatch(/\/jp\/tokyo\/explore\/?\?city=13108/);
     expect(html).not.toMatch(/[\uac00-\ud7af]/u);

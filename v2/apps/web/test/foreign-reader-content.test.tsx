@@ -45,7 +45,7 @@ describe('foreign-reader worked examples', () => {
   it('checks Dubai payments by amortizing the balance and reconciles break-even rent with cash flow', () => {
     const article = getPortfolioRecord('en', 'dubai-rental-yield-after-costs')!;
     const financeSection = article.bodyMarkdown
-      .split('## Financing changes the cash result\n\n')[1]
+      .split('## Positive operations, negative cash flow\n\n')[1]
       ?.split('\n\n## ')[0];
     expect(financeSection).toBeDefined();
     const financeSentences = financeSection!.split(/(?<=\.)\s+/u);

@@ -2,6 +2,11 @@ import { z } from 'zod';
 
 const bilingual = z.object({ ko: z.string().trim().min(1), en: z.string().trim().min(1) });
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+export const propertyEditorialSchema = z.object({
+  headline: bilingual,
+  paragraphs: z.object({ ko: z.array(z.string().trim().min(1)).min(3), en: z.array(z.string().trim().min(1)).min(3) }),
+  revisedOn: date,
+});
 const point = z.object({
   title: bilingual, body: bilingual, sourceIds: z.array(z.string()).min(1),
   status: z.enum(['documented', 'interpretation', 'needs-check']),
@@ -9,6 +14,7 @@ const point = z.object({
 export const propertyReviewSchema = z.object({
   id: z.string(), marketId: z.enum(['kr-seoul', 'sg-singapore', 'ae-dubai', 'jp-tokyo']),
   name: bilingual, area: bilingual, checkedOn: date,
+  editorial: propertyEditorialSchema.optional(),
   verdict: bilingual, summary: bilingual, bestFor: bilingual, holdFor: bilingual,
   strengths: z.array(point).min(1), tradeoffs: z.array(point).min(1),
   sections: z.object({ transport: z.array(point).min(1), schools: z.array(point).min(1), daily: z.array(point).min(1), costs: z.array(point).min(1) }),

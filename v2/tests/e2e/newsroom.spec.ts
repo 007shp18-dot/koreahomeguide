@@ -54,8 +54,11 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
   await expect(page).toHaveURL(/\/news\/policy\/singapore-absd-policy-status\/$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Singapore ABSD: the tax that can change your home budget' })).toBeVisible();
   await expect(page.getByRole('table').filter({ hasText: 'S$900,000' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Sources' })).toBeVisible();
-  await expect(page.locator('section[aria-labelledby="article-sources-title"] a').first()).toHaveAttribute('href', /^https:\/\//);
+  const sources = page.locator('details#sources');
+  await expect(sources).not.toHaveAttribute('open', '');
+  await sources.locator('summary').click();
+  await expect(sources.getByRole('heading', { level: 2, name: 'Sources' })).toBeVisible();
+  await expect(sources.locator('a').first()).toHaveAttribute('href', /^https:\/\//);
   await expectNoHorizontalOverflow(page);
 });
 
@@ -165,16 +168,16 @@ test('Tokyo city journey opens its own article, chapters and Korean translation'
   await expect(page.getByText('View the buying steps', { exact: true })).toHaveCount(0);
   await leadStory.click();
   await expect(page).toHaveURL(/\/news\/tokyo-kiyosumi-shirakawa-between-stops\/$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('A day in Kiyosumi-Shirakawa: after the cafés close');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kiyosumi-Shirakawa after the coffee');
   await expect.poll(() => page.locator('main article img').first().evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expectNoHorizontalOverflow(page);
   await page.goto('/news/city-stories/tokyo/where/');
   await expect(page).toHaveURL(/\/news\/city-stories\/tokyo\/where\/$/);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText("Choose the railway, then the street");
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('In Tokyo, the last station exit can change the shortlist');
   await expect.poll(() => page.locator('main img').first().evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expectNoHorizontalOverflow(page);
   await page.goto('/ko/news/city-stories/seoul/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('성수가 좋아서 시작한, 서울 내 집 찾기');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('서울숲과 왕십리역, 망원시장에서 시작하는 집 찾기');
   await expect(page.locator('main img').first()).toBeVisible();
   await expect(page.locator('main')).not.toContainText('직접 방문해 작성한 취재기는 아닙니다');
   await page.getByRole('link', { name: /Explore에서 지역과 가격 비교하기/ }).click();
