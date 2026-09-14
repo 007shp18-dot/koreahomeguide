@@ -68,6 +68,7 @@ jobs:
         run: node scripts/v2-migration/verify-phase-0.cjs
 
   browser:
+    needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
