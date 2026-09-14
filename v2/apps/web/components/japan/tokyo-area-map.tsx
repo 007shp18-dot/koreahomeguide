@@ -75,14 +75,14 @@ export function TokyoAreaMap({ rows, city, year, quarter, browserKey, filters, u
     {view !== 'directory' && <div className={styles.mapViewport}>
       <GooglePlaceMap market="tokyo" browserKey={browserKey} points={points} onSelectPoint={selectWard} showAddressSearch={false} clusterLocations={false} />
     </div>}
-    {view !== 'directory' && selectedArea ? <div className={styles.selectedArea} aria-label="Selected area price summary">
+    {view !== 'map' && selectedArea ? <div className={styles.selectedArea} aria-label="Selected area price summary">
       <div><h3>{selectedArea.district ?? wardName}</h3><p>{selectedArea.year} Q{selectedArea.quarter} · {selectedArea.count.toLocaleString('en')} {t('transactions')}</p></div>
       <div><span>{t('Median recorded price')}</span><strong>¥{selectedArea.median.toLocaleString('en')}</strong></div>
-      {!selectedArea.district && wardProperties.length > 0 && <details data-contextual-properties="true">
-        <summary>{locale === 'ko' ? '이 구의 주거 단지' : locale === 'zh-CN' ? '本区住宅项目' : 'Residential properties in this ward'}</summary>
+      {wardProperties.length > 0 && <section className={styles.propertyAnalysis} data-contextual-properties="true">
+        <h3>{locale === 'ko' ? '이 구의 단지 분석' : locale === 'zh-CN' ? '本区项目分析' : 'Property analysis in this ward'}</h3>
         <p>{locale === 'ko' ? '단지를 선택하면 해당 단지의 분석을 읽을 수 있습니다. 위 지역 거래를 이 단지의 거래로 연결한 것은 아닙니다.' : locale === 'zh-CN' ? '选择住宅项目阅读分析。上方区域成交未被认定为这些项目的成交。' : 'Select a property to read its analysis. The area transactions above have not been attributed to these buildings.'}</p>
         <nav aria-label={locale === 'ko' ? '단지 선택' : locale === 'zh-CN' ? '选择项目' : 'Choose a property'}>{wardProperties.map(property => <Link key={property.reviewId} href={actualDetailHref(locale, property.reviewId)!}>{property.name?.[locale === 'ko' ? 'ko' : 'en']} →</Link>)}</nav>
-      </details>}
+      </section>}
     </div> : null}
     {pending ? <p role="status">{t('Loading area transactions…')}</p> : null}
     {view !== 'map' && <section className={styles.neighbourhoods} aria-label={`Neighbourhoods in ${wardName}`}>
