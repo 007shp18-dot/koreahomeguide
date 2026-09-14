@@ -68,12 +68,14 @@ export function KoreaObservedBuildingClient({
   model,
   initialBackHref,
   visual,
+  questions,
   facts,
   locale = 'en',
 }: Readonly<{
   model: ObservedBuildingIdentityModel;
   initialBackHref: string;
   visual?: ReactNode;
+  questions?: ReactNode;
   facts?: ReactNode;
   locale?: ProductLocale;
 }>) {
@@ -88,6 +90,7 @@ export function KoreaObservedBuildingClient({
     model={model}
     backHref={backHref}
     visual={visual}
+    questions={questions}
     facts={facts}
     locale={locale}
   />;

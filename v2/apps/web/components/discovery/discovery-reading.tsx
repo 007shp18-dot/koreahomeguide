@@ -9,6 +9,7 @@ export function DiscoveryReading({ market, locale = 'en', context = 'city' }: { 
   const title = context === 'building' ? (locale === 'ko' ? '가격을 비교할 때 함께 읽기' : locale === 'zh-CN' ? '比较价格时的延伸阅读' : 'Further reading for your price comparison') : locale === 'ko' ? '이 도시에서의 생활과 지역 선택' : locale === 'zh-CN' ? '继续了解这座城市' : 'Life and neighbourhoods in this city';
   return <section className={styles.reading} aria-label={title} data-discovery-reading={market}>
     <h2>{title}</h2>
+    <p><Link href={`${locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : ''}/community/?market=${market}`} prefetch={false}>{locale === 'ko' ? '이 도시 질문·답변' : locale === 'zh-CN' ? '本城市问答' : 'Questions about this city'} →</Link></p>
     <ul>{links.map(link => <li key={link.href}><Link href={link.href} prefetch={false}><span><small>{link.kind}</small><strong>{link.label}</strong></span></Link></li>)}</ul>
   </section>;
 }

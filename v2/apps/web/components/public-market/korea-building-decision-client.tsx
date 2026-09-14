@@ -83,6 +83,7 @@ export function buildKoreaBuildingDecisionClientState(
 export function KoreaBuildingDecisionClient({
   model,
   visual,
+  questions,
   propertyMedia,
   facts,
   base,
@@ -93,6 +94,7 @@ export function KoreaBuildingDecisionClient({
   visual: BuildingVisualModel;
   propertyMedia?: ReactNode;
   facts?: ReactNode;
+  questions?: ReactNode;
   base: string;
   initialBackHref: string;
   locale?: ProductLocale;
@@ -109,6 +111,7 @@ export function KoreaBuildingDecisionClient({
     model={model}
     decision={state.decision}
     visual={visual}
+    questions={questions}
     propertyMedia={propertyMedia}
     facts={facts}
     base={base}

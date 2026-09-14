@@ -18,10 +18,10 @@ const excluded = [
 ];
 
 describe('content search exclusions', () => {
-  it('keeps the community landing page readable and links followable', () => {
+  it('keeps the community landing page readable and links followable', async () => {
     expect(communityMetadata.robots).toEqual({ index: false, follow: true });
     expect(communityMetadata.alternates?.canonical).toBe('https://www.signedprice.com/community/');
-    expect(renderToStaticMarkup(<CommunityPage />)).toContain('<main');
+    expect(renderToStaticMarkup(await CommunityPage({searchParams:Promise.resolve({})}))).toContain('<main');
   });
 
   it.each(excluded.slice(1))('keeps %s readable with a self canonical and noindex', async (path) => {

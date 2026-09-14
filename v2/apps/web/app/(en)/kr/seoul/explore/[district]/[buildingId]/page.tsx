@@ -1,3 +1,4 @@
+import { PlaceQuestions } from '@/components/questions/place-questions';
 import { seoulBuildingLocationHref } from '@/lib/public-market/seoul-building-location';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -488,7 +489,8 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       coordinate,
     );
     const proximity = entityProjection?.proximity ?? identity?.proximity;
-    const fallback = <KoreaEvidenceBuildingDetail
+    const questions = <PlaceQuestions locale={locale} market="seoul" path={`/kr/seoul/explore/${district}/${buildingId}/`} name={exact.model.building.officialName}/>;
+    const fallback = <KoreaEvidenceBuildingDetail questions={questions}
       decisionPanelReady={input.dependencies?.hydrateEvidence !== true}
       model={exact.model}
       backHref={exact.backHref}
@@ -498,7 +500,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     />;
     if (input.dependencies?.hydrateEvidence !== true) return fallback;
     return <Suspense fallback={fallback}>
-      <KoreaBuildingEvidenceClient
+      <KoreaBuildingEvidenceClient questions={questions}
         initialModel={exact.model}
         initialBackHref={exact.backHref}
         coordinate={coordinate}
@@ -554,7 +556,8 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       proximity={entityProjection?.proximity ?? observed.proximity}
       locale={locale}
     />;
-    const fallback = <ObservedBuildingDetail
+    const questions = <PlaceQuestions locale={locale} market="seoul" path={`/kr/seoul/explore/${district}/${buildingId}/`} name={observed.building.officialName}/>;
+    const fallback = <ObservedBuildingDetail questions={questions}
       decisionPanelReady={input.dependencies?.hydrateEvidence !== true}
       model={observed}
       backHref={backHref}
@@ -564,7 +567,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     />;
     if (input.dependencies?.hydrateEvidence !== true) return fallback;
     return <Suspense fallback={fallback}>
-      <KoreaObservedBuildingClient
+      <KoreaObservedBuildingClient questions={questions}
         model={observed}
         initialBackHref={backHref}
         visual={visual}
@@ -626,7 +629,8 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     },
   ];
   const facts = <BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} observedFacts={observedFacts} proximity={entityProjection?.proximity ?? observed?.proximity} locale={locale} />;
-  const fallback = <BuildingDetailPage
+  const questions = <PlaceQuestions locale={locale} market="seoul" path={`/kr/seoul/explore/${district}/${buildingId}/`} name={model.building.name}/>;
+  const fallback = <BuildingDetailPage questions={questions}
     decisionPanelReady={input.dependencies?.hydrateEvidence !== true}
     locale={locale}
       model={model}
@@ -639,7 +643,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
   />;
   if (input.dependencies?.hydrateEvidence !== true) return fallback;
   return <Suspense fallback={fallback}>
-    <KoreaBuildingDecisionClient
+    <KoreaBuildingDecisionClient questions={questions}
       model={model}
       visual={visual}
       propertyMedia={propertyMedia}

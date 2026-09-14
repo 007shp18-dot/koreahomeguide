@@ -15,6 +15,7 @@ export function marketDestination(marketId: NavigationMarketId, currentHref = '/
   const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const tokyoPrefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const city = { 'kr-seoul': 'seoul', 'sg-singapore': 'singapore', 'ae-dubai': 'dubai', 'jp-tokyo': 'tokyo' }[marketId];
+  if (path === '/community/' || path.startsWith('/community/')) return `${prefix}/community/?market=${city}`;
   if (path === '/living/') return `${prefix}/living/?market=${marketId}`;
   if (/\/(?:seoul-apartment|singapore-condo|dubai-ready-apartment)-buying-budget-guide\//.test(path)) return `${prefix}/news/?market=${city}`;
   if (marketId === 'jp-tokyo' && /\/tools\//.test(path)) return `${tokyoPrefix}/jp/tokyo/tools/`;
@@ -69,7 +70,9 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
   const destinations: Record<SiteLocale, string | null> = { en: null, ko: null, 'zh-CN': null };
   const withQuery = (value: string) => `${value === '/' ? '/' : `${value}/`}${search}`;
   const publishedColumn = /^\/news\/(how-to-read-property-transaction-prices-and-medians|singapore-condo-absd-60-percent-real-acquisition-cost)(?:-en|-zh)?$/.exec(english);
-  if (publishedColumn) {
+  if (/^\/community(?:\/[a-f0-9-]+)?$/.test(english)) {
+    destinations.en=withQuery(english); destinations.ko=withQuery(`/ko${english}`); destinations['zh-CN']=withQuery(`/zh-cn${english}`);
+  } else if (publishedColumn) {
     destinations.en = withQuery(`/news/${publishedColumn[1]}-en`);
     destinations.ko = withQuery(`/ko/news/${publishedColumn[1]}`);
     destinations['zh-CN'] = withQuery(`/zh-cn/news/${publishedColumn[1]}-zh`);

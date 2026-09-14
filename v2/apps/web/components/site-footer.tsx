@@ -27,7 +27,7 @@ export function SiteFooter({ copy, locale = 'en' }: Readonly<{ copy: SiteFooterM
       : zh ? `/zh-cn${market.href}` : market.href,
   }));
   const groups = [
-    { label: ko ? '서비스' : zh ? '平台' : 'Platform', links: globalNavigation(locale) },
+    { label: ko ? '서비스' : zh ? '平台' : 'Platform', links: [...globalNavigation(locale), {label: ko ? '질문·답변' : zh ? '问答' : 'Questions & answers',href: `${ko ? '/ko' : zh ? '/zh-cn' : ''}/community/`}] },
     { label: ko ? '도시' : zh ? '城市' : 'Cities', links: marketLinks },
     { label: ko ? '도움말' : zh ? '帮助' : 'Help', links: [{ label: ko ? '데이터와 출처 (영문)' : zh ? '数据与来源（英文）' : 'Data & sources', href: '/trust/' }, { label: ko ? '문의' : zh ? '联系我们（英文）' : 'Contact', href: ko ? '/ko/contact/' : '/contact/' }, { label: ko ? '개인정보 처리방침 (영문)' : zh ? '隐私（英文）' : 'Privacy', href: '/privacy/' }] },
   ];

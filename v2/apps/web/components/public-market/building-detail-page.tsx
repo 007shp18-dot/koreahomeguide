@@ -65,6 +65,7 @@ export function BuildingDetailPage({
   model,
   decision,
   visual,
+  questions,
   propertyMedia,
   facts,
   base,
@@ -77,6 +78,7 @@ export function BuildingDetailPage({
   visual: BuildingVisualModel;
   propertyMedia?: ReactNode;
   facts?: ReactNode;
+  questions?: ReactNode;
   base: string;
   backHref?: string;
   decisionPanelReady?: boolean;
@@ -166,6 +168,7 @@ export function BuildingDetailPage({
           <DetailNewsList news={model.news} locale={locale} />
 
         </section>
+        {questions}
       </main>
       </PropertyDecisionWorkspace>
       <SiteFooter locale={locale} copy={locale === 'ko' ? { ...footer, descriptor: '서울 단지별 실거래 자료와 집계 범위를 확인하세요.' } : footer} />

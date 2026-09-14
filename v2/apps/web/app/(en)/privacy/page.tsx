@@ -33,7 +33,7 @@ export default function PrivacyPage() {
         </header>
         <section className={styles.notice} aria-labelledby="privacy-summary">
           <div>
-            <p className={styles.meta}>Effective 10 September 2026 · Current public product</p>
+            <p className={styles.meta}>Effective 14 September 2026 · Current public product</p>
             <h2 id="privacy-summary">We do not sell personal information.</h2>
           </div>
           <p>
@@ -78,7 +78,8 @@ export default function PrivacyPage() {
           </article>
           <article>
             <p className={styles.meta}>06 · Community</p>
-            <h2>Structured responses</h2>
+            <h2>Questions, answers and structured responses</h2>
+            <p>For questions and answers, we store a username, public display name, password hash and recovery-code hash. Email is not required. Your posts and display name are public after basic checks; held posts remain visible to their author and moderators. We store reports and moderation actions to handle abuse. A secure HttpOnly session cookie keeps you signed in for up to 14 days. Rate limits use a hashed network identifier; raw network addresses are not saved in the questions database. You can edit or delete your own posts. To request account deletion, contact the privacy address above. Deleting a post removes its title and body from the questions store and public display; limited moderation records and existing infrastructure backups may remain for security and dispute handling.</p>
             <p>Community evidence responses use structured choices rather than names, email addresses or free-text posts. An opaque, secure first-party cookie distinguishes repeat responses and can remain for up to 12 months.</p>
           </article>
           <article>
