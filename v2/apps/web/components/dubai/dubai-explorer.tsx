@@ -39,6 +39,7 @@ import layout from './dubai-explore-layout.module.css';
 import { DubaiAreaPhoto } from './dubai-area-photo';
 import { dubaiAreaPhoto } from '../../lib/dubai/area-photos';
 import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
+import { NamedPropertyMatches } from '../market-ui/named-property-matches';
 import { DiscoveryReading } from '../discovery/discovery-reading';
 const DubaiComparisonDialog = lazy(() => import('./dubai-comparison'));
 
@@ -109,6 +110,7 @@ function CuratedDubaiExplorer({ locale = 'en',
       </nav>
     </div>}
     discovery={<div className={styles.directory}>
+      <NamedPropertyMatches market="ae-dubai" query={query} locale={locale} />
       <h2>{t("Area guide")}</h2>
       <p>{t(areas.length)}{t(" of ")}{t(DUBAI_AREAS.length)}{t(" curated areas · Not a property inventory")}</p>
       <ul>{areas.map((item) => <li key={item.id}><button
@@ -309,6 +311,7 @@ export function DubaiExplorer({ locale = 'en',
         </nav></div>
       </div>}
       discovery={<section className={styles.evidenceDirectory} aria-labelledby="dubai-area-results">
+        <NamedPropertyMatches market="ae-dubai" query={deferredQuery} locale={locale} />
         {selected ? <DubaiExploreSelection locale={locale} selected={selected} stage={stage}
           period={`${model.context.comparisonPeriod.from}–${model.context.comparisonPeriod.to}`}
           asOfDate={model.context.asOfDate} projects={selectedAreaProjects} selectedProject={selectedProject}

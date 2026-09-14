@@ -1,6 +1,6 @@
 # Property review expansion — 14 September 2026
 
-Adds 12 named residential reviews (three per market), taking the catalogue from 100 to 112. Each has Korean/English editorial copy, evidence-linked transport/school/daily/cost points, and Korean/English/Chinese overviews and persona summaries. Sources use the existing bottom-of-page treatment. No new photographs are claimed or generated.
+Adds 12 named residential reviews (three per market), taking the catalogue from 100 to 112. Each has Korean/English editorial copy, evidence-linked transport/school/daily/cost points, and Korean/English/Chinese overviews and persona summaries. Sources use the existing bottom-of-page treatment. Tokyo and Dubai name searches now show matching property reviews independently of anonymous transaction availability or an exact DLD project match. Empty searches do not add another catalogue. No new photographs are claimed or generated.
 
 | Market | Added reviews | Identity scope |
 | --- | --- | --- |
@@ -25,4 +25,4 @@ Adds 12 named residential reviews (three per market), taking the catalogue from 
 
 Validation branch: `br-silent-queen-b3trned8`, forked from production `br-super-butterfly-b31hhh93` in project `delicate-scene-40576440`.
 
-Local checks: 112 schemas / 1,344 evidence-linked points; selected batch 12 / 144 points; focused review/navigation/visual/persona/save tests and living-context tests passed (28 tests); TypeScript passed. The validation branch accepted and verified exactly three profiles in each market. Production publication and deployment are completed separately after review checks.
+Local checks: 112 schemas / 1,344 evidence-linked points; selected batch 12 / 144 points; focused review/navigation/visual/persona/save, living-context, price-scope and named-search tests passed; TypeScript and ESLint passed. The validation branch accepted and verified exactly three profiles in each market. A browser check also caught shared corridor space being classified as parking; the classifier now requires parking-specific wording. Current nursery access at Branz Tower Shibaura was rechecked against the operator page. Production publication and deployment are completed separately after review checks.
