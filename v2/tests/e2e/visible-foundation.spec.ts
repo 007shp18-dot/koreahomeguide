@@ -102,7 +102,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: /Four cities.\s*Many ways to live./,
+      name: /Four cities.\s*Prices grounded in signed contracts./,
     }),
   ).toBeVisible();
   await expect(
@@ -202,7 +202,7 @@ for (const route of publicRoutes) {
 test('desktop exposes the city index and photo-led city destinations', async ({page}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1, name: /Four cities.\s*Many ways to live./ })).toBeInViewport();
+  await expect(page.getByRole('heading', { level: 1, name: /Four cities.\s*Prices grounded in signed contracts./ })).toBeInViewport();
   await expect(page.locator('main form')).toHaveCount(0);
   const markets = page.locator('[data-home-region="markets"]');
   await expect(markets).toHaveAttribute('aria-label', 'Choose a city');

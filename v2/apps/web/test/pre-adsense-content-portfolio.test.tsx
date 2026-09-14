@@ -22,6 +22,7 @@ const primarySourceHosts = new Set([
   'www.roots.gov.sg', 'www.gotokyo.org', 'www.bhomes.com',
   'www.junggu.seoul.kr', 'museum.seoul.go.kr', 'www.seoul.go.kr', 'golmok.seoul.go.kr',
   'www.emirates.com', 'www.visitdubai.com', 'www.emiratesnbd.com',
+  'khig.khug.or.kr', 'www.sgic.co.kr', // HUG and SGI guarantee product sources in the reviewed guide.
 ]);
 
 const secondaryHosts = new Set(['kbthink.com', 'www.ajunews.com', 'v.daum.net', 'news.nate.com', 'www.guocoland.com.sg', 'stackedhomes.com', 'www.thenationalnews.com', 'mediahub.seoul.go.kr']);
