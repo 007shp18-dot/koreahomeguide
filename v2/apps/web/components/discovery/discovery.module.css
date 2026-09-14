@@ -1,8 +1,10 @@
-.recent { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin: 12px 0; min-width: 0; }
-.label { color: var(--muted); font-size: 12px; font-weight: 600; }
-.recent nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-width: 0; }
-.recent a { display: inline-flex; align-items: center; min-height: var(--control-min, 44px); max-width: 100%; color: var(--ink); font-size: 14px; text-underline-offset: 4px; overflow-wrap: anywhere; }
-.clear { margin-left: auto; padding: 4px 0; min-height: var(--control-min, 44px); color: var(--muted); border: 0; background: transparent; font: inherit; font-size: 12px; cursor: pointer; }
+.recent { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 16px 0; min-width: 0; }
+.label { margin: 0; color: var(--muted); font-size: var(--text-control, 14px); font-weight: 500; line-height: 1.5; }
+.recent nav { display: flex; flex: 1 1 200px; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.recent a { display: inline-flex; align-items: center; min-height: var(--control-min, 44px); max-width: 100%; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--radius-control, 8px); background: var(--surface-strong); color: var(--ink); font-size: var(--text-control, 14px); font-weight: 500; line-height: 1.5; text-decoration: none; overflow-wrap: anywhere; }
+.recent a:hover { background: var(--surface); }
+.clear { margin-left: auto; padding: 8px 10px; min-height: var(--control-min, 44px); color: var(--muted); border: 0; border-radius: var(--radius-control, 8px); background: transparent; font: inherit; font-size: var(--text-control, 14px); line-height: 1.5; cursor: pointer; }
+.clear:hover { color: var(--ink); background: var(--surface); }
 .note { min-width: 0; border-top: 1px solid var(--line); }
 .note > summary { display: list-item; min-height: var(--control-min, 44px); padding: 12px 0; color: var(--muted); font-size: 14px; line-height: 20px; cursor: pointer; }
 .note form { padding: 0 0 12px; }
@@ -24,4 +26,4 @@
 .reading a { display: flex; align-items: center; gap: 12px; min-height: var(--control-min, 44px); color: var(--ink); text-decoration: none; font-size: 14px; line-height: 1.6; }
 .reading strong { display: block; font-weight: 500; overflow-wrap: anywhere; }
 .reading small { display: block; color: var(--muted); font-size: 12px; }
-@media (max-width: 600px) { .recent { gap: 0 12px; } .recent nav { order: 3; flex-basis: 100%; } .reading ul { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 600px) { .recent { gap: 8px 12px; } .recent nav { order: 3; flex-basis: 100%; } .reading ul { grid-template-columns: minmax(0, 1fr); } }

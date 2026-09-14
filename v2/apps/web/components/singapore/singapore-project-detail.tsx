@@ -1,5 +1,6 @@
-import { PropertyLivingContext } from '../market-ui/living-context';
+import { PropertyDecisionWorkspace } from '../market-ui/property-decision-workspace';
 import { hasPropertyReviewForEntity } from '../../lib/research/property-review-locations';
+import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
 import { localizedMarketCopy } from '../../lib/locale/market-localization';
 
 import { sgText } from '../../lib/locale/singapore-copy';
@@ -51,11 +52,30 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
   );
   const displayName = singaporeProjectDisplayName(model.identity);
   const reviewEntity = `sg-singapore:project:${model.identity.id}`;
+  const completeRows = model.status === 'ready' && model.transactions.length === model.identity.n ? model.transactions : [];
+  const areas = new Set(completeRows.map(row => row.source.areaSqm));
+  const areaBases = new Set(completeRows.map(row => row.source.areaBasis));
+  const priceContext: DecisionPriceContext = (model.status === 'insufficient' ? model.fallbackPriceContext?.[locale] : undefined) ?? {
+    scope: model.status === 'ready' ? 'property' : 'unavailable',
+    label: locale === 'ko' ? '매매가격 중앙값' : locale === 'zh-CN' ? '买卖价格中位数' : 'Median sale price',
+    currency: 'SGD',
+    amount: model.status === 'ready' ? model.identity.medianPriceSgd : null,
+    count: model.identity.n,
+    period: model.evidence.period,
+    areaSqm: areas.size === 1 && areaBases.size === 1 ? areas.values().next().value ?? null : null,
+    unit: 'total',
+    range: model.status === 'ready' ? { low: model.identity.p25PriceSgd, high: model.identity.p75PriceSgd } : null,
+    basis: locale === 'ko' ? '같은 프로젝트 · 전체 면적' : locale === 'zh-CN' ? '同一项目 · 全部面积' : 'Same project · all home sizes',
+    note: model.status === 'ready'
+      ? locale === 'ko' ? '면적·층·계약 유형이 다른 거래가 포함됩니다. 같은 면적대의 거래를 함께 비교하세요.' : locale === 'zh-CN' ? '涵盖不同面积、楼层及合同类型的成交，请结合相同面积区间比较。' : 'This includes different sizes, floors and sale types; compare the same-size cohorts alongside it.'
+      : locale === 'ko' ? '가격 공개에 필요한 거래 수에 미달해 중앙값을 표시하지 않습니다.' : locale === 'zh-CN' ? '成交笔数未达到公布标准，因此不显示中位数。' : 'The sample is below the publication minimum, so no median is displayed.',
+  };
   const reviewSections = hasPropertyReviewForEntity(reviewEntity)
     ? [{ id: 'property-review', label: locale === 'ko' ? '단지 분석' : locale === 'zh-CN' ? '项目分析' : 'Property analysis' }]
     : [];
   if (model.status === 'insufficient') return (
     <SingaporePage locale={locale} currentHref={marketHref(locale, '/sg/singapore/explore/')} unframed>
+      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext}>
       <MarketDetailShell locale={locale}
         breadcrumb={<Link href={marketHref(locale, '/sg/singapore/explore/')}>{sgText(locale, 'Explore')}</Link>}
         sections={[
@@ -76,9 +96,9 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
           <p>{locale === 'ko' ? `신고 거래 ${model.count}건입니다. 중앙값은 ${model.threshold}건 이상일 때 공개합니다.` : locale === 'zh-CN' ? `${model.count} 笔申报交易，至少 ${model.threshold} 笔才公布中位数。` : `${model.count} reported transactions. A median requires at least ${model.threshold}.`}</p>
           <SingaporeNearbyPlaces locale={locale} proximity={proximity} />
         </section>
-          <PropertyLivingContext entity={reviewEntity} locale={locale} />
         </>}
         rail={<SingaporeEvidence locale={locale} model={model.evidence} />} />
+      </PropertyDecisionWorkspace>
     </SingaporePage>
   );
   const records = model.transactions.map(({ source, propertyTypeLabel, saleTypeLabel, areaBasisLabel, tenureLabel }) => ({
@@ -91,6 +111,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
   return (
     <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed>
       <RecordPlaceVisit place={{ market: 'singapore', key: model.identity.id, name: displayName, href: `/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${encodeURIComponent(model.identity.id)}/` }} />
+      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext}>
       <MarketDetailShell locale={locale}
         related={<DiscoveryReading market="singapore" locale={locale} />}
         sections={[
@@ -155,12 +176,12 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
         <Link href={marketHref(locale, `/sg/singapore/explore/?region=${model.identity.marketSegment.toLowerCase()}&q=${encodeURIComponent(displayName)}&project=${encodeURIComponent(model.identity.id)}`)}>{sgText(locale, 'View this project on the map')}</Link>
         <SingaporeNearbyPlaces locale={locale} proximity={proximity} />
       </section>
-      <PropertyLivingContext entity={reviewEntity} locale={locale} />
       <DetailTools locale={locale} checkHref={marketHref(locale, model.checkHref)}
         calculatorHref={createPropertyScenarioHref({locale,market:'sg-singapore',currency:'SGD',entity:model.identity.id,propertyName:displayName,transaction:'sale',price:model.identity.medianPriceSgd,returnTo:marketHref(locale, `/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${model.identity.id}/`)})} />
 </>}
         rail={<SingaporeEvidence locale={locale} model={model.evidence} />}
       />
+      </PropertyDecisionWorkspace>
     </SingaporePage>
   );
 }

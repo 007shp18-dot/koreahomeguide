@@ -23,7 +23,7 @@ export function RecentPlaces({ market, locale = 'en', excludeKey }: { market?: D
   const ko = locale === 'ko', zh = locale === 'zh-CN';
   const label = ko ? '최근 본 곳' : zh ? '最近浏览' : 'Recently viewed';
   return <section className={styles.recent} aria-label={label} data-recent-places={market ?? 'all'}>
-    {recent.length > 0 && <><span className={styles.label}>{label}</span>
+    {recent.length > 0 && <><h2 className={styles.label}>{label}</h2>
     <nav aria-label={ko ? '최근 탐색 이어보기' : zh ? '继续浏览' : 'Resume exploring'}>
       {/* Explore clients restore URL state on mount. A document navigation also restores query-only selections. */}
       {recent.map(place => <a key={`${place.market}:${place.key}`} href={marketHref(locale, place.href)}>{place.name}</a>)}

@@ -1,5 +1,6 @@
 import { singaporeProjectDisplayName } from './project-display-name';
 import { resolveUraProjectLocation } from './project-location';
+import { singaporeDecisionPriceFallback } from '../research/property-decision-fallback.server';
 import 'server-only';
 
 import { createEvidenceDescriptor } from '@signedprice/market-core';
@@ -238,6 +239,7 @@ export function buildSingaporeProjectModel(
   if (identity === null) return null;
   if (!identity.published) return Object.freeze({
     status: 'insufficient',
+    fallbackPriceContext: singaporeDecisionPriceFallback(repository, identity.marketSegment),
     identity,
     count: identity.n,
     threshold: 5,

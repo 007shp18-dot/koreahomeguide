@@ -81,7 +81,7 @@ export function createJapanRepository(port: MarketRefreshSqlPort, batchSize = 20
 
 export type JapanFilters = { q: string; neighbourhood?: string; type: string; minArea: number | null; maxArea: number | null; page: number; release: string | null };
 export type JapanPublished = { releaseId: string; retrievedAt: string; publishedAt: string; sourceUrl: string;
-  sourceCount: number; filteredCount: number; records: JapanRecord[]; scope: JapanScope; filters: JapanFilters };
+  sourceCount: number; filteredCount: number; medianPrice?: number | null; records: JapanRecord[]; scope: JapanScope; filters: JapanFilters };
 
 export type JapanPublishedScope = JapanScope & { sourceCount: number };
 export async function readJapanCoverage(port = japanSqlPort(true)): Promise<JapanPublishedScope[]> {
@@ -121,11 +121,13 @@ export async function readJapanPublication(scope: JapanScope, filters: JapanFilt
       LIMIT $8::integer OFFSET $9::integer
     ) SELECT r.id, r.retrieved_at::text, r.published_at::text, r.source_url, r.expected_count,
       (SELECT count(*) FROM filtered)::integer AS filtered_count,
+      (SELECT percentile_cont(0.5) WITHIN GROUP (ORDER BY (record->>'price')::numeric) FROM filtered) AS median_price,
       COALESCE((SELECT jsonb_agg(record) FROM page), '[]'::jsonb) AS records FROM release r`,
   [scope.city, scope.year, scope.quarter, filters.q, filters.type, filters.minArea, filters.maxArea, 20, (filters.page - 1) * 20, filters.release, filters.neighbourhood ?? '']);
   const row = rows[0];
   if (!row) return null;
   return { releaseId: String(row.id), retrievedAt: String(row.retrieved_at), publishedAt: String(row.published_at),
     sourceUrl: String(row.source_url), sourceCount: Number(row.expected_count), filteredCount: Number(row.filtered_count),
+    medianPrice: row.median_price == null ? null : Number(row.median_price),
     records: row.records as JapanRecord[], scope, filters };
 }

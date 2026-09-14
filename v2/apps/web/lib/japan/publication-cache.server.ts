@@ -15,7 +15,7 @@ const cachedPublication = unstable_cache(async (scope: JapanScope, filters: Japa
   const data = await readJapanPublication(scope, filters);
   if (data === null) throw new UnpublishedQuarter('quarter_not_published');
   return data;
-}, ['jp-tokyo-published-transactions-v1'], { revalidate: 60 });
+}, ['jp-tokyo-published-transactions-v2'], { revalidate: 60 });
 
 export async function readCachedJapanPublication(scope: JapanScope, filters: JapanFilters) {
   try { return await cachedPublication(scope, filters); }

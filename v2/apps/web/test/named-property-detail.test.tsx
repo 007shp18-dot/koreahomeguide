@@ -32,13 +32,14 @@ describe('named property details in Explore', () => {
     expect(namedPropertyMetadata('en', 'jp-tokyo', 'ae-valia').robots).toEqual({ index: false, follow: true });
   });
 
-  it('keeps the full review on the property page and distinguishes anonymous Tokyo prices', async () => {
+  it('opens the decision panel beside property facts and distinguishes anonymous Tokyo prices', async () => {
     const html = renderToStaticMarkup(await TokyoPropertyPage({ params: Promise.resolve({ profileId: 'jp-park-city-toyosu' }) }));
     expect(html).toContain('data-named-property-detail="jp-park-city-toyosu"');
     expect(html.match(/<h1\b/g)).toHaveLength(1);
     expect(html.match(/id="property-review"/g)).toHaveLength(1);
-    expect(html).toContain('data-property-editorial');
-    expect(html).toContain('Facts, photographs &amp; evidence scope');
+    expect(html).toContain('data-decision-workspace="true"');
+    expect(html).toContain('data-decision-panel="side"');
+    expect(html).toContain('id="property-facts"');
     expect(html).not.toContain('role="tablist"');
     expect(html).toContain('MLIT publishes transactions without building names.');
     expect(html).toMatch(/\/jp\/tokyo\/explore\/?\?city=13108/);

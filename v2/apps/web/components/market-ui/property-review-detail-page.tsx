@@ -7,7 +7,10 @@ import { marketHref, type MarketLocale } from '../../lib/locale/market-localizat
 import { indexableMetadata } from '../../lib/public-metadata';
 import { actualDetailHref, reviewLocation } from '../../lib/research/property-review-locations';
 import { propertyReviewProfile, propertyReviewProfilesForMarket, type ReviewedPropertyProfile } from '../../lib/research/property-review-profile';
-import { LivingContextCard } from './living-context';
+import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
+import { namedPropertyDecisionPrice } from '../../lib/research/property-decision-price.server';
+import { PropertyDecisionWorkspace } from './property-decision-workspace';
+import { PropertyReviewVisuals } from './property-review-visuals';
 import { MarketDetailShell } from './market-shell';
 import { RecordPlaceVisit } from '../discovery/recent-places';
 import styles from './property-review-detail.module.css';
@@ -42,9 +45,18 @@ export function namedPropertyMetadata(locale: MarketLocale, market: NamedPropert
   return locale === 'zh-CN' ? { ...metadata, robots: { index: false, follow: true } } : metadata;
 }
 
-export function PropertyReviewDetailPage({ profile, locale = 'en' }: Readonly<{
+export async function renderPropertyReviewDetailWithPrice({ profile, locale = 'en' }: Readonly<{
   profile: ReviewedPropertyProfile;
   locale?: MarketLocale;
+}>) {
+  const priceContext = await namedPropertyDecisionPrice(profile, locale);
+  return <PropertyReviewDetailPage profile={profile} locale={locale} priceContext={priceContext} />;
+}
+
+export function PropertyReviewDetailPage({ profile, locale = 'en', priceContext }: Readonly<{
+  profile: ReviewedPropertyProfile;
+  locale?: MarketLocale;
+  priceContext?: DecisionPriceContext;
 }>) {
   const review = profile.review;
   const location = reviewLocation(profile.id)!;
@@ -74,11 +86,14 @@ export function PropertyReviewDetailPage({ profile, locale = 'en' }: Readonly<{
     <SiteHeader copy={{ ...homepageCopy.header, marketLabel: city, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', homeHref: marketHref(locale, '/'), links: [{ label: 'Explore', href: detailHref, isCurrent: true }] }} />
     <main data-named-property-detail={profile.id}>
       <RecordPlaceVisit place={{ market: tokyo ? 'tokyo' : 'dubai', key: profile.id, name: review.name[lang], href: detailHref }} />
+      <PropertyDecisionWorkspace profileId={profile.id} profile={profile} locale={locale} priceContext={priceContext}>
       <MarketDetailShell locale={locale}
-        breadcrumb={<Link href={marketHref(locale, explorePath)}>{city} · Explore</Link>}
+        breadcrumb={<Link href={marketHref(locale, explorePath)}>{city} · {t('탐색', 'Explore', '探索')}</Link>}
         sections={[
           { id: 'detail-overview', label: t('단지 정보', 'Property details', '项目资料') },
           { id: 'property-review', label: t('단지 분석', 'Property analysis', '项目分析') },
+          { id: 'property-facts', label: t('기초 자료', 'Property facts', '基础资料') },
+          { id: 'detail-source', label: t('가격 자료의 범위', 'Price coverage', '价格资料范围') },
         ]}
         summary={<header className={styles.identity}>
           <p className={styles.meta}>{city} · {tokyo ? t('주거 단지', 'Residential property', '住宅项目') : stage === 'off-plan' ? t('분양 예정·건설 중 프로젝트', 'Off-plan project', '期房项目') : stage === 'ready' ? t('준공 단지', 'Completed property', '已竣工项目') : t('주거 프로젝트', 'Residential project', '住宅项目')}</p>
@@ -89,11 +104,14 @@ export function PropertyReviewDetailPage({ profile, locale = 'en' }: Readonly<{
             <Link href={contextHref}>{tokyo ? t('주변 구의 실거래·지도', 'Ward transactions & map', '周边行政区成交与地图') : location.projectId ? t('이 프로젝트의 거래 요약', 'Project transaction summary', '本项目成交摘要') : t('두바이 실거래·지도', 'Dubai transactions & map', '迪拜成交与地图')}</Link>
           </nav>
         </header>}
-        evidence={<section id="property-review" aria-label={t('단지 분석', 'Property analysis', '项目分析')}>
-          <LivingContextCard profile={profile} locale={locale} embedded />
+        media={location.photo ? <PropertyReviewVisuals photo={location.photo} locale={locale} /> : undefined}
+        evidence={<section id="property-facts" aria-label={t('단지 기초 자료', 'Property facts', '项目基础资料')}>
+          <h2>{t('단지 기초 자료', 'Property facts', '项目基础资料')}</h2>
+          <PropertyReviewVisuals metrics={location.metrics} series={location.series} locale={locale} />
         </section>}
         rail={<section className={styles.scope}><h2>{t('가격 자료의 범위', 'Price coverage', '价格资料范围')}</h2><p>{scope}</p></section>}
       />
+      </PropertyDecisionWorkspace>
     </main>
     <SiteFooter locale={locale} copy={homepageCopy.footer} />
   </>;

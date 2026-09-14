@@ -1,4 +1,6 @@
 import 'server-only';
+import { koreaDecisionPriceFallback, type LocalizedDecisionPriceContext } from '../research/property-decision-fallback.server';
+import { hasPropertyReviewForEntity } from '../research/property-review-locations';
 
 import {
   getSeoulDistrictBySlug,
@@ -37,6 +39,7 @@ type ObservedCoordinateModel =
     }>;
 
 export type ObservedBuildingIdentityModel = Readonly<{
+  fallbackPriceContexts?: Readonly<Partial<Record<'sale' | 'jeonse' | 'monthly', LocalizedDecisionPriceContext>>>;
   status: 'identity_only';
   district: SeoulRentCheckDistrict;
   building: ObservedBuildingRecord;
@@ -121,6 +124,9 @@ export function buildObservedBuildingIdentityModel(
     const proximity = dependencies?.proximityRepository ?? koreaProximityRepositoryFromEnvironment({ observedBuildingRepository: repository });
     return Object.freeze({
       status: 'identity_only',
+      fallbackPriceContexts: hasPropertyReviewForEntity(`kr-seoul:estate:${buildingId}`)
+        ? Object.fromEntries((['sale', 'jeonse', 'monthly'] as const).map(transaction => [transaction, koreaDecisionPriceFallback({ district: district.slug, buildingId, housingType: building.housingType, transaction, areaBand: 'all', contractGroup: 'all' })]))
+        : undefined,
       district,
       building,
       observations: Object.freeze({

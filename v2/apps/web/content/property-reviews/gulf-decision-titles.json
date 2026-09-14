@@ -1,0 +1,252 @@
+{
+  "ae-skyflame-1": {
+    "transport:0": "通往 E311 的最后一段路会影响出行",
+    "transport:1": "不能把步行到地铁站作为购入前提",
+    "schools:0": "Winchester 提供至 Year 13 的英式课程",
+    "schools:1": "学费年度与学校评估年度应分别核对",
+    "daily:0": "已营业的超市与规划商铺要分开看",
+    "daily:1": "配套的实际使用条件比效果图重要",
+    "costs:0": "分期付款说明资金安排，并不代表投资回报",
+    "costs:1": "计算净回报还缺核准的物业收费"
+  },
+  "ae-skyterraces": {
+    "transport:0": "道路连接不能直接换算成高峰通勤时间",
+    "transport:1": "公交方案到站前的一段路仍待确认",
+    "schools:0": "Metropole 的课程与评估资料有各自日期",
+    "schools:1": "2026–27 学年 Year 1–6 学费为 AED 45,374",
+    "daily:0": "可把 First Avenue Mall 作为日常办事目的地核实",
+    "daily:1": "儿童配套仍属于规划",
+    "costs:0": "一居室名称不能说明实际可用空间",
+    "costs:1": "物业收费与交付安排仍影响价格判断"
+  },
+  "ae-valia": {
+    "transport:0": "现有交通要对应真正的工作地点",
+    "transport:1": "Blue Line 是以 2029 年为目标的未来条件",
+    "schools:0": "Deira International 位于另一个区域 Festival City",
+    "schools:1": "2026–27 学年 FS 学费起价为 AED 44,616",
+    "daily:0": "已营业商场与未来商铺要分开看",
+    "daily:1": "滨水参观不能代替日常生活路线测试",
+    "costs:0": "先明确交付安排和持续投入资金的期限",
+    "costs:1": "景观溢价与净收益仍需进一步核实"
+  },
+  "ae-peninsula-three": {
+    "transport:0": "应从住宅入口走到地铁站测试路线",
+    "transport:1": "去公交站也有独立的步行路段",
+    "schools:0": "选择 Safa British 需单独安排教育预算",
+    "schools:1": "每天往返接送会改变家庭居住的适合程度",
+    "daily:0": "日常买菜与专程逛商场是不同需求",
+    "daily:1": "运河景观取决于具体户位和楼层",
+    "costs:0": "44 笔成交只能提供项目层面的参考",
+    "costs:1": "物业收费需与制冷账单合并检查"
+  },
+  "ae-the-edge": {
+    "transport:0": "Clover Bay 站可作为首段交通核实点",
+    "transport:1": "驾车六分钟不能换成短距离步行",
+    "schools:0": "Safa British 的 Year 1 费用可纳入预算核实",
+    "schools:1": "公共配套不能说明孩子一天的安排是否顺畅",
+    "daily:0": "日常买菜应先比较较小的便利购物点",
+    "daily:1": "面向球场的房源需要权衡便利与活动干扰",
+    "costs:0": "公开的 40/60 付款计划使竣工时支付较集中",
+    "costs:1": "38 笔成交的中位价混合了不同房源"
+  },
+  "ae-regalia": {
+    "transport:0": "资料用驾车方式描述去车站的最后一段",
+    "transport:1": "需要检查通往 Al Khail 的去程与回程",
+    "schools:0": "Hartland 是一段单独的英式学校通学路线",
+    "schools:1": "普通学费与老家庭优惠不能混用",
+    "daily:0": "规划中的杂货店不等于已经营业",
+    "daily:1": "照片之外还要核实户内实际使用",
+    "costs:0": "34 笔成交参考不能等同于单套房估值",
+    "costs:1": "未付分期款与运营费用会改变总价比较"
+  },
+  "ae-one-by-binghatti": {
+    "transport:0": "交通判断从 Marasi Drive 的进出路线开始",
+    "transport:1": "五分钟到地标的说法不能证明个人通勤时间",
+    "schools:0": "Hartland 校址与校车覆盖需一起确认",
+    "schools:1": "住房溢价之外还需安排教育预算",
+    "daily:0": "运河散步与买菜采用不同路线",
+    "daily:1": "应分别在白天和天黑后检查景观",
+    "costs:0": "公开资料列出 20/50/30 付款结构",
+    "costs:1": "48 笔成交与某套房的景观溢价是不同问题"
+  },
+  "ae-eltiera-views": {
+    "transport:0": "进入 JLT 与步行到车站不能混为一谈",
+    "transport:1": "自行车配套不能证明存在合适的通勤路线",
+    "schools:0": "首先确认对应哪一个 DBS 校区",
+    "schools:1": "资料列出的 Year 1 学费为 AED 53,027",
+    "daily:0": "The Pavilion 与项目内商铺不是一处",
+    "daily:1": "临泳池的便利与安静楼层需要取舍",
+    "costs:0": "未来配套运营也会形成持有支出",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-serenia-district-east": {
+    "transport:0": "需要单独核实到 DMCC 站的实际连接",
+    "transport:1": "内部步道与外部通勤满足不同需求",
+    "schools:0": "先匹配 DBS 校区的具体地址",
+    "schools:1": "中学学费也应放入家庭预算",
+    "daily:0": "阳台面积不能单独说明使用是否方便",
+    "daily:1": "现有商店与未来片区商铺要分开看",
+    "costs:0": "需核实 East 的余款与公共费用分摊范围",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-sobha-central": {
+    "transport:0": "站点名称不能代替住宅入口的连接路线",
+    "transport:1": "地标交通宣传不能代表个人通勤",
+    "schools:0": "Winchester Jebel Ali 可作为具体教育预算参照",
+    "schools:1": "现有候补名单会限制实际入学选择",
+    "daily:0": "共用电梯及通道会影响高层日常生活",
+    "daily:1": "未来商业配套不能当作今天可用的超市",
+    "costs:0": "需取得分期项目公共费用的分摊范围",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-golf-fields": {
+    "transport:0": "Expo 站并不位于项目内部",
+    "transport:1": "机场工作需对应实际航站楼与轮班时间",
+    "schools:0": "核准学费与优惠学费必须分开",
+    "schools:1": "STS 校车路线并非自动覆盖所有住户",
+    "daily:0": "附近公园与总体规划中的面积要分开",
+    "daily:1": "靠近水上游乐设施的房源有自己的取舍",
+    "costs:0": "开盘起价与签约条件是不同事项",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-terra-woods": {
+    "transport:0": "轨道网络覆盖与具体楼栋步行要分开",
+    "transport:1": "活动日与普通日期的交通路线可能不同",
+    "schools:0": "GFD Year 7 的费用可作为教育预算核实项",
+    "schools:1": "校车覆盖应落实到具体楼栋",
+    "daily:0": "屋顶板式网球场会影响房源选择",
+    "daily:1": "面向庭院也需要考虑隐私",
+    "costs:0": "公寓比较中应排除联排住宅",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-creek-bay": {
+    "transport:0": "交通设施施工与正式运营是不同阶段",
+    "transport:1": "最初入住时需按道路出行安排预算",
+    "schools:0": "Deira International 位于独立的 Festival City 校区",
+    "schools:1": "小学学费与接送费用应分别预算",
+    "daily:0": "逛商场与日常买菜是两种行程",
+    "daily:1": "临泳池生活有特定的便利与干扰",
+    "costs:0": "AED 180 万广告起价不等于成交价",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-creek-haven": {
+    "transport:0": "Blue Line 属于未来交通条件",
+    "transport:1": "家庭每天多个目的地的先后顺序会影响路线",
+    "schools:0": "DIS 指定 Maverick 作为校车服务方",
+    "schools:1": "放学时间因年级不同而变化",
+    "daily:0": "The Viewing Point 可作为实地了解区域的起点",
+    "daily:1": "靠近公园的楼层需留意隐私",
+    "costs:0": "不能只看起价，还需比较合同条款",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-the-wilds-residences": {
+    "transport:0": "项目位于 Global Village 对面的道路型片区",
+    "transport:1": "内部步道不能换算成轨道通勤便利",
+    "schools:0": "国际学校与幼儿园仍属于规划",
+    "schools:1": "现有学校需要按真实校址评估",
+    "daily:0": "需明确裙楼服务配套何时开始运营",
+    "daily:1": "复式以楼梯换取空间分隔",
+    "costs:0": "公寓预算中还需加入总体社区费用",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-reportage-hills": {
+    "transport:0": "驾车时间估算需要保留计算条件",
+    "transport:1": "停车安排会影响实际日常生活",
+    "schools:0": "Metropole 位于另一个区域 Motor City",
+    "schools:1": "现有小学学费可作为预算核实参照",
+    "daily:0": "宗教、运动和商业组合仍属于规划",
+    "daily:1": "露台与更多浴室也增加维护事项",
+    "costs:0": "效果图中的家具未必属于交付清单",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-taormina-village-1": {
+    "transport:0": "这是 Al Barari 与 IMG 附近以道路出行为主的位置",
+    "transport:1": "车位到社区门口的路线也是日常行程",
+    "schools:0": "需采用 GEMS Winchester Dubai 的实际校址",
+    "schools:1": "规划幼儿园与当前可就读学校要分开",
+    "daily:0": "已营业的 Cityland 与未来商铺是不同配套",
+    "daily:1": "儿童游乐及运动设施需对应具体住宅位置",
+    "costs:0": "施工进度百分比必须同时说明报告日期",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-hayat-1": {
+    "transport:0": "轮班通勤需对应机场实际出入口",
+    "transport:1": "Expo 公交提供的是区域连接",
+    "schools:0": "GFD 是现有学校选项",
+    "schools:1": "校车是否确认覆盖会影响家庭居住判断",
+    "daily:0": "区域大卖场与未来商场是不同设施",
+    "daily:1": "湖景同时带来景观与维护问题",
+    "costs:0": "5% 首付款不等于全部资金需求",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-boulevard-park-1": {
+    "transport:0": "去 Energy 站的时间说明有其适用范围",
+    "transport:1": "线路已运营，仍需检查新楼栋的最后一段路",
+    "schools:0": "学校名单需进一步落实到实际校址",
+    "schools:1": "幼儿阶段费用可作为教育预算核实项",
+    "daily:0": "购买家具与每天的生活采购是不同需求",
+    "daily:1": "去公园的路线从具体楼栋入口开始",
+    "costs:0": "需明确两块地块之间如何分摊费用",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-reportage-village-1": {
+    "transport:0": "驾车时间表不是实测通勤结果",
+    "transport:1": "大型项目需要检查门口及内部交通",
+    "schools:0": "现有 Winchester 校区可作为学校选项",
+    "schools:1": "规划幼儿园不能解决学龄儿童接送",
+    "daily:0": "公共泳池与私人泳池需要区分",
+    "daily:1": "面积较小的住宅仍有室外维护支出",
+    "costs:0": "宣传分期方案需逐项对照合同",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-raw-district-r": {
+    "transport:0": "车站溢价需要先验证首段接驳",
+    "transport:1": "未来机场发展与当前工作的时间表不同",
+    "schools:0": "需匹配 The Winchester School 的实际地址",
+    "schools:1": "先确认目前候补名单下的入学机会",
+    "daily:0": "办公访客与住宅电梯通道需要区分",
+    "daily:1": "室外配套需考虑不同季节的实际使用",
+    "costs:0": "包含的家具与持续服务费用要分开",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-binghatti-aquarise": {
+    "transport:0": "运河地址并不能证明方便到达车站",
+    "transport:1": "还需计入停车出入与上下楼时间",
+    "schools:0": "Hartland 是一项独立的学校接送选择",
+    "schools:1": "新入学家庭可核实 Year 1 的费用",
+    "daily:0": "商铺数量不等于已确定的商户名单",
+    "daily:1": "带家具的表述需要具体交付清单",
+    "costs:0": "应把 20/50/30 付款结构排进现金计划",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-rise-by-athlon-1": {
+    "transport:0": "高速公路连接是判断该位置的基础",
+    "transport:1": "自行车环线属于社区规划",
+    "schools:0": "需采用 GEMS Winchester Dubai 的实际校址",
+    "schools:1": "资料列出的 Year 1 学费为 AED 25,157",
+    "daily:0": "Cityland Mall 是另外一个购物目的地",
+    "daily:1": "按具体楼栋选择真正会使用的设施",
+    "costs:0": "需明确公园和会所的费用如何分摊",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-passo": {
+    "transport:0": "先计算 West Crescent 到主干岛段的行程",
+    "transport:1": "开发商公布的分钟数不是实测通勤",
+    "schools:0": "Golden Mile 3 有已识别的托育运营方",
+    "schools:1": "学龄儿童教育需要另作预算",
+    "daily:0": "Waitrose 位于 Palm Jumeirah Mall",
+    "daily:1": "应走完整条从海滩返回住宅的路线",
+    "costs:0": "私人泳池维护责任也应计入价格比较",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  },
+  "ae-azizi-venice-6": {
+    "transport:0": "适合南部工作与方便到市中心是两种判断",
+    "transport:1": "区域公交不代表 Venice 6 已有对应站点",
+    "schools:0": "教育预算可核实 GEMS Founders Dubai South 的费用",
+    "schools:1": "申请校车路线不等于已确认覆盖",
+    "daily:0": "歌剧及文化片区是未来吸引力",
+    "daily:1": "现有生活购物与泻湖商铺规划应分开",
+    "costs:0": "需明确泻湖维护与分期开发的相关费用",
+    "costs:1": "项目样本不能直接当作单套房估值"
+  }
+}
