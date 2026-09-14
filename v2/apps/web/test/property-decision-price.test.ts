@@ -26,7 +26,7 @@ function dependencies(overrides: Partial<Dependencies> = {}): Dependencies {
 }
 
 describe('decision prices retain their published source scope', () => {
-  it('resolves the installed Dubai catalogue as 24 exact projects and one explicitly identified area reference', async () => {
+  it('resolves the installed Dubai catalogue as 24 exact projects and four explicitly identified area references', async () => {
     const serialized = gunzipSync(readFileSync(new URL('../data/dubai-area-evidence.json.gz', import.meta.url))).toString('utf8');
     const repository = await createDubaiEvidenceRepository({ serialized,
       expectedDigest: createHash('sha256').update(serialized).digest('hex') });
@@ -35,7 +35,7 @@ describe('decision prices retain their published source scope', () => {
       dubaiRepository: () => repository,
     }))));
     expect(results.filter(result => result.scope === 'property')).toHaveLength(24);
-    expect(results.filter(result => result.scope === 'area')).toHaveLength(1);
+    expect(results.filter(result => result.scope === 'area')).toHaveLength(4);
     for (const result of results) {
       expect(result.currency).toBe('AED');
       expect(result.amount).toBeGreaterThan(0);
@@ -50,6 +50,20 @@ describe('decision prices retain their published source scope', () => {
     expect(skyflame.count).toBe(publishedArea.n);
     expect(skyflame.range).toEqual({ low: publishedArea.priceP25Aed, high: publishedArea.priceP75Aed });
     expect(skyflame.note).toContain('not this project');
+    for (const [id, areaSlug] of [
+      ['ae-park-ridge', 'hadaeq-sheikh-mohammed-bin-rashid'],
+      ['ae-creek-horizon', 'al-khairan-first'],
+      ['ae-creekside-18', 'al-khairan-first'],
+    ]) {
+      const result = results[profiles.findIndex(profile => profile.id === id)]!;
+      const area = repository.getArea(areaSlug!)!;
+      const ready = area.segments.find(segment => segment.housing === 'apartment')!.sales.ready!;
+      expect(result.scope).toBe('area');
+      expect(result.label).toContain(area.name);
+      expect(result.amount).toBe(ready.medianPriceAed);
+      expect(result.count).toBe(ready.n);
+      expect(result.note).toContain('not this project');
+    }
   });
 
   it('never falls back to the historical catalogue metric when the verified Dubai repository is unavailable', async () => {

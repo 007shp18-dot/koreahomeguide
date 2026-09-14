@@ -5614,5 +5614,347 @@
       "en": "Konan, Minato",
       "ko": "미나토구 고난"
     }
+  },
+  {
+    "reviewId": "sg-the-poiz-residences",
+    "name": {
+      "ko": "더 포이즈 레지던스",
+      "en": "The Poiz Residences"
+    },
+    "area": {
+      "ko": "포통파시르 · D13",
+      "en": "Potong Pasir · D13"
+    },
+    "address": "Meyappa Chettiar Road, Singapore",
+    "detailPath": "/sg/singapore/explore/rcr/3713edc2fa5c64d13ef4bae06eb71f5df7cee8807b9c09f4337ae7f51eb48769/",
+    "entityIds": [
+      "sg-singapore:project:3713edc2fa5c64d13ef4bae06eb71f5df7cee8807b9c09f4337ae7f51eb48769"
+    ],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 731,
+        "unit": "homes",
+        "sourceId": "poiz-mcc",
+        "basis": {
+          "ko": "전체 주거단지",
+          "en": "Whole residential development"
+        }
+      }
+    ],
+    "photo": null,
+    "segment": "RCR"
+  },
+  {
+    "reviewId": "sg-park-colonial",
+    "name": {
+      "ko": "파크 콜로니얼",
+      "en": "Park Colonial"
+    },
+    "area": {
+      "ko": "우들리 · D13",
+      "en": "Woodleigh · D13"
+    },
+    "address": "2–12 Woodleigh Lane, Singapore",
+    "detailPath": "/sg/singapore/explore/rcr/7b28eca965ac02710489e726c41de493ee9e76abeb2a43ce63c77d1ae7255145/",
+    "entityIds": [
+      "sg-singapore:project:7b28eca965ac02710489e726c41de493ee9e76abeb2a43ce63c77d1ae7255145"
+    ],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 805,
+        "unit": "homes",
+        "sourceId": "colonial",
+        "basis": {
+          "ko": "단지 전체 · 포털 개요",
+          "en": "Whole estate · portal profile"
+        }
+      }
+    ],
+    "photo": null,
+    "segment": "RCR"
+  },
+  {
+    "reviewId": "sg-treasure-at-tampines",
+    "name": {
+      "ko": "트레저 앳 탬피니스",
+      "en": "Treasure at Tampines"
+    },
+    "area": {
+      "ko": "탬피니스 · D18",
+      "en": "Tampines · D18"
+    },
+    "address": "Tampines Lane, Singapore",
+    "detailPath": "/sg/singapore/explore/ocr/75399f9b26e04660cdd1f9451976c82ebdfd856d6aa87c7bc9e969f57c1df9d4/",
+    "entityIds": [
+      "sg-singapore:project:75399f9b26e04660cdd1f9451976c82ebdfd856d6aa87c7bc9e969f57c1df9d4"
+    ],
+    "metrics": [
+      {
+        "label": {
+          "ko": "주거동",
+          "en": "Residential blocks"
+        },
+        "value": 29,
+        "unit": "buildings",
+        "sourceId": "treasure",
+        "basis": {
+          "ko": "개발사 전체 단지 개요",
+          "en": "Developer whole-estate outline"
+        }
+      }
+    ],
+    "photo": null,
+    "segment": "OCR"
+  },
+  {
+    "reviewId": "jp-park-tower-shinonome",
+    "name": {
+      "ko": "파크 타워 시노노메",
+      "en": "Park Tower Shinonome"
+    },
+    "area": {
+      "ko": "시노노메 · 고토구",
+      "en": "Shinonome · Koto"
+    },
+    "address": "1-9-4 Shinonome, Koto, Tokyo",
+    "detailPath": "/jp/tokyo/explore/properties/jp-park-tower-shinonome/",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 585,
+        "unit": "homes",
+        "sourceId": "shin-outline",
+        "basis": {
+          "ko": "단지 전체",
+          "en": "Whole building"
+        }
+      }
+    ],
+    "photo": null,
+    "wardCode": "13108"
+  },
+  {
+    "reviewId": "jp-branz-tower-shibaura",
+    "name": {
+      "ko": "브란즈 타워 시바우라",
+      "en": "Branz Tower Shibaura"
+    },
+    "area": {
+      "ko": "시바우라 · 미나토구",
+      "en": "Shibaura · Minato"
+    },
+    "address": "2-9-1 Shibaura, Minato, Tokyo",
+    "detailPath": "/jp/tokyo/explore/properties/jp-branz-tower-shibaura/",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 482,
+        "unit": "homes",
+        "sourceId": "branz-step",
+        "basis": {
+          "ko": "건물 전체",
+          "en": "Whole building"
+        }
+      }
+    ],
+    "photo": null,
+    "wardCode": "13103"
+  },
+  {
+    "reviewId": "jp-proud-tower-shinonome-canal-court",
+    "name": {
+      "ko": "프라우드 타워 시노노메 캐널 코트",
+      "en": "Proud Tower Shinonome Canal Court"
+    },
+    "area": {
+      "ko": "시노노메 캐널 코트 · 고토구",
+      "en": "Shinonome Canal Court · Koto"
+    },
+    "address": "1-9-50 Shinonome, Koto, Tokyo",
+    "detailPath": "/jp/tokyo/explore/properties/jp-proud-tower-shinonome-canal-court/",
+    "entityIds": [],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 600,
+        "unit": "homes",
+        "sourceId": "proud",
+        "basis": {
+          "ko": "건물 전체",
+          "en": "Whole building"
+        }
+      }
+    ],
+    "photo": null,
+    "wardCode": "13108"
+  },
+  {
+    "reviewId": "ae-park-ridge",
+    "name": {
+      "ko": "파크 리지",
+      "en": "Park Ridge"
+    },
+    "area": {
+      "ko": "두바이 힐스 에스테이트",
+      "en": "Dubai Hills Estate"
+    },
+    "address": "Park Ridge, Dubai Hills Estate, Dubai, UAE",
+    "detailPath": "/ae/dubai/explore/projects/ae-park-ridge/",
+    "entityIds": [],
+    "metrics": [],
+    "photo": null,
+    "projectId": null,
+    "areaSlug": "hadaeq-sheikh-mohammed-bin-rashid"
+  },
+  {
+    "reviewId": "ae-creek-horizon",
+    "name": {
+      "ko": "크릭 호라이즌",
+      "en": "Creek Horizon"
+    },
+    "area": {
+      "ko": "크릭 아일랜드 · 두바이 크릭 하버",
+      "en": "Creek Island · Dubai Creek Harbour"
+    },
+    "address": "Creek Horizon towers, Creek Island, Dubai Creek Harbour, Dubai, UAE",
+    "detailPath": "/ae/dubai/explore/projects/ae-creek-horizon/",
+    "entityIds": [],
+    "metrics": [],
+    "photo": null,
+    "projectId": null,
+    "areaSlug": "al-khairan-first"
+  },
+  {
+    "reviewId": "ae-creekside-18",
+    "name": {
+      "ko": "크릭사이드 18",
+      "en": "Creekside 18"
+    },
+    "area": {
+      "ko": "크릭 아일랜드 · 두바이 크릭 하버",
+      "en": "Creek Island · Dubai Creek Harbour"
+    },
+    "address": "Creekside 18 twin towers, Creek Island, Dubai Creek Harbour, Dubai, UAE",
+    "detailPath": "/ae/dubai/explore/projects/ae-creekside-18/",
+    "entityIds": [],
+    "metrics": [],
+    "photo": null,
+    "projectId": null,
+    "areaSlug": "al-khairan-first"
+  },
+  {
+    "reviewId": "kr-mokdong-new-town-7",
+    "name": {
+      "ko": "목동신시가지7단지",
+      "en": "Mokdong New Town Complex 7"
+    },
+    "area": {
+      "ko": "양천구 · 목동",
+      "en": "Mok-dong · Yangcheon-gu"
+    },
+    "address": "서울 양천구 목동로 212",
+    "detailPath": "/kr/seoul/explore/yangcheon-gu/yangcheon-gu-3s35mq/",
+    "entityIds": [
+      "kr-seoul:estate:yangcheon-gu-3s35mq"
+    ],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 2550,
+        "unit": "homes",
+        "sourceId": "kb",
+        "basis": {
+          "ko": "목동7단지 전체, 저층 부분만의 수치가 아님",
+          "en": "Whole Complex 7, not only its low-rise section"
+        }
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-raemian-oksu-riverzen",
+    "name": {
+      "ko": "래미안 옥수 리버젠",
+      "en": "Raemian Oksu Riverzen"
+    },
+    "area": {
+      "ko": "성동구 · 옥수동",
+      "en": "Oksu-dong · Seongdong-gu"
+    },
+    "address": "서울 성동구 매봉길 15",
+    "detailPath": "/kr/seoul/explore/seongdong-gu/seongdong-gu-1bjjqbm/",
+    "entityIds": [
+      "kr-seoul:estate:seongdong-gu-1bjjqbm"
+    ],
+    "metrics": [
+      {
+        "label": {
+          "ko": "세대수",
+          "en": "Homes"
+        },
+        "value": 1511,
+        "unit": "homes",
+        "sourceId": "kapt",
+        "basis": {
+          "ko": "매봉길15 K-apt A13375907 범위",
+          "en": "Maebong-gil 15, K-apt A13375907 scope"
+        }
+      }
+    ],
+    "photo": null
+  },
+  {
+    "reviewId": "kr-seoul-forest-riverview-xi",
+    "name": {
+      "ko": "서울숲리버뷰자이",
+      "en": "Seoul Forest Riverview Xi"
+    },
+    "area": {
+      "ko": "성동구 · 행당동",
+      "en": "Haengdang-dong · Seongdong-gu"
+    },
+    "address": "서울 성동구 고산자로2길 65",
+    "detailPath": "/kr/seoul/explore/seongdong-gu/seongdong-gu-1sucpru/",
+    "entityIds": [
+      "kr-seoul:estate:seongdong-gu-1sucpru"
+    ],
+    "metrics": [
+      {
+        "label": {
+          "ko": "전체 세대수",
+          "en": "Total homes"
+        },
+        "value": 1034,
+        "unit": "homes",
+        "sourceId": "kb",
+        "basis": {
+          "ko": "임대 포함 전체 단지, 거래 연결은 별도 임대단지와 구분",
+          "en": "Whole estate including rental homes; transaction links keep the separate rental entity distinct"
+        }
+      }
+    ],
+    "photo": null
   }
 ]

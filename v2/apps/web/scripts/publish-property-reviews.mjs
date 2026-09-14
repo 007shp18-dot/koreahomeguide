@@ -10,10 +10,15 @@ function canonicalJSON(value) {
   return JSON.stringify(value);
 }
 
-const reviews = ['seoul','singapore','dubai','tokyo'].flatMap(city => JSON.parse(readFileSync(new URL(`../content/property-reviews/${city}.json`,import.meta.url),'utf8'))).map(value => propertyReviewSchema.parse(value));
+const catalogue = ['seoul','singapore','dubai','tokyo'].flatMap(city => JSON.parse(readFileSync(new URL(`../content/property-reviews/${city}.json`,import.meta.url),'utf8'))).map(value => propertyReviewSchema.parse(value));
 const locations = JSON.parse(readFileSync(new URL('../content/property-reviews/locations.json', import.meta.url), 'utf8'));
-if (!reviews.length || reviews.length > 100 || new Set(reviews.map(r=>r.id)).size !== reviews.length) throw new Error('Expected 1–100 distinct reviewed properties');
-const prepared = reviews.map(review => {
+if (!catalogue.length || catalogue.length > 500 || new Set(catalogue.map(r=>r.id)).size !== catalogue.length) throw new Error('Expected 1–500 distinct reviewed properties');
+const onlyArgs = process.argv.filter(arg => arg.startsWith('--only='));
+if (onlyArgs.length > 1) throw new Error('Supply --only once');
+const selectedIds = onlyArgs.length ? onlyArgs[0].slice(7).split(',') : catalogue.map(review => review.id);
+if (!selectedIds.length || new Set(selectedIds).size !== selectedIds.length || selectedIds.some(id => !catalogue.some(review => review.id === id))) throw new Error('Expected distinct known review IDs in --only');
+// Validate the entire catalogue before selecting the records to append.
+const allPrepared = catalogue.map(review => {
   const location = locations.find(row => row.reviewId === review.id);
   if (!location || !location.detailPath.startsWith('/') || !Array.isArray(location.entityIds)) throw new Error(`Missing exact location: ${review.id}`);
   for (const metric of location.metrics) if (!Number.isFinite(metric.value) || metric.value < 0 || !review.sources.some(s => s.id === metric.sourceId)) throw new Error(`Unresolved visual metric: ${review.id} / ${metric.sourceId}`);
@@ -23,8 +28,10 @@ const prepared = reviews.map(review => {
   const profile = {id:review.id,market_id:review.marketId,name_ko:review.name.ko,canonical_name:review.name.en,area:review.area.en,headline:review.verdict.ko,checked_on:review.checkedOn,identity_note:location.address,publication_status:'published',linked_entity_ids:location.entityIds,facts:[],analysis:[],field_checks:points.filter(p=>p.status==='needs-check').map(p=>p.body.ko),review};
   return {review,location,profile,sources,datasetId:`${review.marketId}-property-context-20260913`};
 });
+const prepared = allPrepared.filter(item => selectedIds.includes(item.review.id));
+const reviews = prepared.map(item => item.review);
 if (process.argv.includes('--validate-only')) {
-  console.log(JSON.stringify({valid:reviews.length,points:reviews.reduce((n,r)=>n+r.strengths.length+r.tradeoffs.length+Object.values(r.sections).flat().length,0),photos:locations.filter(l=>l.photo).length}));
+  console.log(JSON.stringify({valid:reviews.length,catalogue:catalogue.length,points:reviews.reduce((n,r)=>n+r.strengths.length+r.tradeoffs.length+Object.values(r.sections).flat().length,0),photos:locations.filter(l=>l.photo).length}));
 } else {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required');
   const sql = neon(process.env.DATABASE_URL);
@@ -41,7 +48,7 @@ if (process.argv.includes('--validate-only')) {
       const old=rows.find(row=>row.business_key===item.review.id);
       if(old && (old.dataset_id!==item.datasetId || old.raw_metadata.profile.id!==item.review.id || old.raw_metadata.profile.market_id!==item.review.marketId))throw new Error(`Identity mismatch: ${item.review.id}`);
       // Version records instead of overwriting past research; preserve prior facts.
-      const metadata={...(old?.raw_metadata??{}),schema_version:'property-context-v1',profile:{...(old?.raw_metadata.profile??{}),...item.profile,facts:old?.raw_metadata.profile.facts??[],analysis:old?.raw_metadata.profile.analysis??[]},sources:{...(old?.raw_metadata.sources??{}),...item.sources},visuals:item.location,publication:{edition:'property-detail-reviews-20260913',scope:'Named residential properties; project group scope retained where applicable',sourceLinks:'Internal research provenance; external portal links omitted from the reading interface'}};
+      const metadata={...(old?.raw_metadata??{}),schema_version:'property-context-v1',profile:{...(old?.raw_metadata.profile??{}),...item.profile,facts:old?.raw_metadata.profile.facts??[],analysis:old?.raw_metadata.profile.analysis??[]},sources:{...(old?.raw_metadata.sources??{}),...item.sources},visuals:item.location,publication:{edition:'property-detail-reviews-20260914',scope:'Named residential properties; project group scope retained where applicable',sourceLinks:'Internal research provenance; external portal links omitted from the reading interface'}};
       metadata.methodology={...(metadata.methodology??{}),scope:`${reviews.length} named residential property reviews; exact buildings or explicitly scoped project groups. Land excluded.`,gaps:'Availability and verification gaps are stated per review point. Public footfall or retail sales retain the reporting asset and year; unknown values are not zero.'};
       const json=canonicalJSON(metadata);return {...item,json,hash:createHash('sha256').update(json).digest('hex')};
     });

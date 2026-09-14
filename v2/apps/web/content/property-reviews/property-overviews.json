@@ -2498,5 +2498,305 @@
         "zh-CN": "滨离宫须选择真正可进入的园门"
       }
     }
+  },
+  "sg-the-poiz-residences": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "MRT 연결통로와 아래층 상가가 편리한 단지. 차 없이 생활하기 좋은 구성이지만 동별 통행과 소음은 다릅니다.",
+      "en": "A station link and shops downstairs make daily errands easy. Activity and noise exposure vary by block.",
+      "zh-CN": "地铁通道与楼下商铺方便日常生活，各栋的人流与噪声条件不同。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "포통파시르 MRT 지하 연결",
+        "en": "Underground link to Potong Pasir MRT",
+        "zh-CN": "地下通道连接波东巴西地铁站"
+      },
+      "schools": {
+        "ko": "세인트앤드루스·시더 인근, 입학 자격 별도",
+        "en": "St. Andrew’s and Cedar nearby; admission conditions apply",
+        "zh-CN": "附近有St. Andrew’s及Cedar，入学另有条件"
+      },
+      "daily": {
+        "ko": "포이즈 센터에서 장보기·외식",
+        "en": "Groceries and dining at The Poiz Centre",
+        "zh-CN": "Poiz Centre可购物及用餐"
+      }
+    }
+  },
+  "sg-park-colonial": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "우들리 MRT·몰을 가까이 쓰는 생활형 단지. 스탬퍼드 아메리칸은 자녀의 캠퍼스에 따라 통학 편의가 달라집니다.",
+      "en": "Convenient for Woodleigh MRT and the mall. School convenience depends on which Stamford American campus your child attends.",
+      "zh-CN": "靠近Woodleigh地铁与商场；Stamford American的通学便利取决于孩子所在校区。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "우들리 MRT 인근, 동별 출입구 확인",
+        "en": "Near Woodleigh MRT; compare the route from each block",
+        "zh-CN": "靠近Woodleigh地铁，需比较各栋出入口路线"
+      },
+      "schools": {
+        "ko": "스탬퍼드 우들리 1~12학년, 유아는 별도 캠퍼스",
+        "en": "Stamford Woodleigh: Grades 1–12; early years elsewhere",
+        "zh-CN": "Woodleigh校区为1至12年级，幼儿另在其他校区"
+      },
+      "daily": {
+        "ko": "우들리 몰·비다다리 공원 생활권",
+        "en": "The Woodleigh Mall and Bidadari Park nearby",
+        "zh-CN": "生活圈内有Woodleigh Mall与Bidadari Park"
+      }
+    }
+  },
+  "sg-treasure-at-tampines": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "수영장·놀이시설과 동네 시장을 함께 쓰는 대단지. 역 접근과 단지 안 이동은 동별 차이가 큽니다.",
+      "en": "A large estate combining pools and play with a local market. Internal walks and station access vary by block.",
+      "zh-CN": "大社区结合泳池、游乐设施和邻近市场，内部步行与地铁路线因楼栋而异。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "시메이·탬피니스 방면 철도, 역까지 이동 필요",
+        "en": "Rail options around Simei and Tampines; allow for the station journey",
+        "zh-CN": "可利用Simei及Tampines一带地铁，需计入到站路程"
+      },
+      "schools": {
+        "ko": "준위안 프라이머리 후보, 주소별 입학 조건 확인",
+        "en": "Junyuan Primary is a local option; check address-specific admission",
+        "zh-CN": "可考察Junyuan Primary，需核对具体地址的入学条件"
+      },
+      "daily": {
+        "ko": "라운드 마켓·푸드센터와 단지 내 여가시설",
+        "en": "Round Market, food centre and on-site recreation",
+        "zh-CN": "Round Market、熟食中心与小区休闲设施"
+      }
+    }
+  },
+  "jp-park-tower-shinonome": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "공부방·도서 라운지·놀이공간이 돋보이는 타워. 린카이선과 유라쿠초선 중 출근 방향에 맞춰 고르기 좋습니다.",
+      "en": "A tower with useful study, reading and play spaces. Compare Rinkai and Yurakucho Line routes for your commute.",
+      "zh-CN": "拥有自习、阅读和游乐空间，可按通勤方向比较临海线与有乐町线。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "시노노메역 광고 도보 7분, 다쓰미역도 선택지",
+        "en": "Shinonome: advertised seven-minute walk; Tatsumi is another option",
+        "zh-CN": "至东云站广告步行7分钟，也可考虑辰巳站"
+      },
+      "schools": {
+        "ko": "2024년 기준 시노노메초 구역, 입주 연도 재확인",
+        "en": "Shinonome Elementary in the 2024 schedule; reconfirm entry year",
+        "zh-CN": "2024年属东云小学学区，需复核入学年份"
+      },
+      "daily": {
+        "ko": "건물 안 공부방·놀이공간·라운지",
+        "en": "On-site study, play areas and lounges",
+        "zh-CN": "楼内有自习室、游乐空间及休息厅"
+      }
+    }
+  },
+  "jp-branz-tower-shibaura": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "다마치·미타 접근과 운하 주변 생활을 함께 누리는 2021년 타워. 현재 초등 통학구역은 시바하마초입니다.",
+      "en": "A 2021 tower combining Tamachi and Mita access with canal-side neighbourhood life. The current primary catchment is Shibahama.",
+      "zh-CN": "2021年建塔楼，兼顾田町、三田交通与运河生活，现小学学区为芝滨小学。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "다마치·미타역 도보권, 이용 노선에 따라 경로 선택",
+        "en": "Walk to Tamachi or Mita, depending on the line you need",
+        "zh-CN": "可步行至田町或三田站，按所需线路选择路线"
+      },
+      "schools": {
+        "ko": "시바하마초 구역, 건물 내 보육원 입소 별도",
+        "en": "Shibahama catchment; on-site nursery admission is separate",
+        "zh-CN": "芝滨小学学区，楼内保育园另行申请"
+      },
+      "daily": {
+        "ko": "다마치 상권과 시바우라 운하 생활권",
+        "en": "Tamachi amenities and Shibaura’s canals",
+        "zh-CN": "田町商圈与芝浦运河生活圈"
+      }
+    }
+  },
+  "jp-proud-tower-shinonome-canal-court": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "이온 장보기와 공용 정원, 운하 생활이 가까운 타워. 역까지는 매일 걷는 거리를 감안해야 합니다.",
+      "en": "AEON, shared gardens and canal-side living close by, with a daily walk to the station.",
+      "zh-CN": "靠近AEON、公共花园和运河，日常仍需步行前往地铁站。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "도요스·다쓰미역 각각 광고 도보 11분",
+        "en": "Toyosu and Tatsumi: each advertised at 11 min on foot",
+        "zh-CN": "至丰洲、辰巳站各广告步行11分钟"
+      },
+      "schools": {
+        "ko": "2024년 시노노메초 구역, 입주 연도 재확인",
+        "en": "Shinonome Elementary in 2024; reconfirm entry year",
+        "zh-CN": "2024年为东云小学学区，需复核入学年份"
+      },
+      "daily": {
+        "ko": "이온 시노노메·카페 라운지·공용 정원",
+        "en": "AEON Shinonome, café lounge and shared gardens",
+        "zh-CN": "AEON东云、咖啡休息厅与公共花园"
+      }
+    }
+  },
+  "ae-park-ridge": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "공원 산책·아이들 놀이에 강점이 있는 단지. 출근과 통학은 차량·버스 경로가 맞아야 편합니다.",
+      "en": "A park-oriented estate suited to walks and children’s play. Work and school convenience depend on road and bus routes.",
+      "zh-CN": "以公园生活、散步和儿童活动见长，通勤上学便利取决于车辆及巴士路线。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "알카일 로드 접근, 현역 지하철까지 연결 교통 필요",
+        "en": "Al Khail Road access; onward transport needed for the metro",
+        "zh-CN": "可接Al Khail Road，搭地铁仍需接驳"
+      },
+      "schools": {
+        "ko": "GEMS 웰링턴 두바이 힐스 후보, 입학·통학 별도",
+        "en": "GEMS Wellington Dubai Hills is an option; admission and transport separate",
+        "zh-CN": "可考察GEMS Wellington Dubai Hills，入学与接送另行确认"
+      },
+      "daily": {
+        "ko": "두바이 힐스 파크·블러바드 카페·몰 생활권",
+        "en": "Dubai Hills Park, boulevard cafés and the wider mall area",
+        "zh-CN": "Dubai Hills Park、林荫道咖啡馆及商场生活圈"
+      }
+    }
+  },
+  "ae-creek-horizon": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "중앙공원과 마리나 산책을 즐기기 좋은 두 타워. 출퇴근과 학교는 별도 차량·버스 계획이 필요합니다.",
+      "en": "Two towers beside the central park, with marina walks nearby. Work and school need separate road or bus plans.",
+      "zh-CN": "双塔邻中央公园，可享码头散步，通勤和上学需另作车辆或巴士安排。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "현재 차량·버스 경로 기준으로 출근 비교",
+        "en": "Compare the current road or bus commute",
+        "zh-CN": "按当前车辆或巴士路线比较通勤"
+      },
+      "schools": {
+        "ko": "페스티벌 시티 학교는 차량 통학 검토",
+        "en": "Festival City schools require a transport plan",
+        "zh-CN": "前往Festival City学校需安排交通"
+      },
+      "daily": {
+        "ko": "중앙공원·마리나·실내 어린이 공간",
+        "en": "Central park, marina and indoor children’s space",
+        "zh-CN": "中央公园、码头及室内儿童空间"
+      }
+    }
+  },
+  "ae-creekside-18": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "수변 산책·단지 운동시설과 차량 승하차가 특징인 두 타워. 미래 상권·철도를 현재 편의로 보지는 않아야 합니다.",
+      "en": "Twin towers with waterfront walks, on-site exercise and a lobby-linked drop-off. Planned shops and rail are separate from current amenities.",
+      "zh-CN": "双塔兼顾水边散步、小区运动和连接大堂的下客区，规划商业及铁路需与现况分开。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "크릭 아일랜드 도로 접근, 현재 연결 교통 확인",
+        "en": "Creek Island road access; establish current onward transport",
+        "zh-CN": "可利用Creek Island道路，需确认现有接驳交通"
+      },
+      "schools": {
+        "ko": "데이라 인터내셔널 등은 차량 통학 계획 필요",
+        "en": "Schools such as Deira International need a transport plan",
+        "zh-CN": "如选择Deira International等学校，需安排接送"
+      },
+      "daily": {
+        "ko": "수영장·체육관·놀이공간과 크릭 산책",
+        "en": "Pool, gym, play spaces and creek walks",
+        "zh-CN": "泳池、健身房、儿童空间及溪畔散步"
+      }
+    }
+  },
+  "kr-mokdong-new-town-7": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "학교·학원과 5호선 생활권이 강점. 오래된 집의 수리 상태와 재건축 일정이 선택을 가릅니다.",
+      "en": "Schools, tutoring and Line 5 are the draw; renovation condition and redevelopment shape the choice.",
+      "zh-CN": "学校、补习和5号线生活圈是亮点，装修状况与重建进度影响选择。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "목동역 5호선, 동에 따라 역까지 경로 차이",
+        "en": "Mokdong Station, Line 5; access varies by block",
+        "zh-CN": "木洞站5号线，步行路线因楼栋而异"
+      },
+      "schools": {
+        "ko": "목동 학교·학원 생활권, 초등 배정은 주소별 확인",
+        "en": "Mokdong schools and tutoring; confirm primary catchment by address",
+        "zh-CN": "木洞学校及补习圈，小学分配需按地址确认"
+      },
+      "daily": {
+        "ko": "보행·녹지 공간과 자리 잡은 동네 상권",
+        "en": "Walking spaces, greenery and established local shops",
+        "zh-CN": "步行绿地空间与成熟社区商圈"
+      }
+    }
+  },
+  "kr-raemian-oksu-riverzen": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "3호선 출퇴근과 주변 녹지가 매력. 역·학교에서 집으로 돌아오는 경사를 먼저 보아야 합니다.",
+      "en": "Line 3 and nearby greenery are the appeal; assess the uphill route home from stations and schools.",
+      "zh-CN": "3号线通勤和周边绿地有吸引力，需先考虑从车站学校回家的坡路。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "금호역 3호선·옥수역 환승, 동별 오르막 차이",
+        "en": "Geumho Line 3 and Oksu interchange; slopes vary by block",
+        "zh-CN": "金湖站3号线及玉水换乘，坡路因楼栋而异"
+      },
+      "schools": {
+        "ko": "금옥초·옥정중 주변, 배정·교문 경로 확인",
+        "en": "Near Geumok Primary and Okjeong Middle; check placement and route",
+        "zh-CN": "邻近金玉小学、玉井中学，确认分配与校门路线"
+      },
+      "daily": {
+        "ko": "매봉산·달맞이봉공원과 주거지 중심 생활",
+        "en": "Maebongsan, Dalmaji-bong Park and a residential setting",
+        "zh-CN": "鹰峰山、迎月峰公园及住宅社区生活"
+      }
+    }
+  },
+  "kr-seoul-forest-riverview-xi": {
+    "checkedOn": "2026-09-14",
+    "impression": {
+      "ko": "왕십리 환승과 역 상권, 단지 안 가족 시설이 강점. 동별 역 접근과 실제 조망은 차이가 있습니다.",
+      "en": "Wangsimni rail options, station shopping and family amenities are the draw; access and views vary by block.",
+      "zh-CN": "王十里换乘、站区商圈和家庭设施是亮点，车站路线与景观因楼栋而异。"
+    },
+    "highlights": {
+      "transport": {
+        "ko": "왕십리 2·5호선·경의중앙·수인분당 환승 생활권",
+        "en": "Wangsimni: Lines 2/5, Gyeongui–Jungang and Suin–Bundang",
+        "zh-CN": "王十里2、5号线及京义中央、水仁盆唐换乘生活圈"
+      },
+      "schools": {
+        "ko": "행당초 주변·단지 어린이집, 배정·입소 별도 확인",
+        "en": "Near Haengdang Primary, with an on-site nursery; placement separate",
+        "zh-CN": "邻近杏堂小学、社区内幼儿园，分配与入园另行确认"
+      },
+      "daily": {
+        "ko": "왕십리 장보기·외식과 단지 놀이·운동 공간",
+        "en": "Wangsimni shopping and meals; on-site play and exercise",
+        "zh-CN": "王十里购物餐饮及社区游乐运动空间"
+      }
+    }
   }
 }

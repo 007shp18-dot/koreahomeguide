@@ -18,6 +18,7 @@ import styles from './tokyo-explorer.module.css';
 import { tokyoText, tokyoHref, type TokyoLocale } from './tokyo-copy';
 import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
 import { DiscoveryReading } from '../discovery/discovery-reading';
+import { NamedPropertyMatches } from '../market-ui/named-property-matches';
 import { AreaDecisionWorkspace } from '../market-ui/area-decision-workspace';
 import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
 
@@ -149,6 +150,7 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
       </div>}
         </div>}
         discovery={<>
+      <NamedPropertyMatches market="jp-tokyo" query={filters.q} locale={locale} />
       <div data-tokyo-area-directory="true"><Suspense fallback={<ExploreResultsLoading label={t('Loading area transactions…')} />}>
         <TokyoMapPanel view="directory" locale={locale} city={scope.city} year={scope.year} quarter={scope.quarter}
           filters={{ q: filters.q, neighbourhood: filters.neighbourhood, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />

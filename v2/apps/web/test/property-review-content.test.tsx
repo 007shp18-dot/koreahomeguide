@@ -6,7 +6,8 @@ import singapore from '../content/property-reviews/singapore.json';
 import dubai from '../content/property-reviews/dubai.json';
 import tokyo from '../content/property-reviews/tokyo.json';
 import { propertyReviewSchema } from '../lib/research/property-review';
-import { withPropertyEditorial } from '../lib/research/property-editorial';
+import baselines from '../content/property-reviews/property-prose-baselines.json';
+import { propertyEditorial, withPropertyEditorial } from '../lib/research/property-editorial';
 import { LivingContextCard } from '../components/market-ui/living-context';
 import { actualDetailHref } from '../lib/research/property-review-locations';
 import { propertyReviewMetadata } from '../lib/research/property-review-metadata';
@@ -26,9 +27,9 @@ it('renders every published review in English without leaking Korean body copy',
   }
 });
 
-it('revises all 100 reviews in both languages without changing evidence or its check date', () => {
+it('covers all 112 reviews in both languages without changing evidence or its check date', () => {
   const values = [...seoul, ...singapore, ...dubai, ...tokyo];
-  expect(values).toHaveLength(100);
+  expect(values).toHaveLength(112);
   for (const value of values) {
     const original = propertyReviewSchema.parse(value);
     const review = withPropertyEditorial(original);
@@ -37,8 +38,11 @@ it('revises all 100 reviews in both languages without changing evidence or its c
     expect(review.sources).toEqual(original.sources);
     for (const locale of ['en', 'ko'] as const) {
       expect(review.editorial?.paragraphs[locale].length).toBeGreaterThanOrEqual(3);
-      expect(review.verdict[locale]).not.toBe(original.verdict[locale]);
-      expect(review.summary[locale]).not.toBe(original.summary[locale]);
+      expect(review.verdict[locale]).toBe(propertyEditorial(review.id)?.headline[locale]);
+      if (original.id in baselines) {
+        expect(review.verdict[locale]).not.toBe(original.verdict[locale]);
+        expect(review.summary[locale]).not.toBe(original.summary[locale]);
+      }
       expect(review.editorial?.paragraphs[locale].join(' ')).not.toMatch(/운영 사례가 있다는 점이 구체적|각자 확인하는 후보/);
     }
   }

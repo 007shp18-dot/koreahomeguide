@@ -1348,5 +1348,107 @@
       "costs:0": "从2018年起算地契，再核实账单",
       "costs:1": "先看成交构成，再读每平方英尺单价"
     }
+  },
+  "sg-the-poiz-residences": {
+    "family": {
+      "ko": "학교 입학 조건이 맞는다면 장보기와 단지 놀이터를 함께 쓰기 편합니다. 가족형 평면과 상가 반대편 침실 배치도 비교해 보세요.",
+      "en": "If school eligibility works, groceries and on-site play fit easily into family life. Compare family layouts and bedroom positions relative to the shops.",
+      "zh-CN": "入学条件合适时，购物和小区游乐设施很方便；还需比较家庭户型与卧室朝向。"
+    },
+    "couple": {
+      "ko": "매일 MRT를 타고 퇴근길에 저녁을 해결하는 생활에 잘 맞습니다. 집에서 역 연결통로까지의 실제 길을 기준으로 동을 고르세요.",
+      "en": "A good fit for taking the train and picking up dinner on the way home. Choose the block around the actual route to the station link.",
+      "zh-CN": "适合每天坐地铁、回家途中解决晚餐的生活，选楼栋时注意到地铁通道的路线。"
+    },
+    "investor": {
+      "ko": "역과 상가의 편리함은 분명하지만 소형·가족형 임대 수요를 한꺼번에 계산할 수는 없습니다. 같은 평면의 거래와 실제 보유비부터 맞춰 보세요.",
+      "en": "Station and retail access are useful, but compact and family units serve different tenants. Start with matched layouts and actual ownership costs.",
+      "zh-CN": "地铁和商铺便利，但小户型与家庭户型租客不同，应先匹配户型成交和持有费用。"
+    }
+  },
+  "sg-park-colonial": {
+    "family": {
+      "ko": "스탬퍼드 우들리 캠퍼스에 다니는 가족에게 위치의 이유가 분명합니다. 유아 자녀라면 추안 레인까지의 이동을 먼저 계산해 보세요.",
+      "en": "The location has a clear purpose for families at Stamford’s Woodleigh campus. For younger children, plan the Chuan Lane journey first.",
+      "zh-CN": "适合就读Stamford Woodleigh校区的家庭；幼儿则需先考虑前往Chuan Lane的路线。"
+    },
+    "couple": {
+      "ko": "역·몰·공원을 자주 쓴다면 주중과 주말 모두 편리합니다. 도로 쪽보다 침실이 편안한 방향을 고르면 입지의 장점을 오래 누리기 좋습니다.",
+      "en": "Trains, shops and park walks can serve both weekdays and weekends. Give bedroom orientation as much attention as station proximity.",
+      "zh-CN": "地铁、购物和公园兼顾平日与周末，卧室朝向与距车站远近同样重要。"
+    },
+    "investor": {
+      "ko": "국제학교가 가깝다는 이유만으로 모든 평형의 임대 수요가 같지는 않습니다. 자녀 학년과 맞는 가족형 평면, 임차권 잔여 기간, 실제 관리비를 함께 보세요.",
+      "en": "School proximity does not create equal rental demand for every layout. Compare family floor plans, the remaining lease and actual management charges.",
+      "zh-CN": "靠近国际学校并不代表每种户型租赁需求相同，应比较家庭户型、剩余租期和管理费。"
+    }
+  },
+  "sg-treasure-at-tampines": {
+    "family": {
+      "ko": "수영과 단지 놀이시설을 자주 쓸 가족에게 잘 맞습니다. 학교와 출입구에서 먼 동이라면 매일 걷는 거리가 장점을 줄일 수 있습니다.",
+      "en": "A good fit for families who use pools and play areas regularly. A block far from the relevant exit or school route can make daily life less convenient.",
+      "zh-CN": "适合常用泳池和游乐设施的家庭，但远离出入口或上学路线的楼栋可能增加日常负担。"
+    },
+    "couple": {
+      "ko": "집 주변에서 운동하고 시장에서 식사하는 생활에 어울립니다. 도심 출근이 잦다면 역에 도착하기 전 이동부터 비교하세요.",
+      "en": "Suited to exercising near home and eating at the market. For frequent city commutes, compare the trip to the station first.",
+      "zh-CN": "适合在家附近运动和到市场用餐，常进城通勤应先比较到地铁站的路程。"
+    },
+    "investor": {
+      "ko": "많은 세대수 자체가 임대 수요나 싼 관리비를 보장하지는 않습니다. 같은 평면과 동 위치의 거래·공실·실제 비용으로 비교 범위를 좁히세요.",
+      "en": "The number of homes does not guarantee tenants or low fees. Narrow the comparison to matched layouts and positions, actual vacancies and ownership costs.",
+      "zh-CN": "户数多不保证租客或低管理费，应匹配户型与楼栋位置，并核实空置和实际费用。"
+    }
+  },
+  "kr-mokdong-new-town-7": {
+    "family": {
+      "ko": "학교와 학원을 오가는 일정이 많은 가족에게 어울립니다. 배정학교와 역에 모두 편한 동을 고르는 것이 핵심입니다.",
+      "en": "Suited to families with regular school and tutoring trips. Choose a block that fits the school placement and the station route.",
+      "zh-CN": "适合经常往返学校和补习班的家庭，应兼顾学校分配和车站路线。"
+    },
+    "couple": {
+      "ko": "5호선 출퇴근이 맞고 신축 시설보다 동네 편의를 중시한다면 후보가 됩니다. 수리 상태와 계단 이용 여부가 중요합니다.",
+      "en": "A candidate if Line 5 works for both commutes and neighbourhood convenience matters more than new amenities. Condition and stair access deserve attention.",
+      "zh-CN": "适合5号线通勤、重视社区便利的夫妻，留意装修与楼梯条件。"
+    },
+    "investor": {
+      "ko": "재건축 기대와 지금의 임대 수입을 분리해서 보아야 합니다. 이주 시기·추가 분담금·집수리 비용은 아직 세대별로 풀어야 할 문제입니다.",
+      "en": "Separate redevelopment expectations from current rental income. Relocation timing, contributions and refurbishment need a property-specific assessment.",
+      "zh-CN": "应区分重建预期和现有租金，另看搬迁、分担金及装修成本。"
+    }
+  },
+  "kr-raemian-oksu-riverzen": {
+    "family": {
+      "ko": "녹지와 주변 학교가 매력적입니다. 유모차·아이의 등하교에 오르막이 부담 없는 동을 고르는 것이 우선입니다.",
+      "en": "Greenery and nearby schools appeal to families. Prioritise a block whose slopes work for school trips and pushchairs.",
+      "zh-CN": "绿地与周边学校适合家庭，先选坡路适合接送及婴儿车的楼栋。"
+    },
+    "couple": {
+      "ko": "두 사람의 출근지가 3호선에 맞으면 편리합니다. 금호역과 옥수역 중 실제 자주 쓸 역을 기준으로 동을 비교하세요.",
+      "en": "Useful when both commutes fit Line 3. Compare blocks around whichever station, Geumho or Oksu, you will actually use most.",
+      "zh-CN": "两人的通勤都适合3号线时较便利，按常用的金湖或玉水站选择楼栋。"
+    },
+    "investor": {
+      "ko": "역 접근과 경사, 층·조망에 따라 세대의 매력이 달라집니다. 별도 임대단지와 섞지 말고 같은 단지·면적으로 거래를 비교하세요.",
+      "en": "Station access, slope, floor and outlook differentiate homes. Compare matched estate and floor-area records without mixing in the separate rental development.",
+      "zh-CN": "车站路线、坡度、楼层景观影响吸引力，成交比较勿混入独立租赁小区。"
+    }
+  },
+  "kr-seoul-forest-riverview-xi": {
+    "family": {
+      "ko": "어린이집과 놀이공간을 가까이 두려는 가족에게 후보가 됩니다. 행당초 배정과 교문 경로, 어린이집 입소 조건을 먼저 맞추세요.",
+      "en": "A candidate for families wanting a nursery and play spaces nearby. Establish primary placement, the school-gate route and nursery admission first.",
+      "zh-CN": "适合希望幼儿园与游乐空间近的家庭，先确认小学分配、路线与入园条件。"
+    },
+    "couple": {
+      "ko": "출근 노선이 서로 다를 때 왕십리 환승이 장점입니다. 집에서 각자의 승강장까지 이동하는 경로로 동을 비교하세요.",
+      "en": "Wangsimni is useful when commutes use different lines. Compare blocks using each person’s full route from home to platform.",
+      "zh-CN": "两人通勤线路不同时王十里换乘较有利，应按家门到站台的完整路线选楼栋。"
+    },
+    "investor": {
+      "ko": "역 접근·조망·철도 방향에 따라 같은 단지 안에서도 조건이 다릅니다. 별도 임대 거래를 섞지 말고 같은 면적의 사례부터 비교하세요.",
+      "en": "Station access, outlook and railway orientation vary within the estate. Start with matched floor-area records and keep separate rental-estate records distinct.",
+      "zh-CN": "车站路线、景观及铁路朝向有差异，应匹配面积并区分独立租赁房源记录。"
+    }
   }
 }

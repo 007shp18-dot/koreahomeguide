@@ -173,5 +173,59 @@
       "ko":["텐즈힐 1단지는 센트라스보다 좋거나 나쁜 축소판이 아니다. 청계천을 자주 이용할 가구와 상왕십리역 접근을 우선하는 가구가 다른 선택을 할 수 있는 비교다. 이 차이를 생략한 평당가 순위는 매수 이유를 설명하지 못한다.","1단지는 무학로 33의 주거 범위다. 2단지 거래를 섞지 않고, 같은 면적에서도 역으로 향하는 출입구와 수리 상태를 맞춰야 가격 차이를 읽을 수 있다. 초등학교 이후의 통학 역시 현재의 생활권 소개와 별도로 남는다.","센트라스의 역 접근에 붙은 추가 금액이 나에게 필요하지 않다면 텐즈힐을 살펴볼 여지가 생긴다. 반대로 매일 통근에서 불편을 감수해야 한다면 낮은 가격만으로 싼 집이라고 결론내릴 수 없다."],
       "en":["Tenz Hill Phase 1 is not a smaller verdict on Centras. It is a different choice for a household using Cheonggyecheon frequently rather than prioritising Sangwangsimni station. A price-per-area ranking that omits this difference cannot explain the purchase.","Keep the scope at 33 Muhak-ro and exclude Phase 2 sales. Even within Phase 1, align the station exit route and refurbishment. School journeys beyond primary years also require a separate place in the decision.","If the extra money attached to Centras’s station access buys little for the household, Tenz Hill deserves consideration. If it means accepting a difficult daily commute, a lower price alone does not establish better value."]
     }
+  },
+  "kr-mokdong-new-town-7": {
+    "headline": {
+      "ko": "학교·학원과 목동역 생활권이 강점인 오래된 대단지",
+      "en": "An established estate for Mokdong schools, tutoring and Line 5"
+    },
+    "paragraphs": {
+      "ko": [
+        "목동7단지는 학교와 학원, 지하철을 한 생활권 안에서 쓰고 싶은 가족에게 어울립니다. 낮은 동과 높은 동이 섞인 오래된 대단지라, 새 아파트의 시설보다는 동네가 갖춘 편의와 동 주변 공간이 매력입니다.",
+        "출퇴근은 5호선 목동역을 중심으로 생각하면 됩니다. 다만 단지 안에서도 역과 학교에 가까운 동이 서로 다를 수 있습니다. 아이가 다닐 학교의 배정과 학원 위치를 먼저 정하면 집을 고를 범위가 훨씬 분명해집니다.",
+        "집을 고를 때는 수리 상태와 재건축 일정을 함께 보아야 합니다. 지금 편하게 살 수 있는 집인지, 앞으로 얼마 동안 거주할지에 따라 적당한 수리비와 계약 조건도 달라집니다."
+      ],
+      "en": [
+        "Mokdong Complex 7 suits families who want schools, tutoring and the subway within one familiar neighbourhood. Its mix of lower and taller blocks offers an established setting, with appeal centred on the neighbourhood and the spaces around the buildings.",
+        "Mokdong Station on Line 5 anchors the commute. The most convenient block for the station may differ from the one nearest the school. Establishing school placement and the tutoring locations you need helps narrow the search.",
+        "The apartment’s condition and the redevelopment timeline both matter. How comfortably you can live there now, and how long you expect to stay, will shape the sensible renovation budget and contract terms."
+      ]
+    }
+  },
+  "kr-raemian-oksu-riverzen": {
+    "headline": {
+      "ko": "3호선과 녹지가 가까운 옥수의 언덕 위 대단지",
+      "en": "A hillside Oksu estate with Line 3 and greenery nearby"
+    },
+    "paragraphs": {
+      "ko": [
+        "래미안 옥수 리버젠은 도심·강남으로 오가는 교통과 주거지의 녹지를 함께 원하는 사람에게 어울립니다. 금호역·옥수역 생활권에 있으면서 매봉산과 주변 공원을 가까이 두는 집입니다.",
+        "이 단지를 고를 때 가장 체감하기 쉬운 차이는 경사입니다. 출근할 때 내려가는 길과 저녁에 집으로 올라오는 길은 느낌이 다를 수 있습니다. 어린 자녀나 유모차가 있다면 역보다 학교·장보기 경로가 더 중요한 기준이 되기도 합니다.",
+        "금옥초·옥정중 등 주변 학교를 살펴볼 수 있지만 배정은 계약할 주소로 확인해야 합니다. 서울숲리버뷰자이와 비교한다면 3호선 중심의 언덕 생활권과 왕십리 환승 생활권 중 어느 쪽이 가족 일정에 맞는지가 핵심입니다."
+      ],
+      "en": [
+        "Raemian Oksu Riverzen suits people who want rail access towards central Seoul and Gangnam alongside a greener residential setting. Geumho and Oksu serve the area, with Maebongsan and local parks nearby.",
+        "The slope is one of the most tangible factors here. Walking downhill to work and uphill home can feel quite different. With young children or a pushchair, school and shopping routes may matter as much as the station.",
+        "Nearby schools include Geumok Primary and Okjeong Middle, with placement to be checked for the contracted address. Compared with Seoul Forest Riverview Xi, the key choice is between a hillside Line 3 setting and access to Wangsimni’s interchange."
+      ]
+    }
+  },
+  "kr-seoul-forest-riverview-xi": {
+    "headline": {
+      "ko": "왕십리 환승과 가족 생활공간을 함께 보는 행당동 대단지",
+      "en": "A Haengdang estate combining Wangsimni access with family amenities"
+    },
+    "paragraphs": {
+      "ko": [
+        "서울숲리버뷰자이는 가족의 출근 방향이 제각각일 때 살펴보기 좋은 단지입니다. 왕십리의 환승 노선과 역 상권을 활용하면서, 단지 안에서는 놀이터와 어린이집 등 가족 생활공간을 이용하는 모습이 잘 맞습니다.",
+        "학교는 행당초 등 주변 학교를 기준으로 교문까지의 길과 배정을 함께 확인하면 됩니다. 어린 자녀가 있다면 단지 안 어린이집의 입소 조건도 중요한 선택 기준입니다. 역까지 걸어가는 시간은 동 위치와 이용할 노선에 따라 달라집니다.",
+        "이름만으로 서울숲이 집 앞에 있거나 모든 세대에서 강이 보인다고 생각하면 실제 집과 차이가 생길 수 있습니다. 리버젠과 비교할 때는 조망 사진보다 먼저 왕십리 중심 생활과 3호선 중심 생활 중 어느 쪽이 내 하루에 맞는지 보세요."
+      ],
+      "en": [
+        "Seoul Forest Riverview Xi is worth considering when household members commute in different directions. Wangsimni provides rail options and shopping, while the estate has family spaces such as play areas and a nursery.",
+        "For schools such as nearby Haengdang Primary, consider the route to the gate alongside address-based placement. Families with younger children will also care about the on-site nursery’s admission arrangements. Station access varies with the block and line used.",
+        "The name can create expectations of a park at the door or a river view from every apartment that the individual home may not meet. Against Oksu Riverzen, first decide whether a Wangsimni-based routine or a Line 3 routine fits your day."
+      ]
+    }
   }
 }

@@ -19,7 +19,7 @@ export async function loadLivingContexts({ entity = null, profile = null }: { en
       WHERE raw_metadata->'profile'->>'publication_status' = 'published'
         AND (${entity}::text IS NULL OR raw_metadata->'profile'->'linked_entity_ids' ? ${entity}::text)
       ORDER BY business_key
-      LIMIT 100`;
+      LIMIT 500`;
     return { status: 'ready', profiles: rows.map(row => projectLivingContext(row.raw_metadata)).filter((row): row is LivingContext => row !== null)
       .map(row => row.review ? { ...row, review: withPropertyEditorial(row.review) } : row) };
   } catch {

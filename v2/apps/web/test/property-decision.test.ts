@@ -16,7 +16,7 @@ const evidencePoint = (review: PropertyReview, item: DecisionItem) => {
 
 describe('property decisions preserve the boundary between evidence and interpretation', () => {
   it('keeps every priority tied to its exact profile evidence, without inventing numerical ratings', () => {
-    expect(reviews).toHaveLength(100);
+    expect(reviews).toHaveLength(112);
     for (const review of reviews) {
       const before = JSON.stringify(review);
       const sourceIds = new Set(review.sources.map(source => source.id));
@@ -84,6 +84,13 @@ describe('property decisions preserve the boundary between evidence and interpre
     const riche = getPropertyDecision(byId('kr-banpo-riche'), 'family', 'ko');
     expect(riche.priorities.some(item => /서원|원촌/.test(item.body))).toBe(true);
     expect(riche.priorities.map(item => item.title)).not.toEqual(shibuya.priorities.map(item => item.title));
+  });
+
+  it('keeps shared corridor spaces tied to access rather than parking questions', () => {
+    for (const persona of DECISION_PERSONAS) {
+      const branz = getPropertyDecision(byId('jp-branz-tower-shibaura'), persona, 'en');
+      expect(branz.checklist.some(item => /parking|car registration/i.test(item.title))).toBe(false);
+    }
   });
 
   it('provides genuinely Chinese authored summaries and controls without an unlabelled English paragraph fallback', () => {

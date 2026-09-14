@@ -7315,5 +7315,843 @@
         }
       }
     ]
+  },
+  {
+    "id": "kr-mokdong-new-town-7",
+    "marketId": "kr-seoul",
+    "name": {
+      "ko": "목동신시가지7단지",
+      "en": "Mokdong New Town Complex 7"
+    },
+    "area": {
+      "ko": "양천구 · 목동",
+      "en": "Mok-dong · Yangcheon-gu"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "학교·학원과 목동역 생활권이 강점인 오래된 대단지",
+      "en": "An established estate for Mokdong schools, tutoring and Line 5"
+    },
+    "summary": {
+      "ko": "목동7단지는 학교와 학원, 지하철을 한 생활권 안에서 쓰고 싶은 가족에게 어울립니다. 낮은 동과 높은 동이 섞인 오래된 대단지라, 새 아파트의 시설보다는 동네가 갖춘 편의와 동 주변 공간이 매력입니다.",
+      "en": "Mokdong Complex 7 suits families who want schools, tutoring and the subway within one familiar neighbourhood. Its mix of lower and taller blocks offers an established setting, with appeal centred on the neighbourhood and the spaces around the buildings."
+    },
+    "bestFor": {
+      "ko": "학교와 학원을 오가는 일정이 많은 가족에게 어울립니다. 배정학교와 역에 모두 편한 동을 고르는 것이 핵심입니다.",
+      "en": "Suited to families with regular school and tutoring trips. Choose a block that fits the school placement and the station route."
+    },
+    "holdFor": {
+      "ko": "1986년에 지어진 단지여서 수리 이력에 따른 차이가 큽니다. 창호·배관·욕실 상태와 엘리베이터 이용 여부를 매물별로 보아야 합니다.",
+      "en": "Built in 1986, the estate has homes with different renovation histories. Windows, plumbing, bathrooms and lift access matter at the individual apartment level."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "목동역과 오래 자리 잡은 생활권",
+          "en": "Mokdong Station and an established neighbourhood"
+        },
+        "body": {
+          "ko": "5호선 목동역을 이용하면서 목동의 학교·학원 생활권을 함께 누릴 수 있는 단지입니다. 교육과 대중교통을 모두 중요하게 보는 가족에게 어울립니다.",
+          "en": "The estate combines access to Line 5 at Mokdong with the neighbourhood’s schools and tutoring centres. It suits households balancing education with a rail commute."
+        },
+        "sourceIds": [
+          "portal"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "낮은 동과 높은 동이 섞인 단지",
+          "en": "A mix of lower and taller blocks"
+        },
+        "body": {
+          "ko": "5층 저층동과 더 높은 동이 함께 있습니다. 같은 단지라도 층수와 동 사이 공간에 따라 집에서 느끼는 분위기가 달라집니다.",
+          "en": "Five-storey blocks sit alongside taller buildings. Height and the space between blocks give homes within the same estate different settings."
+        },
+        "sourceIds": [
+          "lowrise",
+          "portal"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "집 안 상태가 선택을 가릅니다",
+          "en": "The apartment’s condition matters"
+        },
+        "body": {
+          "ko": "1986년에 지어진 단지여서 수리 이력에 따른 차이가 큽니다. 창호·배관·욕실 상태와 엘리베이터 이용 여부를 매물별로 보아야 합니다.",
+          "en": "Built in 1986, the estate has homes with different renovation histories. Windows, plumbing, bathrooms and lift access matter at the individual apartment level."
+        },
+        "sourceIds": [
+          "kb"
+        ],
+        "status": "needs-check"
+      },
+      {
+        "title": {
+          "ko": "재건축과 거주 일정",
+          "en": "Redevelopment affects the planning horizon"
+        },
+        "body": {
+          "ko": "재건축 절차가 진행 중입니다. 오래 거주할 집을 찾는다면 예상 보유기간과 향후 이사 가능성까지 함께 생각해야 합니다.",
+          "en": "Redevelopment is progressing. For a long-term home, consider the intended length of stay and the possibility of a later move."
+        },
+        "sourceIds": [
+          "renewal"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "목동역 5호선",
+            "en": "Line 5 at Mokdong"
+          },
+          "body": {
+            "ko": "목동역을 중심으로 여의도·도심 방면 출퇴근을 생각할 수 있습니다. 단지가 커서 역에 가까운 동과 안쪽 동의 출발 지점은 다릅니다.",
+            "en": "Line 5 provides a route towards Yeouido and central Seoul. In this large estate, the walk starts in a different place for station-side and inner blocks."
+          },
+          "sourceIds": [
+            "portal"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "차량 출입 방향",
+            "en": "Driving routes around the estate"
+          },
+          "body": {
+            "ko": "목동의 일방통행 도로는 진입 방향에 따라 돌아가는 길이 생길 수 있습니다. 지도상 거리보다 집 주차장으로 들어오는 경로가 중요합니다.",
+            "en": "Mokdong’s one-way streets can add a loop depending on your approach. The route into the parking area matters more than straight-line distance."
+          },
+          "sourceIds": [
+            "roads"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "학교와 학원이 함께 있는 생활권",
+            "en": "Schools and tutoring in the same area"
+          },
+          "body": {
+            "ko": "목운중 등 주변 학교와 목동 학원가를 함께 살펴보기 좋은 위치입니다. 방과후 이동이 잦은 가족이라면 실제 다닐 학원 위치까지 맞춰 보세요.",
+            "en": "Nearby schools include Mokun Middle, alongside Mokdong’s tutoring area. Families with frequent after-school trips should compare the centres they would actually use."
+          },
+          "sourceIds": [
+            "portal"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "초등 배정은 동·주소별로",
+            "en": "Primary placement needs the exact address"
+          },
+          "body": {
+            "ko": "목동7단지라는 이름만으로 특정 초등학교 배정을 단정할 수는 없습니다. 계약할 동과 주소로 해당 연도 통학구역을 확인해야 합니다.",
+            "en": "The estate name alone does not establish a particular primary-school place. Use the block and full address to check the catchment for the entry year."
+          },
+          "sourceIds": [
+            "portal"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "신도시 계획의 보행 공간",
+            "en": "Walking spaces in a planned neighbourhood"
+          },
+          "body": {
+            "ko": "목동은 보행 공간과 녹지를 주거단지에 연결한 계획도시입니다. 집 가까이 걷는 시간을 중요하게 여긴다면 동 주변 길과 쉼터를 함께 둘러보세요.",
+            "en": "Mokdong was planned with walking spaces and greenery linked to its housing estates. The paths and places to pause around a particular block are part of its appeal."
+          },
+          "sourceIds": [
+            "roads"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "신축 시설보다 동네 편의",
+            "en": "Neighbourhood convenience over new-build extras"
+          },
+          "body": {
+            "ko": "이곳의 매력은 새 커뮤니티 시설보다 이미 자리 잡은 목동 생활권에 가깝습니다. 장보기·식사·학원 이동을 집 주변에서 묶는 생활에 잘 맞습니다.",
+            "en": "The appeal lies more in the established neighbourhood than in new-build shared facilities. It suits a routine organised around local shopping, meals and tutoring."
+          },
+          "sourceIds": [
+            "portal"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "수리 범위부터 정하기",
+            "en": "Decide how much work the home needs"
+          },
+          "body": {
+            "ko": "같은 면적이라도 수리된 집과 손볼 곳이 많은 집의 실질 비용은 다릅니다. 계약금액에 입주 전 필요한 공사비를 더해 비교하세요.",
+            "en": "Renovated and unrenovated homes of the same size can carry different total costs. Add necessary work before comparing the purchase or rental terms."
+          },
+          "sourceIds": [
+            "kb"
+          ],
+          "status": "needs-check"
+        },
+        {
+          "title": {
+            "ko": "미래 분담금은 확정 수익이 아닙니다",
+            "en": "Future contributions remain a cost question"
+          },
+          "body": {
+            "ko": "환경영향평가 초안 공람이 진행된다고 이주 시점이나 최종 분담금이 확정되는 것은 아닙니다. 향후 비용을 낙관적인 한 숫자로 고정하지 마세요.",
+            "en": "Consultation on a draft environmental assessment does not settle relocation timing or final owner contributions. Avoid fixing future costs at one optimistic figure."
+          },
+          "sourceIds": [
+            "renewal"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "래미안 옥수 리버젠",
+          "en": "Raemian Oksu Riverzen"
+        },
+        "reason": {
+          "ko": "목동 교육 생활권과 3호선·옥수 주거환경을 비교할 수 있습니다.",
+          "en": "Compare Mokdong’s education setting with Line 3 and Oksu’s residential environment."
+        },
+        "condition": {
+          "ko": "같은 가격대라는 의미는 아닙니다. 출근지와 면적을 맞춰 보세요.",
+          "en": "Not a claim of equal pricing; match work destinations and floor area."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "portal",
+        "title": "Hogangnono — Mokdong New Town Complex 7",
+        "url": "https://hogangnono.com/apt/V42c",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "단지·매물·주변 학교 및 교통. 개별 광고의 통학 배정과 도보시간은 전체 단지에 일반화하지 않음.",
+          "en": "Estate, listings and surrounding schools/transport; individual listing catchment and walk claims are not generalised."
+        }
+      },
+      {
+        "id": "kb",
+        "title": "KB Land — Mokdong Complex 7",
+        "url": "https://www.kbland.kr/c/338097?ctype=01&xy=37.5288329%2C126.867856%2C17",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "2,550세대·1986년 전체 단지 범위. 매도 호가나 추정 시세는 사용하지 않음.",
+          "en": "Whole estate: 2,550 homes, 1986. Asking prices and estimates are not reused."
+        }
+      },
+      {
+        "id": "lowrise",
+        "title": "R114 — Mokdong Complex 7 low-rise section",
+        "url": "https://r114.com/prop/A01191580500065",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "5층 저층 부분의 물리적 구성. 480세대는 전체 단지 세대수가 아님.",
+          "en": "Five-storey section; its 480 homes are not the whole-estate count."
+        }
+      },
+      {
+        "id": "roads",
+        "title": "Yangcheon Archives — Mokdong new-town design",
+        "url": "https://archives.yangcheon.go.kr/mokdong-history/ch3-newtown-features.html",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "보행·녹지·일방통행의 계획 배경. 현재 교통량이나 소음 측정이 아님.",
+          "en": "Planning background for walks, greenery and one-way roads; not a current traffic/noise measurement."
+        }
+      },
+      {
+        "id": "renewal",
+        "title": "Yangcheon — Complex 7 draft environmental assessment consultation",
+        "url": "https://www.yangcheon.go.kr/site/yangcheon/ex/seol/seolContentDeailView.do?not_ancmt_mgt_no=47908",
+        "checkedOn": "2026-09-14",
+        "publishedOn": "2026-09-02",
+        "kind": "official",
+        "note": {
+          "ko": "2026-09-02 공고. 초안 주민공람 9월 2일~10월 2일. 최종 승인·이주일·분담금 확정 자료가 아님.",
+          "en": "Notice dated 2 September 2026; draft consultation 2 September–2 October. Not final approval, relocation timing or confirmed contributions."
+        }
+      }
+    ]
+  },
+  {
+    "id": "kr-raemian-oksu-riverzen",
+    "marketId": "kr-seoul",
+    "name": {
+      "ko": "래미안 옥수 리버젠",
+      "en": "Raemian Oksu Riverzen"
+    },
+    "area": {
+      "ko": "성동구 · 옥수동",
+      "en": "Oksu-dong · Seongdong-gu"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "3호선과 녹지가 가까운 옥수의 언덕 위 대단지",
+      "en": "A hillside Oksu estate with Line 3 and greenery nearby"
+    },
+    "summary": {
+      "ko": "래미안 옥수 리버젠은 도심·강남으로 오가는 교통과 주거지의 녹지를 함께 원하는 사람에게 어울립니다. 금호역·옥수역 생활권에 있으면서 매봉산과 주변 공원을 가까이 두는 집입니다.",
+      "en": "Raemian Oksu Riverzen suits people who want rail access towards central Seoul and Gangnam alongside a greener residential setting. Geumho and Oksu serve the area, with Maebongsan and local parks nearby."
+    },
+    "bestFor": {
+      "ko": "녹지와 주변 학교가 매력적입니다. 유모차·아이의 등하교에 오르막이 부담 없는 동을 고르는 것이 우선입니다.",
+      "en": "Greenery and nearby schools appeal to families. Prioritise a block whose slopes work for school trips and pushchairs."
+    },
+    "holdFor": {
+      "ko": "경사진 지형에 자리한 단지입니다. 역에서 집으로 돌아올 때의 오르막은 유모차·장보기·어르신 이동에 영향을 줍니다.",
+      "en": "The estate occupies sloping ground. The uphill return from the station matters with a pushchair, groceries or reduced mobility."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "3호선과 옥수 생활권",
+          "en": "Line 3 and the Oksu neighbourhood"
+        },
+        "body": {
+          "ko": "금호역과 옥수역을 생활권으로 쓰는 대단지입니다. 도심과 강남을 오가는 3호선 경로가 맞는 사람에게 위치의 장점이 분명합니다.",
+          "en": "This large estate uses the Geumho and Oksu station area. Its location is particularly useful when Line 3 fits journeys between central Seoul and Gangnam."
+        },
+        "sourceIds": [
+          "setting"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "산책할 녹지가 있는 동네",
+          "en": "Green space for a walk"
+        },
+        "body": {
+          "ko": "매봉산과 달맞이봉공원이 주변에 있습니다. 쇼핑 중심지의 분주함보다 주거지와 녹지가 섞인 환경을 선호한다면 어울립니다.",
+          "en": "Maebongsan and Dalmaji-bong Park are nearby. The setting suits people who prefer a mix of housing and greenery to a busy shopping district."
+        },
+        "sourceIds": [
+          "kapt",
+          "setting"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "집으로 돌아오는 오르막",
+          "en": "The uphill journey home"
+        },
+        "body": {
+          "ko": "경사진 지형에 자리한 단지입니다. 역에서 집으로 돌아올 때의 오르막은 유모차·장보기·어르신 이동에 영향을 줍니다.",
+          "en": "The estate occupies sloping ground. The uphill return from the station matters with a pushchair, groceries or reduced mobility."
+        },
+        "sourceIds": [
+          "walk"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "옥수역과 금호역 사이의 선택",
+          "en": "Choosing between Oksu and Geumho"
+        },
+        "body": {
+          "ko": "단지 이름만 보고 옥수역이 모든 동에 가장 가깝다고 생각하기 쉽습니다. 실제 동 위치와 목적지에 따라 금호역 경로가 더 잘 맞을 수 있습니다.",
+          "en": "The Oksu name does not make Oksu Station the best route for every block. Geumho may fit better depending on the home and destination."
+        },
+        "sourceIds": [
+          "setting",
+          "portal"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "금호역 3호선",
+            "en": "Geumho on Line 3"
+          },
+          "body": {
+            "ko": "금호역을 통해 도심·압구정 방향으로 이동할 수 있습니다. 역 입구뿐 아니라 단지 안에서 집까지 이어지는 경사를 포함해 비교하세요.",
+            "en": "Geumho offers Line 3 towards central Seoul and Apgujeong. Include the slope from the station through the estate to the apartment."
+          },
+          "sourceIds": [
+            "setting"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "옥수역 환승 선택지",
+            "en": "Interchange at Oksu"
+          },
+          "body": {
+            "ko": "옥수역에서는 3호선과 경의중앙선을 이용할 수 있습니다. 동별 접근 경로가 다르므로 두 역을 모두 같은 도보시간으로 볼 수는 없습니다.",
+            "en": "Oksu provides Line 3 and the Gyeongui–Jungang Line. Routes vary across the estate, so the two stations should not be assigned one shared walking time."
+          },
+          "sourceIds": [
+            "setting"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "금옥초·옥정중 주변 생활권",
+            "en": "Near Geumok Primary and Okjeong Middle"
+          },
+          "body": {
+            "ko": "주변 학교로 금옥초와 옥정중을 살펴볼 수 있습니다. 역세권 여부뿐 아니라 집에서 교문으로 가는 길을 함께 보는 것이 좋습니다.",
+            "en": "Nearby schools include Geumok Primary and Okjeong Middle. The route from home to the school gate deserves as much attention as station access."
+          },
+          "sourceIds": [
+            "portal"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "경사를 포함한 통학로",
+            "en": "School routes include slopes"
+          },
+          "body": {
+            "ko": "어린 자녀가 있다면 횡단보도와 오르막을 포함해 등하교 길을 걸어 보세요. 가까운 학교가 해당 주소의 배정학교인지도 별도로 확인해야 합니다.",
+            "en": "For younger children, walk the crossings and slopes on the school route. Confirm separately whether the nearby school is assigned to the actual address."
+          },
+          "sourceIds": [
+            "walk",
+            "portal"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "매봉산 주변의 주거환경",
+            "en": "A residential setting near Maebongsan"
+          },
+          "body": {
+            "ko": "산과 공원이 가까워 집 주변에서 걷는 시간을 갖기 좋은 입지입니다. 공원 쪽 길과 역 쪽 길 중 어느 쪽을 자주 쓸지에 따라 동 선택이 달라집니다.",
+            "en": "Nearby hills and parks offer places to walk locally. Block choice depends partly on whether the park route or station route will matter more often."
+          },
+          "sourceIds": [
+            "setting"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "단지 규모보다 출입구 위치",
+            "en": "The entrance matters within a large estate"
+          },
+          "body": {
+            "ko": "여러 동으로 이뤄진 단지여서 주소 하나로 생활 동선을 설명하기 어렵습니다. 장보기와 택시 승하차를 자주 할 출입구에 맞춰 집을 비교하세요.",
+            "en": "With multiple blocks, one estate address cannot capture every daily route. Compare homes around the entrance you would use for shopping and taxi pickup."
+          },
+          "sourceIds": [
+            "kapt"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "개별난방과 세대별 사용량",
+            "en": "Individual heating and household use"
+          },
+          "body": {
+            "ko": "개별난방 단지입니다. 겨울 부담은 공용 관리비와 집 안 난방 사용량을 나눠 보아야 세대 간 비교가 쉬워집니다.",
+            "en": "Homes use individual heating. Separate shared management charges from household heating consumption when comparing winter bills."
+          },
+          "sourceIds": [
+            "kapt"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "조망과 수리 상태의 가격 차이",
+            "en": "Price differences for outlook and condition"
+          },
+          "body": {
+            "ko": "같은 리버젠이라도 층·방향·수리 상태가 다릅니다. 한강을 본다는 설명은 해당 집의 실제 전망으로 확인해야 합니다.",
+            "en": "Floor, orientation and renovation vary across Riverzen. Any river-view claim needs to match the outlook from that particular apartment."
+          },
+          "sourceIds": [
+            "portal"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "서울숲리버뷰자이",
+          "en": "Seoul Forest Riverview Xi"
+        },
+        "reason": {
+          "ko": "3호선 중심과 왕십리 환승 중심 생활을 비교할 수 있습니다.",
+          "en": "Compare a Line 3 routine with Wangsimni interchange access."
+        },
+        "condition": {
+          "ko": "학교·면적·예산을 맞춰야 실질적인 대안이 됩니다.",
+          "en": "Match schools, floor area and budget before treating it as an alternative."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "kapt",
+        "title": "K-apt — Raemian Oksu Riverzen A13375907",
+        "url": "https://www.k-apt.go.kr/",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "official",
+        "note": {
+          "ko": "2026-09-04 수집된 K-apt 건물정보 A13375907: 매봉길15, 1,511세대·15개동·개별난방. 별도 임대단지 및 개발 전체 1,821세대와 구분.",
+          "en": "K-apt snapshot 4 September 2026, A13375907: Maebong-gil 15, 1,511 homes, 15 blocks, individual heating. Separate from the rental estate and 1,821-home development total."
+        }
+      },
+      {
+        "id": "setting",
+        "title": "Etoday — Oksu Riverzen location and building facts",
+        "url": "https://www.etoday.co.kr/news/view/1801037",
+        "checkedOn": "2026-09-14",
+        "publishedOn": "2019-09-21",
+        "kind": "editorial",
+        "note": {
+          "ko": "2019년 기사에서 준공·물리적 입지에 한정해 참고. 경매 가격·광고 도보시간·당시 학교 배정은 현재 정보로 사용하지 않음.",
+          "en": "2019 article used for completion and physical setting only. Auction prices, advertised walks and historic school placement are not current evidence."
+        }
+      },
+      {
+        "id": "walk",
+        "title": "Apartment walk — Oksu Riverzen",
+        "url": "https://sin50apart.tistory.com/363",
+        "checkedOn": "2026-09-14",
+        "publishedOn": "2019-05-14",
+        "kind": "public-review",
+        "note": {
+          "ko": "2019년 현장 글의 경사·역 접근 지형만 참고. 현재 시설 운영·가격 근거로 사용하지 않음.",
+          "en": "2019 site account used for slopes and station approach only; not current amenity operation or pricing."
+        }
+      },
+      {
+        "id": "portal",
+        "title": "Zippoom — Raemian Oksu Riverzen",
+        "url": "https://zippoom.com/부동산/서울-성동구-옥수동-래미안옥수리버젠아파트/opa84s",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "주소와 주변 금옥초·옥정중. 포털별 동수 차이는 K-apt 범위로 정리하고, 광고 도보시간 및 배정 확정은 제외.",
+          "en": "Address and nearby Geumok/Okjeong schools. Building-count differences resolved to K-apt scope; advertised walks and guaranteed placement excluded."
+        }
+      }
+    ]
+  },
+  {
+    "id": "kr-seoul-forest-riverview-xi",
+    "marketId": "kr-seoul",
+    "name": {
+      "ko": "서울숲리버뷰자이",
+      "en": "Seoul Forest Riverview Xi"
+    },
+    "area": {
+      "ko": "성동구 · 행당동",
+      "en": "Haengdang-dong · Seongdong-gu"
+    },
+    "checkedOn": "2026-09-14",
+    "verdict": {
+      "ko": "왕십리 환승과 가족 생활공간을 함께 보는 행당동 대단지",
+      "en": "A Haengdang estate combining Wangsimni access with family amenities"
+    },
+    "summary": {
+      "ko": "서울숲리버뷰자이는 가족의 출근 방향이 제각각일 때 살펴보기 좋은 단지입니다. 왕십리의 환승 노선과 역 상권을 활용하면서, 단지 안에서는 놀이터와 어린이집 등 가족 생활공간을 이용하는 모습이 잘 맞습니다.",
+      "en": "Seoul Forest Riverview Xi is worth considering when household members commute in different directions. Wangsimni provides rail options and shopping, while the estate has family spaces such as play areas and a nursery."
+    },
+    "bestFor": {
+      "ko": "어린이집과 놀이공간을 가까이 두려는 가족에게 후보가 됩니다. 행당초 배정과 교문 경로, 어린이집 입소 조건을 먼저 맞추세요.",
+      "en": "A candidate for families wanting a nursery and play spaces nearby. Establish primary placement, the school-gate route and nursery admission first."
+    },
+    "holdFor": {
+      "ko": "왕십리역을 걸어 이용할 수 있지만 어느 출입구·노선을 쓰는지에 따라 실제 출근 경로가 달라집니다. 모든 동을 초역세권으로 묶기는 어렵습니다.",
+      "en": "Wangsimni is within walking reach, but the entrance and rail line change the full commute. Blocks should not all be treated as immediately beside the station."
+    },
+    "strengths": [
+      {
+        "title": {
+          "ko": "왕십리 환승 생활권",
+          "en": "Access to Wangsimni interchange"
+        },
+        "body": {
+          "ko": "왕십리역의 여러 노선을 활용할 수 있어 가족의 출근 방향이 달라도 경로를 짜기 좋습니다. 역 상권을 함께 쓰는 생활이 어울립니다.",
+          "en": "Wangsimni’s multiple lines offer options when household members commute in different directions. The station’s shops can also form part of the daily routine."
+        },
+        "sourceIds": [
+          "rail",
+          "kb"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "대단지의 내부 생활공간",
+          "en": "Shared spaces within a large estate"
+        },
+        "body": {
+          "ko": "놀이터·어린이집·운동 공간이 있는 대단지입니다. 어린 자녀와 가까운 곳에서 시간을 보내려는 가족이 살펴볼 만합니다.",
+          "en": "Play areas, a nursery and exercise spaces serve this large estate. It is a candidate for families who want activities close to home."
+        },
+        "sourceIds": [
+          "kb"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "tradeoffs": [
+      {
+        "title": {
+          "ko": "역 입구까지와 승강장까지",
+          "en": "The journey continues inside the station"
+        },
+        "body": {
+          "ko": "왕십리역을 걸어 이용할 수 있지만 어느 출입구·노선을 쓰는지에 따라 실제 출근 경로가 달라집니다. 모든 동을 초역세권으로 묶기는 어렵습니다.",
+          "en": "Wangsimni is within walking reach, but the entrance and rail line change the full commute. Blocks should not all be treated as immediately beside the station."
+        },
+        "sourceIds": [
+          "rail"
+        ],
+        "status": "interpretation"
+      },
+      {
+        "title": {
+          "ko": "단지 이름과 실제 조망",
+          "en": "The name does not promise the view"
+        },
+        "body": {
+          "ko": "서울숲리버뷰라는 이름이 모든 집의 한강 조망이나 공원 바로 앞 입지를 뜻하지는 않습니다. 층과 방향, 앞 건물의 영향을 함께 보아야 합니다.",
+          "en": "The Riverview name does not guarantee a river view or a park-front position for every home. Floor, orientation and neighbouring buildings determine the outlook."
+        },
+        "sourceIds": [
+          "kb"
+        ],
+        "status": "interpretation"
+      }
+    ],
+    "sections": {
+      "transport": [
+        {
+          "title": {
+            "ko": "여러 출근 방향을 받는 왕십리",
+            "en": "Wangsimni serves several commute directions"
+          },
+          "body": {
+            "ko": "왕십리역은 2·5호선과 경의중앙·수인분당선의 환승 거점입니다. 부부의 일터가 다른 노선에 있어도 비교할 경로가 많습니다.",
+            "en": "Wangsimni links Lines 2 and 5 with the Gyeongui–Jungang and Suin–Bundang lines. It offers several route options for couples working on different lines."
+          },
+          "sourceIds": [
+            "rail",
+            "kb"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "철도 가까운 동은 소리도 확인",
+            "en": "Listen at homes facing the railway"
+          },
+          "body": {
+            "ko": "철도와 도로 쪽을 향한 집을 본다면 창을 열었을 때와 닫았을 때를 모두 확인하세요. 가까운 교통시설의 영향은 동·층마다 다릅니다.",
+            "en": "For homes facing rail or road infrastructure, listen with windows open and closed. The effect varies by block and floor."
+          },
+          "sourceIds": [
+            "kb"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "schools": [
+        {
+          "title": {
+            "ko": "행당초 주변 학교 생활권",
+            "en": "The area around Haengdang Primary"
+          },
+          "body": {
+            "ko": "행당초 등 주변 학교를 살펴볼 수 있는 위치입니다. 지도에 표시된 가까운 학교와 실제 배정학교는 구분해야 합니다.",
+            "en": "Haengdang Primary is among the nearby schools to consider. A nearby school on a map should be distinguished from the one assigned to the address."
+          },
+          "sourceIds": [
+            "school"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "어린이집은 단지 안에도",
+            "en": "A nursery within the estate"
+          },
+          "body": {
+            "ko": "단지 안 어린이집이 있어 영유아 가족이 살펴볼 선택지가 있습니다. 입소 가능 연령과 대기·운영시간은 이사 시점에 맞춰 확인하세요.",
+            "en": "An on-site nursery is an option for families with young children. Check ages, waiting lists and operating hours for the intended move date."
+          },
+          "sourceIds": [
+            "school",
+            "kb"
+          ],
+          "status": "needs-check"
+        }
+      ],
+      "daily": [
+        {
+          "title": {
+            "ko": "왕십리에서 장보기와 외식",
+            "en": "Shopping and meals around Wangsimni"
+          },
+          "body": {
+            "ko": "왕십리역 상권을 이용하면 장보기·외식·문화생활을 함께 묶기 좋습니다. 출퇴근 길에 어느 출입구를 쓰는지가 실제 편의를 좌우합니다.",
+            "en": "The station area brings shopping, meals and entertainment together. Convenience depends partly on the entrance used during the commute."
+          },
+          "sourceIds": [
+            "kb"
+          ],
+          "status": "interpretation"
+        },
+        {
+          "title": {
+            "ko": "집 가까운 놀이·운동 공간",
+            "en": "Play and exercise close to home"
+          },
+          "body": {
+            "ko": "단지 내부 놀이터와 운동 공간은 짧게 밖에 나갔다 돌아오는 생활에 유용합니다. 큰 공원 나들이와 집 앞의 일상 활동을 나눠 생각하면 편합니다.",
+            "en": "Internal play and exercise spaces are useful for short trips outdoors. Distinguish everyday activity close to the apartment from a longer park outing."
+          },
+          "sourceIds": [
+            "kb"
+          ],
+          "status": "interpretation"
+        }
+      ],
+      "costs": [
+        {
+          "title": {
+            "ko": "개별난방과 공용 관리비",
+            "en": "Individual heating and shared charges"
+          },
+          "body": {
+            "ko": "개별난방 단지입니다. 관리비 비교에는 공용비와 세대 사용료를 나누고, 유료 커뮤니티 이용료도 포함해야 합니다.",
+            "en": "The estate uses individual heating. Separate shared charges from household consumption, then include any paid amenity use."
+          },
+          "sourceIds": [
+            "kb"
+          ],
+          "status": "documented"
+        },
+        {
+          "title": {
+            "ko": "조망보다 먼저 같은 면적 비교",
+            "en": "Match floor area before comparing views"
+          },
+          "body": {
+            "ko": "수변 조망에 더 내는 금액을 보려면 같은 전용면적·층의 집부터 비교해야 합니다. 다른 평형의 호가 차이를 조망 가치로만 읽기 어렵습니다.",
+            "en": "To assess a waterfront-view premium, start with comparable internal area and floors. Asking-price differences across layouts cannot be attributed to views alone."
+          },
+          "sourceIds": [
+            "kb"
+          ],
+          "status": "needs-check"
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "name": {
+          "ko": "래미안 옥수 리버젠",
+          "en": "Raemian Oksu Riverzen"
+        },
+        "reason": {
+          "ko": "왕십리 환승과 금호·옥수 3호선 생활권을 비교할 수 있습니다.",
+          "en": "Compare Wangsimni interchange with Geumho/Oksu on Line 3."
+        },
+        "condition": {
+          "ko": "같은 예산이라는 의미는 아닙니다. 출근지와 학교를 먼저 맞추세요.",
+          "en": "Not necessarily the same budget; align work destinations and schools first."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "kb",
+        "title": "KB Land — Seoul Forest Riverview Xi",
+        "url": "https://kbland.kr/se/c/31867",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "전체 1,034세대(임대 포함)·7개동·2018년·개별난방 및 사진의 시설 구성. 주차 수치가 같은 페이지에서도 달라 미사용.",
+          "en": "Whole estate: 1,034 homes including rental units, seven blocks, 2018, individual heating and photographed amenities. Conflicting parking totals on the page are not reused."
+        }
+      },
+      {
+        "id": "school",
+        "title": "Hogangnono — Seoul Forest Riverview Xi",
+        "url": "https://hogangnono.com/apt/aIMc0",
+        "checkedOn": "2026-09-14",
+        "publishedOn": null,
+        "kind": "portal",
+        "note": {
+          "ko": "주변 행당초와 단지 어린이집. 포털의 도보 추정·입소 및 배정 보장은 사용하지 않음.",
+          "en": "Nearby Haengdang Primary and the on-site nursery; portal walk estimates and guaranteed placement/admission are not used."
+        }
+      },
+      {
+        "id": "rail",
+        "title": "GS project coverage — Wangsimni interchange setting",
+        "url": "https://cbiz.chosun.com/svc/bulletin/bulletin_art.html?contid=2015102802599",
+        "checkedOn": "2026-09-14",
+        "publishedOn": "2015-10-29",
+        "kind": "editorial",
+        "note": {
+          "ko": "2015년 GS건설 제공 자료의 물리적 입지·역 노선. 옛 분당선 표기는 현 수인분당선 명칭으로 표기; 당시 분양 조건은 미사용.",
+          "en": "2015 GS project material for physical location and station lines. Historic Bundang terminology updated to Suin–Bundang; launch terms excluded."
+        }
+      }
+    ]
   }
 ]
