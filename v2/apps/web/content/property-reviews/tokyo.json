@@ -8096,8 +8096,8 @@
             "en": "An on-site nursery with separate admission"
           },
           "body": {
-            "ko": "태양의 아이 시바우라 2초메 보육원은 이 건물 2층 주소로 등록되어 있습니다. 가까운 보육시설의 장점은 있지만 입소 가능 여부는 별도 절차로 확인해야 합니다.",
-            "en": "Taiyo no Ko Shibaura Nichome nursery is listed on the building’s second floor. That is convenient, but a place remains subject to the separate admissions process."
+            "ko": "태양의 아이 시바우라 2초메 보육원이 건물 2층에 있습니다. 보육원 출입구는 주거 출입구 반대편이며, 입소 가능 여부는 별도 확인이 필요합니다.",
+            "en": "Taiyo no Ko Shibaura Nichome nursery occupies the second floor, with its entrance on the opposite side from the residential entrance. Admission needs to be arranged separately."
           },
           "sourceIds": [
             "nursery"
@@ -8122,7 +8122,7 @@
         },
         {
           "title": {
-            "ko": "집 안 복도와 공용부",
+            "ko": "실내 복도와 현관까지의 동선",
             "en": "Indoor corridors and shared spaces"
           },
           "body": {
@@ -8152,7 +8152,7 @@
         },
         {
           "title": {
-            "ko": "관리비와 수선적립금의 앞으로",
+            "ko": "관리비와 수선적립금, 인상 계획까지",
             "en": "Look beyond today’s monthly charges"
           },
           "body": {
@@ -8221,14 +8221,14 @@
       },
       {
         "id": "nursery",
-        "title": "Minato City Board of Education — nursery list",
-        "url": "https://www.city.minato.tokyo.jp/documents/145233/r6dai2kaiteireikaisiryou1.pdf",
+        "title": "HITOWA Kids Life — Taiyo no Ko Shibaura Nichome",
+        "url": "https://www.kidslife-nursery.com/facility/tokyo/minato/shibaura2/",
         "checkedOn": "2026-09-14",
-        "publishedOn": "2024-02-14",
+        "publishedOn": null,
         "kind": "official",
         "note": {
-          "ko": "2024년 자료의 시바우라 2-9-1, 브란즈 타워 2층 보육원 주소. 현재 공석·입소는 별도.",
-          "en": "2024 listing of nursery at 2-9-1 Shibaura, Branz Tower second floor; current vacancies and admission separate."
+          "ko": "현재 운영처의 2층 주소와 주거 출입구 반대편 보육원 출입구. 공석·입소 확정이나 단지 거주자 우선권은 의미하지 않음.",
+          "en": "Current operator page confirms the second-floor address and entrance opposite the residential entrance. No vacancy, admission or resident priority is assumed."
         }
       }
     ]

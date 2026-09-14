@@ -2608,9 +2608,9 @@
     },
     "highlights": {
       "transport": {
-        "ko": "다마치 8분·미타 9분 광고 도보",
-        "en": "Advertised walks: Tamachi 8 min, Mita 9 min",
-        "zh-CN": "广告步行：田町8分钟、三田9分钟"
+        "ko": "다마치·미타역 도보권, 이용 노선에 따라 경로 선택",
+        "en": "Walk to Tamachi or Mita, depending on the line you need",
+        "zh-CN": "可步行至田町或三田站，按所需线路选择路线"
       },
       "schools": {
         "ko": "시바하마초 구역, 건물 내 보육원 입소 별도",

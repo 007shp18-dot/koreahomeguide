@@ -86,6 +86,13 @@ describe('property decisions preserve the boundary between evidence and interpre
     expect(riche.priorities.map(item => item.title)).not.toEqual(shibuya.priorities.map(item => item.title));
   });
 
+  it('keeps shared corridor spaces tied to access rather than parking questions', () => {
+    for (const persona of DECISION_PERSONAS) {
+      const branz = getPropertyDecision(byId('jp-branz-tower-shibaura'), persona, 'en');
+      expect(branz.checklist.some(item => /parking|car registration/i.test(item.title))).toBe(false);
+    }
+  });
+
   it('provides genuinely Chinese authored summaries and controls without an unlabelled English paragraph fallback', () => {
     for (const review of reviews) {
       for (const persona of DECISION_PERSONAS) {

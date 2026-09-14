@@ -46,7 +46,7 @@ function topicFor(point: ReviewPoint, section: Section): DecisionTopic {
   if (/handover|delivery|progress|target|cash schedule|instalment|deposit|funding|2028|2029|construction/.test(title)) return 'handover';
   if (/lease|tenure|land right|demolition|rights/.test(title)) return 'tenure';
   if (/flood|hazard|seismic|isolation|backup|storm|structural|emergency/.test(title)) return 'hazard';
-  if (/parking|spaces|car registration|mechanical parking/.test(title)) return 'parking';
+  if (/parking|car spaces|vehicle spaces|car registration/.test(title)) return 'parking';
   if (/noise|acoustic|expressway|road exposure|windows open|rail-facing/.test(title)) return 'noise';
   if (/window|glazing|outlook|view|façade|orientation|bay premium/.test(title) && section !== 'costs') return 'view';
   if (/repair|defect|reserve|maintenance|equipment|renewal|renovation|interior condition|boiler|refurbishment|current condition|current running/.test(title)) return 'repair';
@@ -62,7 +62,7 @@ function topicFor(point: ReviewPoint, section: Section): DecisionTopic {
     return 'transit';
   }
   if (/grocer|retail|mall|shop|store|errand|pharmacy|hospital|healthcare|atre|supermarket|lincos|daiei|bunkado/.test(title)) return 'retail';
-  if (/walk|route|access|station|entrance|gate|passage|stairs|slope/.test(title)) return 'entrance';
+  if (/walk|route|access|station|entrance|gate|passage|corridor|stairs|slope/.test(title)) return 'entrance';
   if (section === 'costs') return 'fees';
   return 'amenities';
 }
