@@ -173,8 +173,9 @@ function compactDistrictMetric(label: string | null, locale: ProductLocale): str
   const value = Number(match[1]!.replaceAll(',', ''));
   if (!Number.isFinite(value)) return label;
   if (locale === 'ko') {
-    const eok = value / 100_000_000;
-    return `₩${eok >= 10 ? eok.toFixed(1) : eok.toFixed(2)}억`;
+    if (value < 10_000) return `${value.toLocaleString('ko-KR')}원`;
+    if (value < 100_000_000) return `${(value / 10_000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}만 원`;
+    return `${(value / 100_000_000).toLocaleString('ko-KR', { maximumFractionDigits: 2 })}억 원`;
   }
   if (locale === 'zh-CN') return value >= 100_000_000 ? `₩${(value / 100_000_000).toFixed(2)}亿` : `₩${(value / 10_000).toFixed(1)}万`;
   if (value >= 1_000_000_000) return `₩${(value / 1_000_000_000).toFixed(2)}B`;
@@ -957,7 +958,7 @@ function ReadyAreaExplorer({
         <span className={styles.visuallyHidden} data-building-inventory={model.coverage.buildings.status === 'ready' ? 'observed' : 'unavailable'}>{model.coverage.buildings.status === 'ready' ? model.coverage.buildings.observed : '—'}</span>
       </div>
 
-      <RecentPlaces market="seoul" locale={locale} excludeKey={selectedBuilding ? `${selected.slug}/${selectedBuilding.id}` : undefined} />
+      <div className={styles.recentHistory}><RecentPlaces market="seoul" locale={locale} excludeKey={selectedBuilding ? `${selected.slug}/${selectedBuilding.id}` : undefined} /></div>
       <header className={styles.resultBar} data-explorer-region="summary">
 
         <strong className={styles.resultCount}>{mapDrilledToDistrict || citySearch

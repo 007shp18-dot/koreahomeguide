@@ -1,14 +1,15 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { RecentTransactionPlot, SizeCohortResearch } from '../components/market-ui/transaction-research';
+import { RecentTransactionSummary, SizeCohortResearch } from '../components/market-ui/transaction-research';
 
 describe('monthly detail research units', () => {
   it.each([['en', '/month'], ['ko', '/월']] as const)('labels monthly chart values and existing size medians in %s', (locale, unit) => {
-    const plot = renderToStaticMarkup(<RecentTransactionPlot locale={locale} periodUnit="month"
+    const plot = renderToStaticMarkup(<RecentTransactionSummary locale={locale} periodUnit="month"
       rows={[{ filedMonth: '2026-01', areaSqm: 50, primaryWon: 300_000, primaryLabel: '₩300,000' }]} />);
-    expect(plot).toContain(`${locale === 'ko' ? '원' : 'KRW'} ${unit}</text>`);
-    expect(plot).toContain(`${locale === 'ko' ? '30만' : '300K'}</text>`);
-    expect(plot).toContain(`₩300,000 ${unit}</title>`);
+    expect(plot).toContain('2026-01');
+    expect(plot).toContain(unit);
+    expect(plot).toContain(locale === 'ko' ? '30만 원' : '300,000');
+    expect(plot).not.toContain('<svg');
     const table = renderToStaticMarkup(<SizeCohortResearch locale={locale} currency="KRW" periodUnit="month"
       rows={[{ group: 'monthly', size: 'Under 60 m²', count: 5, median: 300_000 }]} />);
     expect(table).toContain(`300,000 ${unit}`);

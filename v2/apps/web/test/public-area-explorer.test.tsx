@@ -663,3 +663,14 @@ it('shows selected building identity on the map without price labels', () => {
   expect(summary).toContain(building.name);
   expect(summary).not.toContain(building.medianLabel);
 });
+
+it('keeps Korean monthly rents readable without rounding them to zero eok', () => {
+  const model = readyModel();
+  const markup = renderToStaticMarkup(createElement(AreaExplorer, {
+    model: { ...model, districts: model.districts.map(district => ({ ...district, medianLabel: '₩430,000' })) },
+    locale: 'ko',
+    naverMapClientId: 'test',
+  }));
+  expect(markup).toContain('43만 원');
+  expect(markup).not.toContain('₩0.00억');
+});

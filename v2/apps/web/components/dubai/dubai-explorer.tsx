@@ -84,6 +84,7 @@ function CuratedDubaiExplorer({ locale = 'en',
     selected: selected === item.id,
   })), [areas, selected]);
   return <div className={styles.explorer}><MarketExploreShell locale={locale}
+    history={<RecentPlaces market="dubai" locale={locale} />}
     eyebrow={t("Dubai")}
     title={t("Explore")}
     period={t("Area research")}

@@ -5,7 +5,7 @@ import { seoulBuildingLocationHref } from '../../lib/public-market/seoul-buildin
 import { buildingDisplayName, neighborhoodDisplayName } from '../../lib/public-market/seoul-display-names';
 import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
-import { RecentTransactionPlot, SizeCohortResearch } from '../market-ui/transaction-research';
+import { RecentTransactionSummary, SizeCohortResearch } from '../market-ui/transaction-research';
 import { DetailTools } from '../market-ui/detail-tools';
 import detailStyles from '../market-ui/detail-layout.module.css';
 import { PassportLink as Link } from '../passport/passport-journey';
@@ -394,7 +394,7 @@ export function KoreaEvidenceBuildingDetail({
           </div>
           {model.evidence.primaryMetric === 'monthly-rent' ? <p>{locale === 'ko' ? '월세와 반환 보증금을 별도로 표시합니다.' : locale === 'zh-CN' ? '月租与可退还押金分别显示。' : 'Monthly rent and refundable deposits are shown separately.'}</p> : null}
 
-          <RecentTransactionPlot rows={model.recentTransactions} locale={locale} periodUnit={model.evidence.primaryMetric === 'monthly-rent' ? 'month' : undefined} />
+          <RecentTransactionSummary rows={model.recentTransactions} locale={locale} periodUnit={model.evidence.primaryMetric === 'monthly-rent' ? 'month' : undefined} />
 
           <div id="building-transactions" className={styles.sectionHeading} data-detail-order="history"><p>{locale === 'ko' ? '실제 신고 거래' : locale === 'zh-CN' ? '实际申报合同' : 'Reported contracts'}</p><h2>{locale === 'ko' ? '선택한 면적대의 최근 실거래' : locale === 'zh-CN' ? '符合当前筛选条件的近期合同' : 'Recent contracts matching these filters'}</h2></div>
           {model.recentTransactions.length === 0 ? (

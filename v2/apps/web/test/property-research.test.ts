@@ -2,9 +2,23 @@ import { describe, expect, it } from 'vitest';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MonthlyTransactionResearch } from '../components/market-ui/transaction-research';
-import { buildMonthlyResearch, buildProjectMonthlyResearch, calculatePropertyScenario, summarizeSizeCohorts, selectResearchPeriod } from '../lib/research/property-research';
+import { monthlyPriceSegments, buildMonthlyResearch, buildProjectMonthlyResearch, calculatePropertyScenario, summarizeSizeCohorts, selectResearchPeriod } from '../lib/research/property-research';
 
 describe('property research calculations', () => {
+  it('breaks the monthly price line at suppressed prices and calendar gaps', () => {
+    const months = [
+      { month: '2026-01', count: 5, median: 100 },
+      { month: '2026-02', count: 6, median: 110 },
+      { month: '2026-03', count: 2, median: null },
+      { month: '2026-04', count: 5, median: 120 },
+      { month: '2026-06', count: 8, median: 130 },
+    ];
+    expect(monthlyPriceSegments(months)).toEqual([[0, 1], [3], [4]]);
+    const html = renderToStaticMarkup(createElement(MonthlyTransactionResearch, { months }));
+    expect(html.match(/<polyline/g)).toHaveLength(1);
+    expect(html).toContain('Monthly median price line');
+    expect(html).not.toMatch(/(?:NaN|Infinity)/);
+  });
   it('starts project history at its first recorded sale and retains interior and trailing empty months', () => {
     const rows = [{ month: '2025-08', price: 1000000, area: 80, group: 'sale' }, { month: '2025-10', price: 1100000, area: 80, group: 'sale' }];
     expect(buildProjectMonthlyResearch(rows, '2021-08', '2025-11')).toEqual([

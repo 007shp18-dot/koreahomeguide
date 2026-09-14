@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { useChartWidth } from './use-chart-width';
 import type { MarketLocale } from '../../lib/locale/market-localization';
 import type { ReviewVisualMetric, ReviewVisualSeries, ReviewPhoto } from '../../lib/research/property-review-locations';
 import styles from './property-review-visuals.module.css';
@@ -38,21 +39,36 @@ export function PropertyReviewVisuals({ metrics = [], series = [], photo, locale
         </div>)}</div><figcaption>{group[0]!.basis[lang]}</figcaption>
       </figure>;
     })}
-    {!!trends.length && <div className={styles.trends}>{trends.map(trend => {
-      const max = Math.max(...trend.points.map(p => p.value), 1);
-      const positions = trend.points.map((point, i) => ({ ...point, x: 35 + i / (trend.points.length - 1) * 490, y: 165 - point.value / max * 120 }));
-      return <figure className={styles.chart} key={trend.label.en}>
-        <h3>{trend.label[lang]}</h3><p className={styles.seriesUnit}>{unit(trend.unit)} · {trend.points[0]!.period}–{trend.points.at(-1)!.period}</p>
-        <svg className={styles.trend} viewBox="0 0 560 210" role="img" aria-label={`${trend.label[lang]} · ${lang === 'ko' ? '정확한 수치는 아래 표에 표시됩니다.' : 'Exact values appear in the table below.'}`}>
-          <line x1="35" y1="165" x2="525" y2="165" className={styles.axis}/>
-          <text x="12" y="169">0</text>
-          <polyline points={positions.map(p => `${p.x},${p.y}`).join(' ')} className={styles.trendLine}/>
-          {positions.map(p => <g key={p.period}><circle cx={p.x} cy={p.y} r="4"/><text x={p.x} y={p.y-13} textAnchor="middle">{number(p.value)}</text><text x={p.x} y="192" textAnchor="middle">{p.period}</text></g>)}
-        </svg>
-        <table className={styles.seriesTable}><thead><tr><th scope="col">{lang === 'ko' ? '연도' : 'Year'}</th><th scope="col">{unit(trend.unit)}</th></tr></thead><tbody>{trend.points.map(p => <tr key={p.period}><th scope="row">{p.period}</th><td>{number(p.value)}</td></tr>)}</tbody></table>
-        <figcaption>{trend.basis[lang]}</figcaption>
-      </figure>;
-    })}</div>}
+    {!!trends.length && <div className={styles.trends}>{trends.map(trend => <ReviewTrend key={trend.label.en} trend={trend} lang={lang} />)}</div>}
     {!!facts.length && <section className={styles.facts} aria-label={lang === 'ko' ? '단지 핵심 수치' : 'Property facts'}>{facts.map(m => <article key={`${m.label.en}:${m.unit}`}><p>{m.label[lang]}</p><strong>{number(m.value)} <span>{unit(m.unit)}</span></strong><p className={styles.basis}>{m.basis[lang]}</p></article>)}</section>}
   </div>;
+}
+
+function ReviewTrend({ trend, lang }: { trend: ReviewVisualSeries; lang: 'ko' | 'en' }) {
+  const { ref, width } = useChartWidth();
+  const maximum = Math.max(...trend.points.map(point => point.value), 1);
+  const number = (value: number) => value.toLocaleString(lang, { maximumFractionDigits: 2 });
+  const unit = lang === 'ko' && trend.unit === 'transactions' ? '건' : trend.unit;
+  const positions = trend.points.map((point, index) => ({ ...point,
+    x: 48 + index / (trend.points.length - 1) * (width - 78), y: 162 - point.value / maximum * 118,
+  }));
+  return <figure className={styles.chart}>
+    <h3>{trend.label[lang]}</h3><p className={styles.seriesUnit}>{unit} · {trend.points[0]!.period}–{trend.points.at(-1)!.period}</p>
+    <div ref={ref}>
+      <svg className={styles.trend} viewBox={`0 0 ${width} 206`} role="img" aria-label={`${trend.label[lang]} · ${lang === 'ko' ? '정확한 수치는 아래 표에 표시됩니다.' : 'Exact values appear in the table below.'}`}>
+        {[0, .5, 1].map(fraction => <line key={fraction} x1="48" y1={162 - fraction * 118} x2={width - 30} y2={162 - fraction * 118} className={styles.axis} />)}
+        <text x="24" y="166" textAnchor="end">0</text>
+        <polyline points={positions.map(point => `${point.x},${point.y}`).join(' ')} className={styles.trendLine} />
+        {positions.map((point, index) => <g key={point.period}>
+          <circle cx={point.x} cy={point.y} r="3"><title>{`${point.period}: ${number(point.value)} ${unit}`}</title></circle>
+          {(index === 0 || index === positions.length - 1) && <>
+            <text x={point.x} y={point.y - 14} textAnchor={index === 0 ? 'start' : 'end'}>{number(point.value)}</text>
+            <text x={point.x} y="192" textAnchor={index === 0 ? 'start' : 'end'}>{point.period}</text>
+          </>}
+        </g>)}
+      </svg>
+    </div>
+    <table className={styles.seriesTable}><thead><tr><th scope="col">{lang === 'ko' ? '연도' : 'Year'}</th><th scope="col">{unit}</th></tr></thead><tbody>{trend.points.map(point => <tr key={point.period}><th scope="row">{point.period}</th><td>{number(point.value)}</td></tr>)}</tbody></table>
+    <figcaption>{trend.basis[lang]}</figcaption>
+  </figure>;
 }

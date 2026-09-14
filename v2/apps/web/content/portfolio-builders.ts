@@ -44,6 +44,8 @@ type RecordInput = Readonly<{
   translationGroupId?: string | null;
   infographic?: InfographicSpec | null;
   publishedAt?: string;
+  updatedAt?: string;
+  revisionNote?: string;
 }>;
 
 function route(input: Pick<RecordInput, 'locale' | 'type' | 'slug'>): string {
@@ -72,11 +74,11 @@ export function portfolioRecord(input: RecordInput): EditorialPortfolioRecord {
     reviewedAt: '2026-09-04T00:00:00.000Z',
     reviewedBy: input.locale === 'zh-CN' ? 'SignedPrice Chinese Editorial Review' : 'SignedPrice Research Editor',
     publishedAt: input.publishedAt ?? '2026-09-04T00:00:00.000Z',
-    updatedAt: '2026-09-04T00:00:00.000Z',
+    updatedAt: input.updatedAt ?? '2026-09-04T00:00:00.000Z',
     relatedHref: input.relatedHref,
     sources: Object.freeze([...input.sources]),
     evidenceReleaseIds: Object.freeze([...input.evidenceReleaseIds]),
-    revisionNote: 'Launch review reconciled claims, dates, links and evidence boundaries against the cited primary sources.',
+    revisionNote: input.revisionNote ?? 'Launch review reconciled claims, dates, links and evidence boundaries against the cited primary sources.',
     canonicalHref: route(input),
     translationGroupId: input.translationGroupId ?? null,
     infographic: input.infographic ?? null,

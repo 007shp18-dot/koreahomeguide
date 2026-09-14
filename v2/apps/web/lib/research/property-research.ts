@@ -76,3 +76,21 @@ export function selectResearchPeriod(months: readonly ResearchMonth[], period: R
   const first = ordinal(sorted.at(-1)!.month) - Number(period) + 1;
   return sorted.filter((row) => ordinal(row.month) >= first);
 }
+
+/** Break price lines at withheld or missing months instead of implying a value. */
+export function monthlyPriceSegments(months: readonly ResearchMonth[]): readonly (readonly number[])[] {
+  const segments: number[][] = [];
+  let active: number[] = [];
+  const ordinal = (month: string) => Number(month.slice(0, 4)) * 12 + Number(month.slice(5, 7));
+  months.forEach((month, index) => {
+    const valid = month.count >= 5 && month.median !== null && Number.isFinite(month.median) && month.median > 0;
+    const previous = active.at(-1);
+    if (!valid || (previous !== undefined && ordinal(month.month) - ordinal(months[previous]!.month) !== 1)) {
+      if (active.length) segments.push(active);
+      active = [];
+    }
+    if (valid) active.push(index);
+  });
+  if (active.length) segments.push(active);
+  return segments;
+}

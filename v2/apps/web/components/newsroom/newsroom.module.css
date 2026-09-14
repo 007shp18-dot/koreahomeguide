@@ -759,7 +759,7 @@
   .monthlyNavigation .typeTabs { gap: 4px; }
   .monthlyNavigation .typeTabs a { padding-left: 10px; padding-right: 10px; }
   .monthlyTrend { overflow-x: auto; }
-  .monthlyTrend svg { min-width: 480px; }
+  .monthlyTrend svg { min-width: 0; }
 }
 
 :global(html[lang='ko']) .articleHero h1 { max-width: 26em; }

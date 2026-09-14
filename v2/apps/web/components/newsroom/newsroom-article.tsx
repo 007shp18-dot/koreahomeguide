@@ -6,7 +6,7 @@ import { BuyingGuide } from './buying-guide';
 import { ArticleContents } from './article-contents';
 import { BUDGET_GUIDE_SLUGS } from '../../content/guide-directory';
 import { BUYING_GUIDE_DATA } from '../../content/en/buying-guide-data';
-import { relatedReading } from '../../content/related-reading';
+import { relatedReading, localizeReadingLink } from '../../content/related-reading';
 import { MonthlyReportNavigation, MonthlyReportTrend, isMonthlyReport } from './monthly-reports';
 import Link from 'next/link';
 import { EditorialMarkdown } from '../insights/editorial-markdown';
@@ -15,7 +15,7 @@ import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representati
 import type { PublishedContentArticle } from '../../lib/content/content-types';
 import type { InfographicSpec } from '../../lib/infographics/infographic-types';
 import { KOREAN_RESEARCH_FIGURES } from '../../content/ko/research-figures';
-import { getPortfolioRecord } from '../../content/portfolio-manifest';
+import { EDITORIAL_PORTFOLIO, getPortfolioRecord } from '../../content/portfolio-manifest';
 import { MONTHLY_REPORT_REFERENCES } from '../../content/insight-curation';
 import { marketHref } from '../../lib/locale/market-localization';
 import { RESEARCH_FIGURES } from '../../content/en/research-figures';
@@ -73,12 +73,9 @@ export function NewsroomArticle({ article }: Readonly<{
     const record = getPortfolioRecord(article.locale, slug);
     return record ? [{ href: record.canonicalHref, label: record.title }] : [];
   });
-  const reading = [...relatedReading(article), ...referenceReading].map(item => {
-    if (article.locale === 'en') return item;
-    const slug = item.href.split('/').filter(Boolean).at(-1) ?? '';
-    const translated = getPortfolioRecord(article.locale, slug);
-    return { href: translated?.canonicalHref ?? marketHref(article.locale, item.href), label: translated?.title ?? item.label };
-  });
+  const reading = [...relatedReading(article), ...referenceReading]
+    .map(item => localizeReadingLink(item, article.locale, EDITORIAL_PORTFOLIO))
+    .filter((item, index, items) => item.href !== getPortfolioRecord(article.locale, article.slug)?.canonicalHref && items.findIndex(candidate => candidate.href === item.href) === index);
   const scenarioCurrency = ({ 'kr-seoul': 'KRW', 'sg-singapore': 'SGD', 'ae-dubai': 'AED', 'jp-tokyo': 'JPY' } as Record<string, string>)[article.marketId ?? ''];
   const scenarioHref = scenarioCurrency && ['market-brief', 'data-story'].includes(article.type)
     ? `${article.locale === 'ko' ? '/ko' : article.locale === 'zh-CN' ? '/zh-cn' : ''}/tools/property-scenario/?market=${article.marketId}&currency=${scenarioCurrency}` : null;
