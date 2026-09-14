@@ -11,6 +11,7 @@ import { actualDetailHref, allReviewLocations, reviewLocationForProject } from '
 import { marketHref, marketText, type MarketLocale } from '../../lib/locale/market-localization';
 import { PassportLink as Link } from '../passport/passport-journey';
 import styles from './dubai-research.module.css';
+import { DubaiAreaPhoto } from './dubai-area-photo';
 
 const integer = new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 });
 const money = (value: number) => `AED\u00a0${integer.format(value)}`;
@@ -49,6 +50,7 @@ export function DubaiExploreSelection({
       </div>
       <button type="button" onClick={onClose} aria-label={t('Close area preview')}>{t('Close')}</button>
     </header>
+    <DubaiAreaPhoto slug={area.slug} locale={locale} variant="preview" />
     <dl className={styles.selectionMetrics}>
       <div><dt>{t('Median sale price')}</dt><dd>{money(sale.medianPriceAed)}</dd></div>
       <div><dt>{t('Median AED/m²')}</dt><dd>{money(sale.medianPricePerSqmAed)}/m²</dd></div>
@@ -64,7 +66,7 @@ export function DubaiExploreSelection({
         askingPriceAed: null, areaSqm: null, annualRentAed: null, returnTo,
       }))}>{t('Compare an asking price')}</Link>
       {area.href ? <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>
-        {localizedMarketCopy(locale, "Full area analysis", "지역 분석 전체 보기")}
+        {locale === 'ko' ? '지역 분석' : locale === 'zh-CN' ? '区域分析' : 'Area analysis'}
       </Link> : null}
     </nav>
     {reviewedProperties.length > 0 && <section className={styles.selectionProjects} aria-label={locale === 'ko' ? '이 지역의 단지 분석' : locale === 'zh-CN' ? '本区域项目分析' : 'Property analysis in this area'}>
@@ -93,5 +95,6 @@ export function DubaiExploreSelection({
         </div> : null}
       </> : <p>{localizedMarketCopy(locale, "Project-level summaries are not published for this selection yet. Area figures remain available above.", "이 조건의 프로젝트별 집계는 아직 없습니다. 위 지역 통계로 비교할 수 있습니다.")}</p>}
     </section>
+    <DubaiAreaPhoto slug={area.slug} locale={locale} variant="credit" />
   </section>;
 }

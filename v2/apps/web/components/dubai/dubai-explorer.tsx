@@ -364,7 +364,7 @@ export function DubaiExplorer({ locale = 'en',
               disabled={comparison.ids.length >= 3 && !comparison.ids.includes(area.slug)}
               aria-label={`${comparison.ids.includes(area.slug) ? compareCopy.remove : compareCopy.add}: ${area.name}`}
               onClick={() => comparison.toggle(area.slug)}>{comparison.ids.includes(area.slug) ? compareCopy.remove : compareCopy.add}</button></div>
-            {area.href !== null && <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>{localizedMarketCopy(locale, "Full area analysis", "지역 분석 전체 보기")}</Link>}
+            {area.href !== null && <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>{locale === 'ko' ? '지역 분석' : locale === 'zh-CN' ? '区域分析' : 'Area analysis'}</Link>}
             <details className={styles.resultEvidence} data-area-evidence="true">
               <summary>{localizedMarketCopy(locale, "Price and rent details", "가격·임대료 자세히 보기")}</summary>
             <dl className={styles.areaMetrics}>

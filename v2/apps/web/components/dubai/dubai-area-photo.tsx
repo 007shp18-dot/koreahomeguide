@@ -14,7 +14,7 @@ const COPY = {
 export function DubaiAreaPhoto({ slug, locale, variant }: {
   slug: string;
   locale: MarketLocale;
-  variant: 'thumbnail' | 'detail' | 'credit';
+  variant: 'thumbnail' | 'detail' | 'preview' | 'credit';
 }) {
   const [failedSource, setFailedSource] = useState<string | null>(null);
   const photo = dubaiAreaPhoto(slug);
@@ -29,11 +29,11 @@ export function DubaiAreaPhoto({ slug, locale, variant }: {
   const thumbnail = variant === 'thumbnail';
   const src = thumbnail ? photo.thumbnail : photo.detail;
   if (failedSource === src) return null;
-  return <figure className={thumbnail ? styles.thumbnail : styles.detail} data-dubai-area-photo={slug}>
+  return <figure className={thumbnail ? styles.thumbnail : variant === 'preview' ? styles.preview : styles.detail} data-dubai-area-photo={slug}>
     {/* Pre-sized static assets bypass on-demand image transformations. */}
     <Image src={src} onError={() => setFailedSource(src)} alt={`${photo.name} · ${copy.view}`}
       width={thumbnail ? 360 : 960} height={thumbnail ? 240 : 640}
       loading="lazy" decoding="async" unoptimized />
-    <figcaption>{thumbnail ? `${copy.view} · ${photo.date.slice(0, 4)}` : <>{copy.note} · {photo.date}{credit}</>}</figcaption>
+    <figcaption>{thumbnail ? `${copy.view}${photo.date ? ` · ${photo.date.slice(0, 4)}` : ''}` : <>{photo.name} · {copy.view}{photo.date ? ` · ${photo.date}` : ''}{variant === 'detail' ? credit : null}</>}</figcaption>
   </figure>;
 }
