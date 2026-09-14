@@ -1,7 +1,19 @@
 import {describe,it,expect,vi} from 'vitest';
 import {randomUUID} from 'node:crypto';
 vi.mock('server-only',()=>({}));
-vi.mock('../lib/db/postgres.server',async()=>{const {neon}=await import('@neondatabase/serverless');const client=neon(process.env.DATABASE_URL!,{fetchOptions:{get signal(){return AbortSignal.timeout(60000);}}});const original=client.query.bind(client);client.query=(async (...args:Parameters<typeof original>)=>{const start=Date.now();try {const result=await original(...args);console.info('QA query',String(args[0]).slice(0,65),Date.now()-start);return result;}catch(e){console.info('QA query failed',String(args[0]).slice(0,65),e instanceof Error?e.message:'error');throw e;}}) as typeof client.query;return {contentDatabase:()=>client};});
+vi.mock('../lib/db/postgres.server',async()=>{
+ if(process.env.QA_COMMUNITY_TEST!=='1') return {contentDatabase:()=>null};
+ if(process.env.QA_PGLITE_MODULE) {
+  const {PGlite}=await import(/* @vite-ignore */ process.env.QA_PGLITE_MODULE);
+  const {readFile}=await import('node:fs/promises');
+  const pg=await PGlite.create();
+  await pg.exec(await readFile(new URL('../db/migrations/0032_community_questions.sql',import.meta.url),'utf8'));
+  return {contentDatabase:()=>({query:async(statement:string,params:unknown[])=>{try{return (await pg.query(statement,params)).rows;}catch(e){console.error(e instanceof Error?e.message:'SQL error');throw e;}}})};
+ }
+ const {neon}=await import('@neondatabase/serverless');
+ const client=neon(process.env.DATABASE_URL!,{fetchOptions:{get signal(){return AbortSignal.timeout(60000);}}});
+ return {contentDatabase:()=>client};
+});
 import {GET as get,POST as post} from '../app/api/questions/route';
 import {GET as getAccount,POST as account,DELETE as logout} from '../app/api/questions/account/route';
 import {GET as adminGet,POST as adminPost} from '../app/api/internal/questions/route';
@@ -41,6 +53,10 @@ describe.runIf(process.env.QA_COMMUNITY_TEST==='1')('questions isolated Postgres
   // Atomic shared bucket: exactly two concurrent attempts may pass.
   const limits=await Promise.allSettled(Array.from({length:6},()=>rateLimit(`qa:${suffix}`,2,60)));expect(limits.filter(r=>r.status==='fulfilled')).toHaveLength(2);
   const rows=await database().query('SELECT password_hash,recovery_hash FROM sp_qa_users WHERE id=$1',[a.user.id]);expect(rows[0]?.password_hash).not.toContain(password);expect(rows[0]?.recovery_hash).toBe(hash(a.recovery));
+  r=await post(req('/api/questions/',{action:'edit',id,title:`Updated station question ${suffix}`,body:'Revised question with station walking details.'},a.cookie));expect(r.status,await r.clone().text()).toBe(200);
+  const dupeInput={title:`Concurrent ${suffix}`,body:'Can this exact question be submitted twice?',market:'seoul'};
+  const dupeResults=await Promise.allSettled([writePost(dupeInput,a.user),writePost(dupeInput,a.user)]);expect(dupeResults.filter(r=>r.status==='fulfilled')).toHaveLength(1);
   const logs=await(await adminGet(req(`/api/internal/questions/?id=${id}`,undefined,adminCookie))).json();expect(logs.events.some((e:{action:string})=>e.action==='hidden')).toBe(true);
+  r=await post(req('/api/questions/',{action:'delete',id},a.cookie));expect(r.status,await r.clone().text()).toBe(200);expect((await get(req(`/api/questions/?id=${id}`))).status).toBe(404);
  },900000);
 });

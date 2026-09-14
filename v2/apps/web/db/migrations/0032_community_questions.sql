@@ -56,3 +56,6 @@ CREATE INDEX IF NOT EXISTS sp_qa_events_post ON sp_qa_events(post_id,created_at 
 CREATE TABLE IF NOT EXISTS sp_qa_rate_limits (
  key text PRIMARY KEY, hits integer NOT NULL, expires_at timestamptz NOT NULL
 );
+
+-- statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS sp_qa_unique_active_text ON sp_qa_posts(user_id,fingerprint) WHERE status<>'deleted';
