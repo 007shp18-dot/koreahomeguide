@@ -80,7 +80,7 @@ describe('Dubai project Explore release', () => {
     if (area?.href == null) throw new Error('missing released Off-Plan cohort');
     const html = renderToStaticMarkup(<DubaiExplorer browserKey={null} model={model}
       initialArea={area.slug} initialStage="off-plan" initialHousing={housing} />);
-    const links = [...html.matchAll(/<a[^>]*href="([^"]+)"[^>]*>Full area analysis<\/a>/g)].map(match => new URL(match[1]!.replaceAll('&amp;', '&'), 'https://signedprice.test'));
+    const links = [...html.matchAll(/<a[^>]*href="([^"]+)"[^>]*>Area analysis<\/a>/g)].map(match => new URL(match[1]!.replaceAll('&amp;', '&'), 'https://signedprice.test'));
     expect(links.length).toBeGreaterThan(1);
     expect(links.filter(link => link.pathname.replace(/\/$/u, '') === area.href!.replace(/\/$/u, ''))).toHaveLength(2);
     for (const link of links) {

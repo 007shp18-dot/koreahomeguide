@@ -2,7 +2,7 @@
 export type DubaiAreaPhotoRecord = Readonly<{
   slug: string;
   name: string;
-  date: string;
+  date?: string;
   thumbnail: string;
   detail: string;
   author: string;
@@ -12,6 +12,14 @@ export type DubaiAreaPhotoRecord = Readonly<{
 }>;
 
 export const DUBAI_AREA_PHOTOS: readonly DubaiAreaPhotoRecord[] = [
+  {
+    slug: 'al-thanyah-fifth', name: 'Jumeirah Lakes Towers Park',
+    thumbnail: '/assets/stories/dubai-jlt-park.webp',
+    detail: '/assets/stories/dubai-jlt-park.webp',
+    author: 'Guilhem Vellut',
+    source: 'https://commons.wikimedia.org/wiki/File:Jumeirah_Lakes_Towers_Park_@_Dubai.jpg',
+    license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
+  },
   {
     slug: 'marsa-dubai', name: 'Dubai Marina', date: '2020-02-14',
     thumbnail: '/assets/dubai-areas/marsa-dubai-thumb.webp',

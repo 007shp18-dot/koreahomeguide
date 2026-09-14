@@ -28,7 +28,7 @@ describe('Dubai area context photographs', () => {
     for (const photo of DUBAI_AREA_PHOTOS) {
       for (const locale of ['en', 'ko', 'zh-CN'] as const) {
         const html = renderToStaticMarkup(<DubaiAreaPhoto slug={photo.slug} locale={locale} variant="detail" />);
-        expect(html).toContain(photo.date);
+        if (photo.date) expect(html).toContain(photo.date);
         expect(html).toContain(photo.author);
         expect(html).toContain(photo.licenseUrl);
       }
