@@ -1,4 +1,4 @@
-import { CONTRACT_RANKING_SQL, formatRankingDate, type RankingOrder } from './contract-ranking-query';
+import { CONTRACT_RANKING_SQL, type RankingOrder } from './contract-ranking-query';
 
 export type RentCohort = { city: 'seoul'; area: string; deposit: string; beds: string } | { city: 'singapore'; area: string; deposit: string; beds: string };
 export const RENT_AREAS = {
@@ -21,7 +21,7 @@ export function regionalRentSql(input: RentCohort) {
   ? c.area === '60-85' ? 'property_area_sqm > 60 AND property_area_sqm <= 85' : 'property_area_sqm > 40 AND property_area_sqm <= 60'
   : `local_attributes->>'areaRange' IN (${(c.area === '40-60' ? ['40-50','50-60'] : c.area === '90-120' ? ['90-100','100-110','110-120'] : ['60-70','70-80','80-90']).map(x=>`'${x}'`).join(',')}) AND bedrooms=${Number(c.beds)}`;
  const deposit = c.deposit === 'under-100m' ? 'deposit_minor >= 0 AND deposit_minor < 100000000' : c.deposit === '300m-plus' ? 'deposit_minor >= 300000000' : 'deposit_minor >= 100000000 AND deposit_minor < 300000000';
- const base = CONTRACT_RANKING_SQL.split('), ranked AS (')[0]!.replace("s.dataset_id IN ('kr-sale','kr-rent','sg-private-sale','sg-private-rent')", `s.dataset_id='${c.city === 'seoul' ? 'kr-rent' : 'sg-private-rent'}'`);
+ const base = CONTRACT_RANKING_SQL.split('), monthly_contracts AS (')[0]!.replace("s.dataset_id IN ('kr-sale','kr-rent','sg-private-sale','sg-private-rent')", `s.dataset_id='${c.city === 'seoul' ? 'kr-rent' : 'sg-private-rent'}'`);
  return base + `), grouped AS (
  SELECT city, to_char(m.month,'YYYY-MM') AS month,
  CASE WHEN city='seoul' THEN entity_attributes->>'districtSlug' ELSE COALESCE(raw_metadata->>'district',entity_attributes->>'district') END AS region,

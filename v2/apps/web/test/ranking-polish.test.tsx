@@ -6,7 +6,7 @@ import { RankingMarketsHub } from '../components/rankings/ranking-markets-hub';
 
 describe('ranking hierarchy', () => {
   it('describes the building-first Seoul destination accurately', () => {
-    const html = renderToStaticMarkup(createElement(RankingMarketsHub));
+    const html = renderToStaticMarkup(createElement(RankingMarketsHub, { children: null }));
     expect(html).toContain('Seoul · buildings');
     expect(html).toContain('Sale, jeonse and rent by building');
     expect(html).not.toContain('Seoul · districts');

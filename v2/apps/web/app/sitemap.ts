@@ -54,7 +54,7 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   Object.freeze({ en: '/tools/property-scenario/', ko: '/ko/tools/property-scenario/' }),
   Object.freeze({ en: '/', ko: '/ko/', 'zh-Hans': '/zh-cn/' }),
   Object.freeze({ en: '/prices/', ko: '/ko/prices/' }),
-  Object.freeze({ en: '/rankings/', ko: '/ko/rankings/' }),
+  Object.freeze({ en: '/rankings/', ko: '/ko/rankings/', 'zh-Hans': '/zh-cn/rankings/' }),
   Object.freeze({ en: '/news/', ko: '/ko/news/', 'zh-Hans': '/zh-cn/news/' }),
   Object.freeze({ en: '/guides/', ko: '/ko/guides/', 'zh-Hans': '/zh-cn/guides/' }),
   Object.freeze({ en: '/kr/seoul/', ko: '/ko/kr/seoul/' }),
