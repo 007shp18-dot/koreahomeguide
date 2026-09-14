@@ -5690,8 +5690,8 @@
             "ko": "과거 관리비는 확인 질문으로만 사용"
           },
           "body": {
-            "en": "The April 2019 visit quoted monthly maintenance of S$300–430 for two-bedroom homes. This is a historical report, not a 2026 bill; request current share value, reserve contributions and special levies for the offered unit.",
-            "ko": "2019년 4월 방문기는 2베드룸 월 관리비 S$300~430을 기록했습니다. 2026년 고지서가 아닌 과거 보도이므로 현재 지분값·적립금·특별 부담금을 매수 세대 기준으로 받아야 합니다."
+            "en": "A two-bedroom management-fee example from April 2019 was S$300–430 a month. Current charges may differ; use the chosen apartment's latest bills to check share value, reserve contributions and any special levies.",
+            "ko": "2019년 4월의 2베드룸 관리비 사례는 월 S$300~430입니다. 현재 요금과는 차이가 날 수 있으므로 매수할 세대의 지분값·적립금·특별 부담금을 최근 고지서로 확인하세요."
           },
           "sourceIds": [
             "visit"
