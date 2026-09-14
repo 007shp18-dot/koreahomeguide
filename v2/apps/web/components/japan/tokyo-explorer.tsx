@@ -91,7 +91,9 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
         : filters.minArea !== null ? `≥ ${filters.minArea} m²` : `≤ ${filters.maxArea} m²`,
       href: filterLink(['minArea', 'maxArea']) }] : []),
   ];
-  const selectedArea = !error && (query.has('city') || Boolean(filters.neighbourhood));
+  // The displayed default ward is a selection too; its analysis must be reachable
+  // without submitting an unchanged filter form first.
+  const selectedArea = !error && data !== null;
   let priceContext: DecisionPriceContext | undefined;
   // The median belongs to the same release and complete filtered cohort as the
   // transaction table, including pinned superseded releases and free-text terms.
@@ -110,7 +112,7 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
     <main className={styles.page}>
       {data && data.filteredCount > 0 && filters.neighbourhood && <RecordPlaceVisit place={{ market: 'tokyo', key: `${scope.city}/${filters.neighbourhood}`, name: `${filters.neighbourhood} · ${wardName(scope.city)}`, href: pageLink(filters.page) }} />}
       <AreaDecisionWorkspace market="jp-tokyo" areaKey={selectedArea ? scope.city : ''} name={filters.neighbourhood ? `${filters.neighbourhood} · ${wardName(scope.city)}` : wardName(scope.city)} neighbourhood={filters.neighbourhood} priceContext={priceContext} locale={locale}>
-      <MarketExploreShell eyebrow={t("Tokyo")} title={t("Explore")} period={`${wardName(scope.city)} · ${scope.year} Q${scope.quarter} · JPY`}
+      <MarketExploreShell locale={locale} eyebrow={t("Tokyo")} title={t("Explore")} period={`${wardName(scope.city)} · ${scope.year} Q${scope.quarter} · JPY`}
         history={<RecentPlaces market="tokyo" locale={locale} excludeKey={filters.neighbourhood ? `${scope.city}/${filters.neighbourhood}` : undefined} />}
         related={<DiscoveryReading market="tokyo" locale={locale} />}
         priceGuide={<ExplorePriceGuide locale={locale} market="tokyo" />}
