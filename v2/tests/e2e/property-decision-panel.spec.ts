@@ -1,10 +1,11 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import type { PropertyReview } from '../../apps/web/lib/research/property-review';
+import { DECISION_BUILDING_ENTITY, DECISION_BUILDING_PATH } from './property-decision-fixture';
 
 const namedPath = '/jp/tokyo/explore/properties/jp-park-tower-kachidoki/';
-const seoulPath = '/kr/seoul/explore/songpa-gu/songpa-gu-1j88w6f/';
-const seoulEntity = 'kr-seoul:estate:songpa-gu-1j88w6f';
+const seoulPath = DECISION_BUILDING_PATH;
+const seoulEntity = DECISION_BUILDING_ENTITY;
 const sidePanel = (page: Page) => page.locator('[data-decision-panel="side"]');
 const modalPanel = (page: Page) => page.locator('dialog[data-decision-panel="modal"]');
 const mainData = (page: Page) => page.locator('[data-decision-main="true"]');
@@ -200,12 +201,8 @@ for (const locale of locales) {
 }
 
 test('a failed research request can be retried while Seoul data and its selected conditions stay available', async ({ page, isMobile }) => {
-  // The standard release fixture intentionally contains only a synthetic Seoul
-  // building. This case also runs against checked-in-data/preview servers where
-  // the real review-linked Helio City identity is available.
-  const routeResponse = await page.request.get(seoulPath);
-  test.skip(routeResponse.status() === 404, 'This fixture has no review-linked Seoul building.');
-  expect(routeResponse.status()).toBe(200);
+  test.skip(process.env.SIGNEDPRICE_TEST_DECISION_PANEL !== 'true',
+    'The dedicated panel run installs the exact checked-in Helio City cohort.');
 
   let releaseFailure!: () => void;
   const pending = new Promise<void>(resolve => { releaseFailure = resolve; });
@@ -221,23 +218,37 @@ test('a failed research request can be retried while Seoul data and its selected
       await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(helioResponse) });
     }
   });
-  await page.goto(`${seoulPath}?transaction=sale&area=60-85`);
+  const query = '?transaction=jeonse&mode=rent&contract=renewal';
+  await page.goto(`${seoulPath}${query}`);
+  const main = mainData(page);
+  // A streamed not-found page may return HTTP 200. Require the real data surface
+  // and hydrated cohort controls before testing the independent research retry.
+  await expect(main.getByRole('heading', { level: 1 })).toContainText(helioReview.name.ko);
+  const rentTab = main.locator('#building-mode-rent-tab');
+  const renewal = main.locator('[role="group"][aria-label="Rent contract cohort"] a[role="button"]', { hasText: 'Renewal' });
+  await expect(rentTab).toHaveAttribute('aria-selected', 'true');
+  await expect(renewal).toHaveAttribute('aria-pressed', 'true');
+  const mountedData = await main.elementHandle();
   if (isMobile) await page.getByRole('button', { name: 'View buying decision', exact: true }).click();
   const panel = isMobile ? modalPanel(page) : sidePanel(page);
   await expect(panel.getByRole('status')).toContainText('Loading the property analysis.');
   releaseFailure();
   await expect(panel.getByRole('status')).toContainText('The analysis could not be loaded');
-  const main = mainData(page);
-  await expect(main.getByRole('heading', { level: 1 })).toBeAttached();
+  await expect(main.locator('h1')).toBeAttached();
   const before = await mainEvidence(page);
-  const selectedLinks = await main.locator('a[aria-current="true"]').evaluateAll(links => links.map(link => link.getAttribute('href')));
+  const selectedControls = main.locator('a[aria-selected="true"], a[aria-pressed="true"]');
+  await expect(selectedControls).toHaveCount(2);
+  const selectedLinks = await selectedControls.evaluateAll(links => links.map(link => link.getAttribute('href')));
   recovered = true;
   await panel.getByRole('button', { name: 'Try again', exact: true }).click();
   await expect(panel.locator('[data-property-decision="kr-helio-city"]')).toBeVisible();
   await expect(panel.locator('ol > li')).toHaveCount(5);
   expect(attempts).toBeGreaterThanOrEqual(2);
   await selectPerspective(panel, 'Rental / investment');
+  expect(await mountedData!.evaluate(element => element.isConnected)).toBe(true);
   expect(await mainEvidence(page)).toEqual(before);
-  expect(await main.locator('a[aria-current="true"]').evaluateAll(links => links.map(link => link.getAttribute('href')))).toEqual(selectedLinks);
-  expect(new URL(page.url()).search).toBe('?transaction=sale&area=60-85');
+  await expect(rentTab).toHaveAttribute('aria-selected', 'true');
+  await expect(renewal).toHaveAttribute('aria-pressed', 'true');
+  expect(await selectedControls.evaluateAll(links => links.map(link => link.getAttribute('href')))).toEqual(selectedLinks);
+  expect(new URL(page.url()).search).toBe(query);
 });

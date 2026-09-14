@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from 'react';
 import type { LivingContext } from '../../lib/research/living-context';
 import type { MarketLocale } from '../../lib/locale/market-localization';
 import type { DecisionPersona } from '../../lib/research/property-decision';
@@ -61,6 +61,26 @@ function DecisionSession({ entity, profileId, profile, priceContext, analysisSco
       window.history.replaceState(window.history.state, '', `${window.location.pathname}${window.location.search}`);
     }
     trigger.current?.focus({ preventScroll: true });
+  }
+
+  function keepDialogFocus(event: KeyboardEvent<HTMLDialogElement>) {
+    if (event.key !== 'Tab') return;
+    // Native modality makes the page inert, but Chromium can still move focus
+    // to browser chrome at the boundary. Keep keyboard traversal in the report.
+    const controls = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(
+      'button:not(:disabled), a[href], input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])',
+    )).filter(element => element.tabIndex >= 0 && element.getClientRects().length > 0
+      && getComputedStyle(element).visibility !== 'hidden');
+    const first = controls[0];
+    const last = controls.at(-1);
+    if (!first || !last) return;
+    if (event.shiftKey && (document.activeElement === first || document.activeElement === heading.current)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   useEffect(() => {
@@ -146,6 +166,6 @@ function DecisionSession({ entity, profileId, profile, priceContext, analysisSco
       <div className={styles.main} data-decision-main="true">{children}</div>
       {visible && !modal && <aside id={panelId} className={styles.panel} data-decision-panel="side" aria-labelledby={headingId} onKeyDown={event => { if (event.key === 'Escape') { event.preventDefault(); closePanel(); } }}>{panel}</aside>}
     </div>
-    {modal && <dialog ref={dialog} id={panelId} className={styles.dialog} data-decision-panel="modal" aria-labelledby={headingId} onCancel={event => { event.preventDefault(); closePanel(); }} onClick={event => { if (event.target === event.currentTarget) closePanel(); }}>{panel}</dialog>}
+    {modal && <dialog ref={dialog} id={panelId} className={styles.dialog} data-decision-panel="modal" aria-labelledby={headingId} onKeyDown={keepDialogFocus} onCancel={event => { event.preventDefault(); closePanel(); }} onClick={event => { if (event.target === event.currentTarget) closePanel(); }}>{panel}</dialog>}
   </div>;
 }

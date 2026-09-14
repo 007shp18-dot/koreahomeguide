@@ -22,8 +22,11 @@ import { buildContractCheckRouteModel } from '../apps/web/lib/contract-check/rou
 import { buildPublicAreaExploreModel } from '../apps/web/lib/public-market/area-route-model.server';
 import { observedBuildingRepositoryFromEnvironment } from '../apps/web/lib/public-market/observed-building-repository.server';
 import { buildPublicAreaRankingsModel } from '../apps/web/lib/public-market/rankings-route-model.server';
+import { buildPublicBuildingModel } from '../apps/web/lib/public-market/building-route-model.server';
+import { hasPropertyReviewForEntity } from '../apps/web/lib/research/property-review-locations';
 import { createPlaywrightConfig } from '../playwright.config';
 import { PUBLIC_BUILDING_TEST_ID } from './e2e/public-building-summary-fixture';
+import { DECISION_BUILDING_ID, DECISION_BUILDING_ENTITY } from './e2e/property-decision-fixture';
 import {
   E2E_KOREA_PROXIMITY_GZIP_BASE64,
   E2E_KOREA_PROXIMITY_REGISTRY,
@@ -43,6 +46,25 @@ function installLocalReleaseEnvironment() {
 }
 
 describe('Playwright release target configuration', () => {
+  it('installs the exact review-linked Helio cohort only for the dedicated panel run', () => {
+    const general = createPlaywrightConfig({}).webServer;
+    const focused = createPlaywrightConfig({ SIGNEDPRICE_TEST_DECISION_PANEL: 'true' }).webServer;
+    if (!general || Array.isArray(general) || !focused || Array.isArray(focused)) throw new Error('Expected local servers');
+    const baseline = JSON.parse(general.env!.SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT!);
+    const source = JSON.parse(focused.env!.SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT!);
+    const checkedIn = JSON.parse(readFileSync(new URL('../apps/web/data/public-building-summary.json', import.meta.url), 'utf8'));
+    expect(baseline.records.map((record: { buildingId: string }) => record.buildingId)).toEqual([PUBLIC_BUILDING_TEST_ID]);
+    expect(source.records).toEqual(checkedIn.records.filter((record: { buildingId: string }) => record.buildingId === DECISION_BUILDING_ID));
+    expect(focused.env!.SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT).toBe(general.env!.SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT);
+    expect(focused.env!.SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY).toBe(general.env!.SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY);
+    expect(hasPropertyReviewForEntity(DECISION_BUILDING_ENTITY)).toBe(true);
+    // This validates the recomputed digest, period, publication rules and actual
+    // detail-route model; a valid HTTP shell alone would miss the original bug.
+    const model = buildPublicBuildingModel('songpa-gu', DECISION_BUILDING_ID, {
+      source, period: focused.env!.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD!,
+    });
+    expect(model).toMatchObject({ status: 'ready', building: { buildingId: DECISION_BUILDING_ID, name: '헬리오시티', groups: { renewal: { published: true } } } });
+  });
   it('installs valid four-area Dubai evidence only for the dedicated comparison run', async () => {
     const general = createPlaywrightConfig({}).webServer;
     const comparison = createPlaywrightConfig({ SIGNEDPRICE_TEST_DUBAI_COMPARISON: 'true' }).webServer;
