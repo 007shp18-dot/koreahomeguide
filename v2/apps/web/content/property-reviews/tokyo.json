@@ -187,8 +187,8 @@
             "en": "Ask what has been repaired since completion"
           },
           "body": {
-            "ko": "방문기에 기재된 준공 시기는 2008년 2월입니다. 연식만으로 상태를 평가하기보다 외벽·방수·급배수·엘리베이터의 완료 공사와 다음 교체 일정을 받아, 실내 리모델링 비용과 공용부 부담을 나눠 비교해야 합니다.",
-            "en": "The visit report dates completion to February 2008. Assess completed facade, waterproofing, plumbing and lift work alongside the next replacement schedule, separating apartment renovation spending from shared-building obligations."
+            "ko": "2008년 2월 준공한 단지입니다. 외벽·방수·급배수·엘리베이터의 수선 이력과 다음 교체 일정을 확인하면, 집 안 리모델링 비용과 공용부 부담을 나눠 볼 수 있습니다.",
+            "en": "Completed in February 2008, the estate needs a review of facade, waterproofing, plumbing and lift repairs. The work history and next replacement schedule help separate apartment renovation costs from shared-building obligations."
           },
           "sourceIds": [
             "ty-visit"
@@ -1122,8 +1122,8 @@
             "en": "River improvements do not establish unit-level flood safety"
           },
           "body": {
-            "ko": "개발사가 후루카와 침수 대책과 보행공간 정비를 설명하는 것은 확인했습니다. 전기실·주차장 진입구의 위치와 최신 위험지도를 대조하지 않았으므로 무침수 단지라는 결론은 내리지 않습니다.",
-            "en": "The development includes flood-countermeasure and pedestrian works along the Furukawa. Electrical rooms and car-park entrances have not been checked against current hazard maps, so the review does not label the estate flood-free."
+            "ko": "후루카와 침수 대책과 보행공간 정비가 개발에 포함됐습니다. 다만 전기실·주차장 진입구의 위치와 최신 위험지도는 추가 확인이 필요해, 침수 위험이 없다고 볼 수는 없습니다.",
+            "en": "The development includes Furukawa flood measures and pedestrian improvements. Electrical-room and parking-entrance locations still need to be checked against the latest hazard map; these measures do not establish zero flood risk."
           },
           "sourceIds": [
             "ss-development"
@@ -1393,8 +1393,8 @@
             "en": "Toyomi Elementary and Harumi Nishi Junior High"
           },
           "body": {
-            "ko": "가치도키 5·6초메는 도요미 초등학교와 하루미니시 중학교 통학구역입니다. 과거 하루미 중학교 안내를 그대로 쓰지 않고 현재 주소 기준 표를 확인했습니다.",
-            "en": "Chuo’s official table places Kachidoki 5- and 6-chome in Toyomi Elementary and Harumi Nishi Junior High catchments. This replaces older descriptions that may still name Harumi Junior High."
+            "ko": "가치도키 5·6초메는 도요미 초등학교와 하루미니시 중학교 통학구역입니다. 과거의 하루미 중학교 배정 정보와 다르므로 입주 시점의 주소별 배정을 확인하세요.",
+            "en": "Kachidoki 5- and 6-chome fall within Toyomi Elementary and Harumi Nishi Middle School catchments. This differs from older Harumi Middle School information, so confirm allocation at the time of moving."
           },
           "sourceIds": [
             "ch-schools"
@@ -2268,8 +2268,8 @@
             "en": "Toyosu Nishi Elementary catchment"
           },
           "body": {
-            "ko": "구가 현재 연결하는 통학표는 도요스5·6초메를 도요스니시 초등학교로 지정합니다. SKYZ의 6-2-31 주소가 이 구역에 해당하며 개별 입학은 교육위원회 확인이 필요합니다.",
-            "en": "The ward’s currently linked table assigns Toyosu 5–6-chome to Toyosu Nishi Elementary, covering SKYZ at 6-2-31. Individual admission remains subject to the education board."
+            "ko": "SKYZ의 주소인 도요스 6-2-31은 도요스니시 초등학교 통학구역입니다. 실제 입학 절차와 자격은 교육위원회에서 확인해야 합니다.",
+            "en": "SKYZ's address, Toyosu 6-2-31, is in the Toyosu Nishi Elementary School catchment. The education board must confirm the individual admission process and eligibility."
           },
           "sourceIds": [
             "koto-primary"
@@ -2585,8 +2585,8 @@
             "en": "Elementary allocation is Toyosu Nishi"
           },
           "body": {
-            "ko": "BAYZ 주소는 도요스6-2-29이며 구 공식 표상 도요스니시 초등학교 구역입니다. 가까운 단지의 홍보 문구 대신 주소를 대조해 확인했습니다.",
-            "en": "BAYZ is at 6-2-29 Toyosu, inside Toyosu Nishi Elementary’s listed catchment. This follows the address table rather than a neighbouring estate’s marketing."
+            "ko": "BAYZ의 주소인 도요스 6-2-29는 도요스니시 초등학교 통학구역입니다. 입주 연도와 자녀의 입학 조건을 함께 확인하세요.",
+            "en": "BAYZ's address, Toyosu 6-2-29, falls within the Toyosu Nishi Elementary School catchment. Confirm the entry-year arrangements and the child's eligibility."
           },
           "sourceIds": [
             "bz-outline",
@@ -2890,8 +2890,8 @@
             "en": "Toyosu Kita Elementary is documented"
           },
           "body": {
-            "ko": "구 공식 통학구역 표는 도요스1·2·3초메를 도요스키타 초등학교로 분류합니다. 이는 학교 순위나 수업 만족도 평가가 아닌 주소 기반 정보입니다.",
-            "en": "The official table assigns Toyosu 1–3-chome to Toyosu Kita Elementary. This is an address-based allocation, not a ranking or teaching-quality judgment."
+            "ko": "도요스 1·2·3초메는 도요스키타 초등학교 통학구역입니다. 주소에 따른 배정 정보이며 학교 순위나 수업 만족도를 뜻하지는 않습니다.",
+            "en": "Toyosu 1-, 2- and 3-chome fall within the Toyosu Kita Elementary School catchment. This is an address-based allocation, not a school ranking or measure of teaching satisfaction."
           },
           "sourceIds": [
             "koto-primary"
@@ -2904,8 +2904,8 @@
             "en": "Junior school is Fukagawa No. 5"
           },
           "body": {
-            "ko": "구 공식 중학교 표는 이 주소를 후카가와 제5중학교 구역에 넣습니다. 도요스6초메의 아리아케니시 학원과 달라, 자녀 나이에 따라 비교 결과가 달라집니다.",
-            "en": "The official junior-school table includes this address in Fukagawa No. 5, unlike Toyosu 6-chome’s Ariake Nishi allocation. The comparison can change with the child’s age."
+            "ko": "이 주소의 중학교 통학구역은 후카가와 제5중학교입니다. 도요스 6초메의 아리아케니시 학원과 달라 자녀의 교육 단계에 따라 통학 경로도 달라집니다.",
+            "en": "The address falls within the Fukagawa No. 5 Middle School catchment. This differs from Ariake Nishi Gakuen for Toyosu 6-chome, so school routes change with the child's education stage."
           },
           "sourceIds": [
             "koto-secondary"
@@ -3524,8 +3524,8 @@
             "en": "Harumi Nishi Elementary catchment"
           },
           "body": {
-            "ko": "주오구 공식 표는 하루미3초메를 하루미니시 초등학교에 배정합니다. 하루미2초메의 쓰키시마 제3초등학교와 같은 생활권으로 간주하지 않습니다.",
-            "en": "Chuo’s official table assigns Harumi 3-chome to Harumi Nishi Elementary, distinct from Harumi 2-chome’s Tsukishima No. 3."
+            "ko": "하루미 3초메는 하루미니시 초등학교 통학구역입니다. 인근 하루미 2초메의 쓰키시마 제3초등학교 배정과는 다릅니다.",
+            "en": "Harumi 3-chome falls within the Harumi Nishi Elementary School catchment. Nearby Harumi 2-chome has a different allocation to Tsukishima No. 3 Elementary School."
           },
           "sourceIds": [
             "ch-schools"
@@ -3828,8 +3828,8 @@
             "en": "Ariake Nishi’s elementary division"
           },
           "body": {
-            "ko": "구 공식 표는 아리아케1초메4번을 아리아케니시 학원 전기 구역으로 지정합니다. Mare의1-4-11 주소로 확인한 정보이며 학교 성적의 우열은 평가하지 않았습니다.",
-            "en": "The ward table assigns Ariake 1-chome block 4 to Ariake Nishi’s elementary division, covering Mare 1-4-11. No academic ranking is inferred."
+            "ko": "Mare의 주소인 아리아케 1-4-11은 아리아케니시 학원 전기 과정 통학구역입니다. 이는 초등 단계의 주소별 배정 정보입니다.",
+            "en": "Mare's address, Ariake 1-4-11, falls within the elementary-stage catchment of Ariake Nishi Gakuen. This identifies the address-based allocation for primary education."
           },
           "sourceIds": [
             "koto-primary"
@@ -4425,8 +4425,8 @@
           "en": "One address changes junior-school allocation"
         },
         "body": {
-          "ko": "구 공식 표는 도요스5-1-13을 후카가와 제5 구역에서 제외하고 아리아케니시 후기로 분류합니다. 단지의 중학교를 근처 일반 도요스5초메 배정으로 설명하면 틀립니다.",
-          "en": "The official table excludes Toyosu 5-1-13 from Fukagawa No. 5 and assigns Ariake Nishi’s junior division. Applying the usual Toyosu 5-chome allocation here would be wrong."
+          "ko": "도요스 5-1-13의 중학교 통학구역은 아리아케니시 학원 후기 과정입니다. 주변 도요스 5초메의 후카가와 제5중학교 배정과 달라 정확한 주소로 확인해야 합니다.",
+          "en": "Toyosu 5-1-13 is allocated to the middle-school stage of Ariake Nishi Gakuen. This differs from the Fukagawa No. 5 allocation for surrounding Toyosu 5-chome addresses."
         },
         "sourceIds": [
           "koto-secondary"
@@ -4780,8 +4780,8 @@
             "en": "Kachidoki 4-6 has a specific allocation"
           },
           "body": {
-            "ko": "주오구 표는 가치도키4초메6번을 하루미니시 초등학교로 별도 분류합니다. 같은4초메의 다른 번지 학교를 가져오지 않고 정확한 블록을 대조했습니다.",
-            "en": "Chuo specifically assigns Kachidoki 4-chome block 6 to Harumi Nishi Elementary. The allocation is verified by block, not borrowed from other 4-chome addresses."
+            "ko": "가치도키 4초메 6번은 하루미니시 초등학교 통학구역입니다. 같은 4초메라도 번지에 따라 학교 배정이 다릅니다.",
+            "en": "Kachidoki 4-chome, block 6, falls within the Harumi Nishi Elementary School catchment. Other blocks in the same chome can have different school allocations."
           },
           "sourceIds": [
             "ch-schools"
@@ -4981,8 +4981,8 @@
           "en": "Schools and retail are part of the neighbourhood"
         },
         "body": {
-          "ko": "하루미5초메 학교 배정과 운영 중인라라테라스HARUMI FLAG를 확인했습니다. 가족의 일상 기능이 가까운 동네에 모였다는 장점은 동·출입구를 정한 후 가장 잘 판단할 수 있습니다.",
-          "en": "School allocation for Harumi 5-chome and the operating Lala Terrace are documented. The neighbourhood’s family convenience is best assessed after choosing a building and entrance."
+          "ko": "하루미니시 학교 통학구역에 속하며, 라라테라스 HARUMI FLAG에서 장보기와 일상 쇼핑을 할 수 있습니다. 학교·상업시설이 한 동네에 모여 있지만 실제 도보 거리는 동과 출입구에 따라 다릅니다.",
+          "en": "The neighbourhood is in the Harumi Nishi school catchment, with groceries and everyday shopping at the operating LaLa Terrace HARUMI FLAG. These amenities are clustered locally, though walks vary by building and entrance."
         },
         "sourceIds": [
           "ch-schools",
@@ -5043,8 +5043,8 @@
             "en": "The existing Shinbashi departure pattern"
           },
           "body": {
-            "ko": "현재B33시간표는평일8시대04~52분6분 간격의9회 출발을 표시합니다. 차량 탑승구까지 동선·대기·만석은 별도이며2026년9월16일 개정 예정입니다.",
-            "en": "The current B33 timetable has nine weekday departures between 08:04 and 08:52, six minutes apart. Walking, waiting and capacity are additional; revision is scheduled September 16."
+            "ko": "B33은 평일 오전 8시 04분부터 52분까지 6분 간격으로 9회 출발합니다. 정류장까지의 이동과 대기·만석 여부는 별도이며, 시간표는 2026년 9월 16일 개정 예정입니다.",
+            "en": "B33 has nine weekday departures from 08:04 to 08:52 at six-minute intervals. Allow separately for the walk to the stop, waiting and full buses. The timetable is due to change on 16 September 2026."
           },
           "sourceIds": [
             "hf-brt"
@@ -5057,8 +5057,8 @@
             "en": "Weekday midday has 15-minute spacing"
           },
           "body": {
-            "ko": "2026년3월1일 기준B33시간표는평일12시06·21·36·51분 출발을 기재합니다. 출근 피크 빈도를 낮 시간 전체에 적용하지 않아야 합니다.",
-            "en": "The B33 timetable dated 1 March 2026 has weekday departures at 12:06, 12:21, 12:36 and 12:51. Peak frequency should not be assumed throughout the day."
+            "ko": "2026년 3월 1일 기준 B33의 평일 낮 12시 출발은 06·21·36·51분으로, 15분 간격입니다. 낮 시간에는 출근 시간대보다 배차가 뜸합니다.",
+            "en": "The timetable effective 1 March 2026 has weekday B33 departures at 12:06, 12:21, 12:36 and 12:51. This 15-minute midday service is less frequent than the morning peak."
           },
           "sourceIds": [
             "hf-brt"
@@ -5073,8 +5073,8 @@
             "en": "Harumi Nishi Elementary serves the address"
           },
           "body": {
-            "ko": "주오구의 현재 표는하루미5초메를 하루미니시 초등학교로 분류합니다. 정확한 아파트 문에서학교 정문까지 거리는 미측정이며Village선택 시 별도로 걸어봐야 합니다.",
-            "en": "Chuo’s current table assigns Harumi 5-chome to Harumi Nishi Elementary. Apartment-door to school-gate distance is unmeasured and should be tested for the selected Village."
+            "ko": "하루미 5초메는 하루미니시 초등학교 통학구역입니다. 집 현관에서 학교 정문까지의 거리는 아직 측정하지 않았으므로, Village와 동을 고를 때 실제 통학 경로를 걸어보세요.",
+            "en": "Harumi 5-chome falls within the Harumi Nishi Elementary School catchment. Door-to-school distances have not been measured, so walk the route when choosing a Village and building."
           },
           "sourceIds": [
             "ch-schools"
@@ -6775,8 +6775,8 @@
           "ko": "아리아케 니시가 지정 학교"
         },
         "body": {
-          "en": "Koto’s linked catchment tables cover Ariake 1-chome blocks 4–8 with Ariake Nishi Gakuen for both stages. This includes City Tower’s 1-5-2 address; the guide places the school about 80 metres away.",
-          "ko": "고토구가 연결한 통학구역표는 아리아케 1초메 4~8번을 초·중 단계 모두 아리아케 니시 가쿠엔으로 지정합니다. 시티 타워 주소인 1-5-2가 통학구역에 포함되며, 공시 학교 거리는 약 80m입니다."
+          "en": "The address, Ariake 1-5-2, falls within both the elementary and middle-school catchments of Ariake Nishi Gakuen. The published distance is about 80 m; check the entrances and actual school route separately.",
+          "ko": "단지 주소인 아리아케 1-5-2는 초·중 단계 모두 아리아케니시 학원 통학구역입니다. 학교까지 표기 거리는 약 80m로 가깝지만 실제 이용할 출입구와 통학 경로는 따로 살펴보세요."
         },
         "sourceIds": [
           "ba-catch-primary",
