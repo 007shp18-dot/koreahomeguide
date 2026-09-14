@@ -207,7 +207,7 @@ test('desktop exposes published analysis and the city destinations', async ({pag
   const markets = page.locator('[data-home-region="markets"]');
   await expect(markets).toHaveAttribute('aria-label', 'Choose a city');
   await expect(page.getByRole('heading', { name: 'What the transactions tell us' })).toBeInViewport();
-  await markets.scrollIntoViewIfNeeded();
+  await markets.getByRole('navigation', { name: 'Choose a city' }).scrollIntoViewIfNeeded();
   await expect(markets.getByRole('navigation', { name: 'Choose a city' })).toBeInViewport();
   await expect(markets.locator('[data-contextual-action]')).toHaveCount(4);
   await expect(markets.locator('[data-primary-action="explore"]')).toHaveCount(4);

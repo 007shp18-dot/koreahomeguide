@@ -15,7 +15,8 @@ test('Chinese market cards align their primary actions on multi-column screens',
 test('home presents four city destinations and a separate budget journey without overflow', async ({page}) => {
  await page.goto('/');
  await page.evaluate(() => document.fonts.ready);
- await expect(page.locator('main [data-home-region]')).toHaveCount(1);
+ await expect(page.locator('main [data-home-region]')).toHaveCount(2);
+ await expect(page.locator('[data-home-region="analysis"] article')).toHaveCount(3);
  await expect(page.getByRole('heading', {level:1})).toHaveCount(1);
  const cards = page.locator('[data-contextual-action]');
  await expect(cards).toHaveCount(4);

@@ -9,7 +9,7 @@ The AdSense notice identifies low-value content, but does not identify offending
 - Surface three existing September market reports on the English, Korean and Chinese homepages, using their published titles, decks, canonical links and dates. This is a curated selection, not an automatic publication feed.
 - Link Seoul building readers to the corresponding city research index instead of implying that one selected neighbourhood story describes every building.
 - Explain unavailable supplemental building facts in reader-facing language while preserving the separate reasons and transaction records.
-- Describe publisher responsibility, AI assistance, source-based reporting and the limits of neighbourhood guides on the existing Data & sources page. No individual authors, inspections or blanket human-review claims are invented.
+- Describe publisher responsibility, source-based reporting and the limits of neighbourhood guides on the existing Data & sources page. No individual authors, inspections or blanket human-review claims are invented.
 
 ## Page volume and scope
 
@@ -26,4 +26,4 @@ Page volume and AI use alone do not establish the rejection cause. These improve
 
 ## Verification
 
-Targeted homepage, reading, trust and building rendering tests, TypeScript and lint are run before publication. Browser checks retain mobile overflow, touch-target and visual comparison gates; homepage baselines must be reviewed for the intentional new section. No production database migrations are run locally.
+The 68 targeted tests, TypeScript and lint passed. Full CI verification and the separate mobile regression passed. The first browser pass completed with 777 passing checks and nine failures: four intentional homepage image changes, four old section-count expectations and a test scrolling the oversized city section instead of its navigation. The four English/Chinese desktop/mobile homepage images were visually reviewed and retained as the new baselines; the five navigation/structure checks were updated while preserving overflow and touch-target assertions. A final CI run verifies these corrections. No production database migrations were run locally.
