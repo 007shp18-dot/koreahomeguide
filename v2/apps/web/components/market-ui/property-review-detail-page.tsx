@@ -1,3 +1,4 @@
+import { PlaceQuestions } from '../questions/place-questions';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SiteHeader } from '../site-header';
@@ -88,7 +89,7 @@ export function PropertyReviewDetailPage({ profile, locale = 'en', priceContext 
     <main data-named-property-detail={profile.id}>
       <RecordPlaceVisit place={{ market: tokyo ? 'tokyo' : 'dubai', key: profile.id, name: review.name[lang], href: detailHref }} />
       <PropertyDecisionWorkspace showOverview={false} profileId={profile.id} profile={profile} locale={locale} priceContext={priceContext}>
-      <MarketDetailShell locale={locale}
+      <MarketDetailShell locale={locale} related={<PlaceQuestions locale={locale} market={tokyo?"tokyo":"dubai"} path={detailHref} name={review.name[lang]}/>}
         breadcrumb={<Link href={marketHref(locale, explorePath)}>{city} · {t('탐색', 'Explore', '探索')}</Link>}
         sections={[
           { id: 'detail-overview', label: t('단지 정보', 'Property details', '项目资料') },

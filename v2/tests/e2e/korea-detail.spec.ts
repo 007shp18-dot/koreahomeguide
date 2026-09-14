@@ -1,3 +1,4 @@
+import { emptyQuestions } from './questions-fixture';
 import { expect, test, type Page } from '@playwright/test';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
@@ -6,6 +7,8 @@ import {
 } from './public-building-summary-fixture';
 
 const releaseTarget = resolveReleaseTestTarget();
+
+test.beforeEach(async ({page})=>{await emptyQuestions(page);});
 
 function observeFailures(page: Page) {
   const failures: string[] = [];

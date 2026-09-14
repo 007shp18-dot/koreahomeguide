@@ -22,7 +22,7 @@ describe('global roadmap routes', () => {
 
     const news = renderToStaticMarkup(await NewsPage({}));
     const newsMetadata = await generateNewsMetadata({});
-    const community = renderToStaticMarkup(<CommunityPage />);
+    const community = renderToStaticMarkup(await CommunityPage({searchParams:Promise.resolve({})}));
 
     expect(newsMetadata.alternates).toEqual({
       canonical: 'https://www.signedprice.com/news/',
@@ -53,10 +53,10 @@ describe('global roadmap routes', () => {
     expect(news).toContain('aria-label="Insight cities"');
     expect(news).not.toContain('Live external news');
     expect(externalFetch).not.toHaveBeenCalled();
-    expect(community).toContain('One community, organized by place.');
-    expect(community).toContain('District');
-    expect(community).toContain('Building');
-    expect(community).toContain('Read-only launch state');
+    expect(community).toContain('Home &amp; neighbourhood questions');
+    expect(community).toContain('Seoul');
+    expect(community).toContain('Tokyo');
+    expect(community).toContain('Ask a question');
   });
 
   it.each([

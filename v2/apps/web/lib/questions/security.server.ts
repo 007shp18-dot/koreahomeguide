@@ -1,0 +1,30 @@
+import 'server-only';
+import { createHash, createHmac, randomBytes, scrypt, timingSafeEqual } from 'node:crypto';
+import { contentDatabase } from '../db/postgres.server';
+import { adminSecret, equalSecret, sameOrigin } from '../evidence-pool/auth.server';
+import { QuestionError, validScope, type Scope, type Member } from './model';
+export const QA_COOKIE = 'sp_qa_session';
+export const hash = (s: string) => createHash('sha256').update(s).digest('hex');
+const secret = () => process.env.COMMUNITY_SECRET?.trim() || adminSecret();
+function signingSecret() { const s = secret(); if (s.length < 32) throw new QuestionError('unavailable', 503); return s; }
+export function scopeToken(scope: Scope): string { if (!validScope(scope)) return ''; const payload = Buffer.from(JSON.stringify(scope)).toString('base64url'); const s = secret(); return s.length < 32 ? '' : `${payload}.${createHmac('sha256', s).update(`qa-place-v1:${payload}`).digest('base64url')}`; }
+export function readScope(token: unknown): Scope { if (typeof token !== 'string' || token.length > 2000) throw new QuestionError('invalid_place'); const [payload, signature, extra] = token.split('.'); if (!payload || !signature || extra || !equalSecret(signature, createHmac('sha256', signingSecret()).update(`qa-place-v1:${payload}`).digest('base64url'))) throw new QuestionError('invalid_place'); let scope: Scope; try { scope = JSON.parse(Buffer.from(payload,'base64url').toString()); } catch { throw new QuestionError('invalid_place'); } if (!scope || typeof scope.path !== 'string' || typeof scope.name !== 'string' || !validScope(scope)) throw new QuestionError('invalid_place'); return scope; }
+export function database() { const db = contentDatabase(); if (!db) throw new QuestionError('unavailable',503); return db; }
+export function cookieToken(request: Request) { const token = request.headers.get('cookie')?.split(';').map(s=>s.trim()).find(s=>s.startsWith(`${QA_COOKIE}=`))?.slice(QA_COOKIE.length+1) ?? ''; return /^[a-f0-9]{64}$/.test(token) ? token : ''; }
+export function sessionCookie(token: string, request: Request) { return `${QA_COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${token ? 1209600 : 0}${new URL(request.url).protocol === 'https:' ? '; Secure' : ''}`; }
+export async function member(request: Request): Promise<Member | null> { const token = cookieToken(request); if (!token) return null; const rows = await database().query('SELECT u.id,u.nickname FROM sp_qa_sessions s JOIN sp_qa_users u ON u.id=s.user_id WHERE s.token_hash=$1 AND s.expires_at>now() AND NOT u.blocked',[hash(token)]); return rows[0] ? {id:String(rows[0].id),nickname:String(rows[0].nickname)} : null; }
+export async function requireMember(request: Request) { const u = await member(request); if (!u) throw new QuestionError('login_required',401); return u; }
+export function mutationOrigin(request: Request) { if (!sameOrigin(request)) throw new QuestionError('invalid_origin',403); }
+export async function jsonBody(request: Request): Promise<Record<string,unknown>> {
+ if (!request.headers.get('content-type')?.startsWith('application/json')) throw new QuestionError('invalid_input');
+ const reader=request.body?.getReader(); if (!reader) throw new QuestionError('invalid_input'); const chunks: Uint8Array[]=[]; let size=0;
+ try { for (;;) { const {done,value}=await reader.read(); if(done) break; size+=value.length; if(size>24000) { await reader.cancel(); throw new QuestionError('too_large',413); } chunks.push(value); } const data=JSON.parse(Buffer.concat(chunks).toString('utf8')); if (!data || Array.isArray(data) || typeof data!=='object') throw new Error(); return data; } catch (e) { if(e instanceof QuestionError) throw e; throw new QuestionError('invalid_input'); }
+}
+export async function rateLimit(key: string, limit: number, seconds: number) { const db=database(); const rows=await db.query(`INSERT INTO sp_qa_rate_limits(key,hits,expires_at) VALUES($1,1,now()+$2*interval '1 second') ON CONFLICT(key) DO UPDATE SET hits=CASE WHEN sp_qa_rate_limits.expires_at<=now() THEN 1 ELSE sp_qa_rate_limits.hits+1 END, expires_at=CASE WHEN sp_qa_rate_limits.expires_at<=now() THEN now()+$2*interval '1 second' ELSE sp_qa_rate_limits.expires_at END RETURNING hits`,[key,seconds]); if(Number(rows[0]?.hits)>limit) throw new QuestionError('rate_limited',429); }
+export function networkKey(request: Request) { const address=(request.headers.get('x-vercel-forwarded-for') || request.headers.get('x-forwarded-for') || 'unknown').split(',')[0]!.trim().slice(0,128); return createHmac('sha256',signingSecret()).update(`qa-network:${address}`).digest('hex'); }
+function derive(password: string, salt: string): Promise<Buffer> { return new Promise((resolve,reject)=>scrypt(password,salt,32,{N:32768,r:8,p:3,maxmem:64*1024*1024},(error,key)=>error?reject(error):resolve(key))); }
+export async function passwordHash(password: string) { const salt=randomBytes(16).toString('hex'); return `${salt}:${(await derive(password,salt)).toString('hex')}`; }
+export async function passwordMatches(password: string, encoded: string) { const [salt,digest]=encoded.split(':'); if(!salt || !digest || !/^[a-f0-9]{32}$/.test(salt) || !/^[a-f0-9]{64}$/.test(digest)) return false; const value=await derive(password,salt); return timingSafeEqual(value,Buffer.from(digest,'hex')); }
+export async function newSession(userId: string) { const token=randomBytes(32).toString('hex'); const rows=await database().query(`INSERT INTO sp_qa_sessions(token_hash,user_id,expires_at) SELECT $1,id,now()+interval '14 days' FROM sp_qa_users WHERE id=$2 AND NOT blocked RETURNING user_id`,[hash(token),userId]); if(!rows.length) throw new QuestionError('login_failed',401); return token; }
+export const reply = (data: unknown, status=200, headers: Record<string,string>={}) => Response.json(data,{status,headers:{'Cache-Control':'private, no-store',...headers}});
+export function failure(error: unknown) { return error instanceof QuestionError ? reply({error:error.code},error.status,error.status===429?{'Retry-After':'600'}:{}) : reply({error:'unavailable'},503); }

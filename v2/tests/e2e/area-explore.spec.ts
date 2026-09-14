@@ -2,7 +2,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import { visibleProductNavigation } from './site-header-helpers';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
-import { openPrimaryNavigation } from './navigation-helpers';
+import { openPrimaryNavigation, openMarketPagesNavigation } from './navigation-helpers';
 import {
   PUBLIC_AREA_WITHHELD_SLUG,
 } from './public-area-summary-fixture';
@@ -292,7 +292,7 @@ test('district selection stays inside the Explore workspace', async ({ page }) =
   await expect(page.locator('[data-explorer-layout="list"]')).toBeVisible();
 });
 
-test('published sale detail links to Contract Check and withheld district statistics stay money-free', async ({ page }) => {
+test('legacy district links keep sale selection, Contract Check access and withheld statistics money-free', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
   await page.goto('/kr/seoul/explore/');
   await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toBeVisible();
@@ -304,14 +304,11 @@ test('published sale detail links to Contract Check and withheld district statis
   if (publishedSlug === null) throw new Error('A published district is required.');
 
   await page.goto(`/kr/seoul/explore/${publishedSlug}/`);
-  await expect(page.locator('[data-district-detail="published"]')).toBeVisible();
-  // Sale distributions must not expose the legacy refundable-deposit calculator.
-  // Local quote editing is covered by public-quote.spec.ts on the current Check route.
+  await expect(page).toHaveURL(url => url.pathname === '/kr/seoul/explore/' && url.searchParams.get('district') === publishedSlug);
+  await expect(page.locator('summary').filter({ hasText: 'Selected ·' })).toContainText('₩');
   await expect(page.locator('input[name="quote"]')).toHaveCount(0);
-  await expect(page.getByRole('link', { name: 'Compare a contract', exact: true }))
+  await expect((await openMarketPagesNavigation(page, 'Seoul')).getByRole('link', { name: 'Check', exact: true }))
     .toHaveAttribute('href', '/kr/seoul/check/');
-  await expect(page.getByRole('link', { name: 'Back to Seoul map' }))
-    .toHaveAttribute('href', `/kr/seoul/explore/?district=${publishedSlug}`);
 
   await page.goto('/kr/seoul/explore/');
   const withheldOptions = page.locator('[data-district-option][title*="Not published"]');
@@ -319,14 +316,10 @@ test('published sale detail links to Contract Check and withheld district statis
     ? await withheldOptions.first().getAttribute('data-district-option') : null;
   if (withheldSlug !== null) {
     await page.goto(`/kr/seoul/explore/${withheldSlug}/`);
-    await expect(page.locator('[data-district-detail="withheld"]')).toBeVisible();
+    await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toHaveValue(withheldSlug);
+    await expect(page.locator('summary').filter({ hasText: 'Selected ·' })).not.toContainText('₩');
     await expect(page.locator('input[name="quote"]')).toHaveCount(0);
-    // Other named districts may show their own published comparisons.
-    await expect(page.locator('#overview')).not.toContainText('₩');
-    await expect(page.locator('#distribution')).not.toContainText('₩');
-    const structuredData = await page.locator('script[type="application/ld+json"]')
-      .allTextContents();
-    expect(structuredData.join('\n')).not.toMatch(/"(?:min|p25|med|p75|max|chg3m)"|₩/);
+    await expect(page.locator(`[data-selected-evidence="${withheldSlug}"] [data-summary-median]`)).toHaveCount(0);
   }
   assertNoRuntimeFailures();
 });
