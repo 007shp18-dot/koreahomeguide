@@ -78,18 +78,18 @@ export function PropertyReviewDetailPage({ profile, locale = 'en' }: Readonly<{
         breadcrumb={<Link href={marketHref(locale, explorePath)}>{city} · Explore</Link>}
         sections={[
           { id: 'detail-overview', label: t('단지 정보', 'Property details', '项目资料') },
-          { id: 'property-review', label: t('입지·생활 분석', 'Location & living', '区位与生活') },
+          { id: 'property-review', label: t('단지 분석', 'Property analysis', '项目分析') },
         ]}
         summary={<header className={styles.identity}>
           <p className={styles.meta}>{city} · {tokyo ? t('주거 단지', 'Residential property', '住宅项目') : stage === 'off-plan' ? t('분양 예정·건설 중 프로젝트', 'Off-plan project', '期房项目') : stage === 'ready' ? t('준공 단지', 'Completed property', '已竣工项目') : t('주거 프로젝트', 'Residential project', '住宅项目')}</p>
           <h1>{review.name[lang]}</h1>
           <p>{address}</p>
           <nav aria-label={t('단지 탐색', 'Property exploration', '项目探索')}>
-            <a href="#property-review">{t('입지·생활 분석', 'Location & living', '区位与生活')}</a>
+            <a href="#property-review">{t('단지 분석', 'Property analysis', '项目分析')}</a>
             <Link href={contextHref}>{tokyo ? t('주변 구의 실거래·지도', 'Ward transactions & map', '周边行政区成交与地图') : location.projectId ? t('이 프로젝트의 거래 요약', 'Project transaction summary', '本项目成交摘要') : t('두바이 실거래·지도', 'Dubai transactions & map', '迪拜成交与地图')}</Link>
           </nav>
         </header>}
-        evidence={<section id="property-review" aria-label={t('입지·생활 분석', 'Location & living', '区位与生活')}>
+        evidence={<section id="property-review" aria-label={t('단지 분석', 'Property analysis', '项目分析')}>
           <LivingContextCard profile={profile} locale={locale} embedded />
         </section>}
         rail={<section className={styles.scope}><h2>{t('가격 자료의 범위', 'Price coverage', '价格资料范围')}</h2><p>{scope}</p></section>}

@@ -182,7 +182,7 @@ export function ObservedBuildingDetail({
 
         <nav className={styles.mockupTabs} aria-label={t('Building page sections')}>
           <a href="#building-overview">{t('Overview')}</a><a href="#building-facts">{t('Building profile')}</a>
-          {hasPropertyReviewForEntity(reviewEntity) && <a href="#property-review">{locale === 'ko' ? '입지·생활 분석' : locale === 'zh-CN' ? '区位与生活' : 'Location & living'}</a>}
+          {hasPropertyReviewForEntity(reviewEntity) && <a href="#property-review">{locale === 'ko' ? '단지 분석' : locale === 'zh-CN' ? '项目分析' : 'Property analysis'}</a>}
           <a href="#building-source">{t('Source')}</a>
         </nav>
         <section id="building-overview" className={styles.evidence} data-building-section="identity-evidence">
@@ -323,7 +323,7 @@ export function KoreaEvidenceBuildingDetail({
           <a href="#building-overview">{locale === 'ko' ? '개요' : locale === 'zh-CN' ? '概览' : 'Overview'}</a>
           <a href="#building-transactions">{locale === 'ko' ? '실거래' : locale === 'zh-CN' ? '交易记录' : 'Transactions'}</a>
           <a href="#building-facts">{locale === 'ko' ? '단지 정보' : locale === 'zh-CN' ? '楼盘资料' : 'Building facts'}</a>
-          {hasPropertyReviewForEntity(reviewEntity) && <a href="#property-review">{locale === 'ko' ? '입지·생활 분석' : locale === 'zh-CN' ? '区位与生活' : 'Location & living'}</a>}
+          {hasPropertyReviewForEntity(reviewEntity) && <a href="#property-review">{locale === 'ko' ? '단지 분석' : locale === 'zh-CN' ? '项目分析' : 'Property analysis'}</a>}
           <a href="#building-tools">{locale === 'ko' ? '내 조건 비교' : locale === 'zh-CN' ? '比较' : 'Compare'}</a>
           <a href="#building-source">{locale === 'ko' ? '출처' : locale === 'zh-CN' ? '来源' : 'Sources'}</a>
         </nav>

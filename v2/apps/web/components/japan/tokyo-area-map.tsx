@@ -9,6 +9,7 @@ import type { TokyoMapFilters } from '../../lib/japan/map-summary.server';
 import styles from './tokyo-explorer.module.css';
 import { tokyoText, tokyoHref, type TokyoLocale } from './tokyo-copy';
 import wardLocations from '../../lib/japan/tokyo-ward-locations.json';
+import { actualDetailHref, allReviewLocations } from '../../lib/research/property-review-locations';
 
 export function tokyoMapAreaHref(row: Pick<TokyoAreaSummary, 'city' | 'year' | 'quarter' | 'district'>, filters: TokyoMapFilters, locale: TokyoLocale = 'en'): string {
   const params = new URLSearchParams({ city: row.city, year: row.year, quarter: row.quarter });
@@ -53,6 +54,7 @@ export function TokyoAreaMap({ rows, city, year, quarter, browserKey, filters, u
   const visible = filterTokyoAreas(neighbourhoods, neighbourhoodSearch);
   const visibleWards = TOKYO_WARDS.filter(([, name]) => `${name} ${t(name)}`.toLowerCase().includes(wardSearch.trim().toLowerCase()));
   const selectedArea = rows.find(row => row.city === city && row.district === (filters.neighbourhood || filters.q || null));
+  const wardProperties = allReviewLocations().filter(row => row.wardCode === city);
   const points = useMemo(() => wards.map((row, index) => tokyoAreaPoint(row, index, row.city === city)), [wards, city]);
   const selectWard = useCallback((id: string) => {
     const row = wards[Number(id)]; if (!row) return;
@@ -76,6 +78,11 @@ export function TokyoAreaMap({ rows, city, year, quarter, browserKey, filters, u
     {view !== 'directory' && selectedArea ? <div className={styles.selectedArea} aria-label="Selected area price summary">
       <div><h3>{selectedArea.district ?? wardName}</h3><p>{selectedArea.year} Q{selectedArea.quarter} · {selectedArea.count.toLocaleString('en')} {t('transactions')}</p></div>
       <div><span>{t('Median recorded price')}</span><strong>¥{selectedArea.median.toLocaleString('en')}</strong></div>
+      {!selectedArea.district && wardProperties.length > 0 && <details data-contextual-properties="true">
+        <summary>{locale === 'ko' ? '이 구의 주거 단지' : locale === 'zh-CN' ? '本区住宅项目' : 'Residential properties in this ward'}</summary>
+        <p>{locale === 'ko' ? '단지를 선택하면 해당 단지의 분석을 읽을 수 있습니다. 위 지역 거래를 이 단지의 거래로 연결한 것은 아닙니다.' : locale === 'zh-CN' ? '选择住宅项目阅读分析。上方区域成交未被认定为这些项目的成交。' : 'Select a property to read its analysis. The area transactions above have not been attributed to these buildings.'}</p>
+        <nav aria-label={locale === 'ko' ? '단지 선택' : locale === 'zh-CN' ? '选择项目' : 'Choose a property'}>{wardProperties.map(property => <Link key={property.reviewId} href={actualDetailHref(locale, property.reviewId)!}>{property.name?.[locale === 'ko' ? 'ko' : 'en']} →</Link>)}</nav>
+      </details>}
     </div> : null}
     {pending ? <p role="status">{t('Loading area transactions…')}</p> : null}
     {view !== 'map' && <section className={styles.neighbourhoods} aria-label={`Neighbourhoods in ${wardName}`}>

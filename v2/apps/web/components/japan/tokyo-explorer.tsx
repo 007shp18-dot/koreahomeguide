@@ -18,8 +18,6 @@ import styles from './tokyo-explorer.module.css';
 import { tokyoText, tokyoHref, type TokyoLocale } from './tokyo-copy';
 import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
 import { DiscoveryReading } from '../discovery/discovery-reading';
-import { PropertyReviewDirectory } from '../market-ui/property-review-directory';
-import { propertyReviewDirectoryEntries } from '../../lib/research/property-review-profile';
 
 type Params = Record<string, string | string[] | undefined>;
 export default async function TokyoExplorer({ searchParams, locale = 'en' }: { searchParams: Promise<Params>; locale?: TokyoLocale }) {
@@ -132,7 +130,6 @@ export default async function TokyoExplorer({ searchParams, locale = 'en' }: { s
       </div>}
         </div>}
         discovery={<>
-      <PropertyReviewDirectory entries={propertyReviewDirectoryEntries('jp-tokyo')} locale={locale} query={filters.q} />
       <div data-tokyo-area-directory="true"><Suspense fallback={<ExploreResultsLoading label={t('Loading area transactions…')} />}>
         <TokyoMapPanel view="directory" locale={locale} city={scope.city} year={scope.year} quarter={scope.quarter}
           filters={{ q: filters.q, neighbourhood: filters.neighbourhood, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />

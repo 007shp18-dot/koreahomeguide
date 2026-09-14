@@ -118,7 +118,7 @@ export function BuildingDetailPage({
         <div data-detail-order="media">{propertyMedia ?? (visual.kind !== 'unavailable' ? <BuildingVisual model={visual} /> : <ProjectedEntityMedia locale={locale} buildingName={model.building.name} address={`${model.building.neighborhoodName}, ${districtName}, Seoul`} media={null} showLocationAction={false} locationHref={locationHref} />)}</div>
         <nav className={pageStyles.tabs} aria-label={t('Building page sections')}>
           <a href="#building-overview">{t('Overview')}</a><a href="#building-evidence">{t('Transactions')}</a><a href="#building-facts">{t('Building profile')}</a>
-          {hasPropertyReviewForEntity(reviewEntity) && <a href="#property-review">{locale === 'ko' ? '입지·생활 분석' : locale === 'zh-CN' ? '区位与生活' : 'Location & living'}</a>}
+          {hasPropertyReviewForEntity(reviewEntity) && <a href="#property-review">{locale === 'ko' ? '단지 분석' : locale === 'zh-CN' ? '项目分析' : 'Property analysis'}</a>}
           <a href="#building-tools">{locale === 'ko' ? '내 조건 비교' : locale === 'zh-CN' ? '比较' : 'Compare'}</a><a href="#building-source">{t('Source')}</a>
         </nav>
         <div className={pageStyles.details} id="building-evidence"><BuildingEvidenceDetails model={model} locale={locale} includeSource={false} /></div>

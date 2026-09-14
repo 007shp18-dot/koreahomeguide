@@ -40,8 +40,6 @@ import { DubaiAreaPhoto } from './dubai-area-photo';
 import { dubaiAreaPhoto } from '../../lib/dubai/area-photos';
 import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
 import { DiscoveryReading } from '../discovery/discovery-reading';
-import { PropertyReviewDirectory } from '../market-ui/property-review-directory';
-import type { PropertyReviewDirectoryEntry } from '../../lib/research/property-review-profile';
 const DubaiComparisonDialog = lazy(() => import('./dubai-comparison'));
 
 
@@ -58,12 +56,10 @@ function CuratedDubaiExplorer({ locale = 'en',
   browserKey,
   initialQuery,
   initialArea,
-  reviewDirectory,
 }: Readonly<{
   browserKey: string | null;
   initialQuery: string;
   initialArea: string;
-  reviewDirectory: readonly PropertyReviewDirectoryEntry[];
 }> & { locale?: MarketLocale }) {
   const t = <T,>(value: T): T => marketText(locale, value);
 
@@ -113,7 +109,6 @@ function CuratedDubaiExplorer({ locale = 'en',
       </nav>
     </div>}
     discovery={<div className={styles.directory}>
-      <PropertyReviewDirectory entries={reviewDirectory} locale={locale} query={query} />
       <h2>{t("Area guide")}</h2>
       <p>{t(areas.length)}{t(" of ")}{t(DUBAI_AREAS.length)}{t(" curated areas · Not a property inventory")}</p>
       <ul>{areas.map((item) => <li key={item.id}><button
@@ -154,7 +149,6 @@ export function DubaiExplorer({ locale = 'en',
   initialPage = 1,
   projects = [],
   initialProjectId = null,
-  reviewDirectory = [],
 }: Readonly<{
   browserKey: string | null;
   model?: DubaiExploreModel;
@@ -167,7 +161,6 @@ export function DubaiExplorer({ locale = 'en',
   initialPage?: number;
   projects?: readonly DubaiProjectEvidence[];
   initialProjectId?: string | null;
-  reviewDirectory?: readonly PropertyReviewDirectoryEntry[];
 }> & { locale?: MarketLocale }) {
   const t = <T,>(value: T): T => marketText(locale, value);
 
@@ -246,7 +239,6 @@ export function DubaiExplorer({ locale = 'en',
     browserKey={browserKey}
     initialQuery={initialQuery}
     initialArea={initialArea}
-    reviewDirectory={reviewDirectory}
   />;
 
   const switchStage = (next: 'ready' | 'off-plan') => {
@@ -317,7 +309,6 @@ export function DubaiExplorer({ locale = 'en',
         </nav></div>
       </div>}
       discovery={<section className={styles.evidenceDirectory} aria-labelledby="dubai-area-results">
-        <PropertyReviewDirectory entries={reviewDirectory} locale={locale} query={deferredQuery} />
         {selected ? <DubaiExploreSelection locale={locale} selected={selected} stage={stage}
           period={`${model.context.comparisonPeriod.from}–${model.context.comparisonPeriod.to}`}
           asOfDate={model.context.asOfDate} projects={selectedAreaProjects} selectedProject={selectedProject}

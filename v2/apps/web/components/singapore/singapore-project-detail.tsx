@@ -52,7 +52,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
   const displayName = singaporeProjectDisplayName(model.identity);
   const reviewEntity = `sg-singapore:project:${model.identity.id}`;
   const reviewSections = hasPropertyReviewForEntity(reviewEntity)
-    ? [{ id: 'property-review', label: locale === 'ko' ? '입지·생활 분석' : locale === 'zh-CN' ? '区位与生活' : 'Location & living' }]
+    ? [{ id: 'property-review', label: locale === 'ko' ? '단지 분석' : locale === 'zh-CN' ? '项目分析' : 'Property analysis' }]
     : [];
   if (model.status === 'insufficient') return (
     <SingaporePage locale={locale} currentHref={marketHref(locale, '/sg/singapore/explore/')} unframed>
