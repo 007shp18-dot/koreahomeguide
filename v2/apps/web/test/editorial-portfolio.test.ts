@@ -1,3 +1,6 @@
+import { ENGLISH_PORTFOLIO } from '../content/en/portfolio';
+import { KOREAN_EDITORIAL_PORTFOLIO } from '../content/ko/portfolio';
+import { CHINESE_PORTFOLIO } from '../content/zh-CN/portfolio';
 import { describe, expect, it } from 'vitest';
 import { RESEARCH_FIGURES } from '../content/en/research-figures';
 import { KOREAN_RESEARCH_FIGURES } from '../content/ko/research-figures';
@@ -10,8 +13,9 @@ import {
 } from '../content/portfolio-manifest';
 
 describe('launch editorial portfolio', () => {
+  const archivedPortfolio = [...ENGLISH_PORTFOLIO, ...KOREAN_EDITORIAL_PORTFOLIO, ...CHINESE_PORTFOLIO];
   it('labels Seoul charts with the public building release rather than the newer raw rent release', () => {
-    const charts = EDITORIAL_PORTFOLIO.flatMap(({ infographic }) => infographic ? [infographic] : [])
+    const charts = archivedPortfolio.flatMap(({ infographic }) => infographic ? [infographic] : [])
       .filter(({ id }) => id.replace(/^ko-/, '').startsWith('seoul-'));
     expect(charts).toHaveLength(5);
     for (const chart of charts) {
@@ -22,7 +26,7 @@ describe('launch editorial portfolio', () => {
 
   it('uses both middle observations for even-sized published building cohorts in all three languages', () => {
     // Independently recalculated from public-building-summary.json: 22/5/10/17/41 buildings.
-    const charts = EDITORIAL_PORTFOLIO.flatMap(({ infographic }) => infographic ? [infographic] : [])
+    const charts = archivedPortfolio.flatMap(({ infographic }) => infographic ? [infographic] : [])
       .filter(({ id }) => id.replace(/^ko-/, '').startsWith('seoul-district-price-distribution-chart'));
     expect(charts).toHaveLength(3);
     for (const chart of charts) {
@@ -31,7 +35,7 @@ describe('launch editorial portfolio', () => {
   });
 
   it('preserves the five-year Singapore source period and the even-sized CCR project median', () => {
-    const charts = EDITORIAL_PORTFOLIO.flatMap(({ infographic }) => infographic ? [infographic] : [])
+    const charts = archivedPortfolio.flatMap(({ infographic }) => infographic ? [infographic] : [])
       .filter(({ id }) => id.replace(/^ko-/, '').startsWith('singapore-region-comparison-chart'));
     expect(charts).toHaveLength(3);
     for (const chart of charts) {
@@ -41,28 +45,28 @@ describe('launch editorial portfolio', () => {
     }
   });
 
-  it('publishes the 118-item portfolio including the three-language Tokyo budget guide', () => {
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(118);
+  it('publishes the 104-item portfolio including the three-language Tokyo budget guide', () => {
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(104);
     expect(Object.isFrozen(EDITORIAL_PORTFOLIO)).toBe(true);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(52);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko')).toHaveLength(52);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'zh-CN')).toHaveLength(14);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(47);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko')).toHaveLength(47);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'zh-CN')).toHaveLength(10);
     expect(Object.fromEntries(['news-brief', 'policy-update', 'market-brief', 'data-story', 'guide'].map((type) => [
       type,
       EDITORIAL_PORTFOLIO.filter((record) => record.type === type).length,
     ]))).toEqual({
       'news-brief': 6,
       'policy-update': 14,
-      'market-brief': 58,
-      'data-story': 16,
-      guide: 24,
+      'market-brief': 50,
+      'data-story': 6,
+      guide: 28,
     });
   });
 
   it('keeps every published claim attached to review, evidence and an internal next step', () => {
     expect(validateEditorialPortfolio(EDITORIAL_PORTFOLIO)).toBe(EDITORIAL_PORTFOLIO);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(118);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(118);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(104);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(104);
     for (const record of EDITORIAL_PORTFOLIO) {
       expect(record.status).toBe('published');
       expect(record.readerQuestion.length).toBeGreaterThan(record.locale === 'zh-CN' ? 8 : 20);
@@ -77,9 +81,9 @@ describe('launch editorial portfolio', () => {
     }
   });
 
-  it('publishes sixteen evidence-linked and accessible Data Story infographics', () => {
+  it('publishes six retained evidence-linked and accessible Data Story infographics', () => {
     const stories = EDITORIAL_PORTFOLIO.filter(({ type }) => type === 'data-story');
-    expect(stories).toHaveLength(16);
+    expect(stories).toHaveLength(6);
     for (const story of stories) {
       expect(story.infographic).not.toBeNull();
       expect(story.infographic?.locale).toBe(story.locale);

@@ -10,6 +10,8 @@ export const BUDGET_GUIDE_SERIES = [
 ] as const;
 
 export function budgetGuidePeriod(slug: string, locale: ContentLocale): string | undefined {
+  if (slug === 'seoul-59-to-84-upgrade-budget') return locale === 'ko' ? '2026년 2–7월 보관 계약 표본' : locale === 'zh-CN' ? '2026年2–7月留存合同样本' : 'Retained contracts, February–July 2026';
+  if (slug === 'dubai-two-million-total-purchase-budget') return locale === 'ko' ? '총 현금 200만 디르함 · 가정 계산' : locale === 'zh-CN' ? '总现金200万迪拉姆 · 假设测算' : 'AED 2 million total cash · illustrative calculation';
   if (slug.endsWith('-same-budget-property-comparison')) {
     const city = slug.split('-')[0];
     if (city === 'tokyo') return ({en:'2026 Q1 · Tokyo ward groups',ko:'2026년 1분기 · 도쿄 구별 거래','zh-CN':'2026年第1季度 · 东京各区成交'})[locale];

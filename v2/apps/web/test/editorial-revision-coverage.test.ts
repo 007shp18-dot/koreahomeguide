@@ -1,3 +1,5 @@
+import { BUYERS_EDITION } from '../content/buyers-edition';
+import { EDITORIAL_DEPTH, DEPTH_REVISED_AT } from '../content/editorial-depth';
 import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import originals from '../content/city-journey-articles.json';
@@ -45,17 +47,17 @@ describe('whole editorial revision coverage', () => {
       expect(section.paragraphs).toEqual({en:[article.deck.en],ko:[article.deck.ko]});
     }
   });
-  it('covers all 25 legacy portfolio briefs and data stories in each language', () => {
+  it('covers the 14 retained legacy portfolio briefs and data stories in each language', () => {
     // This edition was authored after the one-time rewrite. Exclude its exact
     // records, rather than allowing a missing override to remove legacy coverage.
-    const nativeEditionIds = new Set([...SEPTEMBER_14_EDITORIAL, ...SEPTEMBER_15_EDITORIAL].map(({ id }) => id));
+    const nativeEditionIds = new Set([...SEPTEMBER_14_EDITORIAL, ...SEPTEMBER_15_EDITORIAL, ...BUYERS_EDITION].map(({ id }) => id));
     for (const locale of ['en','ko'] as const) {
       const articles = listPortfolioRecords(locale).filter(item => ['market-brief','data-story'].includes(item.type)
         && !nativeEditionIds.has(item.id));
-      expect(articles).toHaveLength(25);
+      expect(articles).toHaveLength(14);
       for (const article of articles) {
         expect(hasEditorialRevision(article.slug), article.slug).toBe(true);
-        expect(article.updatedAt, article.slug).toBe(discoveryCopy(article.slug, article.locale) ? DISCOVERY_UPDATED_AT : EDITORIAL_REVISION_DATE);
+        expect(article.updatedAt, article.slug).toBe(EDITORIAL_DEPTH[article.slug] ? DEPTH_REVISED_AT : discoveryCopy(article.slug, article.locale) ? DISCOVERY_UPDATED_AT : EDITORIAL_REVISION_DATE);
         expect(article.bodyMarkdown).not.toMatch(/\{\{(?:image|table):/);
         expect(reviseEditorial(article)).toEqual(article);
       }

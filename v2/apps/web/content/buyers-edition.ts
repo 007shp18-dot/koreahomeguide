@@ -1,0 +1,10 @@
+import type { EditorialPortfolioRecord } from './portfolio-types';
+import metadata from './editions/september-15-buyers/records.json';
+import body0 from './editions/september-15-buyers/dubai-timing.json';
+import body1 from './editions/september-15-buyers/singapore-small-condo.json';
+import body2 from './editions/september-15-buyers/seoul-upsizing.json';
+import body3 from './editions/september-15-buyers/dubai-budget.json';
+import body4 from './editions/september-15-buyers/dubai-without-car.json';
+import body5 from './editions/september-15-buyers/everton-park.json';
+const bodies: Record<string, Record<string,string>> = {'dubai-timing': body0, 'singapore-small-condo': body1, 'seoul-upsizing': body2, 'dubai-budget': body3, 'dubai-without-car': body4, 'everton-park': body5};
+export const BUYERS_EDITION: readonly EditorialPortfolioRecord[] = metadata.map(({bodyFile,...record})=>({...record,bodyMarkdown:bodies[bodyFile]![record.locale]!})) as EditorialPortfolioRecord[];

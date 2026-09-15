@@ -17,7 +17,13 @@ async function expectContained(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 }
 
+async function openDocumentChecks(panel: Locator) {
+  const details = panel.locator('[data-document-checks]');
+  if (await details.getAttribute('open') === null) await details.locator('summary').click();
+}
+
 async function selectPerspective(panel: Locator, label: string) {
+  await openDocumentChecks(panel);
   await panel.getByText(label, { exact: true }).click();
   await expect(panel.getByRole('radio', { name: label, exact: true })).toBeChecked();
 }
@@ -32,7 +38,9 @@ test('desktop report opens beside the property data and all three perspectives c
   await expect(main.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(panel.getByRole('heading', { name: 'Before signing', exact: true })).toBeAttached();
   await expect(panel.locator('[data-signing-checklist] li')).toHaveCount(3);
-  await expect(panel.getByRole('radio')).toHaveCount(3);
+  await expect(panel.locator('input[type=radio]')).toHaveCount(3);
+  await expect(panel.locator('[data-community-discussion]')).toBeVisible();
+  await expect(panel.locator('[data-document-checks]')).not.toHaveAttribute('open');
   await expect(main).toContainText('MLIT publishes transactions without building names.');
 
   const geometry = await main.evaluate(element => {
@@ -167,6 +175,7 @@ for (const locale of locales) {
     await page.goto(`${locale.prefix}${namedPath}`);
     if (isMobile) await page.getByRole('button', { name: locale.open, exact: true }).click();
     const panel = isMobile ? modalPanel(page) : sidePanel(page);
+    await openDocumentChecks(panel);
     await expect(panel.getByRole('group', { name: locale.group, exact: true })).toBeVisible();
     for (const name of locale.personas) await expect(panel.getByRole('radio', { name, exact: true })).toHaveCount(1);
     await expect(panel.getByRole('heading', { name: locale.priorities, exact: true })).toBeAttached();

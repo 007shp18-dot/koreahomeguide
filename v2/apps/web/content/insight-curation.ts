@@ -1,6 +1,5 @@
-// These explain data coverage rather than a new market finding. Keep their
-// public URLs and sources, and link them from the monthly reports instead of
-// presenting them as additional current stories in Insights.
+// Retired coverage explainers redirect to substantive articles. Exclude any
+// older cached copies from discovery as well.
 export const INSIGHT_REFERENCE_SLUGS = [
   'seoul-sale-market-monthly-brief',
   'seoul-jeonse-market-monthly-brief',
@@ -15,6 +14,8 @@ export function isInsightReference(slug: string): boolean {
 // Stored profiles use the data-story route but belong with neighborhood stories.
 // Curate their topic explicitly; titles and author names are not reliable types.
 const NEIGHBORHOOD_EDITORIAL_SLUGS: readonly string[] = [
+  'dubai-without-a-car-metro-last-mile',
+  'singapore-everton-park-blair-plain-afternoon',
   'seoul-euljiro-read-the-workshop-signs',
   'dubai-deira-gold-and-spice-walk',
   'seoul-buam-dong-afternoon-walk',
@@ -31,7 +32,4 @@ export function isNeighborhoodEditorial(slug: string): boolean {
   return NEIGHBORHOOD_EDITORIAL_SLUGS.includes(slug);
 }
 
-export const MONTHLY_REPORT_REFERENCES: Readonly<Record<string, readonly string[]>> = {
-  'seoul-monthly-2026-09': INSIGHT_REFERENCE_SLUGS.slice(0, 3),
-  'singapore-monthly-2026-09': [INSIGHT_REFERENCE_SLUGS[3]],
-};
+export const MONTHLY_REPORT_REFERENCES: Readonly<Record<string, readonly string[]>> = {};

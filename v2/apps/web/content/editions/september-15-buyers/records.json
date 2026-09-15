@@ -1,0 +1,548 @@
+[
+  {
+    "id": "en:dubai-buy-now-or-too-late",
+    "slug": "dubai-buy-now-or-too-late",
+    "locale": "en",
+    "marketId": "ae-dubai",
+    "type": "market-brief",
+    "title": "Is It Too Late to Buy Property in Dubai?",
+    "deck": "A softer Q2 market raises a practical question: could you hold the specific home through a weaker exit?",
+    "bodyFile": "dubai-timing",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "Is It Too Late to Buy Property in Dubai?",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "cbre-q2-2026",
+        "kind": "primary",
+        "publisher": "CBRE",
+        "title": "Q2 2026 UAE market review",
+        "href": "https://www.cbre.ae/insights/figures/uae-real-estate-market-review-q2-2026",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "dld-service-charge",
+        "kind": "primary",
+        "publisher": "DLD",
+        "title": "Service Charge Index",
+        "href": "https://dubailand.gov.ae/en/eservices/service-charge-index-overview/",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review"
+    ],
+    "canonicalHref": "/news/dubai-buy-now-or-too-late/",
+    "translationGroupId": "dubai-buy-now-or-too-late",
+    "relatedHref": "/ae/dubai/explore/",
+    "infographic": null
+  },
+  {
+    "id": "ko:dubai-buy-now-or-too-late",
+    "slug": "dubai-buy-now-or-too-late",
+    "locale": "ko",
+    "marketId": "ae-dubai",
+    "type": "market-brief",
+    "title": "두바이 부동산, 지금 들어가면 너무 늦은 걸까?",
+    "deck": "시장 둔화 소식 앞에서 내 후보의 가격과 보유 여력을 계산한다. 팔아야 할 때 가격이 내려가 있어도 버틸 수 있을까?",
+    "bodyFile": "dubai-timing",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "두바이 부동산, 지금 들어가면 너무 늦은 걸까?",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "cbre-q2-2026",
+        "kind": "primary",
+        "publisher": "CBRE",
+        "title": "Q2 2026 UAE market review",
+        "href": "https://www.cbre.ae/insights/figures/uae-real-estate-market-review-q2-2026",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "dld-service-charge",
+        "kind": "primary",
+        "publisher": "DLD",
+        "title": "Service Charge Index",
+        "href": "https://dubailand.gov.ae/en/eservices/service-charge-index-overview/",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review"
+    ],
+    "canonicalHref": "/ko/news/dubai-buy-now-or-too-late/",
+    "translationGroupId": "dubai-buy-now-or-too-late",
+    "relatedHref": "/ko/ae/dubai/explore/",
+    "infographic": null
+  },
+  {
+    "id": "en:singapore-small-condo-first-upgrade-trap",
+    "slug": "singapore-small-condo-first-upgrade-trap",
+    "locale": "en",
+    "marketId": "sg-singapore",
+    "type": "market-brief",
+    "title": "Buy a Small Singapore Condo First. Will the Next Home Get Closer?",
+    "deck": "Test the first-home strategy against a widening price gap, buyer status and the cost of selling early.",
+    "bodyFile": "singapore-small-condo",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "Buy a Small Singapore Condo First. Will the Next Home Get Closer?",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "iras-absd",
+        "kind": "primary",
+        "publisher": "IRAS",
+        "title": "Additional Buyer’s Stamp Duty",
+        "href": "https://www.iras.gov.sg/taxes/stamp-duty/for-property/buying-or-acquiring-property/additional-buyer's-stamp-duty-(absd)",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "iras-ssd",
+        "kind": "primary",
+        "publisher": "IRAS",
+        "title": "Residential Seller’s Stamp Duty",
+        "href": "https://www.iras.gov.sg/taxes/stamp-duty/for-property/selling-or-disposing-property/seller's-stamp-duty-(ssd)-for-residential-property",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review"
+    ],
+    "canonicalHref": "/news/singapore-small-condo-first-upgrade-trap/",
+    "translationGroupId": "singapore-small-condo-first-upgrade-trap",
+    "relatedHref": "/sg/singapore/explore/",
+    "infographic": null
+  },
+  {
+    "id": "ko:singapore-small-condo-first-upgrade-trap",
+    "slug": "singapore-small-condo-first-upgrade-trap",
+    "locale": "ko",
+    "marketId": "sg-singapore",
+    "type": "market-brief",
+    "title": "싱가포르, 작은 콘도라도 먼저 사면 다음 집이 가까워질까?",
+    "deck": "뒤처질까 봐 고른 작은 집. 다음 집과의 가격 차이, 매수자 신분과 매도 시점을 함께 계산한다.",
+    "bodyFile": "singapore-small-condo",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "싱가포르, 작은 콘도라도 먼저 사면 다음 집이 가까워질까?",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "iras-absd",
+        "kind": "primary",
+        "publisher": "IRAS",
+        "title": "Additional Buyer’s Stamp Duty",
+        "href": "https://www.iras.gov.sg/taxes/stamp-duty/for-property/buying-or-acquiring-property/additional-buyer's-stamp-duty-(absd)",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "iras-ssd",
+        "kind": "primary",
+        "publisher": "IRAS",
+        "title": "Residential Seller’s Stamp Duty",
+        "href": "https://www.iras.gov.sg/taxes/stamp-duty/for-property/selling-or-disposing-property/seller's-stamp-duty-(ssd)-for-residential-property",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review"
+    ],
+    "canonicalHref": "/ko/news/singapore-small-condo-first-upgrade-trap/",
+    "translationGroupId": "singapore-small-condo-first-upgrade-trap",
+    "relatedHref": "/ko/sg/singapore/explore/",
+    "infographic": null
+  },
+  {
+    "id": "en:seoul-59-to-84-upgrade-budget",
+    "slug": "seoul-59-to-84-upgrade-budget",
+    "locale": "en",
+    "marketId": "kr-seoul",
+    "type": "guide",
+    "title": "More Room in Seoul: What Does Moving from 59 to 84 sqm Cost?",
+    "deck": "Three retained transaction samples, then a worked funding bridge from selling your current home to completing the next.",
+    "bodyFile": "seoul-upsizing",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "More Room in Seoul: What Does Moving from 59 to 84 sqm Cost?",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "molit-disclosure",
+        "kind": "primary",
+        "publisher": "MOLIT",
+        "title": "Public disclosure guidance",
+        "href": "https://rt.molit.go.kr/pt/info/info.do",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review",
+      "seoul-retained-sale-sample-2026-09-02"
+    ],
+    "canonicalHref": "/guides/seoul-59-to-84-upgrade-budget/",
+    "translationGroupId": "seoul-59-to-84-upgrade-budget",
+    "relatedHref": "/kr/seoul/explore/",
+    "infographic": null
+  },
+  {
+    "id": "ko:seoul-59-to-84-upgrade-budget",
+    "slug": "seoul-59-to-84-upgrade-budget",
+    "locale": "ko",
+    "marketId": "kr-seoul",
+    "type": "guide",
+    "title": "서울에서 집 넓히기, 59㎡에서 84㎡로 얼마를 더 낼까?",
+    "deck": "단지 세 곳의 보관 거래 표본을 비교하고, 집값 차이를 실제로 필요한 추가 현금으로 바꿔본다.",
+    "bodyFile": "seoul-upsizing",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "서울에서 집 넓히기, 59㎡에서 84㎡로 얼마를 더 낼까?",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "molit-disclosure",
+        "kind": "primary",
+        "publisher": "MOLIT",
+        "title": "Public disclosure guidance",
+        "href": "https://rt.molit.go.kr/pt/info/info.do",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review",
+      "seoul-retained-sale-sample-2026-09-02"
+    ],
+    "canonicalHref": "/ko/guides/seoul-59-to-84-upgrade-budget/",
+    "translationGroupId": "seoul-59-to-84-upgrade-budget",
+    "relatedHref": "/ko/kr/seoul/explore/",
+    "infographic": null
+  },
+  {
+    "id": "en:dubai-two-million-total-purchase-budget",
+    "slug": "dubai-two-million-total-purchase-budget",
+    "locale": "en",
+    "marketId": "ae-dubai",
+    "type": "guide",
+    "title": "AED 2 Million in Dubai: How Much Is Left for the Actual Home?",
+    "deck": "Work back from a total cash limit before screening a completed two-bedroom. A labelled cost scenario, not a live listing shortlist.",
+    "bodyFile": "dubai-budget",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "AED 2 Million in Dubai: How Much Is Left for the Actual Home?",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "dld-registration",
+        "kind": "primary",
+        "publisher": "DLD",
+        "title": "Property Sale Registration",
+        "href": "https://dubailand.gov.ae/en/eservices/property-sale-registration/",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "dld-charge",
+        "kind": "primary",
+        "publisher": "DLD",
+        "title": "Service Charge Index",
+        "href": "https://dubailand.gov.ae/en/eservices/service-charge-index-overview/",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "dld-data",
+        "kind": "primary",
+        "publisher": "DLD",
+        "title": "Real estate data and field definitions",
+        "href": "https://dubailand.gov.ae/en/open-data/real-estate-data/",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review"
+    ],
+    "canonicalHref": "/guides/dubai-two-million-total-purchase-budget/",
+    "translationGroupId": "dubai-two-million-total-purchase-budget",
+    "relatedHref": "/ae/dubai/explore/",
+    "infographic": null
+  },
+  {
+    "id": "ko:dubai-two-million-total-purchase-budget",
+    "slug": "dubai-two-million-total-purchase-budget",
+    "locale": "ko",
+    "marketId": "ae-dubai",
+    "type": "guide",
+    "title": "두바이 200만 디르함, 집값에 전부 써도 될까?",
+    "deck": "취득 비용을 남기고 집값 상한을 역산한다. 완공 2베드룸을 검토하기 위한 가상 자금계산이며 현재 매물 추천은 아니다.",
+    "bodyFile": "dubai-budget",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "두바이 200만 디르함, 집값에 전부 써도 될까?",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "dld-registration",
+        "kind": "primary",
+        "publisher": "DLD",
+        "title": "Property Sale Registration",
+        "href": "https://dubailand.gov.ae/en/eservices/property-sale-registration/",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "dld-charge",
+        "kind": "primary",
+        "publisher": "DLD",
+        "title": "Service Charge Index",
+        "href": "https://dubailand.gov.ae/en/eservices/service-charge-index-overview/",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "dld-data",
+        "kind": "primary",
+        "publisher": "DLD",
+        "title": "Real estate data and field definitions",
+        "href": "https://dubailand.gov.ae/en/open-data/real-estate-data/",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review"
+    ],
+    "canonicalHref": "/ko/guides/dubai-two-million-total-purchase-budget/",
+    "translationGroupId": "dubai-two-million-total-purchase-budget",
+    "relatedHref": "/ko/ae/dubai/explore/",
+    "infographic": null
+  },
+  {
+    "id": "en:dubai-without-a-car-metro-last-mile",
+    "slug": "dubai-without-a-car-metro-last-mile",
+    "locale": "en",
+    "marketId": "ae-dubai",
+    "type": "market-brief",
+    "title": "Dubai Without a Car: How Far Will the Metro Really Take You?",
+    "deck": "Plan Downtown and a Marina outing around the station exit, the last walk and a realistic return route.",
+    "bodyFile": "dubai-without-car",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "Dubai Without a Car: How Far Will the Metro Really Take You?",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "rta-metro",
+        "kind": "primary",
+        "publisher": "RTA",
+        "title": "About Dubai Metro",
+        "href": "https://www.rta.ae/wps/portal/rta/ae/public-transport/metro/about-metro",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "rta-planner",
+        "kind": "primary",
+        "publisher": "RTA",
+        "title": "Wojhati journey planner",
+        "href": "https://wojhati.rta.ae/",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review"
+    ],
+    "canonicalHref": "/news/dubai-without-a-car-metro-last-mile/",
+    "translationGroupId": "dubai-without-a-car-metro-last-mile",
+    "relatedHref": "/ae/dubai/explore/",
+    "infographic": null
+  },
+  {
+    "id": "ko:dubai-without-a-car-metro-last-mile",
+    "slug": "dubai-without-a-car-metro-last-mile",
+    "locale": "ko",
+    "marketId": "ae-dubai",
+    "type": "market-brief",
+    "title": "두바이에서 차 없이 여행하면, 어디까지 갈 수 있을까?",
+    "deck": "다운타운과 마리나를 역 출입구부터 계획하는 여행. 마지막 도보 구간과 돌아오는 길까지 함께 정한다.",
+    "bodyFile": "dubai-without-car",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "두바이에서 차 없이 여행하면, 어디까지 갈 수 있을까?",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "rta-metro",
+        "kind": "primary",
+        "publisher": "RTA",
+        "title": "About Dubai Metro",
+        "href": "https://www.rta.ae/wps/portal/rta/ae/public-transport/metro/about-metro",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "rta-planner",
+        "kind": "primary",
+        "publisher": "RTA",
+        "title": "Wojhati journey planner",
+        "href": "https://wojhati.rta.ae/",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review"
+    ],
+    "canonicalHref": "/ko/news/dubai-without-a-car-metro-last-mile/",
+    "translationGroupId": "dubai-without-a-car-metro-last-mile",
+    "relatedHref": "/ko/ae/dubai/explore/",
+    "infographic": null
+  },
+  {
+    "id": "en:singapore-everton-park-blair-plain-afternoon",
+    "slug": "singapore-everton-park-blair-plain-afternoon",
+    "locale": "en",
+    "marketId": "sg-singapore",
+    "type": "market-brief",
+    "title": "Singapore After Marina Bay: An Afternoon Around Everton Park",
+    "deck": "A researched Everton Park and Blair Plain walk, including the Baba House closure that older itineraries can miss.",
+    "bodyFile": "everton-park",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "Singapore After Marina Bay: An Afternoon Around Everton Park",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "nhb-blair",
+        "kind": "primary",
+        "publisher": "National Heritage Board",
+        "title": "Blair Plain Conservation Area",
+        "href": "https://www.roots.gov.sg/places/places-landing/Places/surveyed-sites/Blair-Plain-Conservation-Area",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "nus-visit",
+        "kind": "primary",
+        "publisher": "NUS",
+        "title": "Baba House: current visitor information",
+        "href": "https://babahouse.nus.edu.sg/plan-your-visit/",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "sla-map",
+        "kind": "primary",
+        "publisher": "SLA",
+        "title": "OneMap: Everton Park",
+        "href": "https://www.onemap.gov.sg/?lat=1.277426542886967&lng=103.8400011880947",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review"
+    ],
+    "canonicalHref": "/news/singapore-everton-park-blair-plain-afternoon/",
+    "translationGroupId": "singapore-everton-park-blair-plain-afternoon",
+    "relatedHref": "/sg/singapore/explore/",
+    "infographic": null
+  },
+  {
+    "id": "ko:singapore-everton-park-blair-plain-afternoon",
+    "slug": "singapore-everton-park-blair-plain-afternoon",
+    "locale": "ko",
+    "marketId": "sg-singapore",
+    "type": "market-brief",
+    "title": "싱가포르, 마리나베이만 보고 가기엔 아까운 동네",
+    "deck": "에버턴 파크에서 블레어 플레인으로 걷는 오후. 오래된 여행 글이 놓치는 바바 하우스 휴관 정보도 확인했다.",
+    "bodyFile": "everton-park",
+    "status": "published",
+    "evidenceState": "verified",
+    "authorName": "SignedPrice Editorial",
+    "reviewedBy": "SignedPrice Editorial (AI-assisted source and calculation review)",
+    "reviewedAt": "2026-09-15T20:00:00Z",
+    "publishedAt": "2026-09-15T20:00:00Z",
+    "updatedAt": "2026-09-15T20:00:00Z",
+    "readerQuestion": "싱가포르, 마리나베이만 보고 가기엔 아까운 동네",
+    "revisionNote": "Original bilingual analysis with explicit source scope and labelled scenarios; no personal visit or live availability claimed.",
+    "sources": [
+      {
+        "id": "nhb-blair",
+        "kind": "primary",
+        "publisher": "National Heritage Board",
+        "title": "Blair Plain Conservation Area",
+        "href": "https://www.roots.gov.sg/places/places-landing/Places/surveyed-sites/Blair-Plain-Conservation-Area",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "nus-visit",
+        "kind": "primary",
+        "publisher": "NUS",
+        "title": "Baba House: current visitor information",
+        "href": "https://babahouse.nus.edu.sg/plan-your-visit/",
+        "checkedAt": "2026-09-15"
+      },
+      {
+        "id": "sla-map",
+        "kind": "primary",
+        "publisher": "SLA",
+        "title": "OneMap: Everton Park",
+        "href": "https://www.onemap.gov.sg/?lat=1.277426542886967&lng=103.8400011880947",
+        "checkedAt": "2026-09-15"
+      }
+    ],
+    "evidenceReleaseIds": [
+      "september-15-buyers-source-review"
+    ],
+    "canonicalHref": "/ko/news/singapore-everton-park-blair-plain-afternoon/",
+    "translationGroupId": "singapore-everton-park-blair-plain-afternoon",
+    "relatedHref": "/ko/sg/singapore/explore/",
+    "infographic": null
+  }
+]

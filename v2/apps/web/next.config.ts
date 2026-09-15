@@ -1,3 +1,4 @@
+import retiredEditorial from './content/retired-editorial.json';
 import type { NextConfig } from "next";
 import { fileURLToPath } from "node:url";
 
@@ -14,6 +15,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      ...['', '/ko', '/zh-cn'].flatMap(prefix => Object.entries(retiredEditorial).map(([slug, destination]) => ({ source: `${prefix}/news/${slug}/`, destination: `${prefix === '/zh-cn' ? '' : prefix}${destination}`, permanent: true }))),
       ...['', '/ko', '/zh-cn'].flatMap(prefix => [
         ['seoul', 'seoul-apartment-buying-budget-guide'],
         ['singapore', 'singapore-condo-buying-budget-guide'],

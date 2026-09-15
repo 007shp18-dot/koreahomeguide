@@ -63,6 +63,12 @@ const routes: EditorialLanguageRoutes = {
 };
 // Canonical English/Korean pairs, without importing article bodies into the client.
 const koreanPairs = [
+  ['/news/dubai-buy-now-or-too-late/', '/ko/news/dubai-buy-now-or-too-late/'],
+  ['/news/singapore-small-condo-first-upgrade-trap/', '/ko/news/singapore-small-condo-first-upgrade-trap/'],
+  ['/guides/seoul-59-to-84-upgrade-budget/', '/ko/guides/seoul-59-to-84-upgrade-budget/'],
+  ['/guides/dubai-two-million-total-purchase-budget/', '/ko/guides/dubai-two-million-total-purchase-budget/'],
+  ['/news/dubai-without-a-car-metro-last-mile/', '/ko/news/dubai-without-a-car-metro-last-mile/'],
+  ['/news/singapore-everton-park-blair-plain-afternoon/', '/ko/news/singapore-everton-park-blair-plain-afternoon/'],
   ['/news/seoul-same-complex-price-gap/', '/ko/news/seoul-same-complex-price-gap/'],
   ['/news/tokyo-cheaper-rent-longer-commute/', '/ko/news/tokyo-cheaper-rent-longer-commute/'],
   ['/news/seoul-buam-dong-afternoon-walk/', '/ko/news/seoul-buam-dong-afternoon-walk/'],

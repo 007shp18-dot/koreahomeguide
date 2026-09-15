@@ -36,7 +36,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "Majan 실거주·투자를 묻는 글의 답변은 출입 도로와 교통 기대를 다르게 평가했다. 거주자라고 밝힌 답변자 중 중개업 종사자도 있어 이해관계를 구분해 읽어야 한다.",
+      "en": "Replies to a Majan buying question disagree over access roads and transport expectations. One self-described resident is also an agent, which matters when weighing the account."
+    }
   },
   {
     "id": "ae-community-majan-current-transit",
@@ -76,7 +80,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "comparable-setting"
+    "mappingScope": "comparable-setting",
+    "reaction": {
+      "ko": "Majan과 The Wilds를 함께 언급한 토론에는 현재 출입 동선과 미래 교통 기대가 섞여 있다. 신규 단지의 입주자가 생활을 평가한 자료는 아니다.",
+      "en": "A discussion naming Majan and The Wilds mixes present access with expectations about future transport. It is not an account from residents of the new project."
+    }
   },
   {
     "id": "ae-community-motor-event-noise",
@@ -115,7 +123,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "Motor City를 여러 번 본 방문자는 소리가 크지 않았다고 했고, 장기 거주자라고 밝힌 답변자는 행사 시각과 방향·차음에 따라 다르다고 설명했다. Skyterraces 입주 후기는 아니다.",
+      "en": "A prospective Motor City resident heard little on several visits; a self-described long-term resident distinguished event timing, orientation and insulation. These are not Skyterraces resident reports."
+    }
   },
   {
     "id": "ae-community-creek-night-light",
@@ -156,7 +168,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "Creek Harbour의 한 거주자 자술 댓글은 건물 장식 조명이 테라스로 들어온다고 적었다. 건물명이 없어 Valia·Creek Bay·Creek Haven의 결함으로 연결할 수 없다.",
+      "en": "A self-described Creek Harbour resident reports decorative facade light reaching a terrace. The building is unnamed; the account cannot be assigned to Valia, Creek Bay or Creek Haven."
+    }
   },
   {
     "id": "ae-community-creek-return-route",
@@ -197,7 +213,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "과거 Creek Harbour 토론에서 한 답변자는 평일 진입 교통이 늘었다고 느꼈고 질문자는 최근 방문 경험을 언급했다. 이동시간을 측정한 자료는 아니다.",
+      "en": "In an older Creek Harbour discussion, a respondent perceived more weekday access traffic and the questioner recalled a visit. Neither establishes measured journey times."
+    }
   },
   {
     "id": "ae-community-creek-summer-errands",
@@ -238,7 +258,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "Creek Harbour의 거주자 자술 답변은 가까운 식료품점까지 걷는 것을 좋아하면서 여름에는 조건이 달라진다고 설명했다. 특정 신규 타워의 보행 경험은 아니다.",
+      "en": "A self-described Creek Harbour resident likes grocery walks but distinguishes summer conditions. This is not a walking account from a particular new tower."
+    }
   },
   {
     "id": "ae-community-business-bay-metro",
@@ -283,7 +307,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "Business Bay의 과거 거주 토론은 운하 산책과 큰길을 따라 이동하는 경험, 실제 메트로 접근을 서로 다르게 설명했다. 지역 이름만으로 역 이용 편의를 판단하기 어렵다는 사례다.",
+      "en": "An older Business Bay resident discussion distinguishes canal walks, main-road routes and actual Metro access. The district name alone does not resolve those different journeys."
+    }
   },
   {
     "id": "ae-community-business-bay-garage",
@@ -328,7 +356,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "comparable-setting"
+    "mappingScope": "comparable-setting",
+    "reaction": {
+      "ko": "한 직장인의 글은 이름을 밝히지 않은 주차 건물 안에서 나오는 과정과 이후 도로 주행을 구분했다. 주거 타워의 대기시간을 보여주는 자료는 아니다.",
+      "en": "An office worker separates leaving an unnamed parking building from the later drive. The account is not a measurement of a residential tower’s queue."
+    }
   },
   {
     "id": "ae-community-business-bay-cooling",
@@ -374,7 +406,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "Business Bay의 스튜디오 임차 질문에는 제안받은 임대료에서 냉방이 빠져 있었고, 답변은 공급자에 따라 비용이 달라진다고 설명했다. 검토 중인 프로젝트의 요금은 확인되지 않았다.",
+      "en": "A Business Bay studio-rental question excludes cooling from the proposed rent; a reply notes that the provider matters. It does not identify the reviewed project’s tariff."
+    }
   },
   {
     "id": "ae-community-islands-access",
@@ -414,7 +450,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "comparable-setting"
+    "mappingScope": "comparable-setting",
+    "reaction": {
+      "ko": "Dubai Islands의 질문과 답변은 식당·클럽하우스 방문과 주거 구역 출입을 구분했고, 질문자가 나중에 확인한 출입구 설명도 처음 답변과 달랐다. 현재 규칙은 미확인이다.",
+      "en": "A Dubai Islands thread distinguishes restaurant or clubhouse visits from residential access. The questioner later reports different gate information; current rules remain unresolved."
+    }
   },
   {
     "id": "ae-community-islands-cooling",
@@ -455,7 +495,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "comparable-setting"
+    "mappingScope": "comparable-setting",
+    "reaction": {
+      "ko": "Jumeirah Heights의 과거 답변은 외부 냉방 청구와 전기요금을 구분해 확인하라고 했다. Eltiera Views나 Serenia East의 거주 경험으로 사용할 수 없는 주변 사례다.",
+      "en": "A historical Jumeirah Heights reply distinguishes external cooling from electricity billing. It is surrounding context, not resident experience at Eltiera Views or Serenia East."
+    }
   },
   {
     "id": "ae-community-wasl-comparable-space",
@@ -495,7 +539,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "Wasl Gate 주변 토론은 기존 Nook의 작은 집과 새로 나오는 주변 주택을 비교했다. 확인한 글만으로 공급량이나 Boulevard Park의 적정가를 계산할 수는 없다.",
+      "en": "A Wasl Gate discussion compares smaller existing Nook homes with surrounding new supply. It does not establish supply totals or Boulevard Park’s value."
+    }
   },
   {
     "id": "ae-community-jebel-workplace-gate",
@@ -536,7 +584,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "comparable-setting"
+    "mappingScope": "comparable-setting",
+    "reaction": {
+      "ko": "Jebel Ali FZE로 직장을 옮기는 질문에 메트로 이용 가능성을 다르게 보는 답변이 달렸다. 정확한 사무실이 없어 어느 경로가 맞는지 결론 내릴 수 없다.",
+      "en": "Replies to a Jebel Ali FZE relocation question disagree about Metro access. The precise office is unspecified, so the correct final route remains unresolved."
+    }
   },
   {
     "id": "ae-community-industrial-daily-route",
@@ -575,7 +627,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "Jabal Ali Industrial 일대의 소유자 자술 댓글은 가까운 일터를 장점으로 봤고 다른 답변은 산업시설 주변 거주를 망설였다. RAW District 입주자 후기는 확보되지 않았다.",
+      "en": "A self-described owner values nearby employment in the industrial area, while other replies question living among industrial uses. No RAW District resident account was established."
+    }
   },
   {
     "id": "ae-community-south-specific-location",
@@ -617,7 +673,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "Dubai South 토론에서는 Emaar South와 Pulse를 구분하며 고립감과 생활시설을 다르게 평가했다. 넓은 지역을 하나의 주거 경험으로 묶기 어렵다.",
+      "en": "A Dubai South discussion distinguishes Emaar South from Pulse and contains differing accounts of isolation and amenities. The broad area does not describe one residential experience."
+    }
   },
   {
     "id": "ae-community-south-delivery-address",
@@ -667,7 +727,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "comparable-setting"
+    "mappingScope": "comparable-setting",
+    "reaction": {
+      "ko": "한 Dubai South 댓글은 앱 배송 선택이 적다고 했지만 다른 지역 경험과 일치하지 않았다. 배송 가능 여부를 구역 이름 하나로 확정할 근거는 없다.",
+      "en": "One Dubai South commenter reports limited app delivery options, which differs from other area accounts. The district name does not establish service to a particular address."
+    }
   },
   {
     "id": "ae-community-south-demand-horizon",
@@ -708,7 +772,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "짧게 보유할 계획의 매수 희망자는 새 공급이 공항 관련 수요보다 빨리 나올 가능성을 질문했다. 임대수요가 이미 확인됐다는 거주 후기와는 구분해야 한다.",
+      "en": "A prospective short-hold buyer asks whether new supply could arrive ahead of airport-related demand. The question does not establish current rental demand."
+    }
   },
   {
     "id": "ae-community-palm-crescent-exit",
@@ -747,7 +815,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "Palm Crescent 매수를 묻는 글에서는 해변 이용과 섬 안에서 추가로 이동하는 구간을 비교했다. Passo의 거주 후기나 현재 교통 측정은 아니다.",
+      "en": "A Palm Crescent buying discussion weighs beach use against the additional island journey. It is not Passo resident experience or a current traffic measurement."
+    }
   },
   {
     "id": "ae-community-palm-guest-parking",
@@ -787,7 +859,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "comparable-setting"
+    "mappingScope": "comparable-setting",
+    "reaction": {
+      "ko": "Kempinski 방문자는 반복 방문 때의 주차 청구 경험을 적었다. 이 사례의 요금이나 운영을 Passo에 적용할 근거는 없다.",
+      "en": "A Kempinski visitor describes parking charges on repeat visits. The account does not establish Passo’s parking prices or rules."
+    }
   },
   {
     "id": "ae-community-reportage-cash-conditions",
@@ -845,7 +921,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "comparable-setting"
+    "mappingScope": "comparable-setting",
+    "reaction": {
+      "ko": "Reportage 관련 글들에서는 저렴해 보인 가격이 일시납 조건인지 분납 조건인지가 반복해서 쟁점이 됐다. 일부 작성자는 중개인으로 자신을 소개했고 실제 계약가격은 검증되지 않았다.",
+      "en": "Across the inspected Reportage discussions, a recurring question is whether an apparently low price assumes full cash or instalments. Some writers identify as agents; actual contracted prices are unverified."
+    }
   },
   {
     "id": "ae-community-athlon-rent-overlap",
@@ -884,6 +964,10 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "실거주를 준비하는 가구의 Athlon 질문은 완공 주택을 사는 경우와 분납 중 기존 집의 월세를 계속 내는 경우를 비교했다. 정확한 Rise 1 차수와 인도일은 확인되지 않았다.",
+      "en": "A family’s Athlon question compares a ready home with instalments plus continued rent while waiting. The exact Rise 1 phase and handover date are unverified."
+    }
   }
 ]

@@ -16,7 +16,7 @@ describe('four-city budget collection', () => {
         expect(resolveNewsroomFilters(Object.fromEntries(url.searchParams))).toMatchObject({ market: 'tokyo', type: 'insights', ...(topic === 'all' ? {} : { topic }) });
       }
       const budget = buildInsightItems([], 'all', locale, 'budget');
-      expect(budget).toHaveLength(4);
+      expect(budget).toHaveLength(6);
       expect(new Set(budget.map(item => item.city))).toEqual(new Set(['seoul', 'singapore', 'dubai', 'tokyo']));
       expect(buildInsightItems([], 'tokyo', locale, 'budget')).toHaveLength(1);
       const html = renderToStaticMarkup(<InsightsIndex articles={[]} market="all" locale={locale} topic="budget" />);
@@ -25,7 +25,8 @@ describe('four-city budget collection', () => {
         expect(html).not.toContain(`${guide.city}-same-budget-property-comparison`);
       }
       expect(html).toContain('data-budget-edition="2026-09"');
-      expect(html).not.toContain('data-newsroom-lead=');
+      expect(html).toContain('seoul-59-to-84-upgrade-budget');
+      expect(html).toContain('dubai-two-million-total-purchase-budget');
       expect(html).not.toContain('No stories match');
     }
   });

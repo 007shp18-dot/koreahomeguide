@@ -227,7 +227,8 @@ describe('public Newsroom routes', () => {
     expect(urls).toContain('https://www.signedprice.com/news/');
     expect(urls).toContain('https://www.signedprice.com/news/policy/');
     expect(urls).toContain('https://www.signedprice.com/news/policy/singapore-absd-policy-status/');
-    expect(urls).toContain('https://www.signedprice.com/news/seoul-district-price-distribution/');
+    expect(urls).not.toContain('https://www.signedprice.com/news/seoul-district-price-distribution/');
+    expect(urls).toContain('https://www.signedprice.com/guides/seoul-59-to-84-upgrade-budget/');
     expect(urls).not.toContain('https://www.signedprice.com/insights/');
     expect(urls.some((url) => url.startsWith('https://www.signedprice.com/insights/'))).toBe(false);
   });

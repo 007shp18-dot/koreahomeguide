@@ -18,7 +18,7 @@ describe('article reading paths', () => {
   });
 
   it('keeps rental readers on rental topics and Dubai readers on Dubai topics', () => {
-    for (const slug of ['rent-an-apartment-in-korea', 'seoul-new-renewal-rent-gap', 'korea-rental-deposit-protection-status']) {
+    for (const slug of ['rent-an-apartment-in-korea', 'wolse-vs-jeonse', 'korea-rental-deposit-protection-status']) {
       const article = EDITORIAL_PORTFOLIO.find(record => record.locale === 'en' && record.slug === slug)!;
       expect(relatedReading(article).every(link => /rent|wolse|jeonse/.test(link.href))).toBe(true);
     }

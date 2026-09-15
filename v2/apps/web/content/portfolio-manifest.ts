@@ -1,3 +1,6 @@
+import { BUYERS_EDITION } from './buyers-edition';
+import retired from './retired-editorial.json';
+import { deepenEditorial } from './editorial-depth';
 import { CITY_BUDGET_COMPARISONS } from './city-budget-comparisons';
 import { TOKYO_BUYING_GUIDES } from './tokyo-buying-guide';
 import { SEPTEMBER_15_EDITORIAL } from './september-15-editorial';
@@ -97,6 +100,7 @@ export function validateEditorialPortfolio(values: readonly unknown[]): readonly
 }
 
 export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Object.freeze([
+  ...BUYERS_EDITION,
   ...TOKYO_BUYING_GUIDES.map(original => {
     const expanded = CITY_BUDGET_COMPARISONS.find(article => article.marketId === 'jp-tokyo' && article.locale === original.locale)!;
     return { ...expanded, id: original.id, slug: original.slug, canonicalHref: original.canonicalHref, translationGroupId: original.translationGroupId ?? original.slug };
@@ -113,7 +117,7 @@ export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Obje
   ...CHINESE_MONTHLY_REPORTS,
   CHINESE_DUBAI_RENTAL_YIELD,
   ...TOKYO_RENEWAL_ARTICLES,
-].filter(article => article.slug !== 'compare-seoul-district-prices').map(reviseEditorial).map(refreshDiscovery))));
+].filter(article => article.slug !== 'compare-seoul-district-prices' && !Object.hasOwn(retired,article.slug)).map(reviseEditorial).map(refreshDiscovery).map(deepenEditorial))));
 
 export function listPortfolioRecords(locale?: EditorialPortfolioRecord['locale']): readonly EditorialPortfolioRecord[] {
   return locale === undefined ? EDITORIAL_PORTFOLIO : EDITORIAL_PORTFOLIO.filter((record) => record.locale === locale);

@@ -3,6 +3,8 @@ import { listPortfolioRecords } from './portfolio-manifest';
 export type GuideMarket = 'all' | 'seoul' | 'tokyo' | 'singapore' | 'dubai';
 export type GuideLocale = 'en' | 'ko';
 export const BUDGET_GUIDE_SLUGS = [
+  'seoul-59-to-84-upgrade-budget',
+  'dubai-two-million-total-purchase-budget',
   'seoul-apartment-buying-budget-guide',
   'singapore-condo-buying-budget-guide',
   'dubai-ready-apartment-buying-budget-guide',
