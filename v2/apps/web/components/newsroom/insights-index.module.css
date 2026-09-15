@@ -22,3 +22,7 @@
 .topic { letter-spacing: .02em; font-size: 12px; }.latest { padding-top: 40px; }.latest > h2 { font-weight: 650; }.grid { gap: 32px 24px; }.card .copy { padding-top: 16px; }.credit summary { min-height: 32px; }.read { min-height: 44px; }
 .more > summary { border: 1px solid var(--line); border-radius: 10px; color: var(--accent); background: var(--surface); }
 @media(max-width:760px) { .index { width: calc(100% - 32px); padding-top: 28px; }.hero { padding: 16px; gap: 20px; }.hero h2 { font-size: 27px; }.filters a { padding-inline: 16px; }.card h3 { font-size: 22px; } }
+
+.hero h2 { line-height: 1.4; letter-spacing: -.015em; }
+.card h3 { line-height: 1.45; letter-spacing: -.015em; }
+.hero p,.card p { line-height: 1.65; }

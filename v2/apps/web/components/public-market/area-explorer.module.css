@@ -1151,7 +1151,7 @@
   font-size: var(--text-meta);
 }
 
-.selectedRow { border-left: 4px solid var(--area-accent); }
+.selectedRow { border-left: 4px solid transparent; background: var(--accent-soft); }
 
 .selectedRow .districtButton small {
   color: var(--area-accent);
@@ -2181,4 +2181,4 @@
 .transactionFilter a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); border-color: var(--control-selected-border); }
 .submitSearch { background: var(--accent); }
 .exploreToolbar :is(input, select) { font-size: 16px; border-radius: var(--radius-control); }
-.buildingList li.selectedBuildingCard { background: var(--accent-soft); box-shadow: inset 3px 0 var(--accent); }
+.buildingList li.selectedBuildingCard { background: var(--accent-soft); box-shadow: none; }

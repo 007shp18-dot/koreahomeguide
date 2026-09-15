@@ -14,7 +14,7 @@
 .results article { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 20px 4px; border-bottom: 1px solid var(--line); }
 .results article[data-has-photo="true"] { grid-template-columns: auto minmax(0, 1fr); }
 .results article[data-has-photo="true"]:not(:has([data-dubai-area-photo])) { grid-template-columns: minmax(0, 1fr); }
-.results article[data-selected="true"] { background: var(--accent-soft); border-radius: var(--radius-control); box-shadow: inset 3px 0 var(--accent); padding-inline: 12px; }
+.results article[data-selected="true"] { background: var(--accent-soft); border-radius: var(--radius-control); box-shadow: none; padding-inline: 12px; }
 .rowContent { min-width: 0; }
 .rowContent > button { display: block; width: 100%; min-height: var(--control-min); padding: 0; border: 0; background: transparent; color: var(--ink); text-align: start; cursor: pointer; }
 .rowContent > button span { display: grid; gap: 4px; }

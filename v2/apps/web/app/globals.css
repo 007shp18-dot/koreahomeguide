@@ -3766,8 +3766,8 @@ body { background: var(--canvas); }
 .site-header__action--saved { padding-inline: 14px; background: var(--surface); border-color: transparent; }
 .site-header__action--offer { background: var(--accent); color: white; border-color: var(--accent); }
 .site-header__more { position: relative; }
-.site-header__more > summary { color: var(--muted); min-height: 48px; padding: 0; border: 0; display: flex; align-items: center; cursor: pointer; }
-.site-header__more .site-header__context-panel { min-width: 180px; right: auto; left: 0; display: grid; padding: 8px; }
+.site-header__more > summary { color: var(--muted); min-height: 44px; padding: 0 12px; margin-inline: -12px; border: 0; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; line-height: 20px; cursor: pointer; }
+.site-header__more .site-header__context-panel { width: 200px; min-width: 200px; max-width: calc(100vw - 32px); right: auto; left: -12px; display: grid; gap: 2px; padding: 6px; border-radius: 10px; }
 .site-header__more .site-header__context-panel a { display: flex; align-items: center; min-height: 44px; padding: 10px 14px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 14px; }
 .site-header__more .site-header__context-panel a:hover { background: var(--surface); }
 :where(button,select,input,textarea) { font-family: inherit; }
@@ -3784,3 +3784,13 @@ body { background: var(--canvas); }
 @media(max-width: 1100px) { .site-header__inner { gap: 20px; padding-inline: 24px; }.site-header__links { gap: 16px; }.site-header__action--offer { display: none; } }
 @media(max-width: 700px) { .site-header__inner { min-height: 64px; padding-inline: 16px; gap: 12px; }.explorer-workspace { border-radius: 12px; } }
 @media(prefers-reduced-motion:reduce) { :where(button,[role='button']) { transition: none; } }
+
+/* Final typography rhythm: comfortable Korean spacing without side accents. */
+:lang(ko) main :is(h1,h2,h3,h4) { letter-spacing: -.015em; word-break: keep-all; overflow-wrap: anywhere; }
+:lang(ko) main :is(p,li,button,label) { letter-spacing: 0; }
+main :where(h2,h3,h4) { line-height: 1.4; }
+main :where(p) { line-height: 1.65; }
+
+.site-header__more .site-header__context-panel a { border-bottom: 0; line-height: 20px; padding: 10px 12px; }
+.site-header__more .site-header__context-panel a[aria-current='page'] { color: var(--accent); background: var(--accent-soft); box-shadow: none; }
+.site-header__more[open] > summary,.site-header__more > summary:hover { background: var(--accent-soft); color: var(--accent); }

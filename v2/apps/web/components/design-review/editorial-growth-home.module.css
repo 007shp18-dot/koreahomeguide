@@ -3,7 +3,7 @@
 .hero { display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 56px; padding-block: 56px 44px; }
 .heroCopy { min-width: 0; }
 .kicker { font-size: 12px; font-weight: 650; letter-spacing: .12em; color: var(--muted); line-height: 1.6; margin: 0; }
-.hero h1 { margin: 22px 0; font-size: clamp(36px, 4vw, 60px); letter-spacing: -.045em; line-height: 1.16; font-weight: 750; text-wrap: balance; }
+.hero h1 { margin: 22px 0; font-size: clamp(36px, 4vw, 60px); letter-spacing: -.025em; line-height: 1.16; font-weight: 750; text-wrap: balance; }
 .hero h1 span { display: block; color: var(--accent); }
 .lead { max-width: 45ch; color: var(--muted); font-size: 16px; line-height: 1.8; margin: 0 0 26px; }
 .heroCities { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
@@ -84,3 +84,7 @@
 .heroCities a { min-height: 36px; padding: 4px 12px; font-size: 13px; }
 @media(max-width:700px) { .heroCities a { min-height: 44px; }.hero .search label { padding-inline: 8px; } }
 @media(max-width:380px) { .hero .search { grid-template-columns: minmax(0,1fr) 44px; row-gap: 6px; } }
+
+.hero h1 { line-height: 1.22; }
+.lead { line-height: 1.65; }
+.heroCities { gap: 8px; }

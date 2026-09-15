@@ -43,7 +43,7 @@
 .heading { gap: 20px; margin-bottom: 28px; }.heading > div { flex: 1; min-width: 0; }.heading > button { background: var(--surface); border-color: transparent; min-height: 42px; font-size: 14px; }
 .heading p { margin: 0; font-size: 16px; }
 .root button { display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; line-height: 1.4; border-radius: 10px; transition: background .16s ease,border-color .16s ease; }
-.root button:hover:not(:disabled) { background: var(--surface); border-color: var(--control-selected-border); }.root .primary:hover:not(:disabled) { background: #06685f; border-color: transparent; }
+.root button:hover:not(:disabled):not([aria-pressed=true]):not(.primary) { background: var(--surface); border-color: var(--control-selected-border); }.root .primary:hover:not(:disabled) { background: #1d4fb3; border-color: transparent; }
 .filters { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 20px 12px; padding-bottom: 24px; border-bottom: 1px solid var(--line); margin: 0; }
 .cityFilters { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
 .cityFilters button { min-height: 40px; padding: 8px 16px; border-radius: 999px; background: var(--surface); border: 0; color: var(--muted); }
@@ -63,3 +63,8 @@
 @media(prefers-reduced-motion:reduce) { .root button { transition: none; } }
 
 .detailLayout { grid-template-columns: minmax(0,1fr); }
+
+.heading p,.postTitle { line-height: 1.5; }
+.body { line-height: 1.75; }
+.meta { line-height: 1.5; margin-block: 8px; }
+.editorialCard p,.welcome p { line-height: 1.65; }
