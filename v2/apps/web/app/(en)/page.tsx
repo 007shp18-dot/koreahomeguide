@@ -5,7 +5,7 @@ import { indexableMetadata } from '@/lib/public-metadata';
 
 export const metadata: Metadata = indexableMetadata({
   path: '/',
-  title: 'Explore property prices in Seoul, Singapore, Dubai & Tokyo | SignedPrice',
+  title: 'Home buying budgets: Seoul, Singapore, Dubai & Tokyo | SignedPrice',
   description: 'Explore homes and neighbourhoods through recorded property prices. Compare areas, check offers and plan your purchase in Seoul, Singapore, Dubai and Tokyo.',
   languageAlternates: { en: '/', ko: '/ko/', 'zh-Hans': '/zh-cn/' },
 });

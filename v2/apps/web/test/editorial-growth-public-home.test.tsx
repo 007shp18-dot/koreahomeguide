@@ -36,10 +36,10 @@ describe('public editorial homepage', () => {
     expect(markup).toContain('data-market-id="jp-tokyo"');
     expect(markup).toContain('href="/jp/tokyo"');
     const main = markup.slice(markup.indexOf('<main'), markup.indexOf('</main>'));
-    expect(main).toContain('role="search"');
-    expect(main).toContain('action="/kr/seoul/explore"');
+    expect(main.match(/data-buying-city=/g)).toHaveLength(4);
+    expect(main).not.toContain('aria-pressed="true"');
     expect(main).not.toContain('data-home-region="passport"');
-    expect(main).not.toContain('data-editorial-content-id');
+    expect(main.match(/data-editorial-content-id=/g)).toHaveLength(4);
     expect(main.match(/data-primary-action="explore"/g)).toHaveLength(4);
   });
 

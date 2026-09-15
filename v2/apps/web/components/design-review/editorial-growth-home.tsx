@@ -1,20 +1,17 @@
-import Image from 'next/image';
-import { BUDGET_GUIDE_SERIES } from '@/content/budget-guide-series';
-import { HomeSearch } from '../home/home-search';
 import { HomeAnalysis } from '../home-analysis';
-import { ExploreLink } from '../market-ui/explore-link';
 import Link from 'next/link';
 import { UiIcon } from '../ui-icon';
 import type { EditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model';
 import type { SiteLocale } from '@/lib/navigation/site-navigation';
-import { createThreeMarketHomeModel } from '@/lib/home/three-market-home-model';
+import { createBuyingJourney } from '@/lib/home/buying-journey-model.server';
+import { BuyingJourney } from '../home/buying-journey';
 import type { StoryPhoto } from '@/content/story-photos';
 import styles from './editorial-growth-home.module.css';
 
 const COPY = {
   en: {
-    title: 'Find your place.', titleEnd: 'See the bigger picture.',
-    lead: 'Reported contract prices from official sources. Not asking prices.',
+    title: 'What can your budget buy?', titleEnd: 'Four cities. Your next move.',
+    lead: 'Compare recorded home sales, understand buying costs, and narrow your search.',
     markets: 'Choose a city', explore: 'Explore', index: 'The city index',
     next: 'Take a closer look', tools: 'Tools', toolsNote: 'Budgets & buying costs',
     insights: 'Insights', insightsNote: 'Stories behind the numbers',
@@ -24,8 +21,8 @@ const COPY = {
     cities: { 'kr-seoul': 'Seoul', 'sg-singapore': 'Singapore', 'ae-dubai': 'Dubai', 'jp-tokyo': 'Tokyo' },
   },
   ko: {
-    title: '세계의 집을,', titleEnd: '더 넓은 시선으로.',
-    lead: '공식 자료에 공개된 실거래 가격입니다. 매물 호가가 아닙니다.',
+    title: '내 예산으로 어떤 집을?', titleEnd: '네 도시에서 찾는 다음 선택.',
+    lead: '실제 거래와 구매비용을 비교하며, 나에게 맞는 선택지를 좁혀보세요.',
     markets: '도시 선택', explore: '탐색', index: '도시 둘러보기',
     next: '조금 더 자세히', tools: '도구', toolsNote: '예산 비교와 매입 비용',
     insights: '인사이트', insightsNote: '숫자로 읽는 시장 이야기',
@@ -35,8 +32,8 @@ const COPY = {
     cities: { 'kr-seoul': '서울', 'sg-singapore': '싱가포르', 'ae-dubai': '두바이', 'jp-tokyo': '도쿄' },
   },
   'zh-CN': {
-    title: '探索世界的家，', titleEnd: '看见更广阔的选择。',
-    lead: '价格来自官方发布的成交数据，并非挂牌价。',
+    title: '你的预算，能买怎样的家？', titleEnd: '四座城市，下一步由你选择。',
+    lead: '比较真实成交，了解购房成本，逐步缩小选择范围。',
     markets: '选择城市', explore: '探索', index: '城市索引',
     next: '进一步了解', tools: '工具', toolsNote: '预算比较与购房成本',
     insights: '洞察', insightsNote: '数字背后的市场故事',
@@ -90,7 +87,8 @@ export function EditorialGrowthHome({ model }: Readonly<{
 export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
   const copy = COPY[locale];
   const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
-  const markets = createThreeMarketHomeModel({ locale: locale === 'zh-CN' ? locale : 'en', seoulMetric: null }).markets;
+  const models = createBuyingJourney(locale);
+  const markets = models.map(model => ({ id: model.market as HomeMarket }));
 
   return <main className={styles.homePage}>
     <header className={`${styles.section} ${styles.hero}`}>
@@ -98,39 +96,14 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
         <p className={styles.kicker}>GLOBAL REAL ESTATE · SIGNEDPRICE</p>
         <h1>{copy.title}<span>{copy.titleEnd}</span></h1>
         <p className={styles.lead}>{copy.lead}</p>
-        <HomeSearch locale={locale} />
+        <ul className={styles.trustPoints}>{(locale === 'ko'
+          ? ['거래 기간·범위 공개', '공식 자료 기반', '호가가 아닌 과거 거래']
+          : locale === 'zh-CN' ? ['明确的成交时期与范围', '官方资料来源', '历史成交，并非挂牌价']
+          : ['Dates and coverage shown', 'Official sources', 'Recorded sales, not asking prices']).map(point => <li key={point}>{point}</li>)}</ul>
       </div>
     </header>
 
-    <section className={styles.section} data-home-region="markets" aria-label={copy.markets}>
-      <ol className={styles.marketGrid}>
-        {markets.map((market, index) => {
-          const city = copy.cities[market.id];
-          const photo = CITY_PHOTOS[market.id];
-          const guide = BUDGET_GUIDE_SERIES.find(item => market.id.endsWith(`-${item.city}`))!;
-          const href = `${prefix}${market.primaryAction.href}`;
-          const englishDestination = false;
-          return <li className={styles.marketCard} key={market.id} id={`city-${market.id}`} data-market-id={market.id} data-contextual-action={market.id}>
-            <ExploreLink href={href} className={styles.cityLink} data-primary-action="explore" aria-label={`${copy.explore} ${city}${englishDestination ? ' · English' : ''}`}>
-              <div className={styles.photo}>
-                <Image src={photo.src} alt={photo.caption[locale === 'ko' ? 'ko' : 'en']} fill
-                  loading={index === 0 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'}
-                  sizes="(max-width: 700px) 50vw, 25vw"
-                  style={{ objectPosition: photo.position }} />
-              </div>
-              <div className={styles.marketBody}>
-                <div><p className={styles.country}>{market.position} / {photo.country}</p><h2>{city}</h2></div>
-                <span className={styles.cityArrow}><UiIcon name="arrow-right" /></span>
-              </div>
-              <p className={styles.place}>{photo.place}{englishDestination ? ' · English' : ''}</p>
-            </ExploreLink>
-            <Link href={`${prefix}/guides/${guide.slug}/`} className={styles.budgetLink}>
-              <span>{city} · {copy.budgetGuide}</span><UiIcon name="arrow-right" />
-            </Link>
-          </li>;
-        })}
-      </ol>
-    </section>
+    <BuyingJourney models={models} photos={CITY_PHOTOS} locale={locale} />
 
     <HomeAnalysis locale={locale} />
 

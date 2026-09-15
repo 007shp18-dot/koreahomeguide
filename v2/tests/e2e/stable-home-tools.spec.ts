@@ -23,7 +23,7 @@ test('home presents four city destinations and a separate budget journey without
  const positions = await cards.evaluateAll(nodes => nodes.map(node => {
   const box = node.getBoundingClientRect();
   const action = node.querySelector('[data-primary-action="explore"]')!.getBoundingClientRect();
-  const title = node.querySelector('h2')!;
+  const title = node.querySelector('[data-buying-city] strong')!;
   return {top:box.top, action:action.top, height:action.height, titleFits:title.scrollWidth <= title.clientWidth};
  }));
  expect(positions.every(p => p.height >= 44 && p.titleFits)).toBe(true);
@@ -32,7 +32,8 @@ test('home presents four city destinations and a separate budget journey without
  for (const [index, path] of ['/kr/seoul/explore', '/sg/singapore/explore', '/ae/dubai/explore', '/jp/tokyo/explore'].entries())
   await expect(cards.nth(index).locator('[data-primary-action="explore"]')).toHaveAttribute('href', new RegExp('^' + path + '/?$'));
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
- await expect(page.getByRole('search')).toHaveCount(1);
+ await expect(page.locator('[data-buying-city]')).toHaveCount(4);
+ await expect(page.locator('[data-buying-results]')).toHaveCount(0);
  await page.getByRole('navigation', {name:'Take a closer look'}).getByRole('link', {name:/^Tools/}).click();
  await expect(page).toHaveURL(/\/tools\/?$/);
  await page.locator('main a[href="/passport/"], main a[href="/passport"]').first().click();

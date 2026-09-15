@@ -10,12 +10,15 @@ describe('guide calculator city context', () => {
     ['dubai', 'ae-dubai', 'AED'],
   ] as const)('opens the %s calculator with the matching currency', (city, market, currency) => {
     const html = renderToStaticMarkup(<EditorialGuides market={city} />);
+    expect(html).toContain(`href="/news?topic=budget&amp;market=${city}"`);
     const href = html.match(/href="([^"]*\/tools\/property-scenario[^\"]*)"/)?.[1];
     expect(href).toBeDefined();
     const url = new URL(href!.replaceAll('&amp;', '&'), 'https://signedprice.com');
     expect(parsePropertyScenarioContext(Object.fromEntries(url.searchParams))).toMatchObject({ market, currency });
   });
   it('does not offer an unsupported Tokyo calculator', () => {
-    expect(renderToStaticMarkup(<EditorialGuides market="tokyo" />)).not.toContain('/tools/property-scenario');
+    const html = renderToStaticMarkup(<EditorialGuides market="tokyo" />);
+    expect(html).toContain('href="/news?topic=budget&amp;market=tokyo"');
+    expect(html).not.toContain('/tools/property-scenario');
   });
 });

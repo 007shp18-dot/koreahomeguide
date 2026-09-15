@@ -3,6 +3,7 @@ import { UiIcon } from '../ui-icon';
 import { RegionalResourceLinks } from './regional-resource';
 import { guideDirectory, type GuideLocale, type GuideMarket } from '../../content/guide-directory';
 import styles from './guide-directory.module.css';
+import { BudgetGuideCallout } from './budget-guide-callout';
 
 export function GuideDirectory({ locale = 'en', market = 'all' }: Readonly<{ locale?: GuideLocale; market?: GuideMarket }>) {
   const ko = locale === 'ko';
@@ -20,6 +21,7 @@ export function GuideDirectory({ locale = 'en', market = 'all' }: Readonly<{ loc
       <p>{ko ? '집을 사거나 빌리기 전, 필요한 비용과 서류부터 계약·입주 절차까지 확인하세요.' : 'Plan the costs, check the paperwork and work through the steps before signing.'}</p>
       <Link href={`${base}/news/`}>{ko ? '도시 이야기와 시장 분석은 뉴스 & 인사이트에서' : 'For city stories and market analysis, visit News & Insights'}</Link>
     </header>
+    <BudgetGuideCallout locale={locale} market={market} />
     <nav className={styles.filters} aria-label={ko ? '가이드 도시' : 'Guide markets'}>{(Object.keys(cities) as GuideMarket[]).map(city => <Link key={city} href={`${base}/guides/${city === 'all' ? '' : `?market=${city}`}`} aria-current={market === city ? 'page' : undefined}>{cities[city]}</Link>)}</nav>
     {groups.map(group => {
       const selected = entries.filter(entry => entry.group === group.id);

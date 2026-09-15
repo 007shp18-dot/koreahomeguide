@@ -8,17 +8,18 @@ export function ContactPageContent({ locale = 'en', privacyContact }: { locale?:
     <header className={styles.hero} data-product-intro="true">
       <p className={styles.eyebrow}>{ko ? '도움말' : 'Help'}</p>
       <h1>{ko ? '어떤 점이 궁금한가요?' : 'Contact SignedPrice'}</h1>
-      <p>{ko ? '사이트 이용, 거래 정보, 제휴에 관해 문의하세요.' : 'Questions about the site, property data or working together? Get in touch.'}</p>
+      <p>{ko ? '집과 예산을 비교하는 질문, 공개 자료와 계산 방법, 제휴에 관해 문의하세요.' : 'Ask about a home or budget decision, a published source, a comparison on the site or working together.'}</p>
     </header>
     <section className={styles.primary} aria-labelledby="contact-primary">
       <div>
-        <span id="research-seoul" aria-hidden="true" /><span id="research-singapore" aria-hidden="true" /><span id="research-dubai" aria-hidden="true" />
-        <h2 id="contact-primary">{ko ? '일반·제휴 문의' : 'General enquiries & partnerships'}</h2>
+        <span id="research-seoul" aria-hidden="true" /><span id="research-singapore" aria-hidden="true" /><span id="research-dubai" aria-hidden="true" /><span id="research-tokyo" aria-hidden="true" />
+        <h2 id="contact-primary">{ko ? '부동산 조사·제휴 문의' : 'Property research & partnerships'}</h2>
         <a className={styles.email} href={`mailto:${SIGNEDPRICE_CONTACT_EMAIL}`}>{SIGNEDPRICE_CONTACT_EMAIL}</a>
       </div>
       <div className={styles.context}>
         <h3>{ko ? '함께 알려주시면 좋아요' : 'A little context helps'}</h3>
-        <p>{ko ? '도시, 관련 페이지 링크, 궁금한 점을 적어주세요. 가격을 비교하는 중이라면 주택 유형과 면적을 알려주시면 도움이 됩니다.' : 'Include the city, a link to the page and your question. If you are comparing prices, the property type and size are useful too.'}</p>
+        <p>{ko ? '도시, 관련 페이지의 정확한 링크와 확인하려는 내용을 적어주세요. 가격을 비교하는 중이라면 통화, 예산, 주택 유형, 면적과 비교 기간도 알려주세요.' : 'Include the city, the exact page link and what you are trying to check. For a price comparison, add the currency, budget, property type, size and comparison period.'}</p>
+        <p>{ko ? '공개된 출처와 페이지의 계산 방식을 찾고 설명하거나, 지원되는 데이터 정정 절차를 안내할 수 있습니다.' : 'We can point to published sources, explain the calculation shown on a SignedPrice page and direct a supported data correction.'}</p>
         <p className={styles.note}>{ko ? '신분증, 계좌 정보, 비공개 계약서는 보내지 마세요.' : 'Please leave out identity documents, bank details and private contracts.'}</p>
       </div>
     </section>
@@ -26,8 +27,8 @@ export function ContactPageContent({ locale = 'en', privacyContact }: { locale?:
       <article>
         <h2>{ko ? '거래 정보 오류 신고' : 'Correct a data issue'}</h2>
         <div>
-          <p>{ko ? '서울 거래 정보의 오류는 정정 페이지에서 알려주세요. 검토 결과와 변경 내용을 확인할 수 있습니다. 다른 도시의 오류는 위 이메일로 관련 링크를 보내주세요.' : 'Use the correction page for Seoul records so the report and review result can be followed. For another city, send the relevant page link to the email above.'}</p>
-          <div className={styles.links}><Link href={ko ? "/ko/kr/seoul/corrections/" : "/kr/seoul/corrections/"}>{ko ? '서울 데이터 정정 이력' : 'Seoul data corrections'}</Link><Link href="/trust/">{ko ? '데이터와 출처 (영문)' : 'Data & sources'}</Link></div>
+          <p>{ko ? '서울과 싱가포르 거래 정보의 오류는 각 정정 페이지에서 알려주세요. 검토 결과와 변경 내용을 확인할 수 있습니다. 두바이와 도쿄의 오류는 위 이메일로 정확한 페이지 링크를 보내주세요.' : 'Use the Seoul or Singapore correction page for those records so the report and review result can be followed. For Dubai or Tokyo, send the exact page link to the email above.'}</p>
+          <div className={styles.links}><Link href={ko ? "/ko/kr/seoul/corrections/" : "/kr/seoul/corrections/"}>{ko ? '서울 데이터 정정 이력' : 'Seoul data corrections'}</Link><Link href={ko ? "/ko/sg/singapore/corrections/" : "/sg/singapore/corrections/"}>{ko ? '싱가포르 데이터 정정 이력' : 'Singapore data corrections'}</Link><Link href="/trust/">{ko ? '데이터와 출처 (영문)' : 'Data & sources'}</Link></div>
         </div>
       </article>
       <article>

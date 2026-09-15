@@ -53,8 +53,9 @@ export default function TrustPage() {
         <article><h2>Who publishes SignedPrice?</h2><p>SignedPrice publishes the articles and data comparisons on this site. The publisher name on an article identifies the site responsible for it; it does not imply that the government data provider wrote or endorsed it. Send questions and corrections through our <Link href="/contact/">contact page</Link>.</p></article>
         <article><h2>What do our reports add?</h2><p>Our market reports select comparable records, calculate differences and explain their limits. Each report’s tables and source notes describe its own sample. A report about transaction activity cannot, by itself, establish a change in the value of an individual home.</p></article>
         <article><h2>Are neighbourhood stories reporting visits?</h2><p>A neighbourhood guide based on published sources is not a firsthand property inspection. Check the photograph credits and source dates when available. A suggested walk or a historical photograph does not establish the current condition of a building or business.</p></article>
+        <article><h2>What research help is available?</h2><p>Use the <Link href="/contact/">contact page</Link> to ask where a published figure came from, how a comparison on this site was calculated or where to report a supported data correction. Include the exact page, city and the home or budget decision you are trying to check. Research help explains published evidence; it is not brokerage, a valuation or personalised investment advice.</p></article>
       </section>
-      <nav className={styles.policyLinks} aria-label="Data corrections and contact"><Link href="/kr/seoul/corrections/">Seoul data corrections</Link><Link href="/contact/">Contact SignedPrice</Link></nav>
+      <nav className={styles.policyLinks} aria-label="Data corrections and contact"><Link href="/kr/seoul/corrections/">Seoul data corrections</Link><Link href="/sg/singapore/corrections/">Singapore data corrections</Link><Link href="/contact/">Ask a research question</Link></nav>
     </main>
     <SiteFooter copy={homepageCopy.footer} />
   </div>;

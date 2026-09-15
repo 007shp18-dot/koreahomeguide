@@ -123,7 +123,8 @@ describe('public Newsroom routes', () => {
     expect(nav.match(/<a /g)).toHaveLength(5);
     for (const label of ['All', 'Seoul', 'Tokyo', 'Singapore', 'Dubai']) expect(nav).toContain(`>${label}</a>`);
     expect(html.match(/data-newsroom-lead=/g)).toHaveLength(1);
-    expect(html).toContain('Neighborhood living');
+    expect(html).toContain('>Neighbourhoods</a>');
+    expect(html).not.toContain('Neighborhood living');
     expect(html).toContain('Ownership costs');
     expect(html).toContain('Analysis &amp; stories');
     expect(html).not.toContain('aria-label="Insight types"');

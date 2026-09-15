@@ -141,7 +141,7 @@ describe('three market overview routes', () => {
         /<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
       )?.[1] ?? '';
       expect(globalNavigation.match(/<a /g) ?? []).toHaveLength(7);
-      for (const label of ['Explore', 'Rankings', 'Insights', 'News', 'Tools', 'Guides', 'Community']) {
+      for (const label of ['Explore', 'Buying guides', 'Insights', 'Rankings', 'News', 'Tools', 'Community']) {
         expect(globalNavigation).toContain(`>${label}</a>`);
       }
 

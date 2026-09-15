@@ -18,7 +18,7 @@ const header: SiteHeaderModel = {
   links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
 };
 
-const globalLabels = ['Explore', 'Rankings', 'Insights', 'News', 'Tools', 'Guides'] as const;
+const globalLabels = ['Explore', 'Buying guides', 'Insights', 'Rankings', 'News', 'Tools'] as const;
 
 describe('signedprice public navigation', () => {
   it('keeps global navigation free of duplicate market-specific actions and uses decorative vector disclosure icons', () => {
@@ -29,14 +29,22 @@ describe('signedprice public navigation', () => {
     expect(html).toContain('aria-label="Choose language"');
     expect(html).toContain('aria-label="Choose a city"');
   });
-  it('preserves existing destinations and promotes community alongside Explore and Insights', () => {
+  it('prioritises Explore, Buying guides and Insights while keeping Community in More', () => {
     for (const copy of [homepageCopy.header, header]) {
       const html = renderToStaticMarkup(<SiteHeader copy={copy} />);
       const positions = globalLabels.map((label) => html.indexOf(`>${label.replace('&', '&amp;')}</`));
+      const desktop = html.match(/<nav[^>]*aria-label="Primary navigation"[\s\S]*?<\/nav>/)?.[0] ?? '';
+      const primaryDirect = desktop.slice(0, desktop.indexOf('<details'));
+      const more = html.match(/<nav[^>]*aria-label="More navigation"[\s\S]*?<\/nav>/)?.[0] ?? '';
+      const mobile = html.match(/<nav[^>]*aria-label="Site menu"[\s\S]*?<\/nav>/)?.[0] ?? '';
 
       expect(positions.every((position) => position >= 0)).toBe(true);
-      expect(html.indexOf('>Explore</')).toBeLessThan(html.indexOf('>Insights</'));
-      expect(html.indexOf('>Insights</')).toBeLessThan(html.indexOf('>Community</'));
+      expect(desktop.indexOf('>Explore</')).toBeLessThan(desktop.indexOf('>Buying guides</'));
+      expect(desktop.indexOf('>Buying guides</')).toBeLessThan(desktop.indexOf('>Insights</'));
+      expect(primaryDirect).not.toContain('>Community</');
+      expect(more).toContain('>Community</');
+      expect(mobile.indexOf('>Explore</')).toBeLessThan(mobile.indexOf('>Buying guides</'));
+      expect(mobile.indexOf('>Buying guides</')).toBeLessThan(mobile.indexOf('>Insights</'));
       expect(html).toContain('aria-label="More navigation"');
       expect(html).not.toMatch(/>Properties<|>Invest</);
     }
@@ -111,9 +119,25 @@ describe('signedprice public navigation', () => {
       links: [{ label: 'Guide', href: '/guides/rent-an-apartment-in-korea/', isCurrent: true }],
     }} />);
     const mobileNavigation = html.match(/<nav aria-label="Site menu">([\s\S]*?)<\/nav>/)?.[1];
-    const guidesLink = mobileNavigation?.match(/<a[^>]*href="\/guides"[^>]*>Guides<\/a>/)?.[0];
+    const guidesLink = mobileNavigation?.match(/<a[^>]*href="\/guides"[^>]*>Buying guides<\/a>/)?.[0];
 
     expect(guidesLink).toContain('aria-current="page"');
+  });
+
+  it('keeps every published budget guide under Buying guides', () => {
+    for (const slug of [
+      'seoul-apartment-buying-budget-guide',
+      'singapore-condo-buying-budget-guide',
+      'dubai-ready-apartment-buying-budget-guide',
+      'tokyo-apartment-buying-budget-guide',
+    ]) {
+      const html = renderToStaticMarkup(<SiteHeader copy={{
+        ...homepageCopy.header,
+        links: [{ label: 'Guide', href: `/guides/${slug}/`, isCurrent: true }],
+      }} />);
+      expect(html.match(/aria-current="page"[^>]*href="\/guides"[^>]*>Buying guides<\/a>/g)).toHaveLength(2);
+      expect(html).not.toMatch(/aria-current="page"[^>]*href="\/news"[^>]*>Insights<\/a>/);
+    }
   });
 
   it('marks translated global destinations from their locale-prefixed paths', () => {
@@ -122,7 +146,7 @@ describe('signedprice public navigation', () => {
       languageLabel: 'KO',
       links: [{ label: 'Guide', href: '/ko/guides/example/', isCurrent: true }],
     }} />);
-    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/ko\/guides\/?"[^>]*>가이드<\/a>/);
+    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/ko\/guides\/?"[^>]*>구매 가이드<\/a>/);
   });
 
   it('keeps market-local destinations inside the compact city context menu', () => {
