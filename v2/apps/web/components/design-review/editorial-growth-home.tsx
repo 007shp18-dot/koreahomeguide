@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { BUDGET_GUIDE_SERIES } from '@/content/budget-guide-series';
 import { HomeSearch } from '../home/home-search';
 import { HomeAnalysis } from '../home-analysis';
 import { ExploreLink } from '../market-ui/explore-link';
@@ -19,7 +20,7 @@ const COPY = {
     insights: 'Insights', insightsNote: 'Stories behind the numbers',
     guides: 'Guides', guidesNote: 'Buying & renting, explained',
     credits: 'Photography & sources', modifications: 'Photographs are resized and cropped. Some files are converted to WebP. Image adaptations retain the linked licenses. These are location photographs, not property listings or current market evidence.',
-    methodology: 'How we use property data',
+    methodology: 'How we use property data', budgetGuide: 'Buying budget guide',
     cities: { 'kr-seoul': 'Seoul', 'sg-singapore': 'Singapore', 'ae-dubai': 'Dubai', 'jp-tokyo': 'Tokyo' },
   },
   ko: {
@@ -30,7 +31,7 @@ const COPY = {
     insights: '인사이트', insightsNote: '숫자로 읽는 시장 이야기',
     guides: '가이드', guidesNote: '매입과 임대, 하나씩 알아보기',
     credits: '사진·출처', modifications: '사진은 크기 조정과 크롭을 적용했으며 일부는 WebP로 변환했습니다. 편집한 사진에도 링크된 라이선스가 유지됩니다. 장소를 소개하는 사진이며 현재 매물이나 최신 시장 상황을 보여주는 자료는 아닙니다.',
-    methodology: '부동산 데이터 활용 방법',
+    methodology: '부동산 데이터 활용 방법', budgetGuide: '예산별 구매 가이드',
     cities: { 'kr-seoul': '서울', 'sg-singapore': '싱가포르', 'ae-dubai': '두바이', 'jp-tokyo': '도쿄' },
   },
   'zh-CN': {
@@ -41,7 +42,7 @@ const COPY = {
     insights: '洞察', insightsNote: '数字背后的市场故事',
     guides: '指南', guidesNote: '了解购房与租房流程',
     credits: '摄影与来源', modifications: '照片经过缩放和裁剪，部分转换为 WebP。修改后的图片保留链接中的许可。这些照片用于介绍地点，并非在售房源或当前市场资料。',
-    methodology: '我们如何使用房地产数据',
+    methodology: '我们如何使用房地产数据', budgetGuide: '购房预算指南',
     cities: { 'kr-seoul': '首尔', 'sg-singapore': '新加坡', 'ae-dubai': '迪拜', 'jp-tokyo': '东京' },
   },
 } as const;
@@ -106,6 +107,7 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
         {markets.map((market, index) => {
           const city = copy.cities[market.id];
           const photo = CITY_PHOTOS[market.id];
+          const guide = BUDGET_GUIDE_SERIES.find(item => market.id.endsWith(`-${item.city}`))!;
           const href = `${prefix}${market.primaryAction.href}`;
           const englishDestination = false;
           return <li className={styles.marketCard} key={market.id} id={`city-${market.id}`} data-market-id={market.id} data-contextual-action={market.id}>
@@ -122,6 +124,9 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
               </div>
               <p className={styles.place}>{photo.place}{englishDestination ? ' · English' : ''}</p>
             </ExploreLink>
+            <Link href={`${prefix}/guides/${guide.slug}/`} className={styles.budgetLink}>
+              <span>{city} · {copy.budgetGuide}</span><UiIcon name="arrow-right" />
+            </Link>
           </li>;
         })}
       </ol>

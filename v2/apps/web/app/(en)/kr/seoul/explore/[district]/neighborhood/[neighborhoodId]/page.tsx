@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 
 import { getSeoulDistrictBySlug } from '@signedprice/korea-rent/browser';
 
@@ -36,11 +36,16 @@ function evidenceRecords() {
 function resolveNeighborhood(districtSlug: string, neighborhoodId: string) {
   const district = getSeoulDistrictBySlug(districtSlug);
   if (district === null) return null;
+  const records = evidenceRecords();
   const neighborhood = getKoreaNeighborhoodBuildingDirectory(
-    evidenceRecords(),
+    records,
     district.slug,
     neighborhoodId,
   );
+  if (neighborhood === null && [...records.rent, ...records.sale].some(record =>
+    record.districtSlug === district.slug && record.neighborhoodId === neighborhoodId)) {
+    permanentRedirect(`/kr/seoul/explore/?district=${district.slug}&neighborhood=${encodeURIComponent(neighborhoodId)}`);
+  }
   return neighborhood === null ? null : Object.freeze({ district, neighborhood });
 }
 
@@ -79,7 +84,7 @@ const footer: SiteFooterModel = {
   status: KOREA_PUBLIC_RELEASE_STATUS,
 };
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return [...listIndexableKoreaNeighborhoodRouteParams(evidenceRecords())];

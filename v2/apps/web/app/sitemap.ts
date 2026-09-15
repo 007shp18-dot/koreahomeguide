@@ -19,11 +19,6 @@ import { buildPublicAreaExploreModel } from '../lib/public-market/area-route-mod
 import {
   signedPricePublicRouteRegistry,
 } from '../lib/seo/public-route-registry.server';
-import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
-import {
-  listIndexableKoreaBuildingRouteParams,
-  listIndexableKoreaNeighborhoodRouteParams,
-} from '../lib/public-market/korea-building-index-policy';
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
 type LocalizedPair = Readonly<{
@@ -272,35 +267,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (dubaiAreaParams.length > 0) {
       entries.push(sitemapEntry('/ae/dubai/check/', dubaiLastModified), sitemapEntry('/ko/ae/dubai/check/', dubaiLastModified), sitemapEntry('/zh-cn/ae/dubai/check/', dubaiLastModified));
     }
-  }
-  const buildingEvidence = koreaEvidenceRepositoriesFromEnvironment();
-  if (buildingEvidence.rent !== null || buildingEvidence.sale !== null) {
-    const buildingLastModified = latestDate([
-      buildingEvidence.rent?.getArtifact().generatedAt,
-      buildingEvidence.sale?.getArtifact().generatedAt,
-    ]);
-    const buildingRecords = {
-      rent: buildingEvidence.rent?.listBuildingRecords() ?? [],
-      sale: buildingEvidence.sale?.listBuildingRecords() ?? [],
-    };
-    entries.push(...listIndexableKoreaBuildingRouteParams(buildingRecords)
-      .flatMap(({ district, buildingId }) => {
-        const pair = Object.freeze({
-          en: `/kr/seoul/explore/${district}/${buildingId}/`,
-          ko: `/ko/kr/seoul/explore/${district}/${buildingId}/`,
-          'zh-Hans': `/zh-cn/kr/seoul/explore/${district}/${buildingId}/`,
-        }) satisfies LocalizedPair;
-        return [
-          sitemapEntry(pair.en, buildingLastModified, pair),
-          sitemapEntry(pair.ko, buildingLastModified, pair),
-          sitemapEntry(pair['zh-Hans'], buildingLastModified, pair),
-        ];
-      }));
-    entries.push(...listIndexableKoreaNeighborhoodRouteParams(buildingRecords)
-      .map(({ district, neighborhoodId }) => sitemapEntry(
-        `/kr/seoul/explore/${district}/neighborhood/${neighborhoodId}/`,
-        buildingLastModified,
-      )));
   }
   return entries.filter(({ url }) => isContentIndexable(url));
 }

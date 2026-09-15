@@ -5,7 +5,7 @@ import type {
 } from '@signedprice/korea-rent';
 import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
 
-export const KOREA_BUILDING_INDEX_MINIMUM = 3;
+export const KOREA_BUILDING_INDEX_MINIMUM = 5;
 export const KOREA_BUILDING_PRERENDER_MINIMUM = 50;
 
 export type KoreaBuildingRouteParam = Readonly<{
@@ -107,8 +107,8 @@ export function koreaBuildingEvidenceDepth(
   );
 }
 
-// Search eligibility is based on usable transaction history, independently of
-// the five-contract minimum used to publish statistical price summaries.
+// Search publication requires at least five usable contracts in one transaction
+// type. Thinner histories remain accessible with noindex, follow.
 function historyCandidates(records: KoreaBuildingEvidenceRecordPair): readonly PublishedCandidate[] {
   return [
     { transaction: 'sale', contracts: records.sale?.recentSales.length ?? 0 },
@@ -127,7 +127,10 @@ export function koreaBuildingCanonicalSelection(
   records: KoreaBuildingEvidenceRecordPair,
 ): KoreaBuildingCanonicalSelection | null {
   const published = publishedCandidates(records);
-  const candidate = [...(published.length > 0 ? published : historyCandidates(records).filter(({ contracts }) => contracts > 0))].sort((left, right) => (
+  const history = historyCandidates(records);
+  const useful = published.filter(candidate => candidate.contracts >= KOREA_BUILDING_INDEX_MINIMUM
+    && history.some(row => row.transaction === candidate.transaction && row.contracts >= KOREA_BUILDING_INDEX_MINIMUM));
+  const candidate = [...(useful.length > 0 ? useful : published.length > 0 ? published : history.filter(({ contracts }) => contracts > 0))].sort((left, right) => (
     right.contracts - left.contracts
     || left.transaction.localeCompare(right.transaction)
   ))[0];
@@ -143,10 +146,15 @@ export function isKoreaBuildingIndexable(
   minimum: number = KOREA_BUILDING_INDEX_MINIMUM,
 ): boolean {
   const identity = records.rent ?? records.sale;
+  const history = historyCandidates(records);
   return identity !== undefined
     && identity.officialName.trim().length > 0
     && identity.neighborhoodName.trim().length > 0
-    && koreaBuildingSearchDepth(records) >= minimum;
+    // An aggregate count alone is not a useful detail page: readers must be
+    // able to inspect transactions backing a published comparison of that type.
+    && publishedCandidates(records).some(candidate => candidate.contracts >= minimum
+      && history.some(row => row.transaction === candidate.transaction
+        && row.contracts >= KOREA_BUILDING_INDEX_MINIMUM));
 }
 
 function buildingPublicationIndex(

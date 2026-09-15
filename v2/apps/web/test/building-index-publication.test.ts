@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import sitemap from '../app/sitemap';
+import { seoulBuildingSitemap as sitemap } from '../lib/seo/seoul-sitemap.server';
 import {
   generateMetadata,
   resolveKoreaEvidenceBuildingRoute,
@@ -45,7 +45,23 @@ function useInstalledEvidence() {
 afterEach(() => vi.unstubAllEnvs());
 
 describe('Korea building search publication', () => {
-  it('indexes a real three-row history without publishing a small-sample median', async () => {
+  it('requires inspectable transactions as well as a published price comparison', () => {
+    useInstalledEvidence();
+    const repositories = koreaEvidenceRepositoriesFromEnvironment();
+    const sale = repositories.sale!.listBuildingRecords().find(record =>
+      record.buildingId === SALE_ONLY_BUILDING.buildingId)!;
+    expect(buildingIndexPolicy.isKoreaBuildingIndexable({ sale })).toBe(true);
+    expect(buildingIndexPolicy.isKoreaBuildingIndexable({ sale: { ...sale, recentSales: [] } })).toBe(false);
+    expect(buildingIndexPolicy.isKoreaBuildingIndexable({ sale: { ...sale, cohorts: [] } })).toBe(false);
+  }, 20_000);
+  it('opens the useful transaction type when a larger aggregate has no inspectable history', () => {
+    useInstalledEvidence();
+    const repositories = koreaEvidenceRepositoriesFromEnvironment();
+    const rent = repositories.rent!.listBuildingRecords().find(record => record.buildingId === 'gangbuk-gu-zl2n8u')!;
+    expect(buildingIndexPolicy.isKoreaBuildingIndexable({ rent })).toBe(true);
+    expect(buildingIndexPolicy.koreaBuildingCanonicalSelection({ rent })?.transaction).toBe('jeonse');
+  }, 20_000);
+  it('keeps a three-row history accessible but excludes it from search', async () => {
     useInstalledEvidence();
     const repositories = koreaEvidenceRepositoriesFromEnvironment();
     const rent = repositories.rent?.listBuildingRecords() ?? [];
@@ -58,17 +74,16 @@ describe('Korea building search publication', () => {
     expect(record).toBeDefined();
     const params = { district: record.districtSlug, buildingId: record.buildingId };
     const pair = { sale: record, rent: rentById.get(record.buildingId) };
-    expect(buildingIndexPolicy.isKoreaBuildingIndexable(pair)).toBe(true);
+    expect(buildingIndexPolicy.isKoreaBuildingIndexable(pair)).toBe(false);
     const selection = buildingIndexPolicy.koreaBuildingCanonicalSelection(pair)!;
     const detail = resolveKoreaEvidenceBuildingRoute(params.district, params.buildingId, selection, repositories)!;
     expect(detail.model.recentTransactions.length).toBeGreaterThanOrEqual(3);
     expect(detail.model.evidence.medianWon).toBeNull();
     expect(detail.model.evidence.state).toBe('withheld');
     const metadata = await generateMetadata({ params: Promise.resolve(params), searchParams: Promise.resolve({}) });
-    expect(metadata.robots).toMatchObject({ index: true, follow: true });
-    expect(metadata.alternates?.canonical).toBe(`https://www.signedprice.com/kr/seoul/explore/${params.district}/${params.buildingId}/`);
-    expect(listIndexableKoreaBuildingRouteParams({ rent, sale })).toContainEqual(params);
-    expect(listKoreaBuildingDirectory({ rent, sale }, record.districtSlug).some((entry) => entry.buildingId === record.buildingId)).toBe(true);
+    expect(metadata.robots).toMatchObject({ index: false, follow: true });
+    expect(listIndexableKoreaBuildingRouteParams({ rent, sale })).not.toContainEqual(params);
+    expect(listKoreaBuildingDirectory({ rent, sale }, record.districtSlug).some((entry) => entry.buildingId === record.buildingId)).toBe(false);
     expect(buildingIndexPolicy.isKoreaBuildingIndexable({ sale: { ...record, recentSales: record.recentSales.slice(0, 2) } })).toBe(false);
     expect(buildingIndexPolicy.isKoreaBuildingIndexable({ sale: { ...record, officialName: '' } })).toBe(false);
   }, 20_000);
@@ -119,20 +134,20 @@ describe('Korea building search publication', () => {
     const buildingRouteKeys = listIndexableKoreaBuildingRouteParams(records)
       .map(({ district, buildingId }) => `${district}/${buildingId}`);
 
-    expect(routes).toHaveLength(388);
+    expect(routes).toHaveLength(379);
     expect(new Set(routes.map(({ district, neighborhoodId }) => (
       `${district}/${neighborhoodId}`
-    )))).toHaveLength(388);
+    )))).toHaveLength(379);
     const neighborhoodBuildingKeys = routes.flatMap(({ district, neighborhoodId }) => (
       getNeighborhood(records, district, neighborhoodId)?.entries
         .map(({ buildingId }) => `${district}/${buildingId}`) ?? []
     ));
-    expect(neighborhoodBuildingKeys).toHaveLength(15_883);
+    expect(neighborhoodBuildingKeys).toHaveLength(8_471);
     expect(new Set(neighborhoodBuildingKeys)).toEqual(new Set(buildingRouteKeys));
     expect(gangnam).toContainEqual({
       neighborhoodId: 'gangnam-gu-dong-1g2fbdb',
       name: '역삼동',
-      buildings: 281,
+      buildings: 133,
       href: '/kr/seoul/explore/gangnam-gu/neighborhood/gangnam-gu-dong-1g2fbdb/',
     });
     const yeoksam = policy.getKoreaNeighborhoodBuildingDirectory(
@@ -145,7 +160,7 @@ describe('Korea building search publication', () => {
       neighborhoodId: 'gangnam-gu-dong-1g2fbdb',
       name: '역삼동',
     });
-    expect(yeoksam?.entries).toHaveLength(281);
+    expect(yeoksam?.entries).toHaveLength(133);
     expect(policy.getKoreaNeighborhoodBuildingDirectory(
       records,
       'songpa-gu',
@@ -191,10 +206,10 @@ describe('Korea building search publication', () => {
       `${district}/${buildingId}`
     ));
 
-    expect(buildingUrls).toHaveLength(15_883);
-    expect(new Set(buildingUrls)).toHaveLength(15_883);
-    expect(koreanBuildingUrls).toHaveLength(15_883);
-    expect(new Set(koreanBuildingUrls)).toHaveLength(15_883);
+    expect(buildingUrls).toHaveLength(8_471);
+    expect(new Set(buildingUrls)).toHaveLength(8_471);
+    expect(koreanBuildingUrls).toHaveLength(8_471);
+    expect(new Set(koreanBuildingUrls)).toHaveLength(8_471);
     expect(new Set(koreanBuildingUrls.map((url) => url.replace(
       'https://www.signedprice.com/ko/kr/seoul/explore/',
       '',
@@ -203,8 +218,8 @@ describe('Korea building search publication', () => {
       '',
     ))));
     expect(sitemapEntries.length).toBeLessThan(50_000);
-    expect(neighborhoodUrls).toHaveLength(388);
-    expect(new Set(neighborhoodUrls)).toHaveLength(388);
+    expect(neighborhoodUrls).toHaveLength(379);
+    expect(new Set(neighborhoodUrls)).toHaveLength(379);
     expect(neighborhoodUrls).toContain(
       'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/neighborhood/gangnam-gu-dong-1g2fbdb/',
     );
