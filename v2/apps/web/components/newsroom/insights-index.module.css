@@ -26,3 +26,31 @@
 .hero h2 { line-height: 1.4; letter-spacing: -.015em; }
 .card h3 { line-height: 1.45; letter-spacing: -.015em; }
 .hero p,.card p { line-height: 1.65; }
+
+.header h1 { font-size: clamp(32px, 4vw, 42px); letter-spacing: -.02em; }
+.filters a[aria-current=page] { background: var(--accent-soft); color: var(--accent); font-weight: 650; }
+.topicFilters { flex-wrap: wrap; gap: 8px; border: 0; margin-bottom: 28px; }
+.topicFilters a { box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 14px; border-radius: var(--radius-control, 8px); line-height: 1.4; }
+.topicFilters a[aria-current=page] { box-shadow: none; background: var(--accent-soft); color: var(--accent); font-weight: 650; }
+.budgetSection { margin-bottom: 36px; }
+.sectionHeading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 20px; }
+.sectionHeading h2 { margin: 0; font-size: 23px; line-height: 1.4; letter-spacing: -.015em; }
+.sectionHeading > span,.period,.date { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.sectionDeck { font-size: 15px; color: var(--muted); line-height: 1.6; margin: 8px 0 20px; }
+.budgetGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.budgetCard { display: flex; flex-direction: column; min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: 12px; }
+.budgetCity { margin: 0 0 10px; font-size: 14px; font-weight: 650; color: var(--muted); }
+.budgetCard h3 { margin: 0; font-size: 18px; font-weight: 650; line-height: 1.5; letter-spacing: -.015em; font-variant-numeric: tabular-nums; }
+.budgetCard h3 a { text-decoration: none; color: var(--ink); }
+.budgetCard h3 a:hover { text-decoration: underline; }
+.period { margin: 12px 0; }
+.budgetLink { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; min-height: 44px; margin-top: auto; color: var(--accent); font-size: 14px; text-decoration: none; }
+.hero h2 { font-size: clamp(24px, 2.6vw, 31px); }
+.hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 28px; }
+.date { display: block; margin-top: 12px; }
+.topic { color: var(--muted); font-size: 13px; text-transform: none; letter-spacing: 0; }
+.credit summary { min-height: 44px; }
+.more > summary { box-sizing: border-box; min-height: 48px; }
+@media(max-width:960px) { .budgetGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(max-width:760px) { .hero { grid-template-columns: 1fr; }.budgetCard { padding: 16px; }.budgetCard h3 { font-size: 17px; }.topicFilters { gap: 4px; }.topicFilters a { padding-inline: 12px; } }
+@media(max-width:420px) { .budgetGrid { gap: 12px; }.budgetCard { padding: 14px; }.budgetCard h3 { font-size: 16px; } }

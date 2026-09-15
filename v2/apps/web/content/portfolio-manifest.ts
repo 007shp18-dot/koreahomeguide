@@ -1,3 +1,4 @@
+import { TOKYO_BUYING_GUIDES } from './tokyo-buying-guide';
 import { SEPTEMBER_15_EDITORIAL } from './september-15-editorial';
 import { refreshDiscovery } from './editorial-discovery';
 import { SEPTEMBER_14_EDITORIAL } from './september-14-editorial';
@@ -95,6 +96,7 @@ export function validateEditorialPortfolio(values: readonly unknown[]): readonly
 }
 
 export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Object.freeze([
+  ...TOKYO_BUYING_GUIDES,
   ...SEPTEMBER_15_EDITORIAL,
   ...SEPTEMBER_14_EDITORIAL,
   ...SEPTEMBER_13_EDITORIAL,
