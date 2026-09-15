@@ -9,7 +9,7 @@ export function KoreanMarketOverview({ market, facts, period, available }: Reado
   const name = sg ? '싱가포르' : '두바이';
   const base = sg ? '/ko/sg/singapore' : '/ko/ae/dubai';
   return <KoreanSiteFrame href={sg ? '/ko/sg/' : '/ko/ae/dubai/'}><main>
-    <MarketOverview locale="ko" city={name}
+    <MarketOverview buyingCity={market} locale="ko" city={name}
       description={sg ? '민간 주택과 공공주택(HDB)의 거래를 구분해 살펴보고 매물 가격을 비교하세요.' : '완공 주택(Ready)과 분양 중인 주택(Off-Plan)의 지역별 가격과 연간 임대료를 비교하세요.'}
       media={<MarketRepresentativePhoto photo={{ ...MARKET_PHOTOS[market], alt: `${name} 도시 전경` }} cityLabel={name} eager locale="ko" />}
       facts={facts} period={period} available={available}

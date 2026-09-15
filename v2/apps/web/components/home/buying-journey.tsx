@@ -1,4 +1,7 @@
 'use client';
+import { consultationHref } from '../../content/city-buying-content';
+import { TOKYO_BUDGET_METHOD } from '../../content/tokyo-budget-method';
+import { cityText } from '../../content/city-buying-content';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -74,10 +77,10 @@ export function BuyingJourney({ models, photos, locale }: Readonly<{
               <dl><div><dt>{copy.area}</dt><dd className={styles.area}>{range(example.area, number)} <span>m²</span></dd></div>
                 <div><dt>{copy.price}</dt><dd>{range(example.price, value => buyingMoney(value, selected.currency, locale))}</dd></div></dl>
               <p className={styles.note}>{example.count} {copy.records}<br />{copy.latest} · {selected.scope === 'neighbourhood' ? selected.period : new Intl.DateTimeFormat(locale === 'ko' ? 'ko-KR' : locale === 'zh-CN' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(example.latest))}</p>
-              <Link href={buyingGuideHref(selected, band.cap)} data-editorial-event="article_open">{copy.evidence}{languageNote(selected)}<UiIcon name="arrow-right" /></Link>
+              <Link href={example.evidenceHref ?? buyingGuideHref(selected, band.cap)} data-editorial-event="article_open">{copy.evidence}{languageNote(selected)}<UiIcon name="arrow-right" /></Link>
             </article>)}
           </div>
-          <p className={styles.scope}>{selected.scope === 'neighbourhood' ? copy.tokyoScope : copy.scope} {copy.original}</p>
+          <p className={styles.scope}>{selected.scope === 'neighbourhood' ? cityText(TOKYO_BUDGET_METHOD, locale) : copy.scope} {copy.original}</p>
         </section>
         <section className={styles.nextSteps} aria-label={locale === 'ko' ? '다음 단계' : locale === 'zh-CN' ? '下一步' : 'Next steps'}>
           <article><span className={styles.stepNumber}>01</span><h2>{copy.costs}</h2><p>{copy.costsNote}</p>
@@ -86,6 +89,7 @@ export function BuyingJourney({ models, photos, locale }: Readonly<{
           <article><span className={styles.stepNumber}>02</span><h2>{copy.offer}</h2><p>{selected.scope === 'neighbourhood' ? copy.tokyoCheckNote : copy.offerNote}</p>
             <ExploreLink href={selected.checkHref} className={styles.secondary} data-editorial-event={selected.scope === 'neighbourhood' ? 'article_to_explore' : 'article_to_check'}>{selected.scope === 'neighbourhood' ? copy.tokyoCheck : copy.check}<UiIcon name="arrow-right" /></ExploreLink></article>
         </section>
+        <p><Link className={styles.primary} href={consultationHref(selected.city,locale,band.cap)}>{locale==='ko'?'이 조건으로 구매상담 문의':locale==='zh-CN'?'按此条件咨询购房':'Prepare a purchase enquiry'}</Link></p>
       </div>}
     </div>
   </div>;

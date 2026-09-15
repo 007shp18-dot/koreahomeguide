@@ -1,3 +1,4 @@
+import { CityBuyingOverview } from '../buying/city-buying-overview';
 import Link from 'next/link';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
@@ -25,6 +26,7 @@ export default async function TokyoOverview({ searchParams, locale = 'en' }: { s
         <MarketRepresentativePhoto photo={MARKET_PHOTOS.tokyo} context="city" cityLabel="Tokyo" eager />
       </div>
       <TokyoNavigation locale={locale} current="overview" />
+      <CityBuyingOverview city="tokyo" locale={locale} />
       <section className={styles.overviewFacts} aria-label="Tokyo coverage">
         <div><h2>{text('Neighbourhood prices','동네별 실거래가','社区成交价格')}</h2><p>{text('Filter by ward, area, layout and quarter. Each result retains the information disclosed in the source.','구·면적·구조·분기별로 원본에 공개된 거래 정보를 확인하세요.','按区、面积、户型和季度筛选，保留来源公开的信息。')}</p></div>
         <div><h2>{text('Japanese yen','일본 엔화','日元')}</h2><p>{text('Compare recorded purchase prices in JPY. Taxes, financing and other acquisition costs are separate.','엔화 기준 실거래가입니다. 세금·대출·매입 부대비용은 별도로 계산하세요.','以日元比较成交价格，税费、融资和其他购置费用另计。')}</p></div>

@@ -3,7 +3,7 @@ import { visibleLanguageNavigation, visibleProductNavigation } from './site-head
 
 test('Chinese market cards align their primary actions on multi-column screens',async({page})=>{
  // Card dimensions are reserved by CSS; measure after DOM and fonts, independently of image completion.
- await page.goto('/zh-cn/kr/seoul/', {waitUntil:'domcontentloaded'});
+ await page.goto('/zh-cn/', {waitUntil:'domcontentloaded'});
  await page.evaluate(()=>document.fonts.ready);
  const positions=await page.locator('[data-contextual-action]').evaluateAll(nodes=>nodes.map(node=>{
   const r=node.getBoundingClientRect();const a=node.querySelector('[data-primary-action="explore"]')!.getBoundingClientRect();return {top:r.top,action:a.top-r.top};

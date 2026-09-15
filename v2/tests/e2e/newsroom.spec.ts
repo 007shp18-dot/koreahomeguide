@@ -165,9 +165,13 @@ test('Tokyo city journey opens its own article, chapters and Korean translation'
   const lead = page.locator('[data-newsroom-lead]');
   await expect(lead).toHaveAttribute('data-editorial-market', 'jp-tokyo');
   const leadStory = lead.getByRole('link', { name: /Read the story/ });
-  await expect(leadStory).toHaveAttribute('href', '/news/tokyo-cheaper-rent-longer-commute/');
+  await expect(leadStory).toHaveAttribute('href', '/guides/tokyo-same-budget-property-comparison/');
   await expect(page.getByText('View the buying steps', { exact: true })).toHaveCount(0);
   await leadStory.click();
+  await expect(page).toHaveURL(/\/guides\/tokyo-same-budget-property-comparison\/$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('JPY 50 million across five Tokyo wards: what changes with location?');
+  // The new budget comparison leads discovery; keep the older article and chapter coverage.
+  await page.goto('/news/tokyo-cheaper-rent-longer-commute/');
   await expect(page).toHaveURL(/\/news\/tokyo-cheaper-rent-longer-commute\/$/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('You Saved ¥20,000 on Tokyo Rent. What Did the Commute Take?');
   await expect(page.locator('main article')).toContainText('160');

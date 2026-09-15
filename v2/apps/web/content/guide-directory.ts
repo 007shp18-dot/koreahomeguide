@@ -7,6 +7,10 @@ export const BUDGET_GUIDE_SLUGS = [
   'singapore-condo-buying-budget-guide',
   'dubai-ready-apartment-buying-budget-guide',
   'tokyo-apartment-buying-budget-guide',
+  'seoul-same-budget-property-comparison',
+  'singapore-same-budget-property-comparison',
+  'dubai-same-budget-property-comparison',
+  'tokyo-same-budget-property-comparison',
 ] as const;
 
 export function isBudgetAnalysis(slug: string) { return (BUDGET_GUIDE_SLUGS as readonly string[]).includes(slug); }

@@ -1,21 +1,4 @@
-import type { Metadata } from 'next';
-
-import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
-import { PropertyHome } from '@/components/design-review/editorial-growth-home';
+import { SeoulOverview } from '@/components/public-market/seoul-overview';
 import { indexableMetadata } from '@/lib/public-metadata';
-
-export const metadata: Metadata = indexableMetadata({
-  path: '/zh-cn/',
-  title: '首尔、新加坡、迪拜与东京房产价格 | SignedPrice',
-  description: '探索首尔、新加坡、迪拜与东京的房产成交资料，比较区域、核对报价并规划购房。查看数据来源、交易时期和覆盖范围。',
-  languageAlternates: {
-    en: '/',
-    ko: '/ko/',
-    'zh-Hans': '/zh-cn/',
-  },
-  locale: 'zh_CN',
-});
-
-export default function ChineseHome() {
-  return <EditorialGrowthPublicFrame locale="zh-CN" surface="home" shell><PropertyHome locale="zh-CN" /></EditorialGrowthPublicFrame>;
-}
+export const metadata=indexableMetadata({path:'/zh-cn/kr/seoul/',title:'首尔购房与成交概览 | SignedPrice',description:'比较首尔购房预算、区域与实际成交，并了解购房核查事项。',locale:'zh_CN',languageAlternates:{en:'/kr/seoul/',ko:'/ko/kr/seoul/','zh-Hans':'/zh-cn/kr/seoul/'}});
+export default function Page(){return <SeoulOverview locale="zh-CN" />;}

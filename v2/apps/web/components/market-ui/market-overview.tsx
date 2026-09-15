@@ -1,3 +1,5 @@
+import { CityBuyingOverview } from '../buying/city-buying-overview';
+import type { BuyingCity } from '../../lib/home/buying-journey';
 import { localizedMarketCopy } from '../../lib/locale/market-localization';
 import type { CSSProperties, ReactNode } from 'react';
 import Link from 'next/link';
@@ -7,6 +9,7 @@ import styles from './market-overview.module.css';
 export type MarketOverviewProps = Readonly<{
   locale: 'en' | 'ko' | 'zh-CN';
   city: string;
+  buyingCity?: BuyingCity;
   description: string;
   media: ReactNode;
   facts: readonly Readonly<{ label: string; value: string; detail?: string }>[];
@@ -17,10 +20,11 @@ export type MarketOverviewProps = Readonly<{
   children?: ReactNode;
 }>;
 
-export function MarketOverview({ locale, city, description, media, facts, available, period, actions, notes, children }: MarketOverviewProps) {
+export function MarketOverview({ locale, city, buyingCity, description, media, facts, available, period, actions, notes, children }: MarketOverviewProps) {
   return <div className={styles.overview} lang={locale} data-market-overview="true">
     <MarketHero model={{ sectionLabel: city, eyebrow: localizedMarketCopy(locale, "Market overview", "시장 개요"), heading: city, description, facts: [], layout: 'overview' }} media={media} />
     <div className={styles.content}>
+      {buyingCity ? <CityBuyingOverview city={buyingCity} locale={locale} /> : null}
       <section aria-label={localizedMarketCopy(locale, "Market facts", "주요 수치")}>
         {available ? <>
           <dl className={styles.facts} style={{ '--overview-columns': Math.max(1, Math.min(facts.length, 4)) } as CSSProperties}>{facts.slice(0, 4).map(fact => <div key={fact.label}>
