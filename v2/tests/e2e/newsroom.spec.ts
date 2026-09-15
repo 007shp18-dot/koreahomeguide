@@ -22,9 +22,10 @@ test('Insights keeps discovery simple and city selection works', async ({ page }
   await expect(page.getByRole('heading', { level: 1, name: 'Insights', exact: true })).toBeVisible();
   const cities = page.getByRole('navigation', { name: 'Insight cities' });
   await expect(cities.getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai', 'Tokyo']);
-  await expect(page.locator('main article:visible')).toHaveCount(7);
+  await expect(page.getByRole('region', { name: 'Buying guides by budget', exact: true }).getByRole('article')).toHaveCount(4);
+  await expect(page.locator('main article:visible')).toHaveCount(11);
   await page.locator('summary').filter({ hasText: 'More stories' }).click();
-  expect(await page.locator('main article:visible').count()).toBeGreaterThan(7);
+  expect(await page.locator('main article:visible').count()).toBeGreaterThan(11);
   await cities.getByRole('link', { name: 'Tokyo', exact: true }).click();
   await expect(page).toHaveURL(/market=tokyo/);
   await expect(page.locator('main article[data-editorial-market]:not([data-editorial-market="jp-tokyo"])')).toHaveCount(0);
