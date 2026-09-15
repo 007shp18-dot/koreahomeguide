@@ -1,3 +1,4 @@
+import retiredEditorial from '../../content/retired-editorial.json';
 import type { SiteLocale } from './site-navigation';
 import { BILINGUAL_DATABASE_SLUGS } from '../../content/editorial-edition-slugs';
 import { JOURNEY_ARTICLE_ROUTES, journeyArticleHref } from '../../content/city-journey-routes';
@@ -215,3 +216,8 @@ for (const slug of BILINGUAL_DATABASE_SLUGS) {
   routes[en] = routes[ko] = { en, ko };
 }
 
+
+// Retired article URLs redirect before rendering and have no language menu.
+for (const [path, group] of Object.entries(routes)) {
+  if (Object.values(group).some(href => Object.hasOwn(retiredEditorial, href.split('/').filter(Boolean).at(-1)!))) delete routes[path];
+}

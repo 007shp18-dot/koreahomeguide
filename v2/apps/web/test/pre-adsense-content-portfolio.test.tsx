@@ -13,6 +13,7 @@ import { isContentIndexable } from '../lib/seo/content-index-policy';
 import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '../content/portfolio-manifest';
 
 const primarySourceHosts = new Set([
+  'babahouse.nus.edu.sg', 'wojhati.rta.ae', 'www.rta.ae', 'www.onemap.gov.sg',
   'www.reins.or.jp', 'www.kinkireins.or.jp', 'www.reinfolib.mlit.go.jp',
   'www.data.go.kr', 'data.gov.sg', 'centers.ibs.re.kr', 'www.bok.or.kr',
   'dubailand.gov.ae', 'u.ae', 'www.sla.gov.sg', 'www.easylaw.go.kr',
@@ -35,8 +36,8 @@ function sectionCount(body: string): number {
 describe('pre-AdSense reviewed launch portfolio', () => {
   it('keeps the active portfolio and public English parameters after guide consolidation', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(118);
-    expect(english).toHaveLength(52);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(104);
+    expect(english).toHaveLength(47);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'news-brief' || type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));
@@ -62,14 +63,14 @@ describe('pre-AdSense reviewed launch portfolio', () => {
     }
   });
 
-  it('publishes fourteen reviewed Simplified Chinese records including investment translations', () => {
+  it('publishes ten retained reviewed Simplified Chinese records including investment translations', () => {
     const chinese = listPortfolioRecords('zh-CN');
-    expect(chinese).toHaveLength(14);
-    expect(new Set(chinese.map(({ slug }) => slug)).size).toBe(14);
+    expect(chinese).toHaveLength(10);
+    expect(new Set(chinese.map(({ slug }) => slug)).size).toBe(10);
     expect(chinese.every(({ reviewedBy, reviewedAt }) => reviewedBy !== null && reviewedAt !== null)).toBe(true);
     expect(chinese.filter(({ type }) => type === 'policy-update')).toHaveLength(2);
-    expect(chinese.filter(({ type }) => type === 'market-brief')).toHaveLength(6);
-    expect(chinese.filter(({ type }) => type === 'data-story')).toHaveLength(2);
+    expect(chinese.filter(({ type }) => type === 'market-brief')).toHaveLength(4);
+    expect(chinese.filter(({ type }) => type === 'data-story')).toHaveLength(0);
     expect(chinese.filter(({ type }) => type === 'guide')).toHaveLength(4);
   });
 
@@ -82,7 +83,7 @@ describe('pre-AdSense reviewed launch portfolio', () => {
       expect(article.type === 'guide' ? guides : news).toContain(article.title);
     }
 
-    const article = listPortfolioRecords('zh-CN').find(({ type }) => type === 'data-story')!;
+    const article = listPortfolioRecords('zh-CN').find(({ type }) => type === 'market-brief')!;
     const params = Promise.resolve({ slug: article.slug });
     const detail = renderToStaticMarkup(await ChineseArticlePage({ params }));
     const metadata = await generateChineseArticleMetadata({ params });

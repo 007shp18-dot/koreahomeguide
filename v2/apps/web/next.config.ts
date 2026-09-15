@@ -1,6 +1,9 @@
-import retiredEditorial from './content/retired-editorial.json';
+import { readFileSync } from 'node:fs';
 import type { NextConfig } from "next";
 import { fileURLToPath } from "node:url";
+
+// Absolute resolution also works when Next starts from the workspace root.
+const retiredEditorial = JSON.parse(readFileSync(new URL('./content/retired-editorial.json', import.meta.url), 'utf8')) as Record<string, string>;
 
 const repositoryRoot = fileURLToPath(new URL("../../../", import.meta.url));
 
