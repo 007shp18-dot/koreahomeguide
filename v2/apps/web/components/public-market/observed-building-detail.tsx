@@ -129,6 +129,7 @@ export function BuildingProximityDisclosure({ proximity, locale = 'en' }: Readon
 }
 
 export function ObservedBuildingDetail({
+  initialReview,
   model,
   backHref,
   visual,
@@ -137,6 +138,7 @@ export function ObservedBuildingDetail({
   decisionPanelReady = true,
   locale = 'en',
 }: Readonly<{
+  initialReview?: PropertyReview;
   model: ObservedBuildingIdentityModel;
   backHref: string;
   visual?: ReactNode;
@@ -170,7 +172,7 @@ export function ObservedBuildingDetail({
   return (
     <div id="top" className={styles.page}>
       <BuildingDetailHeader locale={locale} />
-      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
+      <PropertyDecisionWorkspace initialReview={initialReview} entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
       <main className={`${styles.main} ${detailStyles.root}`} data-detail-layout="unified" data-building-detail="identity-only">
         <section
           className={styles.identityHero}

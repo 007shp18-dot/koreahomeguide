@@ -558,8 +558,8 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       locale={locale}
     />;
     const questions = <PlaceQuestions locale={locale} market="seoul" path={`/kr/seoul/explore/${district}/${buildingId}/`} name={observed.building.officialName}/>;
-    const fallback = <ObservedBuildingDetail questions={questions}
-      decisionPanelReady={input.dependencies?.hydrateEvidence !== true}
+    const fallback = <ObservedBuildingDetail initialReview={staticSeoulReview(`kr-seoul:estate:${buildingId}`)} questions={questions}
+      decisionPanelReady={true}
       model={observed}
       backHref={backHref}
       visual={visual}
@@ -568,7 +568,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     />;
     if (input.dependencies?.hydrateEvidence !== true) return fallback;
     return <Suspense fallback={fallback}>
-      <KoreaObservedBuildingClient questions={questions}
+      <KoreaObservedBuildingClient initialReview={staticSeoulReview(`kr-seoul:estate:${buildingId}`)} questions={questions}
         model={observed}
         initialBackHref={backHref}
         visual={visual}
@@ -631,8 +631,8 @@ export function composeKoreaBuildingRoute(input: Readonly<{
   ];
   const facts = <BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} observedFacts={observedFacts} proximity={entityProjection?.proximity ?? observed?.proximity} locale={locale} />;
   const questions = <PlaceQuestions locale={locale} market="seoul" path={`/kr/seoul/explore/${district}/${buildingId}/`} name={model.building.name}/>;
-  const fallback = <BuildingDetailPage questions={questions}
-    decisionPanelReady={input.dependencies?.hydrateEvidence !== true}
+  const fallback = <BuildingDetailPage initialReview={staticSeoulReview(`kr-seoul:estate:${buildingId}`)} questions={questions}
+    decisionPanelReady={true}
     locale={locale}
       model={model}
       decision={decision}
@@ -644,7 +644,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
   />;
   if (input.dependencies?.hydrateEvidence !== true) return fallback;
   return <Suspense fallback={fallback}>
-    <KoreaBuildingDecisionClient questions={questions}
+    <KoreaBuildingDecisionClient initialReview={staticSeoulReview(`kr-seoul:estate:${buildingId}`)} questions={questions}
       model={model}
       visual={visual}
       propertyMedia={propertyMedia}
