@@ -2,7 +2,8 @@ import {expect,test} from '@playwright/test';
 import { visibleLanguageNavigation, visibleProductNavigation } from './site-header-helpers';
 
 test('Chinese market cards align their primary actions on multi-column screens',async({page})=>{
- await page.goto('/zh-cn/kr/seoul/');
+ // Card dimensions are reserved by CSS; measure after DOM and fonts, independently of image completion.
+ await page.goto('/zh-cn/kr/seoul/', {waitUntil:'domcontentloaded'});
  await page.evaluate(()=>document.fonts.ready);
  const positions=await page.locator('[data-contextual-action]').evaluateAll(nodes=>nodes.map(node=>{
   const r=node.getBoundingClientRect();const a=node.querySelector('[data-primary-action="explore"]')!.getBoundingClientRect();return {top:r.top,action:a.top-r.top};
@@ -13,7 +14,7 @@ test('Chinese market cards align their primary actions on multi-column screens',
 });
 
 test('home presents four city destinations and a separate budget journey without overflow', async ({page}) => {
- await page.goto('/');
+ await page.goto('/', {waitUntil:'domcontentloaded'});
  await page.evaluate(() => document.fonts.ready);
  await expect(page.locator('main [data-home-region]')).toHaveCount(2);
  await expect(page.locator('[data-home-region="analysis"] article')).toHaveCount(3);
