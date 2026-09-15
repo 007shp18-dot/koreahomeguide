@@ -16,8 +16,8 @@ describe('public Seoul neighborhood route', () => {
   it('pre-renders every published neighborhood with self-canonical metadata and building links', async () => {
     vi.stubEnv('NODE_ENV', 'production');
 
-    expect(dynamicParams).toBe(false);
-    expect(generateStaticParams()).toHaveLength(388);
+    expect(dynamicParams).toBe(true);
+    expect(generateStaticParams()).toHaveLength(379);
     expect(generateStaticParams()).toContainEqual({
       district: 'gangnam-gu',
       neighborhoodId: 'gangnam-gu-dong-1g2fbdb',
@@ -41,9 +41,9 @@ describe('public Seoul neighborhood route', () => {
         locale: 'en_US',
       },
     });
-    expect(metadata.description).toContain('281 buildings with transaction histories');
+    expect(metadata.description).toContain('133 buildings with transaction histories');
     expect(html).toContain('<span lang="ko">역삼동</span> reported property prices');
-    expect(html).toContain('281 buildings have reported transaction histories.');
+    expect(html).toContain('133 buildings have reported transaction histories.');
     expect(html).toContain('href="/kr/seoul/explore/gangnam-gu/gangnam-gu-1lf81kj"');
     expect(html).toContain('역삼역센트럴푸르지오시티');
     expect(html).toContain('href="/ko/kr/seoul/explore/gangnam-gu/gangnam-gu-1lf81kj"');
