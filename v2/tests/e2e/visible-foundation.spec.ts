@@ -311,7 +311,7 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
 
-  const explore = (await visibleProductNavigation(page))
+  const explore = page.getByRole('navigation', { name: 'Primary navigation', exact: true })
     .getByRole('link', { name: 'Explore' });
   await tabTo(page, explore);
   await page.keyboard.press('Enter');
@@ -322,7 +322,7 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
 
-  const exploreFromExplore = (await visibleProductNavigation(page))
+  const exploreFromExplore = page.getByRole('navigation', { name: 'Primary navigation', exact: true })
     .getByRole('link', { name: 'Explore' });
   await tabTo(page, exploreFromExplore);
   await page.keyboard.press('Enter');

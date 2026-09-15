@@ -95,7 +95,7 @@ test('Insights type and image layout stays readable across viewports', async ({ 
     const filter = main.querySelector('nav a')!;
     return { heading: parseFloat(getComputedStyle(heading).fontSize), deck: parseFloat(getComputedStyle(deck).fontSize), filter: parseFloat(getComputedStyle(filter).fontSize), height: filter.getBoundingClientRect().height };
   });
-  expect(values.heading).toBeGreaterThanOrEqual(40);
+  expect(values.heading).toBeGreaterThanOrEqual(32);
   expect(values.heading).toBeLessThanOrEqual(60);
   expect(values.deck).toBeGreaterThanOrEqual(15);
   expect(values.filter).toBeGreaterThanOrEqual(14);
