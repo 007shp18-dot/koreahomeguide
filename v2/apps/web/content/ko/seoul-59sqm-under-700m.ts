@@ -42,6 +42,8 @@ export const KOREAN_SEOUL_59SQM_UNDER_700M: EditorialPortfolioRecord = Object.fr
 
 ## 최근 실거래 17개 그룹
 
+단지명을 누르면 해당 건물의 거래 상세로 이동합니다. 상세 화면의 기본 집계는 이 글의 2026년 7~8월·55~65㎡·3층 이상 조건보다 넓을 수 있어 대표 가격이 다를 수 있습니다. 아래 표는 2026년 9월 7일 수집 자료를 고정한 분석이며, 같은 표본이 상세에서 자동 선택되는 것은 아닙니다.
+
 | 자치구 · 동 | 아파트 | 7~8월 중앙값 | 7억원 이하 / 전체 | 관측 범위 | 최근 계약 |
 |---|---|---:|---:|---:|---|
 | 구로구 · 개봉동 | [거성푸르뫼2](/ko/kr/seoul/explore/guro-gu/guro-gu-1hpnkb4/?transaction=sale&propertyType=apartment) | 4억 2,300만원 | 5 / 5 | 4억 1,500만~4억 5,000만원 | 2026-08-21 |
@@ -66,6 +68,14 @@ export const KOREAN_SEOUL_59SQM_UNDER_700M: EditorialPortfolioRecord = Object.fr
 
 ## 지금 이 목록을 활용하는 방법
 
+### 5억원 이하 거래를 찾는다면 어디부터 볼까?
+
+그룹 중앙값이 5억원 이하인 곳은 거성푸르뫼2, 신동아아파트1, 삼익세라믹, 관악산벽산타운5, 중앙화곡하이츠입니다. 다섯 그룹의 적격 거래는 31건입니다. 이는 31건 모두가 5억원 이하라는 뜻은 아닙니다. 중앙화곡하이츠는 중앙값이 5억원이지만 관측 최고가는 5억 2,000만원이었습니다. 위 표의 단지 링크에서 주소와 개별 계약을 확인하세요.
+
+### 같은 단지인데 상세 화면의 가격이 왜 다를까?
+
+먼저 계약 기간, 정확한 전용면적, 층, 거래 유형을 맞춰야 합니다. 이 글의 신동아아파트1 표본은 62.22㎡이고 거성푸르뫼2는 59.9㎡입니다. 둘 다 55~65㎡ 범위에 들어가지만 같은 크기의 주택은 아닙니다. 현재 상세의 전체 면적 중앙값을 이 표와 바로 비교하지 마세요. 이후 신고·해제·정정도 차이를 만들 수 있습니다.
+
 생활권에 맞는 자치구를 고른 뒤 정확한 단지와 전용면적의 현재 매물을 확인하세요. 호가를 날짜가 표시된 계약의 층과 전체 관측 범위와 비교해야 합니다. 중앙값보다 높은 호가가 자동으로 과도한 것은 아니며, 관측 범위 안이라고 해서 자동으로 좋은 가격도 아닙니다.
 
 7억원은 주택가격 기준입니다. 취득비용과 금융비용은 별도로 두세요. [서울 주택 매수 예산 가이드](/ko/guides/seoul-apartment-buying-budget-guide/)와 [서울 실거래 탐색](/ko/kr/seoul/explore/?transaction=sale&propertyType=apartment)에서 다음 확인을 이어갈 수 있습니다.
@@ -82,7 +92,8 @@ export const KOREAN_SEOUL_59SQM_UNDER_700M: EditorialPortfolioRecord = Object.fr
   authorName: 'SignedPrice 데이터팀',
   reviewedBy: 'SignedPrice 출처 및 계산 자동 점검',
   relatedHref: '/ko/news/seoul-84sqm-under-one-billion-2026/',
-  revisionNote: '2026년 9월 9일 제목과 소개에 실제 전용 55~65㎡ 범위와 그룹 중앙값 기준을 명시했습니다. 기존 거래 자료와 계산은 유지했습니다.',
+  updatedAt: '2026-09-10T22:46:28.812Z',
+  revisionNote: '검색 유입 점검 후 그래프 제목을 55~65㎡로 정정하고 예산·상세 비교 안내를 보강했습니다. 기존 9월 7일 수집 자료와 계산은 유지했으며 최신 원자료를 재수집한 분석은 아닙니다.',
   canonicalHref: '/ko/news/seoul-59sqm-under-700-million-2026/',
   translationGroupId: SEOUL_59SQM_UNDER_700M.slug,
   sources: Object.freeze(SEOUL_59SQM_UNDER_700M.sources.map(source => Object.freeze({
@@ -94,7 +105,7 @@ export const KOREAN_SEOUL_59SQM_UNDER_700M: EditorialPortfolioRecord = Object.fr
     ...SEOUL_59SQM_UNDER_700M.infographic,
     id: 'ko-affordable-seoul-59sqm-under-700-million-2026',
     locale: 'ko',
-    title: '2026년 7~8월 선정 59㎡ 단지 중앙값',
+    title: '2026년 7~8월 선정 55~65㎡ 그룹 중앙값',
     accessibleSummary: '7억원 이하 최근 실거래 조건을 충족한 서울 아파트 그룹 17개 중 5개의 중앙값입니다.',
     series: Object.freeze(SEOUL_59SQM_UNDER_700M.infographic.series.map(series => Object.freeze({
       ...series,
