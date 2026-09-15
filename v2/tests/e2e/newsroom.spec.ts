@@ -139,7 +139,7 @@ test('News & Insights and Guides keep the same global header and the guide highl
   await page.goto('/news/');
   let navigation = await openPrimaryNavigation(page);
   const newsLabels = await navigation.innerText();
-  await navigation.getByRole('link', { name: 'Guides', exact: true }).click();
+  await navigation.getByRole('link', { name: 'Buying guides', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
   navigation = await openPrimaryNavigation(page);
   await expect(navigation).toHaveText(newsLabels, { useInnerText: true });
@@ -150,7 +150,7 @@ test('News & Insights and Guides keep the same global header and the guide highl
   }
   await page.getByRole('link', { name: /Buying property in Korea as a foreigner/ }).click();
   navigation = await openPrimaryNavigation(page);
-  await expect(navigation.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(navigation.getByRole('link', { name: 'Buying guides', exact: true })).toHaveAttribute('aria-current', 'page');
   const openedMenu = page.locator('header.site-header details.site-header__mobile-menu[open]');
   if (await openedMenu.isVisible()) await openedMenu.locator('summary').press('Escape');
   const contents = page.locator('details[data-article-contents]');

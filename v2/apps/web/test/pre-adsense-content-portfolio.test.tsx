@@ -77,7 +77,7 @@ describe('pre-AdSense reviewed launch portfolio', () => {
     const news = (await Promise.all(['insights', 'news', 'policy'].map(async (type) =>
       renderToStaticMarkup(await ChineseNewsPage({ searchParams: Promise.resolve({ type }) })),
     ))).join('');
-    const guides = renderToStaticMarkup(<ChineseGuidesPage />);
+    const guides = renderToStaticMarkup(await ChineseGuidesPage({ searchParams: Promise.resolve({}) }));
     for (const article of listPortfolioRecords('zh-CN')) {
       expect(article.type === 'guide' ? guides : news).toContain(article.title);
     }

@@ -102,14 +102,11 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: /Find your place.\s*See the bigger picture./,
+      name: /What can your budget buy\?/,
     }),
   ).toBeVisible();
   await expect(
-    page.getByRole('heading', {
-      level: 2,
-      name: 'Seoul',
-    }),
+    page.getByRole('button', { name: 'Seoul', exact: true }),
   ).toBeVisible();
 
   await (await openPrimaryNavigation(page)).getByRole('link', { name: 'Explore' }).click();
@@ -217,10 +214,11 @@ for (const route of publicRoutes) {
 test('desktop exposes published analysis and the city destinations', async ({page}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1, name: /Find your place.\s*See the bigger picture./ })).toBeInViewport();
-  await expect(page.getByRole('search')).toHaveCount(1);
+  await expect(page.getByRole('heading', { level: 1, name: /What can your budget buy\?/ })).toBeInViewport();
+  await expect(page.locator('[data-buying-city]')).toHaveCount(4);
+  await expect(page.locator('[data-buying-results]')).toHaveCount(0);
   const markets = page.locator('[data-home-region="markets"]');
-  await expect(markets).toHaveAttribute('aria-label', 'Choose a city');
+  await expect(markets).toHaveAttribute('aria-labelledby', 'buying-city-title');
   await page.getByRole('heading', { name: 'What the transactions tell us' }).scrollIntoViewIfNeeded();
   await expect(page.getByRole('heading', { name: 'What the transactions tell us' })).toBeInViewport();
   await markets.scrollIntoViewIfNeeded();
@@ -237,7 +235,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await page.goto('/');
 
   let primaryNavigation = await openPrimaryNavigation(page);
-  await expect(primaryNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Insights', 'Community', 'Rankings', 'News', 'Tools', 'Guides']);
+  await expect(primaryNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Buying guides', 'Insights', 'Rankings', 'News', 'Tools', 'Community']);
   await expect(primaryNavigation.getByRole('link', { name: 'Rankings', exact: true })).toHaveAttribute('href', '/rankings/');
   await expect(primaryNavigation.getByRole('link')).toHaveCount(7);
   const primaryLinks = await primaryNavigation.getByRole('link').all();

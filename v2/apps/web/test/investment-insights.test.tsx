@@ -22,7 +22,7 @@ describe('investment Insights discovery', () => {
     const all = buildInsightItems([], 'all');
     const investment = buildInsightItems([], 'all', 'en', 'investment');
     expect(investment.length).toBeGreaterThan(0);
-    expect(all.length).toBeGreaterThan(investment.length);
+    expect(all).toEqual(investment);
     expect(investment.some(item => item.href.includes('dubai-rental-yield-after-costs'))).toBe(true);
     expect(investment.some(item => item.href.endsWith('/seongsu/'))).toBe(false);
     expect(buildInsightItems([], 'tokyo', 'en', 'investment').every(item => item.city === 'tokyo')).toBe(true);

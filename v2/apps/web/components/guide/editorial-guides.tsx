@@ -7,6 +7,7 @@ import { guideDirectory } from '../../content/guide-directory';
 import { REGIONAL_RESOURCES, RESOURCE_TYPES, RESOURCE_LABELS, regionalResourceHref } from '../../content/regional-guide-resources';
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
 import { MARKET_PHOTOS } from '../market-representative-photo';
+import { BudgetGuideCallout } from './budget-guide-callout';
 import styles from './editorial-guides.module.css';
 
 const cities = { seoul: 'Seoul', tokyo: 'Tokyo', singapore: 'Singapore', dubai: 'Dubai' } as const;
@@ -49,6 +50,7 @@ export function EditorialGuides({ market, query = '' }: Readonly<{ market: Story
       <h1>Guides</h1>
       <p>Practical steps for buying, owning and renting a home.</p>
     </header>
+    <BudgetGuideCallout market={market} />
     <nav className={styles.tabs} aria-label="Guide cities">
       {(Object.keys(cities) as StoryCity[]).map(key => <Link key={key} href={`/guides/?market=${key}`} aria-current={key === market ? 'page' : undefined}>{cities[key]}</Link>)}
     </nav>

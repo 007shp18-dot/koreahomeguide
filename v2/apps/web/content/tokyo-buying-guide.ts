@@ -3,6 +3,12 @@ import type { ContentLocale } from '../lib/content/content-types';
 
 const slug = 'tokyo-apartment-buying-budget-guide';
 const evidenceHref = '/jp/tokyo/explore/?city=13101&year=2026&quarter=1&release=jp-area-8820f65b-a147-46b7-9412-3c463428b5f2';
+// Shared with the homepage; these are anonymous individual records, not listings.
+export const TOKYO_BUDGET_EXAMPLES = [
+  { cap: 30000000, area: 20, layout: '1K', built: 2005, names: { en: 'Kandaizumicho', ko: '간다이즈미초', 'zh-CN': '神田和泉町' } },
+  { cap: 50000000, area: 25, layout: '1K', built: 2004, names: { en: 'Kojimachi', ko: '고지마치', 'zh-CN': '麹町' } },
+  { cap: 100000000, area: 65, layout: '2LDK', built: 1977, names: { en: 'Kandasarugakucho', ko: '간다사루가쿠초', 'zh-CN': '神田猿楽町' } },
+] as const;
 const text = {
   en: {
     title: 'Tokyo apartment budgets: what JPY 30M, 50M and 100M looked like in recorded sales',

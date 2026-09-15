@@ -20,6 +20,7 @@ describe('editorial portfolio public routes', () => {
     const main = html.match(/<main[\s\S]*?<\/main>/)?.[0] ?? '';
     expect(main).toContain('Before you buy');
     expect(main).toContain('Owning &amp; ongoing costs');
+    expect(main).toContain('href="/news?topic=budget&amp;market=seoul"');
     expect(main).toContain('Essential Seoul guides');
     expect(main).toContain('href="/kr/seoul/explore"');
     for (const slug of ['buy-property-in-korea-as-foreigner', 'rent-an-apartment-in-korea', 'wolse-vs-jeonse', 'korea-rental-contract-checklist']) expect(main).toContain(`/guides/${slug}`);
@@ -34,6 +35,7 @@ describe('editorial portfolio public routes', () => {
     expect(html).toContain('Essential Dubai guides');
     expect(html).toContain('href="/ae/dubai/guide"');
     expect(html).toContain('href="/ae/dubai/explore"');
+    expect(html).toContain('href="/news?topic=budget&amp;market=dubai"');
     expect(html).not.toContain('/guides/read-singapore-private-transactions');
   });
 
@@ -42,9 +44,11 @@ describe('editorial portfolio public routes', () => {
     expect(html.match(/<h3>/g)).toHaveLength(6);
     expect(html).toContain('/ko/ae/dubai/guide');
     expect(html).toContain('한국에서 집 구하기');
+    expect(html).toContain('href="/ko/news?topic=budget"');
     const dubai = renderToStaticMarkup(await KoreanGuidesPage({ searchParams: Promise.resolve({ market: 'dubai' }) }));
     expect(dubai.match(/<h3>/g)).toHaveLength(1);
     expect(dubai).toContain('두바이 주택 매수 전 확인할 사항');
+    expect(dubai).toContain('href="/ko/news?topic=budget&amp;market=dubai"');
   });
 
   it('renders an evidence-reviewed English guide with its canonical', async () => {
@@ -61,7 +65,8 @@ describe('editorial portfolio public routes', () => {
   it('publishes all fourteen reviewed Chinese records including investment translations', async () => {
     const records = listPortfolioRecords('zh-CN');
     const guides = records.filter(({ type }) => type === 'guide');
-    const guideIndex = renderToStaticMarkup(<ChineseGuidesPage />);
+    const guideIndex = renderToStaticMarkup(await ChineseGuidesPage({ searchParams: Promise.resolve({ market: 'tokyo' }) }));
+    expect(guideIndex).toContain('href="/zh-cn/news?topic=budget&amp;market=tokyo"');
     const newsIndexes = (await Promise.all(['insights', 'news', 'policy'].map(async (type) =>
       renderToStaticMarkup(await ChineseNewsPage({ searchParams: Promise.resolve({ type }) })),
     ))).join('');

@@ -4,6 +4,11 @@ import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editor
 import { EditorialPortfolioIndex } from '@/components/newsroom/editorial-portfolio-index';
 import { listPortfolioRecords } from '@/content/portfolio-manifest';
 import { indexableMetadata } from '@/lib/public-metadata';
+import { BudgetGuideCallout } from '@/components/guide/budget-guide-callout';
 
 export const metadata: Metadata = indexableMetadata({ path: '/zh-cn/guides/', title: '韩国房地产中文实用指南 | signedprice', description: '面向跨境租客与买家的已核验韩国房地产中文指南。', languageAlternates: { en: '/guides/', ko: '/ko/guides/', 'zh-Hans': '/zh-cn/guides/' }, locale: 'zh_CN' });
-export default function ChineseGuidesPage() { return <EditorialGrowthPublicFrame locale="zh-CN" surface="content" activeSection="guides"><EditorialPortfolioIndex locale="zh-CN" records={listPortfolioRecords('zh-CN').filter(({ type }) => type === 'guide')} section="guides" /></EditorialGrowthPublicFrame>; }
+export default async function ChineseGuidesPage({ searchParams }: { searchParams: Promise<{ market?: string }> }) {
+  const { market } = await searchParams;
+  const selected = market === 'seoul' || market === 'singapore' || market === 'dubai' || market === 'tokyo' ? market : 'all';
+  return <EditorialGrowthPublicFrame locale="zh-CN" surface="content" activeSection="guides"><BudgetGuideCallout locale="zh-CN" market={selected} /><EditorialPortfolioIndex locale="zh-CN" records={listPortfolioRecords('zh-CN').filter(({ type }) => type === 'guide')} section="guides" /></EditorialGrowthPublicFrame>;
+}

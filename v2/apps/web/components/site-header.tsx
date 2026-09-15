@@ -59,13 +59,12 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
   if (currentHref === undefined) return false;
   href = href.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
   currentHref = currentHref.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
-  const budgetAnalysis = /\/(?:seoul-apartment|singapore-condo|dubai-ready-apartment)-buying-budget-guide\//.test(currentHref);
   if (href.startsWith('/news/')) {
     const newsSelected = ['news', 'headlines'].includes(new URLSearchParams(currentHref.split('?')[1] ?? '').get('type') ?? '');
     if (href.includes('?type=news')) return currentHref.includes('/news/') && newsSelected;
-    return !newsSelected && (currentHref.includes('/news/') || currentHref.includes('/insights/') || budgetAnalysis);
+    return !newsSelected && (currentHref.includes('/news/') || currentHref.includes('/insights/'));
   }
-  if (href === '/guides/') return !budgetAnalysis && (currentHref.includes('/guide') || currentHref === '/guides/');
+  if (href === '/guides/') return currentHref.includes('/guide') || currentHref === '/guides/';
   if (href === '/tools/' || href === '/ko/tools/') return currentHref.includes('/tools/') || currentHref.includes('/check/') || currentHref.includes('/passport/') || currentHref.includes('/shortlist/') || currentHref.includes('/saved/');
   if (href.includes('/rankings/')) return currentHref.includes('/rankings/');
   if (href === '/community/') return currentHref.startsWith('/community/');
@@ -80,8 +79,9 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
   const locale = copy.languageLabel === 'ZH' ? 'zh-CN' : copy.languageLabel === 'KO' ? 'ko' : 'en';
   const navigation = globalNavigation(locale);
   const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
-  const primaryLinks = [...navigation.filter(link => link.href.endsWith('/prices/') || link.href.endsWith('/news/')), { label: locale === 'ko' ? '커뮤니티' : locale === 'zh-CN' ? '社区' : 'Community', href: `${prefix}/community/` }];
-  const moreLinks = navigation.filter(link => !primaryLinks.some(primary => primary.href === link.href));
+  const allLinks = [...navigation, { label: locale === 'ko' ? '커뮤니티' : locale === 'zh-CN' ? '社区' : 'Community', href: `${prefix}/community/` }];
+  const primaryLinks = allLinks.slice(0, 3);
+  const moreLinks = allLinks.slice(3);
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
   const context = headerMarketContext(copy, currentHref);
   const isRanking = currentHref?.replace(/^\/(?:ko|zh-cn)(?=\/)/, '').split('?')[0] === '/rankings/';
@@ -186,7 +186,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           summaryText={isKorean ? '메뉴' : locale === 'zh-CN' ? '菜单' : 'Menu'}
         >
           <nav aria-label={isKorean ? '전체 메뉴' : locale === 'zh-CN' ? '网站菜单' : 'Site menu'}>
-            {[...primaryLinks, ...moreLinks].map((link) =>
+            {allLinks.map((link) =>
               <Link
                 key={link.href}
                 className="site-header__product-link"

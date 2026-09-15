@@ -24,7 +24,10 @@ describe('September 13 bilingual edition', () => {
       for (const locale of ['en', 'ko'] as const) {
         const records = SEPTEMBER_13_EDITORIAL.filter(a => a.locale === locale);
         expect(records).toHaveLength(4);
-        const items = buildInsightItems([], 'all', locale);
+        const items = [
+          ...buildInsightItems([], 'all', locale),
+          ...buildInsightItems([], 'all', locale, 'neighborhood'),
+        ];
         const selected = items.filter(i => records.some(a => a.id === i.id));
         expect(selected).toHaveLength(4);
         expect(selected.filter(i => i.investment)).toHaveLength(2);

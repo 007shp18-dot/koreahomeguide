@@ -18,7 +18,7 @@ const profile = { ...base, id: 'en:seoul-mullae-steel-and-art', slug: 'seoul-mul
 describe('published neighborhood discovery', () => {
   it.each(['seoul-mullae-steel-and-art', 'singapore-kampong-gelam-trades-and-streets', 'tokyo-kuramae-craft-and-river', 'dubai-al-fahidi-creek-walk'])('classifies %s as neighborhood living while keeping its article and photo', slug => {
     const article = { ...profile, slug, canonicalHref: `/news/${slug}/` };
-    const item = buildInsightItems([article], 'all').find(item => item.href === article.canonicalHref)!;
+    const item = buildInsightItems([article], 'all', 'en', 'neighborhood').find(item => item.href === article.canonicalHref)!;
     expect(item).toMatchObject({ topic: 'Neighborhood living', investment: false,
       uploadedPhoto: { src: '/api/editorial-images/fea7c09a-ebc2-473a-94ae-2359aef6eb35/' } });
     expect(buildInsightItems([article], 'all', 'en', 'investment').some(item => item.href === article.canonicalHref)).toBe(false);
@@ -27,7 +27,7 @@ describe('published neighborhood discovery', () => {
     vi.stubEnv('DATABASE_URL', 'test-only');
     stored.list.mockImplementation(async ({ locale }: { locale: string }) => locale === 'en' ? [profile] : []);
     try {
-      const html = renderToStaticMarkup(await Page({ searchParams: Promise.resolve({ market: 'seoul' }) }));
+      const html = renderToStaticMarkup(await Page({ searchParams: Promise.resolve({ market: 'seoul', topic: 'neighborhood' }) }));
       expect(html.match(/href="[^"]*mullae[^"]*"/g)).toContainEqual(expect.stringMatching(/^href="\/news\/seoul-mullae-steel-and-art\/?"$/));
       expect(html).toContain(profile.title);
       expect(html).toContain('>English</span>');

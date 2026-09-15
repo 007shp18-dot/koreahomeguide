@@ -20,17 +20,17 @@ describe('shared navigation destinations', () => {
   it('separates English News from Insights and preserves translated sections', () => {
     expect(globalNavigation('en')).toEqual([
       { label: 'Explore', href: '/prices/' },
-      { label: 'Rankings', href: '/rankings/' },
+      { label: 'Buying guides', href: '/guides/' },
       { label: 'Insights', href: '/news/' },
+      { label: 'Rankings', href: '/rankings/' },
       { label: 'News', href: '/news/?type=news' },
       { label: 'Tools', href: '/tools/' },
-      { label: 'Guides', href: '/guides/' },
     ]);
 
     for (const locale of ['ko', 'zh-CN'] as const) {
       expect(globalNavigation(locale)).toHaveLength(6);
       expect(globalNavigation(locale).map(({ href }) => href.replace(/^\/(?:zh-cn|ko)(?=\/)/, '')))
-        .toEqual(['/prices/', '/rankings/', '/news/', '/news/?type=news', '/tools/', '/guides/']);
+        .toEqual(['/prices/', '/guides/', '/news/', '/rankings/', '/news/?type=news', '/tools/']);
     }
   });
   it('keeps the news view while changing city and advertises only supported Tokyo guides', () => {
@@ -39,6 +39,7 @@ describe('shared navigation destinations', () => {
     expect(marketDestination('jp-tokyo', '/guides/', 'en')).toBe('/guides/?market=tokyo');
     expect(marketDestination('jp-tokyo', '/ko/guides/', 'ko')).toBe('/ko/guides/?market=tokyo');
     expect(marketDestination('jp-tokyo', '/zh-cn/guides/', 'zh-CN')).toBe('/zh-cn/guides/?market=tokyo');
+    expect(marketDestination('sg-singapore', '/guides/seoul-apartment-buying-budget-guide/', 'en')).toBe('/guides/?market=singapore');
   });
   it('keeps city switches in the ranking hub for every locale and drops unrelated filters', () => {
     for (const locale of ['en', 'ko', 'zh-CN'] as const) {
@@ -146,7 +147,7 @@ describe('shared navigation destinations', () => {
     expect(html).not.toContain('mailto:');
     expect(html).not.toContain('/kr/seoul/news/');
     expect(html).toMatch(/href="\/jp\/tokyo\/?">Tokyo<\/a>/);
-    const positions = ['Explore', 'Insights', 'Tools', 'Guides'].map((label) => html.indexOf(`>${label}</a>`));
+    const positions = ['Explore', 'Buying guides', 'Insights', 'Tools'].map((label) => html.indexOf(`>${label}</a>`));
     expect(positions).toEqual([...positions].sort((a,b) => a-b));
   });
 });

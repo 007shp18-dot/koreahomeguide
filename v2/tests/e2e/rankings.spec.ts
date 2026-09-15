@@ -140,7 +140,7 @@ test('Explore keeps direct product links after following a legacy district URL',
   const productNavigation = await openPrimaryNavigation(page);
   await expect(productNavigation.getByRole('link', { name: 'Explore' }))
     .toHaveAttribute('href', '/prices/');
-  await expect(productNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Insights', 'Community', 'Rankings', 'News', 'Tools', 'Guides']);
+  await expect(productNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Buying guides', 'Insights', 'Rankings', 'News', 'Tools', 'Community']);
   const rankingsLink = productNavigation.getByRole('link', { name: 'Rankings', exact: true });
   await expect(rankingsLink).toHaveAttribute('href', '/rankings/');
   await expect(page.getByRole('navigation', { name: 'Footer Platform' }).getByRole('link', { name: 'Rankings', exact: true })).toHaveAttribute('href', '/rankings/');

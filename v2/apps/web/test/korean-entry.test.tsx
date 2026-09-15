@@ -11,19 +11,20 @@ describe('Korean entry routes', () => {
   it('offers four cities and preserves Korean tools', () => {
     const html = renderToStaticMarkup(<KoreanHome />);
     for (const path of ['/ko/kr/seoul/explore', '/ko/sg/singapore/explore', '/ko/ae/dubai/explore', '/ko/jp/tokyo/explore']) expect(html).toMatch(new RegExp(`href="${path}/?"`));
-    expect(html).toContain('aria-label="도시 선택"');
-    expect(html).toContain('세계의 집을,');
-    expect(html).toContain('더 넓은 시선으로.');
+    expect(html).toContain('aria-labelledby="buying-city-title"');
+    expect(html).toContain('내 예산으로 어떤 집을?');
+    expect(html).toContain('네 도시에서 찾는 다음 선택.');
     expect(html).toContain('/ko/sg/singapore/explore');
     expect(html).toMatch(/href="\/ko\/tools\/?"/);
     expect(html).toMatch(/href="\/ko\/news\/?"/);
   });
   it('keeps old city anchors at one contact section without posting or requiring financial documents', () => {
     const html = renderToStaticMarkup(<KoreanContact />);
-    for (const city of ['seoul', 'singapore', 'dubai']) expect(html).toContain(`id="research-${city}"`);
+    for (const city of ['seoul', 'singapore', 'dubai', 'tokyo']) expect(html).toContain(`id="research-${city}"`);
     expect(html.match(/href="mailto:contact@signedprice.com"/g)).toHaveLength(1);
     expect(html).toContain('href="mailto:privacy@signedprice.com"');
     expect(html).toMatch(/href="\/ko\/kr\/seoul\/corrections\/?"/);
+    expect(html).toMatch(/href="\/ko\/sg\/singapore\/corrections\/?"/);
     expect(html).toMatch(/href="\/privacy\/?"/);
     expect(html).not.toContain('<form');
     expect(html).toContain('신분증, 계좌 정보, 비공개 계약서는 보내지 마세요.');

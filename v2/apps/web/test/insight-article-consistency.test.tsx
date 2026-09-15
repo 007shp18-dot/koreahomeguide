@@ -60,7 +60,7 @@ describe('consistent insight articles and curation', () => {
   it('gives the published insight cards credited photos with varied scenes', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-09-10T12:00:00Z'));
-    const items = buildInsightItems([], 'all');
+    const items = [...buildInsightItems([], 'all'), ...buildInsightItems([], 'all', 'en', 'neighborhood')];
     expect(items.every(item => item.photo?.source && item.photo.licenseUrl)).toBe(true);
     for (const item of items) {
       expect(item.photo?.src.startsWith('/')).toBe(true);
@@ -88,7 +88,7 @@ describe('consistent insight articles and curation', () => {
   it('moves four coverage explainers out of Latest stories while preserving their pages and monthly-report links', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-09-10T12:00:00Z'));
-    const items = buildInsightItems([], 'all');
+    const items = [...buildInsightItems([], 'all'), ...buildInsightItems([], 'all', 'en', 'neighborhood')];
     expect(items).toHaveLength(30);
     const seoul = renderToStaticMarkup(<NewsroomArticle article={getPortfolioRecord('en', 'seoul-monthly-2026-09')!} />);
     const singapore = renderToStaticMarkup(<NewsroomArticle article={getPortfolioRecord('en', 'singapore-monthly-2026-09')!} />);

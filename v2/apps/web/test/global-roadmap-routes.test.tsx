@@ -47,7 +47,7 @@ describe('global roadmap routes', () => {
     );
     expect(communityMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/community/' });
     expect(news).toContain('<h1>Insights</h1>');
-    expect(news).toContain('Property markets, investment decisions and life across four cities.');
+    expect(news).toContain('Buying budgets, ownership costs and market decisions across four cities.');
     expect(news).toContain('data-public-editorial-frame="content"');
     expect(news).toContain('Sort Singapore Condos by Price. What Disappears?');
     expect(news).toContain('aria-label="Insight cities"');

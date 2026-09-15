@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { budgetBandIndex } from '../../lib/home/buying-journey';
 import Link from 'next/link';
 import { track } from '@vercel/analytics/react';
 import { createBuyingGuideEvent, guideJourney, type GuideAction } from '../../lib/analytics/buying-guide-events';
@@ -27,10 +28,10 @@ export function buyingGuideCosts(currency: string, price: number, profile: numbe
   return [['Property price', price], ['Buyer registration share (2%)', price * .02], ['Service partner fee before VAT', 4000]];
 }
 
-export function BuyingGuide({ guide, locale = 'en' }: Readonly<{ guide: BuyingGuideData; locale?: 'en' | 'ko' }>) {
+export function BuyingGuide({ guide, locale = 'en', initialBudget }: Readonly<{ guide: BuyingGuideData; locale?: 'en' | 'ko'; initialBudget?: string | null }>) {
   const ko = locale === 'ko';
   const t = (english: string, korean: string) => ko ? korean : english;
-  const localHref = (href: string) => ko && href.startsWith('/kr/seoul/') ? `/ko${href}` : href;
+  const localHref = (href: string) => ko && href.startsWith('/') ? `/ko${href}` : href;
   const costLabels: Record<string, string> = { 'Property price': '매매가격', 'Basic acquisition tax example': '기본 취득세 예시', 'Buyer registration share (2%)': '매수자 등록비 부담분 (2%)', 'Service partner fee before VAT': '등록 대행 수수료 · 부가세 별도', BSD: '매수 인지세 (BSD)', ABSD: '추가 매수 인지세 (ABSD)' };
   const costLabel = (label: string) => ko ? costLabels[label] ?? label : label;
   const journey = guideJourney(guide.slug);
@@ -39,7 +40,7 @@ export function BuyingGuide({ guide, locale = 'en' }: Readonly<{ guide: BuyingGu
     sendGoogleEvent(event, properties);
     try { track(event, properties); } catch { /* Analytics never blocks the guide. */ }
   }
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState(() => budgetBandIndex(guide.bands, initialBudget));
   const [profile, setProfile] = useState(0);
   const budget = guide.bands[selected] ?? guide.bands[0]!;
   const money = (value: number) => ko && guide.currency === 'KRW' ? formatKrwKo(Math.round(value)) : `${guide.currency === 'SGD' ? 'S$' : guide.currency + ' '}${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
@@ -52,7 +53,7 @@ export function BuyingGuide({ guide, locale = 'en' }: Readonly<{ guide: BuyingGu
       <h2 id="buying-examples">{t("01 \u00b7 What fits the purchase-price budget?", "01 · 이 예산으로 어떤 집이 거래됐을까?")}</h2>
       <div className={styles.budgets} role="group" aria-label={t("Purchase-price ceiling", "매매가격 예산 상한")}>{guide.bands.map((band, index) => <button type="button" key={band.cap} aria-pressed={index === selected} onClick={() => { setSelected(index); record('budget_select'); }}>{money(band.cap)}</button>)}</div>
       <p>{t("The ceiling is the property price, not total cash or a lending limit.", "선택한 예산은 집값 기준입니다. 세금·수수료를 포함한 총예산이나 대출 한도가 아닙니다.")}</p>
-      {journey ? <p><Link href={localHref(journey.explore)} onClick={() => record('explore_open')}>{ko ? `${guide.city} 실거래가 보기${guide.currency === "KRW" ? "" : " (영문)"}` : `Search ${journey.city} transaction records`}</Link>{' · '}<Link href={localHref(journey.check)} onClick={() => record('check_open')}>{ko ? `관심 매물 가격 비교${guide.currency === "KRW" ? "" : " (영문)"}` : "Already have a quote? Check its comparables"}</Link></p> : null}
+      {journey ? <p><Link href={localHref(journey.explore)} onClick={() => record('explore_open')}>{ko ? `${guide.city} 실거래가 보기` : `Search ${journey.city} transaction records`}</Link>{' · '}<Link href={localHref(journey.check)} onClick={() => record('check_open')}>{ko ? `관심 매물 가격 비교` : "Already have a quote? Check its comparables"}</Link></p> : null}
       <div aria-live="polite"><h3>{money(budget.cap * .8)}–{money(budget.cap)} {t("examples", "거래 사례")}</h3>
       <p className={styles.meta}>{t("Three projects with repeated records. Areas are observed ranges, not the maximum or average size available at this budget.", "비슷한 가격대에서 거래가 반복된 단지 3곳입니다. 면적은 해당 거래의 범위로, 이 예산에서 살 수 있는 최대 면적이나 평균 면적은 아닙니다.")}{guide.currency === 'KRW' && !ko ? ' Seoul project names follow the original Korean records.' : ''}</p>
       <div className={styles.examples}>{budget.examples.map(example => <div className={styles.example} key={`${selected}-${example.name}-${example.band}`}>
@@ -72,7 +73,7 @@ export function BuyingGuide({ guide, locale = 'en' }: Readonly<{ guide: BuyingGu
     </section>
     <section aria-labelledby="buying-eligibility"><h2 id="buying-eligibility">{t("03 \u00b7 Can you buy the property?", "03 · 매수 자격 확인")}</h2><p className={styles.callout}>{guide.eligibility}</p><a href="#article-sources-title">{t("Official ownership sources", "소유권 관련 공식 자료")}</a></section>
     <section aria-labelledby="buying-checklist"><h2 id="buying-checklist">{t("04 \u00b7 Before you commit", "04 · 계약 전 체크리스트")}</h2>{guide.checks.map(check => <label className={styles.check} key={check}><input type="checkbox" />{check}</label>)}<p className={styles.meta}>{t("Checklist selections are not saved.", "체크한 항목은 저장되지 않습니다.")}</p>
-      {journey ? <p><Link href={journey.report} onClick={() => record('report_open')}>{ko ? `${guide.city} 2026년 9월 거래 보고서 보기 (영문)` : `What changed in ${journey.city}? Read the September 2026 transaction report`}</Link></p> : null}</section>
+      {journey ? <p><Link href={localHref(journey.report)} onClick={() => record('report_open')}>{ko ? `${guide.city} 2026년 9월 거래 보고서 보기` : `What changed in ${journey.city}? Read the September 2026 transaction report`}</Link></p> : null}</section>
     <details className={styles.method}><summary>{t("Sources, selection and limitations", "출처·선정 기준·유의사항")}</summary><p>{guide.method}</p><p>{ko ? `이 예산에서 ${budget.eligible}개 그룹이 선정 기준을 충족했습니다. 비용은 일부 항목을 계산한 예시이며 실제 견적이나 대출 승인이 아닙니다.` : `${budget.eligible} groups passed the screen at this budget. Cost calculations are partial illustrations, not quotations or lending approvals.`}</p></details>
   </div>;
 }

@@ -29,11 +29,25 @@ describe('four-city budget collection', () => {
   it('removes superseded introductions from discovery while separating living and policy', () => {
     const all = buildInsightItems([], 'all');
     expect(all.some(item => item.href.includes('/city-stories/seoul/seongsu/'))).toBe(false);
+    expect(all.length).toBeGreaterThan(4);
+    expect(all.every(item => item.investment)).toBe(true);
     expect(buildInsightItems([], 'all', 'en', 'neighborhood').every(item => item.topic === 'Neighborhood living')).toBe(true);
+    expect(buildInsightItems([], 'all', 'en', 'neighborhood').length).toBeGreaterThan(0);
     const policies = buildInsightItems([], 'all', 'en', 'policy');
     expect(policies.length).toBeGreaterThan(0);
     expect(policies.every(item => item.topic === 'Buying rules')).toBe(true);
     expect(all.some(item => item.slug === 'seoul-euljiro-read-the-workshop-signs' && item.investment)).toBe(false);
+  });
+  it('labels the buying-led default without changing the explicit neighbourhood collection', () => {
+    for (const [locale, buying, neighbourhood] of [
+      ['en', 'Buying', 'Neighbourhoods'],
+      ['ko', '구매', '동네·생활'],
+      ['zh-CN', '购房', '社区生活'],
+    ] as const) {
+      const html = renderToStaticMarkup(<InsightsIndex articles={[]} market="all" locale={locale} />);
+      expect(html).toMatch(new RegExp(`aria-current="page"[^>]*>${buying}</a>`));
+      expect(html).toContain(`>${neighbourhood}</a>`);
+    }
   });
   it('publishes Tokyo in three languages with quarter-level evidence and functioning article content', () => {
     for (const locale of ['en', 'ko', 'zh-CN'] as const) {

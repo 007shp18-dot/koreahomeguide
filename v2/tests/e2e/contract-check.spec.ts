@@ -205,12 +205,12 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
   await expect(page.locator('select[name="housing"]')).toBeFocused();
 
   const productNavigation = await openPrimaryNavigation(page);
-  await expect(productNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Insights', 'Community', 'Rankings', 'News', 'Tools', 'Guides']);
+  await expect(productNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Buying guides', 'Insights', 'Rankings', 'News', 'Tools', 'Community']);
   await expect(productNavigation.getByRole('link', { name: 'Explore' }))
     .toHaveAttribute('href', '/prices/');
   await expect(productNavigation.getByRole('link', { name: 'Insights' }))
     .toHaveAttribute('href', '/news/');
-  await expect(productNavigation.getByRole('link', { name: 'Guides' }))
+  await expect(productNavigation.getByRole('link', { name: 'Buying guides' }))
     .toHaveAttribute('href', '/guides/');
   await expect(productNavigation.getByText('Planned')).toHaveCount(0);
   await expect(page.getByRole('link', {

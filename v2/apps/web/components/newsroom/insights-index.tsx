@@ -59,7 +59,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
   const now = Date.now();
   return [...notebook, ...local, ...analysis].filter(item => {
     if (!Number.isFinite(Date.parse(item.date)) || Date.parse(item.date) > now) return false;
-    if (topic === 'investment' && !item.investment) return false;
+    if ((topic === 'all' || topic === 'investment') && !item.investment) return false;
     if (topic === 'budget' && !BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug)) return false;
     if (topic === 'prices' && !['Housing prices & costs', 'Ownership costs'].includes(item.topic)) return false;
     if (topic === 'neighborhood' && item.topic !== 'Neighborhood living') return false;
@@ -96,9 +96,9 @@ function StoryCard({ item, hero = false, locale = 'en' }: { item: Insight; hero?
 }
 
 const copy = {
-  en: { title: 'Insights', deck: 'Property markets, investment decisions and life across four cities.', all: 'All', investment: 'Investment', topics: 'Insight topics', cities: 'Insight cities', latest: 'Latest stories', more: 'More stories', read: 'Read the story', empty: 'No stories match these filters yet.', clear: 'View all stories', note: 'Articles marked English are available in their original language.' },
-  ko: { title: '인사이트', deck: '네 도시의 부동산 시장, 투자 판단과 동네 이야기를 살펴보세요.', all: '전체', investment: '투자', topics: '인사이트 주제', cities: '인사이트 도시', latest: '최신 이야기', more: '이야기 더 보기', read: '이야기 읽기', empty: '이 조건에 맞는 글이 아직 없습니다.', clear: '전체 이야기 보기', note: 'English로 표시된 글은 영어 원문으로 제공됩니다.' },
-  'zh-CN': { title: '洞察', deck: '了解四座城市的房地产市场、投资决策与社区生活。', all: '全部', investment: '投资', topics: '洞察主题', cities: '洞察城市', latest: '最新文章', more: '更多文章', read: '阅读全文', empty: '暂无符合这些条件的文章。', clear: '查看全部文章', note: '标有 English 的文章以英文原文提供。' },
+  en: { title: 'Insights', deck: 'Buying budgets, ownership costs and market decisions across four cities.', all: 'All', buying: 'Buying', investment: 'Investment', topics: 'Insight topics', cities: 'Insight cities', latest: 'Latest stories', more: 'More stories', read: 'Read the story', empty: 'No stories match these filters yet.', clear: 'View buying insights', note: 'Articles marked English are available in their original language.' },
+  ko: { title: '인사이트', deck: '네 도시의 구매 예산, 보유 비용과 시장 판단을 살펴보세요.', all: '전체', buying: '구매', investment: '투자', topics: '인사이트 주제', cities: '인사이트 도시', latest: '최신 이야기', more: '이야기 더 보기', read: '이야기 읽기', empty: '이 조건에 맞는 글이 아직 없습니다.', clear: '구매 인사이트 보기', note: 'English로 표시된 글은 영어 원문으로 제공됩니다.' },
+  'zh-CN': { title: '洞察', deck: '了解四座城市的购房预算、持有成本与市场决策。', all: '全部', buying: '购房', investment: '投资', topics: '洞察主题', cities: '洞察城市', latest: '最新文章', more: '更多文章', read: '阅读全文', empty: '暂无符合这些条件的文章。', clear: '查看购房洞察', note: '标有 English 的文章以英文原文提供。' },
 };
 const topicLabels: Record<ContentLocale, Record<string, string>> = {
   en: {},
@@ -136,16 +136,13 @@ export function InsightsIndex({ articles, market, locale = 'en', topic = 'all' }
   const all = buildInsightItems(articles, market, locale, topic);
   const showBudgets = topic === 'all' || topic === 'budget';
   const stories = showBudgets ? all.filter(item => !BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug)) : all;
-  // Lead with a decision-oriented analysis; lifestyle remains available below
-  // and in its dedicated filter without displacing the buying entry point.
-  const heroIndex = topic === 'all' ? stories.findIndex(item => item.investment) : 0;
-  const hero = stories[heroIndex < 0 ? 0 : heroIndex];
+  const hero = stories[0];
   const items = stories.filter(item => item !== hero);
   const t = copy[locale];
   return <main className={styles.index} data-newsroom-layout="insights" lang={locale}>
     <header className={styles.header}><h1>{t.title}</h1><p>{t.deck}</p></header>
     <nav className={styles.filters} aria-label={t.cities}>{(['all', ...cities] as const).map(city => <Link prefetch={false} key={city} href={insightFilterHref(locale, city, topic)} aria-current={market === city ? 'page' : undefined}>{city === 'all' ? t.all : localizedCities[locale][city]}</Link>)}</nav>
-    <nav className={styles.topicFilters} aria-label={t.topics}>{INSIGHT_TOPICS.map(value => <Link prefetch={false} key={value} href={insightFilterHref(locale, market, value)} aria-current={topic === value ? 'page' : undefined}>{value === 'all' ? t.all : value === 'investment' ? t.investment : collectionCopy[locale][value]}</Link>)}</nav>
+    <nav className={styles.topicFilters} aria-label={t.topics}>{INSIGHT_TOPICS.map(value => <Link prefetch={false} key={value} href={insightFilterHref(locale, market, value)} aria-current={topic === value ? 'page' : undefined}>{value === 'all' ? t.buying : value === 'investment' ? t.investment : collectionCopy[locale][value]}</Link>)}</nav>
     {locale !== 'en' && all.some(item => item.language !== locale) && <p className={styles.translationNote}>{t.note}</p>}
     {showBudgets && <BudgetGuides items={all} market={market} locale={locale} />}
     {hero ? <StoryCard item={hero} hero locale={locale} /> : !all.length ? <p>{t.empty} <Link href={insightFilterHref(locale, 'all', 'all')}>{t.clear}</Link></p> : null}

@@ -29,7 +29,7 @@ describe('daily neighbourhood publication', () => {
       expect(urls).toContain(`https://www.signedprice.com${path}`);
       const metadata = await generateMetadata({ params: Promise.resolve({ slug: story.slug }) });
       expect(metadata.alternates?.canonical).toBe(`https://www.signedprice.com${path}`);
-      const html = renderToStaticMarkup(<NewsroomIndex articles={[]} policies={[]} filters={resolveNewsroomFilters({ market: story.city })} headlines={<div />} />);
+      const html = renderToStaticMarkup(<NewsroomIndex articles={[]} policies={[]} filters={resolveNewsroomFilters({ market: story.city, topic: 'neighborhood' })} headlines={<div />} />);
       expect(html).toContain(path.replace(/\/$/, ''));
       for (const other of NEIGHBOURHOOD_STORIES.filter(other => other.city !== story.city)) expect(html).not.toContain(neighbourhoodHref(other.slug).replace(/\/$/, ''));
     }
