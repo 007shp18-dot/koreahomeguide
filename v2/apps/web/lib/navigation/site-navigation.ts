@@ -15,6 +15,12 @@ export function marketDestination(marketId: NavigationMarketId, currentHref = '/
   const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const tokyoPrefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const city = { 'kr-seoul': 'seoul', 'sg-singapore': 'singapore', 'ae-dubai': 'dubai', 'jp-tokyo': 'tokyo' }[marketId];
+  if (path.includes('/rankings/')) {
+    const query = new URLSearchParams(currentHref.split('?')[1] ?? '');
+    const kind = city !== 'tokyo' && city !== 'dubai' && query.get('kind') === 'rent' ? 'rent' : 'sale';
+    const order = city !== 'tokyo' && query.get('order') === 'lowest' ? 'lowest' : 'highest';
+    return `${prefix}/rankings/?city=${city}&kind=${kind}&order=${order}`;
+  }
   if (path === '/community/' || path.startsWith('/community/')) return `${prefix}/community/?market=${city}`;
   if (path === '/living/') return `${prefix}/living/?market=${marketId}`;
   if (/\/(?:seoul-apartment|singapore-condo|dubai-ready-apartment)-buying-budget-guide\//.test(path)) return `${prefix}/news/?market=${city}`;
@@ -29,14 +35,12 @@ export function marketDestination(marketId: NavigationMarketId, currentHref = '/
   }
   if (path.includes('/guides/') || path.includes('/guide/')) return `${locale === 'zh-CN' ? '/zh-cn' : prefix}/guides/?market=${city}`;
   const base = { 'kr-seoul': '/kr/seoul', 'sg-singapore': '/sg/singapore', 'ae-dubai': '/ae/dubai', 'jp-tokyo': '/jp/tokyo' }[marketId];
-  const section = ['explore', 'check', 'shortlist', 'rankings'].find(item => path.includes(`/${item}/`));
+  const section = ['explore', 'check', 'shortlist'].find(item => path.includes(`/${item}/`));
   if (marketId === 'jp-tokyo') {
     if (section === 'shortlist') return `${tokyoPrefix}${base}/shortlist/`;
     if (section === 'check') return `${tokyoPrefix}/jp/tokyo/tools/`;
     return section || path === '/prices/' ? `${tokyoPrefix}${base}/explore/` : `${tokyoPrefix}${base}/`;
   }
-  if (locale === 'zh-CN' && marketId === 'kr-seoul' && section === 'rankings') return '/zh-cn/rankings/?market=seoul';
-  if (section === 'rankings' && marketId === 'ae-dubai') return `${prefix}${base}/explore/`;
   if (section) return `${prefix}${base}/${section}/`;
   if (path === '/prices/') return `${prefix}${base}/explore/`;
   if (path === '/tools/' || path === '/jp/tokyo/tools/') return `${prefix}${base}/check/`;

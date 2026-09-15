@@ -49,6 +49,18 @@ describe('signedprice public navigation', () => {
     expect(html).not.toContain('site-header__mobile-sub-link');
   });
 
+  it('marks the ranking city in both menus and keeps switches on rankings', () => {
+    for (const [city, id] of [['seoul', 'kr-seoul'], ['singapore', 'sg-singapore'], ['dubai', 'ae-dubai'], ['tokyo', 'jp-tokyo']] as const) {
+      const html = renderToStaticMarkup(<SiteHeader copy={{ ...homepageCopy.header, languageLabel: 'KO',
+        links: [{ label: '랭킹', href: `/ko/rankings/?city=${city}`, isCurrent: true }] }} />);
+      expect(html).toContain(`data-market-context="${id}"`);
+      for (const destination of ['seoul', 'singapore', 'dubai', 'tokyo']) {
+        expect(html).toContain(`href="/ko/rankings?city=${destination}&amp;kind=sale&amp;order=highest"`);
+      }
+      expect(html.match(new RegExp(`aria-current="page"[^>]*href="/ko/rankings\\?city=${city}&amp;kind=sale&amp;order=highest"`, 'g'))).toHaveLength(2);
+    }
+  });
+
   it('keeps saved places and offer checking alongside the language controls', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={header} />);
     expect(html).toMatch(/<a[^>]*href="\/saved\/?"[^>]*>Saved<\/a>/);
