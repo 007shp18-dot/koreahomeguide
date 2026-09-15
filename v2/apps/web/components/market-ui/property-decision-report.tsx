@@ -23,6 +23,28 @@ export function PropertyDecisionReport({ showOverview = true, review, priceConte
   const residentItems = manual ? repeatedResidentItems(manual) : [];
   const groupId = useId();
   const t = (ko: string, en: string, zh: string) => locale === 'ko' ? ko : locale === 'zh-CN' ? zh : en;
+  const signingQuestions = {
+    'kr-seoul': [
+      t('등기부의 동·호수와 확인한 집이 같은가요?', 'Does the title identify the apartment you inspected?', '登记文件是否对应已查验的住宅？'),
+      t('최신 관리비 내역과 예정된 추가 납부액을 받았나요?', 'Have you received current charges and planned additional contributions?', '是否已取得最新管理费用与计划追加缴款？'),
+      t('기존 임대차와 실제 입주 가능일을 확인했나요?', 'Have existing tenancy terms and the occupation date been confirmed?', '是否已核实现有租约与实际可入住日期？'),
+    ],
+    'sg-singapore': [
+      t('계약 세대의 평면과 소유 기간을 확인했나요?', 'Have you checked the contracted unit plan and tenure?', '是否已核实合同住宅的户型与产权期限？'),
+      t('최신 관리조합 고지서와 별도 시설 이용료를 받았나요?', 'Have you received current MCST charges and separate amenity fees?', '是否已取得最新管理委员会费用与设施另收费明细？'),
+      t('임차인이 있다면 계약 종료와 인도 조건을 확인했나요?', 'If tenanted, have lease expiry and possession terms been confirmed?', '如有租户，是否已核实租约到期与交付条件？'),
+    ],
+    'ae-dubai': [
+      t('DLD 등록 번호가 계약할 프로젝트·세대와 일치하나요?', 'Does the DLD registration match the contracted project and unit?', 'DLD登记编号是否与合同项目及住宅一致？'),
+      t('남은 납입 일정과 관리비 근거를 서면으로 받았나요?', 'Have you received the remaining payment schedule and basis for service charges?', '是否已取得余款支付安排与服务费依据？'),
+      t('실제 인도 상태와 하자 확인 절차를 확인했나요?', 'Have you verified handover status and the defect-inspection procedure?', '是否已核实实际交付状态与缺陷检查程序？'),
+    ],
+    'jp-tokyo': [
+      t('토지 권리와 임대차가 있다면 남은 기간을 확인했나요?', 'Have you verified land rights and any remaining lease term?', '是否已核实土地权利及剩余租赁期限？'),
+      t('관리비와 수선적립금, 예정 인상액을 서면으로 받았나요?', 'Have you received management and reserve charges, including planned increases?', '是否已取得管理费、维修储备金及计划上调金额？'),
+      t('임차인이 있는지와 실제 입주 가능일을 확인했나요?', 'Have you confirmed tenancy status and the actual move-in date?', '是否已核实租赁状态及实际可入住日期？'),
+    ],
+  }[review.marketId];
   const personaLabels: Record<DecisionPersona, string> = { family: t('자녀 있는 실거주', 'With children', '有子女自住'), couple: t('신혼·1인', 'Couple / solo', '夫妻 · 单身'), investor: t('임대·투자', 'Rental / investment', '出租 · 投资') };
   const marketBase = { 'kr-seoul': '/kr/seoul', 'sg-singapore': '/sg/singapore', 'ae-dubai': '/ae/dubai', 'jp-tokyo': '/jp/tokyo' }[review.marketId];
   const date = new Intl.DateTimeFormat(locale === 'ko' ? 'ko-KR' : locale === 'zh-CN' ? 'zh-CN' : 'en-GB', { year: 'numeric', month: locale === 'en' ? 'short' : 'numeric', day: 'numeric', timeZone: 'UTC' }).format(new Date(`${report.checkedOn}T00:00:00Z`));
@@ -67,7 +89,7 @@ export function PropertyDecisionReport({ showOverview = true, review, priceConte
         return <li key={item.name}><h4>{href ? <Link href={href}>{item.name} <span aria-hidden="true">↗</span></Link> : item.name}</h4><p>{item.reason}</p><p className={styles.muted}>{item.condition}</p></li>;
       })}</ul>
     </section>}
-    <section className={styles.checklist} data-signing-checklist><h3>{t('계약 전에 물어볼 것', 'Before signing', '签约前的问题')}</h3>{items(report.checklist.slice(0, 3))}</section>
+    <section className={styles.checklist} data-signing-checklist><h3>{t('계약 전에 물어볼 것', 'Before signing', '签约前的问题')}</h3><ul className={styles.points}>{signingQuestions.map(question => <li key={question}><h4>{question}</h4></li>)}</ul></section>
     <p className={styles.method}>{t('자료 확인', 'Evidence checked', '资料核查')} {date} · {t('개별 세대의 적정가·수익률을 산정한 보고서는 아닙니다.', 'This report does not estimate a unit’s fair value or rental yield.', '本报告不估算单套住宅的合理价格或租金收益率。')}</p>
     <details className={styles.sources} data-report-sources>
       <summary>{t('자료 출처', 'Sources', '资料来源')}</summary>
