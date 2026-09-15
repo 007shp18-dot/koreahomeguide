@@ -20,7 +20,7 @@ describe('shared navigation destinations', () => {
   it('separates English News from Insights and preserves translated sections', () => {
     expect(globalNavigation('en')).toEqual([
       { label: 'Explore', href: '/prices/' },
-      { label: 'Buying guides', href: '/guides/' },
+      { label: 'Buying & renting', href: '/guides/' },
       { label: 'Insights', href: '/news/' },
       { label: 'Rankings', href: '/rankings/' },
       { label: 'News', href: '/news/?type=news' },
@@ -147,7 +147,7 @@ describe('shared navigation destinations', () => {
     expect(html).not.toContain('mailto:');
     expect(html).not.toContain('/kr/seoul/news/');
     expect(html).toMatch(/href="\/jp\/tokyo\/?">Tokyo<\/a>/);
-    const positions = ['Explore', 'Buying guides', 'Insights', 'Tools'].map((label) => html.indexOf(`>${label}</a>`));
+    const positions = ['Explore', 'Buying & renting', 'Insights', 'Tools'].map((label) => html.indexOf(`>${label.replace('&', '&amp;')}</a>`));
     expect(positions).toEqual([...positions].sort((a,b) => a-b));
   });
 });

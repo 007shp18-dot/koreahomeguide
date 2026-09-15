@@ -65,7 +65,7 @@ describe('four-city buying journey', () => {
         expect(e.evidenceHref).toContain('year=2026&quarter=1');
       }
     }
-    expect(tokyo.guideHref).toContain('tokyo-same-budget-property-comparison');
+    expect(tokyo.guideHref).toContain('tokyo-apartment-buying-budget-guide');
   });
   it('accepts only supported budgets and safely defaults on malformed or cross-currency values', () => {
     const bands = [{ cap: 750000 }, { cap: 1000000 }, { cap: 1500000 }];

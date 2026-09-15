@@ -1,3 +1,4 @@
+import type { PropertyReview } from '../../lib/research/property-review';
 import { PropertyDecisionWorkspace } from '../market-ui/property-decision-workspace';
 import { hasPropertyReviewForEntity } from '../../lib/research/property-review-locations';
 import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
@@ -110,7 +111,7 @@ export function BuildingProximityDisclosure({ proximity, locale = 'en' }: Readon
   locale?: ProductLocale;
 }>) {
   const copy = proximityCopy[locale];
-  if (proximity === undefined || proximity.status !== 'ready' || proximity.coordinateStatus !== 'ready' || (!proximity.nearestStation && !proximity.nearestSchool)) return <section className={styles.proximityDetails} data-building-proximity="unavailable"><h3>{copy.heading}</h3><p>{locale === 'ko' ? '이 건물과 정확히 연결된 학교·역의 거리 정보는 아직 확인되지 않았습니다.' : locale === 'zh-CN' ? '该楼盘到学校和车站的距离尚未核实。' : 'School and station distances for this exact building have not been confirmed yet.'}</p></section>;
+  if (proximity === undefined || proximity.status !== 'ready' || proximity.coordinateStatus !== 'ready' || (!proximity.nearestStation && !proximity.nearestSchool)) return null;
   return <section className={styles.proximityDetails} data-building-proximity="ready">
     <h3>{copy.heading}</h3>
     <dl className={styles.findingGrid}>
@@ -296,6 +297,7 @@ export function buildKoreaEvidenceCheckHref(
 }
 
 export function KoreaEvidenceBuildingDetail({
+  initialReview,
   model,
   backHref,
   visual,
@@ -304,6 +306,7 @@ export function KoreaEvidenceBuildingDetail({
   decisionPanelReady = true,
   locale = 'en',
 }: Readonly<{
+  initialReview?: PropertyReview;
   model: KoreaExplorerBuildingDetailModel;
   backHref: string;
   visual?: ReactNode;
@@ -361,7 +364,7 @@ export function KoreaEvidenceBuildingDetail({
   return (
     <div id="top" className={styles.page}>
       <BuildingDetailHeader locale={locale} />
-      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
+      <PropertyDecisionWorkspace initialReview={initialReview} entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
       <main className={`${styles.main} ${detailStyles.root}`} data-detail-layout="unified" data-building-detail="exact-evidence" data-detail-locale={locale}>
         <RecordPlaceVisit place={{ market: 'seoul', key: `${model.district.slug}/${model.building.buildingId}`, name: buildingDisplayName(model.building.officialName, locale), href: `${recentTarget.pathname}${recentTarget.search}` }} />
         <BuildingSummaryCard model={model} backHref={backHref} locale={locale} />

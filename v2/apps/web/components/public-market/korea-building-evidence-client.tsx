@@ -1,4 +1,5 @@
 'use client';
+import type { PropertyReview } from '../../lib/research/property-review';
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
@@ -98,6 +99,7 @@ export function resolveKoreaBuildingEvidenceBackHref(
 }
 
 export function KoreaBuildingEvidenceClient({
+  initialReview,
   initialModel,
   initialBackHref,
   coordinate,
@@ -106,6 +108,7 @@ export function KoreaBuildingEvidenceClient({
   questions,
   locale = 'en',
 }: Readonly<{
+  initialReview?: PropertyReview;
   initialModel: KoreaExplorerBuildingDetailModel;
   initialBackHref: string;
   coordinate?: Coordinate;
@@ -159,6 +162,7 @@ export function KoreaBuildingEvidenceClient({
     backHref={backHref}
     locale={locale}
     visual={visual}
+    initialReview={initialReview}
     questions={questions}
     facts={<BuildingOfficialFacts
       districtSlug={model.district.slug}

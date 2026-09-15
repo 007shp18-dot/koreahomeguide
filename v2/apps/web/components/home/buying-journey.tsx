@@ -73,7 +73,7 @@ export function BuyingJourney({ models, photos, locale }: Readonly<{
           <div className={styles.resultHeading}><div><h2 id="buying-result-title">{copy.results}</h2><p>{selected.period}</p></div><span className={styles.history}>{copy.history}</span></div>
           <div className={styles.examples} data-example-scope={selected.scope}>
             {band.examples.map((example, index) => <article className={styles.example} key={`${selected.city}-${band.cap}-${index}`}>
-              <p className={styles.eyebrow}>{example.region}</p><h3>{example.name}</h3><p className={styles.detail}>{example.detail}</p>
+              <div className={styles.exampleIdentity}><p className={styles.eyebrow}>{example.region}</p><h3>{example.name}</h3><p className={styles.detail}>{example.detail}</p></div>
               <dl><div><dt>{copy.area}</dt><dd className={styles.area}>{range(example.area, number)} <span>m²</span></dd></div>
                 <div><dt>{copy.price}</dt><dd>{range(example.price, value => buyingMoney(value, selected.currency, locale))}</dd></div></dl>
               <p className={styles.note}>{example.count} {copy.records}<br />{copy.latest} · {selected.scope === 'neighbourhood' ? selected.period : new Intl.DateTimeFormat(locale === 'ko' ? 'ko-KR' : locale === 'zh-CN' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(example.latest))}</p>
@@ -82,13 +82,10 @@ export function BuyingJourney({ models, photos, locale }: Readonly<{
           </div>
           <p className={styles.scope}>{selected.scope === 'neighbourhood' ? cityText(TOKYO_BUDGET_METHOD, locale) : copy.scope} {copy.original}</p>
         </section>
-        <section className={styles.nextSteps} aria-label={locale === 'ko' ? '다음 단계' : locale === 'zh-CN' ? '下一步' : 'Next steps'}>
-          <article><span className={styles.stepNumber}>01</span><h2>{copy.costs}</h2><p>{copy.costsNote}</p>
-            <Link href={`${selected.costsHref}&price=${band.cap}`} className={styles.secondary}>{copy.costsAction}<UiIcon name="arrow-right" /></Link>
-            <Link href={buyingGuideHref(selected, band.cap, 'costs')} data-editorial-event="article_open">{copy.feesAction}{languageNote(selected)}</Link></article>
-          <article><span className={styles.stepNumber}>02</span><h2>{copy.offer}</h2><p>{selected.scope === 'neighbourhood' ? copy.tokyoCheckNote : copy.offerNote}</p>
-            <ExploreLink href={selected.checkHref} className={styles.secondary} data-editorial-event={selected.scope === 'neighbourhood' ? 'article_to_explore' : 'article_to_check'}>{selected.scope === 'neighbourhood' ? copy.tokyoCheck : copy.check}<UiIcon name="arrow-right" /></ExploreLink></article>
-        </section>
+        <nav className={styles.nextSteps} aria-label={locale === 'ko' ? '다음 단계' : locale === 'zh-CN' ? '下一步' : 'Next steps'}>
+          <Link href={`${selected.costsHref}&price=${band.cap}`} className={styles.secondary}>{copy.costsAction}<UiIcon name="arrow-right" /></Link>
+          <ExploreLink href={selected.checkHref} className={styles.secondary} data-editorial-event={selected.scope === 'neighbourhood' ? 'article_to_explore' : 'article_to_check'}>{selected.scope === 'neighbourhood' ? copy.tokyoCheck : copy.check}<UiIcon name="arrow-right" /></ExploreLink>
+        </nav>
         <p><Link className={styles.primary} href={consultationHref(selected.city,locale,band.cap)}>{locale==='ko'?'이 조건으로 구매상담 문의':locale==='zh-CN'?'按此条件咨询购房':'Prepare a purchase enquiry'}</Link></p>
       </div>}
     </div>

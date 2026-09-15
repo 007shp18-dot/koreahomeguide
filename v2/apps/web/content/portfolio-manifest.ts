@@ -97,8 +97,10 @@ export function validateEditorialPortfolio(values: readonly unknown[]): readonly
 }
 
 export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Object.freeze([
-  ...CITY_BUDGET_COMPARISONS,
-  ...TOKYO_BUYING_GUIDES,
+  ...TOKYO_BUYING_GUIDES.map(original => {
+    const expanded = CITY_BUDGET_COMPARISONS.find(article => article.marketId === 'jp-tokyo' && article.locale === original.locale)!;
+    return { ...expanded, id: original.id, slug: original.slug, canonicalHref: original.canonicalHref, translationGroupId: original.translationGroupId ?? original.slug };
+  }),
   ...SEPTEMBER_15_EDITORIAL,
   ...SEPTEMBER_14_EDITORIAL,
   ...SEPTEMBER_13_EDITORIAL,

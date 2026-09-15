@@ -1,3 +1,4 @@
+import { staticSeoulReview } from '@/lib/research/static-property-review.server';
 import { PlaceQuestions } from '@/components/questions/place-questions';
 import { seoulBuildingLocationHref } from '@/lib/public-market/seoul-building-location';
 import type { Metadata } from 'next';
@@ -189,7 +190,7 @@ export function resolveKoreaEvidenceBuildingRoute(
     buildingId,
     {
       transaction: selection.transaction,
-      areaBand: selection.area ?? 'all',
+      areaBand: query.area === undefined ? undefined : selection.area ?? 'all',
       housingType: selection.propertyType ?? 'all',
       contractGroup: selection.contractType ?? 'all',
     },
@@ -490,8 +491,8 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     );
     const proximity = entityProjection?.proximity ?? identity?.proximity;
     const questions = <PlaceQuestions locale={locale} market="seoul" path={`/kr/seoul/explore/${district}/${buildingId}/`} name={exact.model.building.officialName}/>;
-    const fallback = <KoreaEvidenceBuildingDetail questions={questions}
-      decisionPanelReady={input.dependencies?.hydrateEvidence !== true}
+    const fallback = <KoreaEvidenceBuildingDetail initialReview={staticSeoulReview(`kr-seoul:estate:${buildingId}`)} questions={questions}
+      decisionPanelReady={true}
       model={exact.model}
       backHref={exact.backHref}
       locale={locale}
@@ -500,7 +501,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     />;
     if (input.dependencies?.hydrateEvidence !== true) return fallback;
     return <Suspense fallback={fallback}>
-      <KoreaBuildingEvidenceClient questions={questions}
+      <KoreaBuildingEvidenceClient initialReview={staticSeoulReview(`kr-seoul:estate:${buildingId}`)} questions={questions}
         initialModel={exact.model}
         initialBackHref={exact.backHref}
         coordinate={coordinate}
@@ -679,7 +680,7 @@ export async function renderKoreaBuildingRoute(
     ?? koreaEvidenceRepositoriesFromEnvironment();
   const routeKind = koreaBuildingRouteKind(district, buildingId, evidenceRepositories);
   if (routeKind === 'not-found') notFound();
-  const query = canonicalKoreaBuildingQuery(district, buildingId, evidenceRepositories);
+  const query = { ...canonicalKoreaBuildingQuery(district, buildingId, evidenceRepositories), area: undefined };
   if (routeKind === 'property-type') {
     return composeKoreaBuildingRoute({
       district,

@@ -1,0 +1,5 @@
+{
+  "price": "The median was {median} across {count} transactions matching the selected conditions. The price label gives the size group and reporting period.",
+  "spread": "The middle half of transactions fell between {low} and {high}. That interval equals {spreadPct}% of the median.",
+  "method": "This range excludes the lowest and highest quarters of recorded prices. We don't know the condition of each apartment from these figures."
+}

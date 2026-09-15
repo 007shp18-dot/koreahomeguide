@@ -41,12 +41,12 @@ describe('launch editorial portfolio', () => {
     }
   });
 
-  it('publishes the 130-item portfolio including the three-language Tokyo budget guide', () => {
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(130);
+  it('publishes the 118-item portfolio including the three-language Tokyo budget guide', () => {
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(118);
     expect(Object.isFrozen(EDITORIAL_PORTFOLIO)).toBe(true);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(56);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko')).toHaveLength(56);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'zh-CN')).toHaveLength(18);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(52);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko')).toHaveLength(52);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'zh-CN')).toHaveLength(14);
     expect(Object.fromEntries(['news-brief', 'policy-update', 'market-brief', 'data-story', 'guide'].map((type) => [
       type,
       EDITORIAL_PORTFOLIO.filter((record) => record.type === type).length,
@@ -55,14 +55,14 @@ describe('launch editorial portfolio', () => {
       'policy-update': 14,
       'market-brief': 58,
       'data-story': 16,
-      guide: 36,
+      guide: 24,
     });
   });
 
   it('keeps every published claim attached to review, evidence and an internal next step', () => {
     expect(validateEditorialPortfolio(EDITORIAL_PORTFOLIO)).toBe(EDITORIAL_PORTFOLIO);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(130);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(130);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(118);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(118);
     for (const record of EDITORIAL_PORTFOLIO) {
       expect(record.status).toBe('published');
       expect(record.readerQuestion.length).toBeGreaterThan(record.locale === 'zh-CN' ? 8 : 20);

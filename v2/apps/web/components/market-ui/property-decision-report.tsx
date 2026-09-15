@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { panelCopy } from '../../lib/brief/panel-copy';
 import { useId } from 'react';
 import type { MarketLocale } from '../../lib/locale/market-localization';
 import { marketHref } from '../../lib/locale/market-localization';
@@ -27,6 +28,7 @@ export function PropertyDecisionReport({ showOverview = true, review, priceConte
   const body = (item: DecisionItem) => <p lang={item.originalLanguage}>{item.body}{item.originalLanguage && locale === 'zh-CN' ? <small className={styles.languageNote}> · 英文资料</small> : null}</p>;
   const items = (values: DecisionItem[]) => <ul className={styles.points}>{values.map(item => <li key={item.id}><h4>{item.title}</h4>{body(item)}</li>)}</ul>;
   return <div className={styles.report} data-property-decision={review.id} data-decision-persona={persona}>
+    {panelCopy(priceContext, locale, money).length > 0 && <section className={styles.section} aria-label={t('거래에서 읽은 내용', 'Reading these transactions', '成交数据解读')}>{panelCopy(priceContext, locale, money).map(line => <p key={line}>{line}</p>)}</section>}
     {showOverview && analysisScope === 'property' && <PropertyOverviewCard id={review.id} checkedOn={review.checkedOn} locale={locale} />}
     <fieldset className={styles.personas}>
       <legend>{t('누구의 관점으로 볼까요', 'Your perspective', '您的购房目的')}</legend>
@@ -35,16 +37,7 @@ export function PropertyDecisionReport({ showOverview = true, review, priceConte
         <span>{personaLabels[value]}</span>
       </label>)}</div>
     </fieldset>
-    <section className={styles.verdict} aria-live="polite" aria-atomic="true">
-      <p className={styles.eyebrow}>{t('내 상황에 맞춰 보기', 'For your situation', '结合您的情况')}</p>
-      <h3>{report.verdict.label}</h3>
-      <p>{report.summary}</p>
-    </section>
     {analysisScope === 'area' && <p className={styles.scopeNote}>{t('지역 가격과 생활권을 분석합니다. 아래 단지별 생활 사례는 해당 단지의 조건이며 지역 전체에 적용되는 것은 아닙니다.', 'This report covers area prices and everyday life. Named-property examples describe those properties, not every home in the area.', '本报告分析区域价格与生活圈。具体楼盘的生活案例仅适用于该项目，并不代表区域内所有住宅。')}</p>}
-    <section className={styles.section}>
-      <div className={styles.sectionHeading}><h3>{t(`먼저 볼 ${report.priorities.length}가지`, `${report.priorities.length} priorities for this ${analysisScope === 'area' ? 'area' : 'property'}`, `优先考虑的 ${report.priorities.length} 个问题`)}</h3></div>
-      <ol className={styles.priorities}>{report.priorities.map((item, index) => <li key={item.id}><span className={styles.number}>{String(index + 1).padStart(2, '0')}</span><div><h4>{item.title}</h4>{body(item)}</div></li>)}</ol>
-    </section>
     {communityChecks.length > 0 && <section className={styles.section} data-community-checks={review.id}>
       <h3>{t('방문 때 확인할 생활 조건', 'Everyday conditions to test at a viewing', '看房时要验证的生活条件')}</h3>
       <p className={styles.scopeNote}>{analysisScope === 'area'
@@ -56,8 +49,8 @@ export function PropertyDecisionReport({ showOverview = true, review, priceConte
       </li>)}</ul>
     </section>}
     <div className={styles.tradeoffs}>
-      <section><h3>{t('살 이유', 'Reasons to buy', '购买理由')}</h3>{items(report.pros)}</section>
-      <section><h3>{t('망설일 이유', 'Reasons to pause', '犹豫之处')}</h3>{items(report.cons)}</section>
+      <section><h3>{t('맞을 것 같은 경우', 'May suit you', '可能适合的情况')}</h3>{items(report.pros)}</section>
+      <section><h3>{t('확인이 더 필요한 경우', 'Needs a closer check', '需要进一步核查的情况')}</h3>{items(report.cons)}</section>
     </div>
     <section className={styles.section} data-decision-price={priceContext?.scope ?? 'unavailable'}><h3>{t('이 값이 조건에 맞나', 'Does the price fit?', '价格与条件相符吗')}</h3>
       {priceContext && <div className={styles.priceContext}>
@@ -77,8 +70,8 @@ export function PropertyDecisionReport({ showOverview = true, review, priceConte
         return <li key={item.name}><h4>{href ? <Link href={href}>{item.name} <span aria-hidden="true">↗</span></Link> : item.name}</h4><p>{item.reason}</p><p className={styles.muted}>{item.condition}</p></li>;
       })}</ul>
     </section>}
-    <section className={styles.section}><h3>{t('판단이 바뀌는 조건', 'What would change the decision', '什么会改变判断')}</h3>{items(report.reversals)}</section>
-    <section className={styles.checklist}><h3>{t('계약 전에 물어볼 것', 'Before signing', '签约前的问题')}</h3>{items(report.checklist)}</section>
+    <section className={styles.checklist}><h3>{t('계약 전에 물어볼 것', 'Before signing', '签约前的问题')}</h3>{items(report.checklist.slice(0, 3))}</section>
+    {review.editorial && review.editorial.paragraphs.en.join(' ').split(/\s+/).length >= 800 && <details className={styles.section}><summary>{t('단지 가이드 전체 읽기', 'Read the full property guide', '阅读完整项目指南')}</summary><article lang={locale === 'ko' ? 'ko' : 'en'}><h3>{review.editorial.headline[locale === 'ko' ? 'ko' : 'en']}</h3>{review.editorial.paragraphs[locale === 'ko' ? 'ko' : 'en'].map(paragraph => <p key={paragraph}>{paragraph}</p>)}</article></details>}
     <p className={styles.method}>{t('자료 확인', 'Evidence checked', '资料核查')} {date} · {t('개별 세대의 적정가·수익률을 산정한 보고서는 아닙니다.', 'This report does not estimate a unit’s fair value or rental yield.', '本报告不估算单套住宅的合理价格或租金收益率。')}</p>
     <details className={styles.sources} data-report-sources>
       <summary>{t('자료 출처', 'Sources', '资料来源')}</summary>

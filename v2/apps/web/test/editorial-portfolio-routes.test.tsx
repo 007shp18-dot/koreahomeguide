@@ -15,7 +15,7 @@ describe('editorial portfolio public routes', () => {
   it('curates Seoul guidance by default while keeping all existing guide URLs', async () => {
     const guides = listPortfolioRecords('en').filter(({ type }) => type === 'guide');
     const html = renderToStaticMarkup(await GuidesPage({ searchParams: Promise.resolve({}) }));
-    expect(guides).toHaveLength(14);
+    expect(guides).toHaveLength(10);
     expect(guideParams()).toEqual(guides.map(({ slug }) => ({ slug })));
     const main = html.match(/<main[\s\S]*?<\/main>/)?.[0] ?? '';
     expect(main).toContain('Before you buy');
@@ -70,7 +70,7 @@ describe('editorial portfolio public routes', () => {
     const newsIndexes = (await Promise.all(['insights', 'news', 'policy'].map(async (type) =>
       renderToStaticMarkup(await ChineseNewsPage({ searchParams: Promise.resolve({ type }) })),
     ))).join('');
-    expect(records).toHaveLength(18);
+    expect(records).toHaveLength(14);
     expect(chineseGuideParams()).toEqual(guides.map(({ slug }) => ({ slug })));
     for (const record of records) {
       expect(record.type === 'guide' ? guideIndex : newsIndexes).toContain(record.title);

@@ -42,7 +42,7 @@ describe('signedprice public editorial homepage', () => {
       const card = markup.match(new RegExp('<li[^>]*data-contextual-action="' + city + '"[^>]*>([\\s\\S]*?)</li>'))?.[1] ?? '';
       expect(card.match(/<a /g)).toHaveLength(2);
       expect(card.match(/data-primary-action="explore"/g)).toHaveLength(1);
-      expect(card).toMatch(city === 'jp-tokyo' ? /href="\/guides\/tokyo-same-budget-property-comparison\/?"/ : /href="\/guides\/[^"]*buying-budget-guide\/?"/);
+      expect(card).toMatch(city === 'jp-tokyo' ? /href="\/guides\/tokyo-apartment-buying-budget-guide\/?"/ : /href="\/guides\/[^"]*buying-budget-guide\/?"/);
       expect(card).toContain('/explore');
     }
   });

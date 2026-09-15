@@ -1,3 +1,4 @@
+import { defaultPanelBand, panelJeonseRatio, type PanelSummary } from '../brief/panel-statistics';
 import { matchesSeoulSearch, seoulSearchQuery } from './seoul-search';
 import { buildingDisplayName } from './seoul-display-names';
 import 'server-only';
@@ -123,6 +124,8 @@ export type KoreaExplorerProjectionOptions = Readonly<{
 }>;
 
 export type KoreaExplorerBuildingDetailModel = Readonly<{
+  defaultAreaSelected?: boolean;
+  panelStats?: Readonly<{ sale: PanelSummary | null; jeonse: PanelSummary | null; ratio: number | null }>;
   fallbackPriceContext?: LocalizedDecisionPriceContext;
   status: 'ready';
   period: string;
@@ -635,7 +638,7 @@ export function buildKoreaExplorerBuildingDetailModel(
   buildingId: string,
   input: KoreaExplorerEvidenceSelectionInput,
 ): KoreaExplorerBuildingDetailModel | null {
-  const requested = normalizeSelection(input);
+  let requested = normalizeSelection(input);
   const district = getSeoulDistrictBySlug(districtSlug);
   if (district === null) return null;
   const rent = (() => {
@@ -644,6 +647,9 @@ export function buildKoreaExplorerBuildingDetailModel(
   const sale = (() => {
     try { return repositories.sale?.getBuilding(district.slug, buildingId); } catch { return undefined; }
   })();
+  if (input.areaBand === undefined) {
+    requested = { ...requested, areaBand: defaultPanelBand(sale?.cohorts.map(c => ({ band: c.areaBand, count: c.price.n })) ?? []) };
+  }
   const identity = rent ?? sale;
   const selectedRepository = requested.transaction === 'sale' ? repositories.sale : repositories.rent;
   if (identity === undefined || selectedRepository === null) return null;
@@ -680,6 +686,11 @@ export function buildKoreaExplorerBuildingDetailModel(
       buildYear: typeof record.buildYear === 'number' ? record.buildYear : null,
     })];
   });
+  const toPanelSummary = (value: KoreaEvidenceDistribution): PanelSummary | null => value.published && value.n >= 5
+    ? { count: value.n, median: value.med, q1: value.p25, q3: value.p75 } : null;
+  const saleSummary = toPanelSummary(projectedBuilding(identity, rent, sale, { ...requested, transaction: 'sale', contractGroup: 'not-applicable' }).primary);
+  const jeonseSummary = toPanelSummary(projectedBuilding(identity, rent, sale, { ...requested, transaction: 'jeonse', contractGroup: 'new' }).primary);
+  const panelStats = { sale: saleSummary, jeonse: jeonseSummary, ratio: requested.areaBand === 'all' ? null : panelJeonseRatio(saleSummary, jeonseSummary, repositories.sale?.getArtifact().period ?? '', repositories.rent?.getArtifact().period ?? '') };
   const primary = building.primary;
   const filedDeposit = building.filedDeposit;
   const peers = requested.transaction === 'sale' ? repositories.sale?.listBuildingRecords() ?? [] : repositories.rent?.listBuildingRecords() ?? [];
@@ -693,6 +704,8 @@ export function buildKoreaExplorerBuildingDetailModel(
 
   return Object.freeze({
     status: 'ready' as const,
+    defaultAreaSelected: input.areaBand === undefined && requested.areaBand !== 'all',
+    panelStats,
     period: artifact.period,
     generatedAt: artifact.generatedAt,
     district: Object.freeze({ slug: district.slug, nameEn: district.nameEn, nameKo: district.nameKo }),

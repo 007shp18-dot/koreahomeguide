@@ -22,7 +22,8 @@ describe('investment Insights discovery', () => {
     const all = buildInsightItems([], 'all');
     const investment = buildInsightItems([], 'all', 'en', 'investment');
     expect(investment.length).toBeGreaterThan(0);
-    expect(all).toEqual(investment);
+    expect(all.length).toBeGreaterThan(investment.length);
+    expect(investment.every(item => item.investment)).toBe(true);
     expect(investment.some(item => item.href.includes('dubai-rental-yield-after-costs'))).toBe(true);
     expect(investment.some(item => item.href.endsWith('/seongsu/'))).toBe(false);
     expect(buildInsightItems([], 'tokyo', 'en', 'investment').every(item => item.city === 'tokyo')).toBe(true);
@@ -32,7 +33,7 @@ describe('investment Insights discovery', () => {
       const html = renderToStaticMarkup(<InsightsIndex articles={[]} market="all" topic="investment" locale={locale} />);
       expect(html).toContain('data-newsroom-layout="insights"');
       expect(html).toContain(`lang="${locale}"`);
-      expect(html).toContain(locale === 'en' ? '>Investment</a>' : locale === 'ko' ? '>투자</a>' : '>投资</a>');
+      expect(html).not.toContain(locale === 'en' ? '>Investment</a>' : locale === 'ko' ? '>투자</a>' : '>投资</a>');
     }
   });
   it('opens a market report scenario with the matching market and currency', () => {
