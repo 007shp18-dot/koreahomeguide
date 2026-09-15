@@ -125,7 +125,7 @@ describe('public Newsroom routes', () => {
     expect(html.match(/data-newsroom-lead=/g)).toHaveLength(1);
     expect(html).toContain('Neighborhood living');
     expect(html).toContain('Ownership costs');
-    expect(html).toContain('Latest stories');
+    expect(html).toContain('Analysis &amp; stories');
     expect(html).not.toContain('aria-label="Insight types"');
     expect(html).not.toContain('local-conversation');
     expect(html).not.toContain('View the buying steps');

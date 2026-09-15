@@ -8,6 +8,8 @@ import { insightPhoto } from '../../content/insight-photos';
 import { isInsightReference, isNeighborhoodEditorial } from '../../content/insight-curation';
 import { journeyArticleHref } from '../../content/city-journey-routes';
 import { BUDGET_GUIDE_SLUGS } from '../../content/guide-directory';
+import { BUDGET_GUIDE_EDITION, BUDGET_GUIDE_SERIES, budgetGuidePeriod } from '../../content/budget-guide-series';
+import { INSIGHT_TOPICS, type InsightTopic } from '../../content/insight-topics';
 import { listPortfolioRecords } from '../../content/portfolio-manifest';
 import type { ContentLocale, PublishedContentArticle } from '../../lib/content/content-types';
 import { MARKET_PHOTOS } from '../market-representative-photo';
@@ -18,10 +20,11 @@ const cities = ['seoul', 'singapore', 'dubai', 'tokyo'] as const;
 type City = typeof cities[number];
 const cityNames = { seoul: 'Seoul', tokyo: 'Tokyo', singapore: 'Singapore', dubai: 'Dubai' };
 const marketIds = { seoul: 'kr-seoul', tokyo: 'jp-tokyo', singapore: 'sg-singapore', dubai: 'ae-dubai' };
-export type InsightTopic = 'all' | 'investment';
-type Insight = { investment: boolean; language: ContentLocale; id: string; title: string; deck: string; href: string; date: string; city: City | null; topic: string; type: string; photo?: NeighbourhoodPhoto; uploadedPhoto?:EditorialImage; requiresLocalPhoto?: boolean };
+export type { InsightTopic } from '../../content/insight-topics';
+type Insight = { slug?: string; investment: boolean; language: ContentLocale; id: string; title: string; deck: string; href: string; date: string; city: City | null; topic: string; type: string; photo?: NeighbourhoodPhoto; uploadedPhoto?:EditorialImage; requiresLocalPhoto?: boolean };
 
 function topicFor(title: string, type: string, slug: string) {
+  if (type === 'policy-update') return 'Buying rules';
   if (type === 'neighborhood') return 'Neighborhood living';
   if (/old-condo-costs|rental-yield-after-costs|rents-vacancy-landlord-income/.test(slug)) return 'Ownership costs';
   if (/maintenance|holding|ownership|ten years|costs|service charge/i.test(title)) return 'Ownership costs';
@@ -35,7 +38,9 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
   const notebook: Insight[] = listNeighbourhoodStories('all', storyLocale).map(item => ({ investment: false, language: storyLocale, id: `${storyLocale}:${item.slug}`, title: item.title, deck: item.deck, href: neighbourhoodHref(item.slug, storyLocale), date: item.publishedAt, city: item.city as City, topic: 'Neighborhood living', type: 'guide', photo: item.photosWithheld ? undefined : item.hero, requiresLocalPhoto: true }));
   // Investment includes explicit local financial analyses, published market/data/policy
   // records and reviewed buying-budget guides; lifestyle stories remain in All.
-  const local: Insight[] = CITY_JOURNEY_ARTICLES.filter(item => item.kind !== 'journey').map(item => ({ investment: item.kind === 'local-issue', language: storyLocale, id: `${storyLocale}:city-article-${item.city}-${item.id}`, title: item.title[storyLocale], deck: item.deck[storyLocale], href: journeyArticleHref(item.city, item.id, storyLocale), date: item.checkedAt, city: item.city, topic: topicFor(item.title.en, item.kind, item.id), type: item.kind === 'neighborhood' ? 'guide' : 'data-story', photo: journeyArticlePhoto(item.city, item.id), requiresLocalPhoto: item.kind === 'neighborhood' }));
+  // Older journey neighbourhood introductions remain reachable from city pages.
+  // The notebook supplies the dedicated neighbourhood collection here.
+  const local: Insight[] = CITY_JOURNEY_ARTICLES.filter(item => item.kind === 'local-issue').map(item => ({ investment: true, language: storyLocale, id: `${storyLocale}:city-article-${item.city}-${item.id}`, title: item.title[storyLocale], deck: item.deck[storyLocale], href: journeyArticleHref(item.city, item.id, storyLocale), date: item.checkedAt, city: item.city, topic: topicFor(item.title.en, item.kind, item.id), type: 'data-story', photo: journeyArticlePhoto(item.city, item.id) }));
   const english = listPortfolioRecords('en');
   const englishTitles = new Map(english.flatMap(item => [[item.slug, item.title] as const, [item.translationGroupId ?? item.slug, item.title] as const]));
   const translated = listPortfolioRecords(locale);
@@ -44,7 +49,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
   const records = [...articles, ...fallback, ...translated.filter(item => item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))].filter(item => !isInsightReference(item.slug));
   const analysis: Insight[] = records.filter(item => item.status === 'published' && item.evidenceState !== 'withdrawn' && item.type !== 'news-brief' && (item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))).map(item => ({
     investment: !isNeighborhoodEditorial(item.slug) && (['market-brief', 'data-story', 'policy-update'].includes(item.type) || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug)),
-    language: item.locale, id: item.id, title: item.title, deck: item.deck,
+    slug: item.slug, language: item.locale, id: item.id, title: item.title, deck: item.deck,
     href: 'canonicalHref' in item ? String(item.canonicalHref) : `${item.locale === 'ko' ? '/ko' : item.locale === 'zh-CN' ? '/zh-cn' : ''}/news/${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`,
     date: item.publishedAt, city: cities.find(city => marketIds[city] === item.marketId) ?? null,
     topic: isNeighborhoodEditorial(item.slug) ? 'Neighborhood living' : topicFor(englishTitles.get(item.slug) ?? ('translationGroupId' in item && typeof item.translationGroupId === 'string' ? englishTitles.get(item.translationGroupId) : undefined) ?? item.title, item.type, item.slug),
@@ -55,6 +60,10 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
   return [...notebook, ...local, ...analysis].filter(item => {
     if (!Number.isFinite(Date.parse(item.date)) || Date.parse(item.date) > now) return false;
     if (topic === 'investment' && !item.investment) return false;
+    if (topic === 'budget' && !BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug)) return false;
+    if (topic === 'prices' && !['Housing prices & costs', 'Ownership costs'].includes(item.topic)) return false;
+    if (topic === 'neighborhood' && item.topic !== 'Neighborhood living') return false;
+    if (topic === 'policy' && item.topic !== 'Buying rules') return false;
     if ((market !== 'all' && item.city !== market) || seen.has(item.href)) return false;
     seen.add(item.href);
     return true;
@@ -80,6 +89,7 @@ function StoryCard({ item, hero = false, locale = 'en' }: { item: Insight; hero?
     <StoryPhoto item={item} eager={hero} locale={locale} />
     <div className={styles.copy}><p className={styles.topic}>{item.city ? localizedCities[locale][item.city] : locale === 'ko' ? '전체 도시' : locale === 'zh-CN' ? '跨城市' : 'Across cities'} <span>·</span> {topicLabels[locale][item.topic] ?? item.topic}{item.language !== locale && <span className={styles.language}>English</span>}</p>
       <Heading><Link href={item.href} data-editorial-event="article_open">{item.title}</Link></Heading><p className={styles.deck}>{item.deck}</p>
+      <time className={styles.date} dateTime={item.date.slice(0, 10)}>{new Intl.DateTimeFormat(locale === 'zh-CN' ? 'zh-CN' : locale, { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(item.date))}</time>
       {hero && <Link className={styles.read} href={item.href} data-editorial-event="article_open">{copy[locale].read} <span aria-hidden="true">→</span></Link>}
     </div>
   </article>;
@@ -96,6 +106,26 @@ const topicLabels: Record<ContentLocale, Record<string, string>> = {
   'zh-CN': { 'Ownership costs': '持有成本', 'Housing prices & costs': '房价与成本', 'Buying rules': '购房规则', 'Neighborhood living': '社区生活', 'Housing market': '房地产市场' },
 };
 const localizedCities = { en: cityNames, ko: { seoul: '서울', tokyo: '도쿄', singapore: '싱가포르', dubai: '두바이' }, 'zh-CN': { seoul: '首尔', tokyo: '东京', singapore: '新加坡', dubai: '迪拜' } };
+const collectionCopy = {
+  en: { budget: 'Buying by budget', prices: 'Prices & costs', neighborhood: 'Neighbourhoods', policy: 'Buying rules', title: 'Buying guides by budget', edition: 'September 2026 edition', deck: 'Choose a city and a purchase-price budget. Transaction periods are shown separately.', open: 'Open buying guide', latest: 'Analysis & stories' },
+  ko: { budget: '예산별 구매', prices: '가격·비용', neighborhood: '동네·생활', policy: '정책·구매 절차', title: '예산별 구매 가이드', edition: '2026년 9월 편집판', deck: '도시와 집값 예산을 골라 살펴보세요. 실제 거래 기간은 별도로 표시합니다.', open: '구매 가이드 보기', latest: '분석과 이야기' },
+  'zh-CN': { budget: '购房预算', prices: '价格与费用', neighborhood: '社区生活', policy: '政策与购房流程', title: '按预算选择购房指南', edition: '2026年9月编辑版', deck: '选择城市与房价预算。实际成交时期单独标注。', open: '查看购房指南', latest: '分析与故事' },
+};
+
+function BudgetGuides({ items, market, locale }: { items: readonly Insight[]; market: NewsroomMarketFilter; locale: ContentLocale }) {
+  const t = collectionCopy[locale];
+  return <section className={styles.budgetSection} aria-labelledby="budget-guides" data-budget-edition={BUDGET_GUIDE_EDITION}>
+    <div className={styles.sectionHeading}><h2 id="budget-guides">{t.title}</h2><span>{t.edition}</span></div><p className={styles.sectionDeck}>{t.deck}</p>
+    <div className={styles.budgetGrid}>{BUDGET_GUIDE_SERIES.filter(guide => market === 'all' || guide.city === market).flatMap(guide => {
+      const item = items.find(item => item.slug === guide.slug);
+      return item ? [<article key={guide.city} className={styles.budgetCard} lang={item.language} data-editorial-content-id={item.id} data-editorial-content-type={item.type} data-editorial-locale={item.language} data-editorial-market={marketIds[guide.city]}>
+        <p className={styles.budgetCity}>{localizedCities[locale][guide.city]}</p><h3><Link href={item.href} data-editorial-event="article_open">{guide.budgets[locale]}</Link></h3>
+        <p className={styles.period}>{budgetGuidePeriod(guide.slug, locale)}</p>
+        <Link className={styles.budgetLink} href={item.href} data-editorial-event="article_open">{t.open}{item.language !== locale && <span className={styles.language}>English</span>}</Link>
+      </article>] : [];
+    })}</div>
+  </section>;
+}
 export function insightFilterHref(locale: ContentLocale, market: NewsroomMarketFilter, topic: InsightTopic): string {
   const query = new URLSearchParams();
   if (market !== 'all') query.set('market', market);
@@ -103,15 +133,23 @@ export function insightFilterHref(locale: ContentLocale, market: NewsroomMarketF
   return `${locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : ''}/news/${query.size ? `?${query}` : ''}`;
 }
 export function InsightsIndex({ articles, market, locale = 'en', topic = 'all' }: { articles: readonly PublishedContentArticle[]; market: NewsroomMarketFilter; locale?: ContentLocale; topic?: InsightTopic }) {
-  const [hero, ...items] = buildInsightItems(articles, market, locale, topic);
+  const all = buildInsightItems(articles, market, locale, topic);
+  const showBudgets = topic === 'all' || topic === 'budget';
+  const stories = showBudgets ? all.filter(item => !BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug)) : all;
+  // Lead with a decision-oriented analysis; lifestyle remains available below
+  // and in its dedicated filter without displacing the buying entry point.
+  const heroIndex = topic === 'all' ? stories.findIndex(item => item.investment) : 0;
+  const hero = stories[heroIndex < 0 ? 0 : heroIndex];
+  const items = stories.filter(item => item !== hero);
   const t = copy[locale];
   return <main className={styles.index} data-newsroom-layout="insights" lang={locale}>
     <header className={styles.header}><h1>{t.title}</h1><p>{t.deck}</p></header>
     <nav className={styles.filters} aria-label={t.cities}>{(['all', ...cities] as const).map(city => <Link prefetch={false} key={city} href={insightFilterHref(locale, city, topic)} aria-current={market === city ? 'page' : undefined}>{city === 'all' ? t.all : localizedCities[locale][city]}</Link>)}</nav>
-    <nav className={styles.topicFilters} aria-label={t.topics}>{(['all', 'investment'] as const).map(value => <Link prefetch={false} key={value} href={insightFilterHref(locale, market, value)} aria-current={topic === value ? 'page' : undefined}>{value === 'all' ? t.all : t.investment}</Link>)}</nav>
-    {locale !== 'en' && [hero, ...items].some(item => item && item.language !== locale) && <p className={styles.translationNote}>{t.note}</p>}
-    {hero ? <StoryCard item={hero} hero locale={locale} /> : <p>{t.empty} <Link href={insightFilterHref(locale, 'all', 'all')}>{t.clear}</Link></p>}
-    {items.length > 0 && <section className={styles.latest} aria-labelledby="latest-insights"><h2 id="latest-insights">{t.latest}</h2><div className={styles.grid}>{items.slice(0, 6).map(item => <StoryCard key={item.href} item={item} locale={locale} />)}</div>
+    <nav className={styles.topicFilters} aria-label={t.topics}>{INSIGHT_TOPICS.map(value => <Link prefetch={false} key={value} href={insightFilterHref(locale, market, value)} aria-current={topic === value ? 'page' : undefined}>{value === 'all' ? t.all : value === 'investment' ? t.investment : collectionCopy[locale][value]}</Link>)}</nav>
+    {locale !== 'en' && all.some(item => item.language !== locale) && <p className={styles.translationNote}>{t.note}</p>}
+    {showBudgets && <BudgetGuides items={all} market={market} locale={locale} />}
+    {hero ? <StoryCard item={hero} hero locale={locale} /> : !all.length ? <p>{t.empty} <Link href={insightFilterHref(locale, 'all', 'all')}>{t.clear}</Link></p> : null}
+    {items.length > 0 && <section className={styles.latest} aria-labelledby="latest-insights"><h2 id="latest-insights">{collectionCopy[locale].latest}</h2><div className={styles.grid}>{items.slice(0, 6).map(item => <StoryCard key={item.href} item={item} locale={locale} />)}</div>
       {items.length > 6 && <details className={styles.more}><summary>{t.more} <span aria-hidden="true">+</span></summary><div className={styles.grid}>{items.slice(6).map(item => <StoryCard key={item.href} item={item} locale={locale} />)}</div></details>}
     </section>}
   </main>;

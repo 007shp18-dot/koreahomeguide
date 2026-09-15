@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import { getJourneyArticle } from '../content/city-journey-articles';
+import { journeyArticlePhoto } from '../content/journey-article-photos';
 import { getPortfolioRecord } from '../content/portfolio-manifest';
 import { NEIGHBOURHOOD_STORIES } from '../content/neighbourhood-stories';
 import { INSIGHT_REFERENCE_SLUGS } from '../content/insight-curation';
@@ -29,12 +30,13 @@ describe('consistent insight articles and curation', () => {
       }
     }
   });
-  it('uses the verified Seongsu street photo on both the card and the article', () => {
+  it('retains the verified Seongsu article and photo after removing its older discovery card', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-09-10T12:00:00Z'));
     const item = buildInsightItems([], 'seoul').find(item => item.href.endsWith('/seongsu/'));
-    expect(item?.photo?.src).toBe('/assets/stories/seongsu-evening-street.jpg');
-    expect(item?.photo?.source).toContain('Evening_street_in_Seongsu-dong');
+    expect(item).toBeUndefined();
+    expect(journeyArticlePhoto('seoul', 'seongsu')?.src).toBe('/assets/stories/seongsu-evening-street.jpg');
+    expect(journeyArticlePhoto('seoul', 'seongsu')?.source).toContain('Evening_street_in_Seongsu-dong');
     for (const locale of ['en', 'ko'] as const) {
       const html = renderToStaticMarkup(<JourneyArticle article={getJourneyArticle('seoul', 'seongsu')!} locale={locale} />);
       expect(html).toContain('data-neighbourhood-photo="seoul-street"');
@@ -65,8 +67,9 @@ describe('consistent insight articles and curation', () => {
       expect(existsSync(fileURLToPath(new URL(`../public${item.photo?.src}`, import.meta.url)))).toBe(true);
     }
     expect(new Set(items.map(item => item.photo?.src)).size).toBeGreaterThanOrEqual(24);
-    expect(items.find(item => item.href.endsWith('/wangsimni/'))?.photo?.src).toContain('wangsimni-station');
-    expect(items.find(item => item.href.endsWith('/mangwon/'))?.photo?.src).toContain('mangwon-river');
+    expect(items.some(item => item.href.endsWith('/wangsimni/') || item.href.endsWith('/mangwon/'))).toBe(false);
+    expect(journeyArticlePhoto('seoul', 'wangsimni')?.src).toContain('wangsimni-station');
+    expect(journeyArticlePhoto('seoul', 'mangwon')?.src).toContain('mangwon-river');
   });
 
   it('uses the same article header for daily neighbourhood stories and existing analysis', () => {
@@ -86,7 +89,7 @@ describe('consistent insight articles and curation', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-09-10T12:00:00Z'));
     const items = buildInsightItems([], 'all');
-    expect(items).toHaveLength(33);
+    expect(items).toHaveLength(30);
     const seoul = renderToStaticMarkup(<NewsroomArticle article={getPortfolioRecord('en', 'seoul-monthly-2026-09')!} />);
     const singapore = renderToStaticMarkup(<NewsroomArticle article={getPortfolioRecord('en', 'singapore-monthly-2026-09')!} />);
     for (const slug of INSIGHT_REFERENCE_SLUGS) {

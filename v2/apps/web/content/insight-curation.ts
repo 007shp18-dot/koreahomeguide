@@ -15,6 +15,8 @@ export function isInsightReference(slug: string): boolean {
 // Stored profiles use the data-story route but belong with neighborhood stories.
 // Curate their topic explicitly; titles and author names are not reliable types.
 const NEIGHBORHOOD_EDITORIAL_SLUGS: readonly string[] = [
+  'seoul-euljiro-read-the-workshop-signs',
+  'dubai-deira-gold-and-spice-walk',
   'seoul-buam-dong-afternoon-walk',
   'tokyo-koenji-vintage-evening-walk',
   'singapore-queenstown-everyday-heritage',

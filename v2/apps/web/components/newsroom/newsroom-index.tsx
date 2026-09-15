@@ -1,3 +1,4 @@
+import { isInsightTopic, type InsightTopic } from '../../content/insight-topics';
 import { NewsFeedIndex } from './news-feed-index';
 import { InsightsIndex } from './insights-index';
 import { listNeighbourhoodStories, neighbourhoodHref } from '../../content/neighbourhood-stories';
@@ -26,7 +27,7 @@ export type NewsroomFilters = Readonly<{
   type: NewsroomTypeFilter;
   market: NewsroomMarketFilter;
   canonicalHref: string;
-  topic?: 'investment';
+  topic?: InsightTopic;
 }>;
 
 type SearchParams = Readonly<Record<string, string | readonly string[] | undefined>>;
@@ -45,7 +46,7 @@ export function resolveNewsroomFilters(input: SearchParams): NewsroomFilters {
   const query = new URLSearchParams();
   if (type !== 'insights') query.set('type', type);
   if (market !== 'all') query.set('market', market);
-  const topic = type === 'insights' && input.topic === 'investment' ? 'investment' : undefined;
+  const topic = type === 'insights' && isInsightTopic(input.topic) && input.topic !== 'all' ? input.topic : undefined;
   if (topic) query.set('topic', topic);
   return Object.freeze({
     type,

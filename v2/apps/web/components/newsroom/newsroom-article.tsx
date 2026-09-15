@@ -5,6 +5,7 @@ import { KOREAN_BUYING_GUIDE_DATA } from '../../content/ko/buying-guides';
 import { BuyingGuide } from './buying-guide';
 import { ArticleContents } from './article-contents';
 import { BUDGET_GUIDE_SLUGS } from '../../content/guide-directory';
+import { budgetGuidePeriod } from '../../content/budget-guide-series';
 import { BUYING_GUIDE_DATA } from '../../content/en/buying-guide-data';
 import { relatedReading, localizeReadingLink } from '../../content/related-reading';
 import { MonthlyReportNavigation, MonthlyReportTrend, isMonthlyReport } from './monthly-reports';
@@ -94,9 +95,10 @@ export function NewsroomArticle({ article }: Readonly<{
       <span aria-label={`${t('Publisher', '발행')}: SignedPrice`}>SignedPrice</span><time aria-label={`${t('Published', '발행일')}: ${article.publishedAt.slice(0, 10)}`} dateTime={article.publishedAt}>{article.publishedAt.slice(0, 10)}</time>
       {article.updatedAt.slice(0, 10) !== article.publishedAt.slice(0, 10) && <span>{t('Updated', '수정')} <time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></span>}
     </EditorialArticleHeader>
+    {budgetComparison && <p>{article.locale === 'ko' ? '2026년 9월 예산 가이드 · ' : article.locale === 'zh-CN' ? '2026年9月预算指南 · ' : 'September 2026 budget guide · '}{budgetGuidePeriod(article.slug, article.locale)}</p>}
     {buyingGuide ? null : <ArticleContents locale={article.locale} items={contentSections.flatMap((item, index) => item.heading && !isMethod(item.heading) ? [{ id: `section-${index + 1}`, title: item.heading }] : [])} />}
     {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} locale={article.locale} /> : null}
-{articlePhoto ? <div className={layout.hero}><NeighbourhoodPhoto id={articlePhoto} eager context locale={article.locale} /></div> : article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
+{articlePhoto ? <div className={layout.hero}><NeighbourhoodPhoto id={articlePhoto} eager context locale={article.locale} /></div> : article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : article.marketId === 'jp-tokyo' ? MARKET_PHOTOS.tokyo : null} cityLabel={market} /></div> : null}
     {figure == null ? null : <Infographic spec={figure} />}
     {buyingGuide ? <BuyingGuide guide={buyingGuide} locale={ko ? "ko" : "en"} /> : <article className={layout.body}>
       {contentSections.map((section, index) => isMethod(section.heading)?null:<section id={`section-${index + 1}`} key={`${section.heading}-${index}`}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}
