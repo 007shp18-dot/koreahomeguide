@@ -84,7 +84,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
   const moreLinks = navigation.filter(link => !primaryLinks.some(primary => primary.href === link.href));
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
   const context = headerMarketContext(copy, currentHref);
-  const isRanking = currentHref?.includes('/rankings/') ?? false;
+  const isRanking = currentHref?.replace(/^\/(?:ko|zh-cn)(?=\/)/, '').split('?')[0] === '/rankings/';
   const visibleMarkets = markets.map(market => ({
     ...market,
     label: locale === 'ko'
