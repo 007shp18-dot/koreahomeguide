@@ -10,6 +10,7 @@ import baselines from '../content/property-reviews/property-prose-baselines.json
 import { propertyEditorial, withPropertyEditorial } from '../lib/research/property-editorial';
 import { LivingContextCard } from '../components/market-ui/living-context';
 import { actualDetailHref } from '../lib/research/property-review-locations';
+import { PropertyOverviewCard } from '../components/market-ui/property-overview-card';
 import { propertyReviewMetadata } from '../lib/research/property-review-metadata';
 
 it('renders every published review in English without leaking Korean body copy', () => {
@@ -33,11 +34,16 @@ it('covers all 124 reviews in both languages without changing evidence or its ch
   for (const value of values) {
     const original = propertyReviewSchema.parse(value);
     const review = withPropertyEditorial(original);
-    expect(review.editorial?.revisedOn).toBe('2026-09-14');
+    expect(review.editorial?.revisedOn).toBe('2026-09-15');
     expect(review.checkedOn).toBe(original.checkedOn);
-    expect(review.sources).toEqual(original.sources);
+    expect(review.sources).toEqual(original.id === 'kr-banpo-xi' ? original.sources.filter(source => source.id !== 'waterplay') : original.sources);
     for (const locale of ['en', 'ko'] as const) {
-      expect(review.editorial?.paragraphs[locale].length).toBeGreaterThanOrEqual(3);
+      expect(review.editorial?.paragraphs[locale]).toHaveLength(3);
+      const panel = renderToStaticMarkup(createElement(PropertyOverviewCard, { id: review.id, locale, checkedOn: review.checkedOn, editorial: review.editorial }));
+      const paragraphs = review.editorial!.paragraphs[locale];
+      expect(panel).toContain('data-property-editorial="2026-09-15"');
+      expect(panel).toContain(paragraphs[0]!.replaceAll('&', '&amp;').replaceAll("'", '&#x27;'));
+      if (locale === 'en') expect(paragraphs.join(' ').split(/\s+/).length).toBeLessThan(200);
       expect(review.verdict[locale]).toBe(propertyEditorial(review.id)?.headline[locale]);
       if (original.id in baselines) {
         expect(review.verdict[locale]).not.toBe(original.verdict[locale]);

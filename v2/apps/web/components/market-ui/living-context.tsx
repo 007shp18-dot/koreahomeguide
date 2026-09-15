@@ -36,7 +36,7 @@ export function LivingContextCard({profile:p,locale,embedded=false}: {profile:Li
     const href=actualDetailHref(locale,candidate.reviewId);
     return href?[{name:candidate.name,href}]:[];
   });
-  return <article className={styles.card} data-living-profile={p.id} data-property-editorial="2026-09-14" lang={lang}>
+  return <article className={styles.card} data-living-profile={p.id} data-property-editorial={editorial.revisedOn} lang={lang}>
     <header className={styles.profileHeader}>
       <div><p className={styles.meta}>{l(review.area)} · {t('편집','Edited','编辑')} {dateLabel(editorial.revisedOn,locale)}</p><h2>{embedded?t('단지 분석','Property analysis','项目分析'):l(review.name)}</h2></div>
       <div className={styles.actions}><button type="button" onClick={()=>toggleReviewSaved(p.id)} aria-pressed={saved}>{saved?t('저장됨','Saved','已收藏'):t('관심 저장','Save property','收藏')}</button></div>

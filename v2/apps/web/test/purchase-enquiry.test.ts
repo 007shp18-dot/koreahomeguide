@@ -15,8 +15,8 @@ describe('purchase enquiry handoff',()=>{
   expect([...url.searchParams.keys()]).toEqual(['subject','body']);
   expect(url.searchParams.get('body')).toBe('hello\n&bcc=other@example.com # ?');
  });
- it('preserves locale, city and currency-specific budget in all twelve article handoffs',()=>{
-  expect(CITY_BUDGET_COMPARISONS).toHaveLength(12);
+ it('preserves locale, city and currency-specific budget in the three translated Tokyo article handoffs',()=>{
+  expect(CITY_BUDGET_COMPARISONS).toHaveLength(3);
   for(const locale of ['en','ko','zh-CN'] as const) {
    const href=consultationHref('tokyo',locale,50000000);
    expect(href).toContain('city=tokyo&budget=50000000#purchase-enquiry');

@@ -60,7 +60,7 @@ describe('public Newsroom routes', () => {
     for (const locale of ['en', 'ko'] as const) {
       const budget = getPortfolioRecord(locale, 'singapore-condo-buying-budget-guide')!;
       for (const type of ['insights', 'data-stories']) {
-        const html = renderToStaticMarkup(<NewsroomIndex locale={locale} articles={[]} policies={[]} filters={resolveNewsroomFilters({ type, market: 'singapore' })} headlines={<p>Feed</p>} />);
+        const html = renderToStaticMarkup(<NewsroomIndex locale={locale} articles={[]} policies={[]} filters={resolveNewsroomFilters({ type, market: 'singapore', topic: type === 'insights' ? 'budget' : undefined })} headlines={<p>Feed</p>} />);
         expect(html).toContain(budget.canonicalHref.slice(0, -1));
         expect(html).not.toContain('dubai-ready-apartment-buying-budget-guide');
       }
@@ -124,7 +124,7 @@ describe('public Newsroom routes', () => {
     for (const label of ['All', 'Seoul', 'Tokyo', 'Singapore', 'Dubai']) expect(nav).toContain(`>${label}</a>`);
     expect(html.match(/data-newsroom-lead=/g)).toHaveLength(1);
     expect(html).toContain('>Neighbourhoods</a>');
-    expect(html).not.toContain('Neighborhood living');
+    expect(html).toContain('Neighborhood living');
     expect(html).toContain('Ownership costs');
     expect(html).toContain('Analysis &amp; stories');
     expect(html).not.toContain('aria-label="Insight types"');

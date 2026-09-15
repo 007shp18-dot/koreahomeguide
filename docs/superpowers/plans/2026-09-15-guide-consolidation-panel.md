@@ -1,6 +1,6 @@
 # Guide consolidation and building analysis
 
-Owner authorization: consolidate duplicate buying content, improve the main budget selector, rewrite independent articles to 800+ English words with equivalent Korean detail, and implement the revised existing-panel specification (supersedes new /brief routes). Preserve blue palette, existing URLs through redirects, source scope and missing-data boundaries. No runtime LLM or review scraping.
+Owner authorization: consolidate duplicate buying content, improve the main budget selector, rewrite buying guides and Insights to 800+ English words with equivalent Korean detail; keep all 124 property guides concise, and implement the revised existing-panel specification (supersedes new /brief routes). Preserve blue palette, existing URLs through redirects, source scope and missing-data boundaries. No runtime LLM or review scraping.
 
 ## Implemented locally
 
@@ -11,14 +11,14 @@ Owner authorization: consolidate duplicate buying content, improve the main budg
 - Add sale/new-jeonse medians and ratio only with adequate counts and matching periods.
 - Remove repeated priorities, verdict and reversal sections from decision panel; keep three signing questions.
 - Supply static source-linked Seoul reviews for initial rendering. Add cautious price/dispersion copy, no floor-causation claim.
-- Expand Banpo Xi to 800+ English words and corresponding Korean. Remove obsolete 2010 water-play source/point through review presentation.
+- Revise all 124 Seoul/Singapore/Dubai/Tokyo editorials into three compact bilingual paragraphs; render them in the existing overview/panel, with explicit English fallback on Chinese routes. Keep evidence dates separate from editorial revision dates. Remove obsolete 2010 water-play source/point through review presentation.
 
 ## Remaining before claiming full completion
 
 - Verify and finish area/period propagation, hero behavior, initial HTML and responsive visual checks.
 - Consolidation does not yet rewrite all surviving budget guide bodies. Improve distinct comparisons and explicit repeated-project rationale; do not manufacture replacement examples.
 - Full seven-section panel: manual transport/school/resident data schema, verified-cost rule files and country-specific rendering; eligible comparable statistics. No invented manual inputs.
-- Expand remaining selected standalone articles and property guides with primary-source research. There are 124 existing property editorials; only Banpo Xi has received the new long-form treatment in this change so far.
+- Expand remaining selected standalone articles and property guides with primary-source research. All 124 property editorials now have concise revisions. Owner corrected the scope: the 800-word minimum never applies to these property panels.
 - Singapore/Tokyo adaptations; Dubai public analysis remains subject to verified licensing and source scope.
 - Focused regression verification, PR, required CI and production deployment.
 
