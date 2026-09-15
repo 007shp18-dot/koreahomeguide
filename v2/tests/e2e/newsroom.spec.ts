@@ -169,6 +169,11 @@ test('Tokyo city journey opens its own article, chapters and Korean translation'
   await leadStory.click();
   await expect(page).toHaveURL(/\/news\/tokyo-cheaper-rent-longer-commute\/$/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('You Saved ¥20,000 on Tokyo Rent. What Did the Commute Take?');
+  await expect(page.locator('main article')).toContainText('160');
+  await expectNoHorizontalOverflow(page);
+  // The latest market brief is text-led; keep photo coverage on the travel story.
+  await page.goto('/news/tokyo-kiyosumi-shirakawa-between-stops/');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kiyosumi-Shirakawa after the coffee');
   await expect.poll(() => page.locator('main article img').first().evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expectNoHorizontalOverflow(page);
   await page.goto('/news/city-stories/tokyo/where/');
