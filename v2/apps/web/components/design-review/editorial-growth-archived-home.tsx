@@ -99,7 +99,7 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
       <p className={styles.lead}>{copy.lead}</p>
     </header>
 
-    <HomeAnalysis locale={locale} />
+    <HomeAnalysis locale={locale} classNames={styles} />
 
     <section className={styles.section} data-home-region="markets" aria-label={copy.markets}>
       <nav className={styles.cityIndex} aria-label={copy.markets}>

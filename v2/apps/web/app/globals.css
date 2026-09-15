@@ -3786,8 +3786,8 @@ body { background: var(--canvas); }
 @media(prefers-reduced-motion:reduce) { :where(button,[role='button']) { transition: none; } }
 
 /* Final typography rhythm: comfortable Korean spacing without side accents. */
-:lang(ko) main :is(h1,h2,h3,h4) { letter-spacing: -.015em; word-break: keep-all; overflow-wrap: anywhere; }
-:lang(ko) main :is(p,li,button,label) { letter-spacing: 0; }
+:root:not(:has([data-review-locale])) :lang(ko) main :is(h1,h2,h3,h4) { letter-spacing: -.015em; word-break: keep-all; overflow-wrap: anywhere; }
+:root:not(:has([data-review-locale])) :lang(ko) main :is(p,li,button,label) { letter-spacing: 0; }
 
 .site-header__more .site-header__context-panel a { border-bottom: 0; line-height: 20px; padding: 10px 12px; }
 .site-header__more .site-header__context-panel a[aria-current='page'] { color: var(--accent); background: var(--accent-soft); box-shadow: none; }

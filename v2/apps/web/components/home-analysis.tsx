@@ -2,7 +2,7 @@ import 'server-only';
 import Link from 'next/link';
 import { getPortfolioRecord } from '@/content/portfolio-manifest';
 import type { SiteLocale } from '@/lib/navigation/site-navigation';
-import styles from './design-review/editorial-growth-home.module.css';
+import defaultStyles from './design-review/editorial-growth-home.module.css';
 
 const reports = ['seoul-monthly-2026-09', 'singapore-monthly-2026-09', 'dubai-monthly-2026-09'] as const;
 const copy = {
@@ -11,7 +11,7 @@ const copy = {
   'zh-CN': { heading: '成交数据告诉我们什么', lead: '比较各地区的成交变化，区分交易活跃度与价格变化，并说明看房时需要核实的事项。', read: '阅读分析', all: '全部洞察', published: '发布', cities: ['首尔', '新加坡', '迪拜'] },
 };
 
-export function HomeAnalysis({ locale }: { locale: SiteLocale }) {
+export function HomeAnalysis({ locale, classNames: styles = defaultStyles }: { locale: SiteLocale; classNames?: typeof defaultStyles }) {
   const text = copy[locale];
   const prefix = locale === 'en' ? '' : locale === 'ko' ? '/ko' : '/zh-cn';
   const articles = reports.flatMap((slug, index) => {
