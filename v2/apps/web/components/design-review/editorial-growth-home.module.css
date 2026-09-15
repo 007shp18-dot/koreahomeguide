@@ -88,3 +88,13 @@
 .hero h1 { line-height: 1.22; }
 .lead { line-height: 1.65; }
 .heroCities { gap: 8px; }
+
+/* A single city gallery follows the introduction and search. */
+.hero { display: block; padding-block: 40px 32px; }
+.heroCopy { max-width: 760px; }
+.hero h1 { font-size: clamp(34px, 3.5vw, 52px); margin-block: 16px; }
+.hero .search { max-width: 640px; }
+@media(max-width:700px) {
+  .hero { padding-block: 28px 24px; }
+  .hero h1 { font-size: 36px; }
+}

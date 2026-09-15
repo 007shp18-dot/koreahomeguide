@@ -40,6 +40,15 @@ describe('shared navigation destinations', () => {
     expect(marketDestination('jp-tokyo', '/ko/guides/', 'ko')).toBe('/ko/guides/?market=tokyo');
     expect(marketDestination('jp-tokyo', '/zh-cn/guides/', 'zh-CN')).toBe('/zh-cn/guides/?market=tokyo');
   });
+  it('keeps city switches in the ranking hub for every locale and drops unrelated filters', () => {
+    for (const locale of ['en', 'ko', 'zh-CN'] as const) {
+      const prefix = locale === 'en' ? '' : locale === 'ko' ? '/ko' : '/zh-cn';
+      for (const [id, city] of [['kr-seoul', 'seoul'], ['sg-singapore', 'singapore'], ['ae-dubai', 'dubai'], ['jp-tokyo', 'tokyo']] as const) {
+        expect(marketDestination(id, `${prefix}/rankings/?city=seoul&kind=rent&order=lowest&area=40-60`, locale))
+          .toBe(`${prefix}/rankings/?city=${city}&kind=${city === 'tokyo' || city === 'dubai' ? 'sale' : 'rent'}&order=${city === 'tokyo' ? 'highest' : 'lowest'}`);
+      }
+    }
+  });
   it('retains Tokyo tools and saved tasks in every supported language', () => {
     for (const locale of ['en', 'ko', 'zh-CN'] as const) {
       const prefix = locale === 'en' ? '' : locale === 'ko' ? '/ko' : '/zh-cn';

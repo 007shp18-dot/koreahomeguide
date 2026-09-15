@@ -98,24 +98,10 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
         <h1>{copy.title}<span>{copy.titleEnd}</span></h1>
         <p className={styles.lead}>{copy.lead}</p>
         <HomeSearch locale={locale} />
-        <nav className={styles.heroCities} aria-label={copy.markets}>
-          {markets.map(market => <ExploreLink key={market.id} href={`${prefix}${market.primaryAction.href}`}>{copy.cities[market.id]}</ExploreLink>)}
-        </nav>
-      </div>
-      <div className={styles.heroVisual}>
-        {(['jp-tokyo', 'sg-singapore'] as const).map((id, index) => <Link href={`${prefix}${markets.find(market => market.id === id)!.primaryAction.href}`} key={id} className={styles.heroPhoto}>
-          <Image src={CITY_PHOTOS[id].src} alt={CITY_PHOTOS[id].caption[locale === 'ko' ? 'ko' : 'en']} fill priority={index === 0} sizes="(max-width: 700px) 50vw, 30vw" style={{objectPosition: CITY_PHOTOS[id].position}} />
-          <span><small>{CITY_PHOTOS[id].country}</small><strong>{copy.cities[id]}</strong><UiIcon name="arrow-up-right" /></span>
-        </Link>)}
       </div>
     </header>
 
     <section className={styles.section} data-home-region="markets" aria-label={copy.markets}>
-      <nav className={styles.cityIndex} aria-label={copy.markets}>
-        {markets.map(market => <a key={market.id} href={`#city-${market.id}`}>
-          <span>{market.position}</span>{copy.cities[market.id]}
-        </a>)}
-      </nav>
       <ol className={styles.marketGrid}>
         {markets.map((market, index) => {
           const city = copy.cities[market.id];

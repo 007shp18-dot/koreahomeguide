@@ -223,8 +223,9 @@ test('desktop exposes published analysis and the city destinations', async ({pag
   await expect(markets).toHaveAttribute('aria-label', 'Choose a city');
   await page.getByRole('heading', { name: 'What the transactions tell us' }).scrollIntoViewIfNeeded();
   await expect(page.getByRole('heading', { name: 'What the transactions tell us' })).toBeInViewport();
-  await markets.getByRole('navigation', { name: 'Choose a city' }).scrollIntoViewIfNeeded();
-  await expect(markets.getByRole('navigation', { name: 'Choose a city' })).toBeInViewport();
+  await markets.scrollIntoViewIfNeeded();
+  await expect(markets).toBeInViewport();
+  await expect(markets.getByRole('navigation')).toHaveCount(0);
   await expect(markets.locator('[data-contextual-action]')).toHaveCount(4);
   await expect(markets.locator('[data-primary-action="explore"]')).toHaveCount(4);
 });
