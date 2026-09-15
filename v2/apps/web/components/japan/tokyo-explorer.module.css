@@ -94,7 +94,7 @@
 .neighbourhoodList small { display: block; margin-top: 3px; color: var(--muted); font-size: 12px; line-height: 1.6; }
 .neighbourhoodList .neighbourhoodPrice { flex-shrink: 0; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .neighbourhoodPrice > span { margin-left: 8px; color: var(--accent); }
-.neighbourhoodList a[aria-current] { color: var(--accent); background: var(--accent-soft); box-shadow: inset 3px 0 var(--accent); padding-left: 14px; }
+.neighbourhoodList a[aria-current] { color: var(--accent); background: var(--accent-soft); box-shadow: none; padding-left: 14px; }
 .neighbourhoodList a:hover { background: var(--accent-soft); }
 .neighbourhoodColumns { display: flex; justify-content: space-between; gap: 12px; margin: 16px 8px 8px; color: var(--muted); font-size: 12px; line-height: 1.5; }
 .areaSearch { display: grid; gap: 8px; font-size: 12px; font-weight: 600; color: var(--muted); }

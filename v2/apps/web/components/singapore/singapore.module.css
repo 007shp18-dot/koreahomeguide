@@ -1018,6 +1018,16 @@
 .exploreFilters label { font-size: 14px; color: var(--ink); }
 .projectList > div { border-radius: var(--radius-control); }
 .projectList > div:hover { background: var(--surface); }
-.projectList > div[data-selected="true"] { background: var(--accent-soft); box-shadow: inset 3px 0 var(--accent); }
+.projectList > div[data-selected="true"] { background: var(--accent-soft); box-shadow: none; }
 .projectList > div > button { padding-block: 12px; }
 .exploreMap { border: 1px solid var(--line); border-radius: var(--radius-panel); overflow: hidden; }
+
+/* Compact explorer filters with consistent inset spacing. */
+.exploreFilters { padding: 12px 16px; margin-bottom: 20px; border-radius: 10px; }
+.exploreFilters form { gap: 10px; }
+.exploreFilters label { gap: 4px; font-size: 13px; }
+.exploreFilters :is(input,select,button) { min-height: 44px; padding: 8px 12px; border-radius: 8px; }
+
+.exploreFilters.exploreFilters { padding: 12px 16px; margin-bottom: 20px; }
+.exploreFilters.exploreFilters label { gap: 4px; line-height: 1.5; }
+.exploreFilters.exploreFilters :is(input,select,button) { min-height: 44px; line-height: 1.5; }

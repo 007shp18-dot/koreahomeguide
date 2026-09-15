@@ -29,14 +29,16 @@ describe('signedprice public navigation', () => {
     expect(html).toContain('aria-label="Choose language"');
     expect(html).toContain('aria-label="Choose a city"');
   });
-  it('renders the same six global destinations in the same order', () => {
+  it('preserves existing destinations and promotes community alongside Explore and Insights', () => {
     for (const copy of [homepageCopy.header, header]) {
       const html = renderToStaticMarkup(<SiteHeader copy={copy} />);
       const positions = globalLabels.map((label) => html.indexOf(`>${label.replace('&', '&amp;')}</`));
 
       expect(positions.every((position) => position >= 0)).toBe(true);
-      expect(positions).toEqual([...positions].sort((left, right) => left - right));
-      expect(html).not.toMatch(/>Properties<|>Community<|>Invest</);
+      expect(html.indexOf('>Explore</')).toBeLessThan(html.indexOf('>Insights</'));
+      expect(html.indexOf('>Insights</')).toBeLessThan(html.indexOf('>Community</'));
+      expect(html).toContain('aria-label="More navigation"');
+      expect(html).not.toMatch(/>Properties<|>Invest</);
     }
   });
 

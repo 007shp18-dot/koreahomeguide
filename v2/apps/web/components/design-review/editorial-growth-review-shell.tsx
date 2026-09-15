@@ -8,7 +8,7 @@ import {
 import { EditorialGrowthContent } from './editorial-growth-content';
 import { EditorialGrowthCheck } from './editorial-growth-check';
 import { EditorialGrowthExplore } from './editorial-growth-explore';
-import { EditorialGrowthHome } from './editorial-growth-home';
+import { EditorialGrowthHome } from './editorial-growth-archived-home';
 import styles from './editorial-growth-review.module.css';
 
 const SURFACE_LABELS: Readonly<Record<ReviewLocale, Readonly<Record<ReviewSurface, string>>>> = Object.freeze({

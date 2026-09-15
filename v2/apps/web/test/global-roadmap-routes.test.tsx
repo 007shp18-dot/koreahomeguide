@@ -53,7 +53,7 @@ describe('global roadmap routes', () => {
     expect(news).toContain('aria-label="Insight cities"');
     expect(news).not.toContain('Live external news');
     expect(externalFetch).not.toHaveBeenCalled();
-    expect(community).toContain('Home &amp; neighbourhood questions');
+    expect(community).toContain('<h1>Community</h1>');
     expect(community).toContain('Seoul');
     expect(community).toContain('Tokyo');
     expect(community).toContain('Ask a question');

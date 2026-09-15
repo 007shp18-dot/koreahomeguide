@@ -32,7 +32,7 @@ test('home presents four city destinations and a separate budget journey without
  for (const [index, path] of ['/kr/seoul/explore', '/sg/singapore/explore', '/ae/dubai/explore', '/jp/tokyo/explore'].entries())
   await expect(cards.nth(index).locator('[data-primary-action="explore"]')).toHaveAttribute('href', new RegExp('^' + path + '/?$'));
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
- await expect(page.locator('main form')).toHaveCount(0);
+ await expect(page.getByRole('search')).toHaveCount(1);
  await page.getByRole('navigation', {name:'Take a closer look'}).getByRole('link', {name:/^Tools/}).click();
  await expect(page).toHaveURL(/\/tools\/?$/);
  await page.locator('main a[href="/passport/"], main a[href="/passport"]').first().click();
@@ -61,7 +61,7 @@ test('tool languages retain their published primary navigation and Corrections h
   await page.goto(path);
   const navigation = await visibleProductNavigation(page);
   await expect(navigation).toBeVisible();
-  await expect(navigation.locator('.site-header__product-link')).toHaveCount(6);
+  await expect(navigation.locator('.site-header__product-link')).toHaveCount(7);
   const rankings = navigation.getByRole('link', { name: /^(?:Rankings|랭킹|排行榜)$/ });
   await expect(rankings).toHaveCount(1);
   await expect((await visibleLanguageNavigation(page)).getByRole('link')).toHaveText(['EN','KO','中文']);

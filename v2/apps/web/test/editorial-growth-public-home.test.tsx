@@ -36,7 +36,8 @@ describe('public editorial homepage', () => {
     expect(markup).toContain('data-market-id="jp-tokyo"');
     expect(markup).toContain('href="/jp/tokyo"');
     const main = markup.slice(markup.indexOf('<main'), markup.indexOf('</main>'));
-    expect(main).not.toContain('<form');
+    expect(main).toContain('role="search"');
+    expect(main).toContain('action="/kr/seoul/explore"');
     expect(main).not.toContain('data-home-region="passport"');
     expect(main).not.toContain('data-editorial-content-id');
     expect(main.match(/data-primary-action="explore"/g)).toHaveLength(4);
@@ -58,8 +59,8 @@ describe('public editorial homepage', () => {
   });
 
   it.each([
-    ['ko', ['/ko/kr/seoul/explore/', '/ko/sg/singapore/explore/', '/ko/ae/dubai/explore/', '/jp/tokyo/explore/', '/ko/tools/', '/ko/news/', '/ko/guides/']],
-    ['zh-CN', ['/kr/seoul/explore/', '/sg/singapore/explore/', '/ae/dubai/explore/', '/jp/tokyo/explore/', '/zh-cn/tools/', '/zh-cn/news/', '/zh-cn/guides/']],
+    ['ko', ['/ko/kr/seoul/explore/', '/ko/sg/singapore/explore/', '/ko/ae/dubai/explore/', '/ko/jp/tokyo/explore/', '/ko/tools/', '/ko/news/', '/ko/guides/']],
+    ['zh-CN', ['/zh-cn/kr/seoul/explore/', '/zh-cn/sg/singapore/explore/', '/zh-cn/ae/dubai/explore/', '/zh-cn/jp/tokyo/explore/', '/zh-cn/tools/', '/zh-cn/news/', '/zh-cn/guides/']],
   ] as const)('preserves supported market and section routes for %s', (locale, hrefs) => {
     const markup = renderToStaticMarkup(<PropertyHome locale={locale} />);
     for (const href of hrefs) expect(markup).toContain(`href="${href.replace(/\/$/, '')}"`);
@@ -85,7 +86,7 @@ describe('public editorial homepage', () => {
 
   it.each(['en', 'ko', 'zh-CN'] as const)('renders existing published analysis with the matching language and dates for %s', locale => {
     const markup = renderToStaticMarkup(<PropertyHome locale={locale} />);
-    const analysis = markup.slice(markup.indexOf('data-home-region="analysis"'), markup.indexOf('data-home-region="markets"'));
+    const analysis = markup.slice(markup.indexOf('data-home-region="analysis"')).split('</section>')[0]!;
     expect(analysis.match(/<article/g)).toHaveLength(3);
     for (const slug of ['seoul-monthly-2026-09', 'singapore-monthly-2026-09', 'dubai-monthly-2026-09']) {
       const record = getPortfolioRecord(locale, slug)!;

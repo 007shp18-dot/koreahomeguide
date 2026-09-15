@@ -21,8 +21,8 @@ describe('Simplified Chinese editorial release', () => {
       expect(markup).not.toContain('Design review');
       expect(markup).not.toContain('/design-review/');
     }
-    expect(home).toContain('四座城市，');
-    expect(home).toContain('从已申报的成交价开始。');
+    expect(home).toContain('探索世界的家，');
+    expect(home).toContain('看见更广阔的选择。');
     expect(home.match(/data-primary-action="explore"/g)).toHaveLength(4);
     expect(home).toContain('href="/zh-cn/news');
     expect(news).toContain('了解四座城市的房地产市场、投资决策与社区生活。');
