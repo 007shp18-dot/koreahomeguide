@@ -20,7 +20,7 @@ const primarySourceHosts = new Set([
   'www.law.go.kr', 'rt.molit.go.kr', 'www.molit.go.kr', 'land.seoul.go.kr',
   'www.fsc.go.kr', 'www.iras.gov.sg', 'www.hdb.gov.sg', 'www.ura.gov.sg',
   'www.mitsuifudosan.co.jp', 'www.cbre.ae', 'easylaw.go.kr', 'www.gov.kr', 'www.hf.go.kr',
-  'www.roots.gov.sg', 'www.gotokyo.org', 'www.bhomes.com',
+  'www.roots.gov.sg', 'www.gotokyo.org', 'www.bhomes.com', 'www.tokyometro.jp',
   'www.junggu.seoul.kr', 'museum.seoul.go.kr', 'www.seoul.go.kr', 'golmok.seoul.go.kr',
   'www.emirates.com', 'www.visitdubai.com', 'www.emiratesnbd.com',
   'khig.khug.or.kr', 'www.sgic.co.kr', // HUG and SGI guarantee product sources in the reviewed guide.
@@ -35,8 +35,8 @@ function sectionCount(body: string): number {
 describe('pre-AdSense reviewed launch portfolio', () => {
   it('keeps the active portfolio and public English parameters after guide consolidation', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(107);
-    expect(english).toHaveLength(47);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(115);
+    expect(english).toHaveLength(51);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'news-brief' || type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));

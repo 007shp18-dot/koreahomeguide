@@ -1,3 +1,5 @@
+import { SEPTEMBER_15_EDITORIAL } from './september-15-editorial';
+import { refreshDiscovery } from './editorial-discovery';
 import { SEPTEMBER_14_EDITORIAL } from './september-14-editorial';
 import { SEPTEMBER_13_EDITORIAL } from './september-13-editorial';
 import { reviseEditorial } from './editorial-revision';
@@ -93,6 +95,7 @@ export function validateEditorialPortfolio(values: readonly unknown[]): readonly
 }
 
 export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Object.freeze([
+  ...SEPTEMBER_15_EDITORIAL,
   ...SEPTEMBER_14_EDITORIAL,
   ...SEPTEMBER_13_EDITORIAL,
   ...ENGLISH_PORTFOLIO.map(article => ({ ...article, translationGroupId: article.translationGroupId ?? article.slug })),
@@ -104,7 +107,7 @@ export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Obje
   ...CHINESE_MONTHLY_REPORTS,
   CHINESE_DUBAI_RENTAL_YIELD,
   ...TOKYO_RENEWAL_ARTICLES,
-].filter(article => article.slug !== 'compare-seoul-district-prices').map(reviseEditorial))));
+].filter(article => article.slug !== 'compare-seoul-district-prices').map(reviseEditorial).map(refreshDiscovery))));
 
 export function listPortfolioRecords(locale?: EditorialPortfolioRecord['locale']): readonly EditorialPortfolioRecord[] {
   return locale === undefined ? EDITORIAL_PORTFOLIO : EDITORIAL_PORTFOLIO.filter((record) => record.locale === locale);
