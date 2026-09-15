@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
-import { staticSeoulReview } from '../lib/research/static-property-review.server';
+import { staticSeoulReview, staticSingaporeReview } from '../lib/research/static-property-review.server';
 import { PropertyDecisionWorkspace } from '../components/market-ui/property-decision-workspace';
 import { panelCopy } from '../lib/brief/panel-copy';
 it('ships the compact Banpo analysis in initial HTML and removes the old water-play claim', () => {
@@ -29,4 +29,15 @@ it('does not turn a single review or an unverified number into resident consensu
   expect(repeatedResidentItems(manual).map(item => item.topic)).toEqual(['noise']);
   expect(manualBuildingSchema.safeParse({ commute: [{ to: { ko: '목적지', en: 'Destination' }, route: { ko: '경로', en: 'Route' }, minutes: 20, transfers: 1 }] }).success).toBe(false);
   expect(manualBuildingSchema.parse({})).toEqual({ commute: [], schools: [] });
+});
+
+it('ships matched Singapore research without requiring a separate client API request', () => {
+  const entity = 'sg-singapore:project:9cd03c11923b0270da24ac49d60f632ff2fedbd7e8926733f621de1ce8561f93';
+  const review = staticSingaporeReview(entity)!;
+  expect(review.id).toBe('sg-marina-one-residences');
+  expect(staticSingaporeReview('kr-seoul:estate:seocho-gu-q5se5y')).toBeUndefined();
+  const html = renderToStaticMarkup(<PropertyDecisionWorkspace initialReview={review} entity={entity} locale="en"><main>Sale records</main></PropertyDecisionWorkspace>);
+  expect(html).toContain('data-property-decision="sg-marina-one-residences"');
+  expect(html).toContain('Marina One is worth considering');
+  expect(html).not.toContain('Loading the property analysis');
 });

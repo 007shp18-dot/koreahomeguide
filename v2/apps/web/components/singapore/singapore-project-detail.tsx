@@ -1,3 +1,4 @@
+import { staticSingaporeReview } from '../../lib/research/static-property-review.server';
 import { PlaceQuestions } from '../questions/place-questions';
 import { PropertyDecisionWorkspace } from '../market-ui/property-decision-workspace';
 import { hasPropertyReviewForEntity } from '../../lib/research/property-review-locations';
@@ -53,6 +54,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
   );
   const displayName = singaporeProjectDisplayName(model.identity);
   const reviewEntity = `sg-singapore:project:${model.identity.id}`;
+  const initialReview = staticSingaporeReview(reviewEntity);
   const completeRows = model.status === 'ready' && model.transactions.length === model.identity.n ? model.transactions : [];
   const areas = new Set(completeRows.map(row => row.source.areaSqm));
   const areaBases = new Set(completeRows.map(row => row.source.areaBasis));
@@ -76,7 +78,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
     : [];
   if (model.status === 'insufficient') return (
     <SingaporePage locale={locale} currentHref={marketHref(locale, '/sg/singapore/explore/')} unframed>
-      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext}>
+      <PropertyDecisionWorkspace initialReview={initialReview} entity={reviewEntity} locale={locale} priceContext={priceContext}>
       <MarketDetailShell locale={locale}
         breadcrumb={<Link href={marketHref(locale, '/sg/singapore/explore/')}>{sgText(locale, 'Explore')}</Link>}
         sections={[
@@ -112,7 +114,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
   return (
     <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed>
       <RecordPlaceVisit place={{ market: 'singapore', key: model.identity.id, name: displayName, href: `/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${encodeURIComponent(model.identity.id)}/` }} />
-      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext}>
+      <PropertyDecisionWorkspace initialReview={initialReview} entity={reviewEntity} locale={locale} priceContext={priceContext}>
       <MarketDetailShell locale={locale}
         related={<><PlaceQuestions locale={locale} market="singapore" path={`/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${encodeURIComponent(model.identity.id)}/`} name={displayName}/><DiscoveryReading market="singapore" locale={locale}/></>}
         sections={[
