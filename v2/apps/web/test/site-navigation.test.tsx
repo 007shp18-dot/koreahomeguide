@@ -141,3 +141,15 @@ describe('shared navigation destinations', () => {
     expect(positions).toEqual([...positions].sort((a,b) => a-b));
   });
 });
+
+
+describe('September article language round trips', () => {
+  it.each(['seoul-same-complex-price-gap', 'tokyo-cheaper-rent-longer-commute', 'seoul-buam-dong-afternoon-walk', 'tokyo-koenji-vintage-evening-walk'])('keeps both languages on the same story: %s', slug => {
+    for (const path of [`/news/${slug}/`, `/ko/news/${slug}/`]) {
+      const html = renderToStaticMarkup(<LanguageLinks pathname={path} translations={editorialLanguageRoutes()} />);
+      expect(html).toContain(`href="/news/${slug}"`);
+      expect(html).toContain(`href="/ko/news/${slug}"`);
+      expect(html).not.toContain('hrefLang="zh-CN"');
+    }
+  });
+});

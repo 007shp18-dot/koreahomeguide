@@ -63,6 +63,11 @@ const routes: EditorialLanguageRoutes = {
 };
 // Canonical English/Korean pairs, without importing article bodies into the client.
 const koreanPairs = [
+  ['/news/seoul-same-complex-price-gap/', '/ko/news/seoul-same-complex-price-gap/'],
+  ['/news/tokyo-cheaper-rent-longer-commute/', '/ko/news/tokyo-cheaper-rent-longer-commute/'],
+  ['/news/seoul-buam-dong-afternoon-walk/', '/ko/news/seoul-buam-dong-afternoon-walk/'],
+  ['/news/tokyo-koenji-vintage-evening-walk/', '/ko/news/tokyo-koenji-vintage-evening-walk/'],
+
   ['/news/seoul-euljiro-read-the-workshop-signs/', '/ko/news/seoul-euljiro-read-the-workshop-signs/'],
   ['/news/dubai-deira-gold-and-spice-walk/', '/ko/news/dubai-deira-gold-and-spice-walk/'],
   ['/news/seoul-footfall-shop-rent-capacity/', '/ko/news/seoul-footfall-shop-rent-capacity/'],
