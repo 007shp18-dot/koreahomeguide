@@ -10,5 +10,10 @@ export const BUDGET_GUIDE_SERIES = [
 ] as const;
 
 export function budgetGuidePeriod(slug: string, locale: ContentLocale): string | undefined {
+  if (slug.endsWith('-same-budget-property-comparison')) {
+    const city = slug.split('-')[0];
+    if (city === 'tokyo') return ({en:'2026 Q1 · Tokyo ward groups',ko:'2026년 1분기 · 도쿄 구별 거래','zh-CN':'2026年第1季度 · 东京各区成交'})[locale];
+    return BUDGET_GUIDE_SERIES.find(guide => guide.city === city)?.period[locale];
+  }
   return BUDGET_GUIDE_SERIES.find(guide => guide.slug === slug)?.period[locale];
 }

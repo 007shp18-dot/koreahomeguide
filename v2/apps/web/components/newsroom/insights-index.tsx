@@ -135,7 +135,7 @@ export function insightFilterHref(locale: ContentLocale, market: NewsroomMarketF
 export function InsightsIndex({ articles, market, locale = 'en', topic = 'all' }: { articles: readonly PublishedContentArticle[]; market: NewsroomMarketFilter; locale?: ContentLocale; topic?: InsightTopic }) {
   const all = buildInsightItems(articles, market, locale, topic);
   const showBudgets = topic === 'all' || topic === 'budget';
-  const stories = showBudgets ? all.filter(item => !BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug)) : all;
+  const stories = showBudgets ? all.filter(item => !BUDGET_GUIDE_SERIES.some(guide => guide.slug === item.slug)) : all;
   const hero = stories[0];
   const items = stories.filter(item => item !== hero);
   const t = copy[locale];

@@ -16,13 +16,16 @@ describe('four-city budget collection', () => {
         expect(resolveNewsroomFilters(Object.fromEntries(url.searchParams))).toMatchObject({ market: 'tokyo', type: 'insights', ...(topic === 'all' ? {} : { topic }) });
       }
       const budget = buildInsightItems([], 'all', locale, 'budget');
-      expect(budget).toHaveLength(4);
+      expect(budget).toHaveLength(8);
       expect(new Set(budget.map(item => item.city))).toEqual(new Set(['seoul', 'singapore', 'dubai', 'tokyo']));
-      expect(buildInsightItems([], 'tokyo', locale, 'budget')).toHaveLength(1);
+      expect(buildInsightItems([], 'tokyo', locale, 'budget')).toHaveLength(2);
       const html = renderToStaticMarkup(<InsightsIndex articles={[]} market="all" locale={locale} topic="budget" />);
-      for (const guide of BUDGET_GUIDE_SERIES) expect(html).toContain(guide.slug);
+      for (const guide of BUDGET_GUIDE_SERIES) {
+        expect(html).toContain(guide.slug);
+        expect(html).toContain(`${guide.city}-same-budget-property-comparison`);
+      }
       expect(html).toContain('data-budget-edition="2026-09"');
-      expect(html).not.toContain('data-newsroom-lead');
+      expect(html.match(/data-newsroom-lead=/g)).toHaveLength(1);
       expect(html).not.toContain('No stories match');
     }
   });
