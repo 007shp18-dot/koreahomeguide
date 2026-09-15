@@ -164,11 +164,11 @@ test('Tokyo city journey opens its own article, chapters and Korean translation'
   const lead = page.locator('[data-newsroom-lead]');
   await expect(lead).toHaveAttribute('data-editorial-market', 'jp-tokyo');
   const leadStory = lead.getByRole('link', { name: /Read the story/ });
-  await expect(leadStory).toHaveAttribute('href', '/news/tokyo-kiyosumi-shirakawa-between-stops/');
+  await expect(leadStory).toHaveAttribute('href', '/news/tokyo-cheaper-rent-longer-commute/');
   await expect(page.getByText('View the buying steps', { exact: true })).toHaveCount(0);
   await leadStory.click();
-  await expect(page).toHaveURL(/\/news\/tokyo-kiyosumi-shirakawa-between-stops\/$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kiyosumi-Shirakawa after the coffee');
+  await expect(page).toHaveURL(/\/news\/tokyo-cheaper-rent-longer-commute\/$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('You Saved ¥20,000 on Tokyo Rent. What Did the Commute Take?');
   await expect.poll(() => page.locator('main article img').first().evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expectNoHorizontalOverflow(page);
   await page.goto('/news/city-stories/tokyo/where/');
