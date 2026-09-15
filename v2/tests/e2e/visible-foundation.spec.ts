@@ -106,10 +106,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
     }),
   ).toBeVisible();
   await expect(
-    page.getByRole('heading', {
-      level: 2,
-      name: 'Seoul',
-    }),
+    page.getByRole('button', { name: 'Seoul', exact: true }),
   ).toBeVisible();
 
   await (await openPrimaryNavigation(page)).getByRole('link', { name: 'Explore' }).click();
