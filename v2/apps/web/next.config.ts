@@ -5,6 +5,10 @@ const repositoryRoot = fileURLToPath(new URL("../../../", import.meta.url));
 
 const nextConfig: NextConfig = {
   trailingSlash: true,
+  async rewrites() {
+    // Public XML URLs stay at the site root so their scope includes every locale.
+    return [{ source: '/seoul-:district-sitemap.xml', destination: '/sitemaps/seoul/:district/' }];
+  },
   async redirects() {
     return [
       // Retired district/type pages now open the current filtered explorer.

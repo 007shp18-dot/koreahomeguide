@@ -98,3 +98,7 @@
   .hero { padding-block: 28px 24px; }
   .hero h1 { font-size: 36px; }
 }
+
+.budgetLink { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: var(--control-min); padding: 8px 4px; color: var(--ink); font-size: 14px; line-height: 1.5; text-decoration: none; }
+.budgetLink:hover { color: var(--accent); }
+.budgetLink svg { flex-shrink: 0; width: 16px; height: 16px; }
