@@ -7,10 +7,14 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   async rewrites() {
     // Public XML URLs stay at the site root so their scope includes every locale.
-    return [{ source: '/seoul-:district-sitemap.xml', destination: '/sitemaps/seoul/:district/' }];
+    return [
+      { source: '/seoul-:district-sitemap.xml', destination: '/sitemaps/seoul/:district/' },
+      { source: '/singapore-:partition-sitemap.xml', destination: '/sitemaps/singapore/:partition/' },
+    ];
   },
   async redirects() {
     return [
+      { source: '/sg/singapore/sitemap.xml', destination: '/singapore-sitemap.xml', permanent: true },
       // Retired district/type pages now open the current filtered explorer.
       ...['', '/ko', '/zh-cn'].flatMap(prefix => [
         { source: `${prefix}/kr/seoul/explore/:district(jongno-gu|jung-gu|yongsan-gu|seongdong-gu|gwangjin-gu|dongdaemun-gu|jungnang-gu|seongbuk-gu|gangbuk-gu|dobong-gu|nowon-gu|eunpyeong-gu|seodaemun-gu|mapo-gu|yangcheon-gu|gangseo-gu|guro-gu|geumcheon-gu|yeongdeungpo-gu|dongjak-gu|gwanak-gu|seocho-gu|gangnam-gu|songpa-gu|gangdong-gu)/`, destination: `${prefix}/kr/seoul/explore/?district=:district`, permanent: true },

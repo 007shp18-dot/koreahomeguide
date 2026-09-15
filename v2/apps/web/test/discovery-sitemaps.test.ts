@@ -1,3 +1,4 @@
+import nextConfig from '../next.config';
 import { afterEach, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import { GET } from '../app/editorial-sitemap.xml/route';
@@ -64,3 +65,25 @@ it('redirects a retired thin neighborhood to its filtered explorer instead of a 
   await expect(neighborhoodMetadata({ params: Promise.resolve({ district: 'jongno-gu', neighborhoodId: 'jongno-gu-dong-10nk0bq' }) }))
     .rejects.toMatchObject({ digest: expect.stringContaining('/kr/seoul/explore/?district=jongno-gu&neighborhood=jongno-gu-dong-10nk0bq') });
 }, 20_000);
+
+it('does not submit the same canonical twice in the core sitemap', () => {
+  vi.stubEnv('NODE_ENV', 'production');
+  const urls = sitemap().map(entry => entry.url);
+  expect(new Set(urls).size).toBe(urls.length);
+});
+
+it('preserves already submitted Singapore URLs by redirecting to the root sitemap', async () => {
+  const redirects = await nextConfig.redirects!();
+  expect(redirects).toContainEqual({ source: '/sg/singapore/sitemap.xml', destination: '/singapore-sitemap.xml', permanent: true });
+});
+
+it('connects English and Korean Tokyo entry pages and named reviews without advertising untranslated Chinese reviews', () => {
+  vi.stubEnv('NODE_ENV', 'production');
+  const entries = sitemap();
+  for (const path of ['/jp/tokyo/', '/jp/tokyo/explore/', '/jp/tokyo/explore/properties/jp-park-city-toyosu/']) {
+    const en = `https://www.signedprice.com${path}`;
+    const ko = `https://www.signedprice.com/ko${path}`;
+    expect(entries.find(entry => entry.url === en)?.alternates?.languages).toMatchObject({ en, ko });
+    expect(entries.find(entry => entry.url === ko)?.alternates?.languages).toMatchObject({ en, ko });
+  }
+});

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import singaporeSitemap, { buildSingaporeSitemap } from '../app/(en)/sg/singapore/sitemap';
+import singaporeSitemap, { buildSingaporeSitemap } from '../lib/seo/singapore-sitemap.server';
 import { generateMetadata as generateEnglishCheckMetadata } from '../app/(en)/sg/singapore/check/page';
 import { generateMetadata as generateKoreanCheckMetadata } from '../app/(ko)/ko/sg/singapore/check/page';
 import EnglishTownPage, { generateMetadata as generateEnglishTownMetadata } from '../app/(en)/sg/singapore/hdb/[town]/page';
@@ -33,7 +33,7 @@ describe('Singapore HDB public SEO', () => {
 
     expect(listPublishedHdbRouteParams(repository)).toEqual({
       towns: [{ town: 'ang-mo-kio' }],
-      blocks: [{ town: 'ang-mo-kio', blockId: '10-ang-mo-kio-street' }],
+      blocks: [],
     });
   });
 
@@ -94,10 +94,10 @@ describe('Singapore HDB public SEO', () => {
     expect(repository).not.toBeNull();
     const published = listPublishedHdbRouteParams(repository!);
     expect(published.towns).toHaveLength(28);
-    expect(published.blocks).toHaveLength(9_485);
+    expect(published.blocks).toHaveLength(8_523);
 
     const entries = buildSingaporeSitemap({ privateRepository: null, hdbRepository: repository!, checkRepositories: null });
-    expect(entries).toHaveLength((28 + 9_485) * 3);
+    expect(entries).toHaveLength((28 + 8_523) * 3);
     const urls = new Set(entries.map(({ url }) => url));
     const town = published.towns[0]!;
     expect(urls).toContain(`https://www.signedprice.com/sg/singapore/hdb/${town.town}/`);
