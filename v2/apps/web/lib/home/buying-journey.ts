@@ -1,7 +1,7 @@
 import type { SiteLocale } from '../navigation/site-navigation';
 export type BuyingCity = 'seoul' | 'singapore' | 'dubai' | 'tokyo';
 export type BuyingExample = Readonly<{
-  name: string; region: string; detail: string; price: readonly number[];
+  evidenceHref?: string; name: string; region: string; detail: string; price: readonly number[];
   area: readonly number[]; count: number; latest: string;
 }>;
 export type BuyingCityModel = Readonly<{

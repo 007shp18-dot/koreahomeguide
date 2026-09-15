@@ -21,7 +21,7 @@ export function SingaporeEntry({ locale = 'en', model, googleMapsBrowserKey = nu
   ] : [];
   return <SingaporePage locale={locale} currentHref={marketHref(locale, '/sg/')} unframed>
     <div data-singapore-entry={model.status}>
-      <MarketOverview locale={locale} city={localizedMarketCopy(locale, "Singapore", "싱가포르")}
+      <MarketOverview buyingCity="singapore" locale={locale} city={localizedMarketCopy(locale, "Singapore", "싱가포르")}
         description={localizedMarketCopy(locale, "Explore private-home and HDB transactions separately, then compare an asking price.", "민간 주택과 공공주택(HDB)의 거래를 구분해 살펴보고 매물 가격을 비교하세요.")}
         media={<MarketRepresentativePhoto photo={{ ...MARKET_PHOTOS.singapore, alt: locale === 'zh-CN' ? '新加坡高层住宅建筑' : ko ? '싱가포르 도시 전경' : MARKET_PHOTOS.singapore.alt }} eager locale={locale} />}
         facts={facts} available={ready} period={ready ? `${localizedMarketCopy(locale, "Reporting period", "집계 기간")}: ${model.periodLabel}` : undefined}

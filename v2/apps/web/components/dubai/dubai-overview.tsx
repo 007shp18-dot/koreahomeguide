@@ -13,7 +13,7 @@ export function DubaiOverview({ locale = 'en' }: { locale?: MarketLocale }) {
   const city = t('Dubai', '두바이', '迪拜');
   const sourceChecked = t('Sources checked', '출처 확인일', '来源核查日期');
   return <main>
-    <MarketOverview locale={locale} city={city}
+    <MarketOverview buyingCity="dubai" locale={locale} city={city}
       description={t('Compare Ready and Off-Plan prices, annual rents and estimated gross yields by area.', '지역별 완공·분양 주택 가격, 연 임대료와 비용 차감 전 추정 수익률을 비교하세요.', '按区域比较现房与期房价格、年租金及估算毛租金收益率。')}
       media={<MarketRepresentativePhoto photo={{ ...MARKET_PHOTOS.dubai, alt: t(MARKET_PHOTOS.dubai.alt, '두바이 스카이라인과 고층 건물', '迪拜天际线与高层建筑') }} cityLabel={city} eager locale={locale} />}
       available={!!context} facts={[

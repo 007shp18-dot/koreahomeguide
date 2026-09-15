@@ -52,12 +52,20 @@ describe('four-city buying journey', () => {
     const descriptions = createBuyingJourney('zh-CN').flatMap(model => model.bands.flatMap(band => band.examples.map(example => example.detail)));
     expect(descriptions.join(' ')).not.toMatch(/Built |yrs lease|B\/R|Studio|Free Hold/);
   });
-  it('preserves Tokyo anonymous single-record checkpoints, not project cohorts', () => {
+  it('shows five distinct Tokyo wards per cap with repeated transactions and pinned evidence', () => {
     const tokyo = createBuyingJourney('en')[3]!;
-    expect(tokyo.scope).toBe('neighbourhood');
-    expect(tokyo.bands.map(b => [b.cap, b.examples.length, b.examples[0]!.area[0], b.examples[0]!.count]))
-      .toEqual([[30000000, 1, 20, 1], [50000000, 1, 25, 1], [100000000, 1, 65, 1]]);
-    expect(tokyo.checkHref).toContain('/jp/tokyo/tools/');
+    for (const band of tokyo.bands) {
+      expect(band.examples).toHaveLength(5);
+      expect(new Set(band.examples.map(e=>e.name)).size).toBe(5);
+      for (const e of band.examples) {
+        expect(e.count).toBeGreaterThanOrEqual(5);
+        expect(e.price[0]).toBeGreaterThanOrEqual(band.cap*.8);
+        expect(e.price[1]).toBeLessThanOrEqual(band.cap);
+        expect(e.evidenceHref).toContain('release=jp-area-');
+        expect(e.evidenceHref).toContain('year=2026&quarter=1');
+      }
+    }
+    expect(tokyo.guideHref).toContain('tokyo-same-budget-property-comparison');
   });
   it('accepts only supported budgets and safely defaults on malformed or cross-currency values', () => {
     const bands = [{ cap: 750000 }, { cap: 1000000 }, { cap: 1500000 }];

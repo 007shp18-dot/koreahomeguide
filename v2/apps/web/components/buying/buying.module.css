@@ -1,0 +1,21 @@
+.section { margin: 28px 0; color: var(--ink); }
+.section header { max-width: 800px; margin-bottom: 20px; }
+.section h2 { font-size: clamp(22px,2.4vw,30px); line-height: 1.35; letter-spacing: -.02em; margin: 8px 0; }
+.section h3 { margin: 0 0 10px; font-size: 18px; line-height: 1.4; }
+.section p { font-size: 15px; line-height: 1.65; margin: 8px 0 16px; }
+.eyebrow,.muted { color: var(--muted); }
+.section .eyebrow { font-size: 12px; letter-spacing: .04em; }
+.columns { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
+.columns article { min-width: 0; padding: 22px; background: var(--canvas); border: 1px solid var(--line); border-radius: var(--radius-card); }
+.section a { display: flex; align-items: center; min-height: var(--control-min); color: var(--accent); text-underline-offset: 4px; overflow-wrap: anywhere; }
+.section small { display: block; font-size: 12px; line-height: 1.6; color: var(--muted); margin-top: 10px; }
+.section .primary { display: inline-flex; min-height: var(--control-height); background: var(--accent); color: white; border-radius: var(--radius-control); padding: 10px 16px; text-decoration: none; }
+.form { padding: 24px; border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--canvas); }
+.fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+.form label { display: grid; gap: 8px; font-size: 14px; min-width: 0; }
+.form :is(input,select,textarea) { width: 100%; min-width: 0; box-sizing: border-box; font: inherit; font-size: 16px; min-height: var(--control-height); padding: 12px; color: var(--ink); background: white; border: 1px solid var(--line); border-radius: var(--radius-control); }
+.form textarea { min-height: 110px; resize: vertical; }
+.form > label { margin-top: 16px; }
+.form button { min-height: var(--control-height); padding: 12px 18px; margin-top: 16px; background: var(--accent); color: white; border: 0; border-radius: var(--radius-control); font: inherit; cursor: pointer; }
+.section :is(a,button,input,select,textarea):focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+@media(max-width:900px) { .columns { grid-template-columns: 1fr; }.fields { grid-template-columns: 1fr; }.form { padding: 18px; } }

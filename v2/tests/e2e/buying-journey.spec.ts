@@ -9,7 +9,7 @@ for (const [locale, path] of [['en', '/'], ['ko', '/ko/'], ['zh-CN', '/zh-cn/']]
     await page.evaluate(() => document.fonts.ready);
     const initial = await page.screenshot({ fullPage: true });
     await testInfo.attach(`home-${locale}`, { body: initial, contentType: 'image/png' });
-    for (const [city, currency, count] of [['seoul', 'KRW', 3], ['singapore', 'SGD', 3], ['dubai', 'AED', 3], ['tokyo', 'JPY', 1]] as const) {
+    for (const [city, currency, count] of [['seoul', 'KRW', 3], ['singapore', 'SGD', 3], ['dubai', 'AED', 3], ['tokyo', 'JPY', 5]] as const) {
       const cityButton = page.locator(`[data-buying-city="${city}"]`);
       await cityButton.focus();
       await page.keyboard.press('Enter');
@@ -65,3 +65,26 @@ test('without JavaScript every city still offers a guide and an explorer', async
     }
   } finally { await context.close(); }
 });
+
+for (const [locale,prefix] of [['en',''],['ko','/ko'],['zh-CN','/zh-cn']] as const) {
+ test(`${locale} prepares a purchase enquiry without claiming submission`,async({page})=>{
+  await page.goto(`${prefix}/contact/?city=tokyo&budget=50000000`,{waitUntil:'domcontentloaded'});
+  const enquiry=page.locator('#purchase-enquiry');
+  const selects=enquiry.getByRole('combobox');
+  await expect(selects.nth(0)).toHaveValue('tokyo');
+  await expect(enquiry.locator('input[type="number"]')).toHaveValue('50000000');
+  await selects.nth(0).selectOption('dubai');
+  await expect(enquiry.locator('input[type="number"]')).toHaveValue('');
+  await selects.nth(1).selectOption({index:1});
+  await selects.nth(2).selectOption({index:1});
+  await enquiry.locator('textarea').fill('Compare two homes & check costs');
+  await enquiry.getByRole('button').click();
+  const email=enquiry.locator('a[href^="mailto:"][href*="subject="]');
+  await expect(email).toHaveCount(1);
+  const url=new URL((await email.getAttribute('href'))!);
+  expect(url.pathname).toBe('contact@signedprice.com');
+  expect(url.searchParams.get('body')).toContain('Compare two homes & check costs');
+  await expect(enquiry.locator('textarea[readonly]')).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ });
+}
