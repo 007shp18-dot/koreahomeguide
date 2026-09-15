@@ -42,9 +42,8 @@ describe('named property details in Explore', () => {
     expect(html).toContain('id="property-facts"');
     const main = html.match(/<div[^>]*data-decision-main="true"[\s\S]*?<\/article>/)?.[0];
     expect(main).toContain('Life at this property');
-    expect(main).toContain('Transport');
-    expect(main).toContain('Schools');
-    expect(main).toContain('Daily life');
+    expect(main).toContain('data-property-editorial="2026-09-15"');
+    expect(main).toContain('Current repair-reserve contributions and proposed increases for the offered home remain unverified.');
     expect(html.match(/data-property-overview=/g)).toHaveLength(1);
     expect(html).not.toContain('role="tablist"');
     expect(html).toContain('MLIT publishes transactions without building names.');

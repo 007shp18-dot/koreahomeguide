@@ -16,7 +16,9 @@ import styles from './property-decision-workspace.module.css';
 import { PropertyOverviewCard } from './property-overview-card';
 
 export function PropertyDecisionReport({ showOverview = true, review, priceContext, analysisScope = 'property', locale, persona, onPersonaChange }: { showOverview?: boolean; review: PropertyReview; priceContext?: DecisionPriceContext; analysisScope?: 'property' | 'area'; locale: MarketLocale; persona: DecisionPersona; onPersonaChange: (persona: DecisionPersona) => void }) {
-  const report = analysisScope === 'area' ? getAreaDecision(review, persona, locale) : getPropertyDecision(review, persona, locale);
+  const decide = analysisScope === 'area' ? getAreaDecision : getPropertyDecision;
+  const report = decide(review, 'family', locale);
+  const perspective = decide(review, persona, locale);
   const manual = BUILDING_MANUAL[review.id];
   const residentItems = manual ? repeatedResidentItems(manual) : [];
   const groupId = useId();
@@ -43,9 +45,9 @@ export function PropertyDecisionReport({ showOverview = true, review, priceConte
     {manual?.commute.length ? <section className={styles.section}><h3>{t('출근 경로', 'Commuting', '通勤')}</h3><table><tbody>{manual.commute.map(item => <tr key={item.to.en}><th>{item.to[locale === 'ko' ? 'ko' : 'en']}</th><td>{item.route[locale === 'ko' ? 'ko' : 'en']}</td><td>{item.minutes}{t('분', ' min', '分钟')}</td><td><a href={item.source}>{item.queriedAt}</a></td></tr>)}</tbody></table></section> : null}
     {manual?.schools.length ? <section className={styles.section}><h3>{t('학교까지의 거리', 'Nearby school records', '附近学校记录')}</h3><table><tbody>{manual.schools.map(item => <tr key={item.name.en}><th>{item.name[locale === 'ko' ? 'ko' : 'en']}</th><td>{item.distanceM === undefined ? '' : `${item.distanceM} m`}</td><td><a href={item.source}>{item.queriedAt}</a></td></tr>)}</tbody></table><p>{t('학교 배정은 정확한 주소와 해당 학년도 기준으로 확인해주세요.', 'Confirm admission arrangements for the exact address and school year.', '请按具体地址及入学年份核实入学安排。')}</p></section> : null}
     {manual?.residents && residentItems.length > 0 && <section className={styles.section}><h3>{t('후기에서 반복된 이야기', 'Recurring observations in reviews', '评论中反复出现的观察')}</h3>{residentItems.map(item => <p key={item.topic}>{item.text[locale === 'ko' ? 'ko' : 'en']}{item.verified && <> <a href={item.verified.source}>{item.verified.value} {item.verified.unit} · {item.verified.queriedAt}</a></>}</p>)}<p>{manual.residents.sourceLabel[locale === 'ko' ? 'ko' : 'en']} · {manual.residents.reviewCount} · {manual.residents.readAt}</p><p>{t('후기는 작성자의 경험입니다. 여러 후기에서 겹친 내용만 남겼으며 사실 확인이 끝난 진술로 취급하지 않습니다.', 'These are personal experiences that recur in multiple reviews. They remain unverified observations.', '这些是多篇评论中重复出现的个人经验，仍属未经核实的观察。')}</p></section>}
-    <div className={styles.tradeoffs}>
-      <section><h3>{t('맞을 것 같은 경우', 'May suit you', '可能适合的情况')}</h3>{items(report.pros)}</section>
-      <section><h3>{t('확인이 더 필요한 경우', 'Needs a closer check', '需要进一步核查的情况')}</h3>{items(report.cons)}</section>
+    <div className={styles.tradeoffs} data-decision-fit aria-live="polite">
+      <section><h3>{t('맞을 것 같은 경우', 'May suit you', '可能适合的情况')}</h3>{items(perspective.pros)}</section>
+      <section><h3>{t('확인이 더 필요한 경우', 'Needs a closer check', '需要进一步核查的情况')}</h3>{items(perspective.cons)}</section>
     </div>
     <section className={styles.section} data-decision-price={priceContext?.scope ?? 'unavailable'}><h3>{t('이 값이 조건에 맞나', 'Does the price fit?', '价格与条件相符吗')}</h3>
       {priceContext && <div className={styles.priceContext}>
@@ -65,7 +67,7 @@ export function PropertyDecisionReport({ showOverview = true, review, priceConte
         return <li key={item.name}><h4>{href ? <Link href={href}>{item.name} <span aria-hidden="true">↗</span></Link> : item.name}</h4><p>{item.reason}</p><p className={styles.muted}>{item.condition}</p></li>;
       })}</ul>
     </section>}
-    <section className={styles.checklist}><h3>{t('계약 전에 물어볼 것', 'Before signing', '签约前的问题')}</h3>{items(report.checklist.slice(0, 3))}</section>
+    <section className={styles.checklist} data-signing-checklist><h3>{t('계약 전에 물어볼 것', 'Before signing', '签约前的问题')}</h3>{items(report.checklist.slice(0, 3))}</section>
     <p className={styles.method}>{t('자료 확인', 'Evidence checked', '资料核查')} {date} · {t('개별 세대의 적정가·수익률을 산정한 보고서는 아닙니다.', 'This report does not estimate a unit’s fair value or rental yield.', '本报告不估算单套住宅的合理价格或租金收益率。')}</p>
     <details className={styles.sources} data-report-sources>
       <summary>{t('자료 출처', 'Sources', '资料来源')}</summary>
