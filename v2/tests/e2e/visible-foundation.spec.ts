@@ -235,7 +235,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await page.goto('/');
 
   let primaryNavigation = await openPrimaryNavigation(page);
-  await expect(primaryNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Buying guides', 'Insights', 'Rankings', 'News', 'Tools', 'Community']);
+  await expect(primaryNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Buying & renting', 'Insights', 'Rankings', 'News', 'Tools', 'Community']);
   await expect(primaryNavigation.getByRole('link', { name: 'Rankings', exact: true })).toHaveAttribute('href', '/rankings/');
   await expect(primaryNavigation.getByRole('link')).toHaveCount(7);
   const primaryLinks = await primaryNavigation.getByRole('link').all();

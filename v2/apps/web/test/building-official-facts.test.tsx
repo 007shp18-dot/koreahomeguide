@@ -10,7 +10,7 @@ describe('building official facts panel', () => {
       <BuildingOfficialFacts districtSlug="gangnam-gu" buildingId="gangnam-alpha" />,
     );
     expect(html).toContain('data-building-facts="loading"');
-    expect(html).toContain('Nearby schools and stations');
+    expect(html).not.toContain('Nearby schools and stations');
     expect(html).toContain('Loading official building and nearby information');
     expect(html).not.toContain('Loading additional official building facts');
     expect(html).not.toMatch(/households|parking spaces|approval date/i);

@@ -1,5 +1,7 @@
 'use client';
 
+import type { PropertyReview } from '../../lib/research/property-review';
+
 import { useSearchParams } from 'next/navigation';
 import type { ReactNode } from 'react';
 
@@ -81,6 +83,7 @@ export function buildKoreaBuildingDecisionClientState(
 }
 
 export function KoreaBuildingDecisionClient({
+  initialReview,
   model,
   visual,
   questions,
@@ -90,6 +93,7 @@ export function KoreaBuildingDecisionClient({
   initialBackHref,
   locale = 'en',
 }: Readonly<{
+  initialReview?: PropertyReview;
   model: PublicBuildingModel;
   visual: BuildingVisualModel;
   propertyMedia?: ReactNode;
@@ -106,7 +110,7 @@ export function KoreaBuildingDecisionClient({
     initialBackHref,
     locale,
   );
-  return <BuildingDetailPage
+  return <BuildingDetailPage initialReview={initialReview}
     locale={locale}
     model={model}
     decision={state.decision}

@@ -59,7 +59,8 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
   const now = Date.now();
   return [...notebook, ...local, ...analysis].filter(item => {
     if (!Number.isFinite(Date.parse(item.date)) || Date.parse(item.date) > now) return false;
-    if ((topic === 'all' || topic === 'investment') && !item.investment) return false;
+    if (topic === 'investment' && !item.investment) return false;
+    if (topic !== 'budget' && BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug)) return false;
     if (topic === 'budget' && !BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug)) return false;
     if (topic === 'prices' && !['Housing prices & costs', 'Ownership costs'].includes(item.topic)) return false;
     if (topic === 'neighborhood' && item.topic !== 'Neighborhood living') return false;
@@ -134,7 +135,7 @@ export function insightFilterHref(locale: ContentLocale, market: NewsroomMarketF
 }
 export function InsightsIndex({ articles, market, locale = 'en', topic = 'all' }: { articles: readonly PublishedContentArticle[]; market: NewsroomMarketFilter; locale?: ContentLocale; topic?: InsightTopic }) {
   const all = buildInsightItems(articles, market, locale, topic);
-  const showBudgets = topic === 'all' || topic === 'budget';
+  const showBudgets = topic === 'budget';
   const stories = showBudgets ? all.filter(item => !BUDGET_GUIDE_SERIES.some(guide => guide.slug === item.slug)) : all;
   const hero = stories[0];
   const items = stories.filter(item => item !== hero);
@@ -142,7 +143,7 @@ export function InsightsIndex({ articles, market, locale = 'en', topic = 'all' }
   return <main className={styles.index} data-newsroom-layout="insights" lang={locale}>
     <header className={styles.header}><h1>{t.title}</h1><p>{t.deck}</p></header>
     <nav className={styles.filters} aria-label={t.cities}>{(['all', ...cities] as const).map(city => <Link prefetch={false} key={city} href={insightFilterHref(locale, city, topic)} aria-current={market === city ? 'page' : undefined}>{city === 'all' ? t.all : localizedCities[locale][city]}</Link>)}</nav>
-    <nav className={styles.topicFilters} aria-label={t.topics}>{INSIGHT_TOPICS.map(value => <Link prefetch={false} key={value} href={insightFilterHref(locale, market, value)} aria-current={topic === value ? 'page' : undefined}>{value === 'all' ? t.buying : value === 'investment' ? t.investment : collectionCopy[locale][value]}</Link>)}</nav>
+    <nav className={styles.topicFilters} aria-label={t.topics}>{INSIGHT_TOPICS.filter(value => value !== 'investment').map(value => <Link prefetch={false} key={value} href={insightFilterHref(locale, market, value)} aria-current={topic === value ? 'page' : undefined}>{value === 'all' ? t.all : collectionCopy[locale][value]}</Link>)}</nav>
     {locale !== 'en' && all.some(item => item.language !== locale) && <p className={styles.translationNote}>{t.note}</p>}
     {showBudgets && <BudgetGuides items={all} market={market} locale={locale} />}
     {hero ? <StoryCard item={hero} hero locale={locale} /> : !all.length ? <p>{t.empty} <Link href={insightFilterHref(locale, 'all', 'all')}>{t.clear}</Link></p> : null}

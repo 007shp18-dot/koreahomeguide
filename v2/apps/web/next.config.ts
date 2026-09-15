@@ -14,6 +14,12 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      ...['', '/ko', '/zh-cn'].flatMap(prefix => [
+        ['seoul', 'seoul-apartment-buying-budget-guide'],
+        ['singapore', 'singapore-condo-buying-budget-guide'],
+        ['dubai', 'dubai-ready-apartment-buying-budget-guide'],
+        ['tokyo', 'tokyo-apartment-buying-budget-guide'],
+      ].map(([city, slug]) => ({ source: `${prefix}/guides/${city}-same-budget-property-comparison/`, destination: `${prefix === '/zh-cn' && city !== 'tokyo' ? '' : prefix}/guides/${slug}/`, permanent: true }))),
       { source: '/sg/singapore/sitemap.xml', destination: '/singapore-sitemap.xml', permanent: true },
       // Retired district/type pages now open the current filtered explorer.
       ...['', '/ko', '/zh-cn'].flatMap(prefix => [

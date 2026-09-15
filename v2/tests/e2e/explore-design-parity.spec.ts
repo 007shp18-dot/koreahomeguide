@@ -64,7 +64,7 @@ test('recent places stay inside the Explore frame and preserve market history', 
   }
 });
 
-test('Tokyo properties can be found and opened directly, with unbroken overview labels', async ({ page }) => {
+test('Tokyo properties can be found and opened directly, with readable compact property guidance', async ({ page }) => {
   await page.goto('/jp/tokyo/explore/');
   const directory = page.locator('[data-tokyo-property-directory]');
   await expect(directory.getByRole('link', { name: /View property/ })).toHaveCount(31);
@@ -77,13 +77,13 @@ test('Tokyo properties can be found and opened directly, with unbroken overview 
   await expect(page).toHaveURL(/\/jp\/tokyo\/explore\/properties\/jp-park-tower-kachidoki\//);
   const overview = page.locator('[data-property-overview="jp-park-tower-kachidoki"]').first();
   await expect(overview).toBeVisible();
-  const transport = overview.locator('dt').filter({ hasText: /^Transport$/ });
-  const dimensions = await transport.evaluate(node => {
-    const range = document.createRange();
-    range.selectNodeContents(node);
-    return { lines: range.getClientRects().length, width: range.getBoundingClientRect().width, available: node.getBoundingClientRect().width };
-  });
-  expect(dimensions.lines).toBe(1);
-  expect(dimensions.width).toBeLessThanOrEqual(dimensions.available);
+  const paragraphs = overview.locator('[data-property-editorial] p');
+  await expect(paragraphs).toHaveCount(3);
+  await expect(paragraphs.first()).toContainText('Mid or South');
+  await expect(paragraphs.last()).toContainText('have not established');
+  const dimensions = await paragraphs.evaluateAll(nodes => nodes.map(node => ({
+    width: node.scrollWidth, available: node.clientWidth,
+  })));
+  for (const dimension of dimensions) expect(dimension.width).toBeLessThanOrEqual(dimension.available + 1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });

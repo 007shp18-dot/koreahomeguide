@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { BUDGET_READING_NOTES } from '../../content/budget-reading-notes';
 import { budgetBandIndex } from '../../lib/home/buying-journey';
 import Link from 'next/link';
 import { track } from '@vercel/analytics/react';
@@ -65,6 +66,7 @@ export function BuyingGuide({ guide, locale = 'en', initialBudget }: Readonly<{ 
         <details onToggle={event => { if (event.currentTarget.open) record('evidence_open'); }}><summary>{t("View transaction evidence", "실제 거래 내역 보기")}</summary><p className={styles.meta}>{ko ? `같은 단지의 ${example.band}㎡ 이상~${example.band + 20}㎡ 미만 그룹 중 선택한 가격대의 거래만 표시합니다.` : `Same-project ${example.band}–<${example.band + 20} m² group. Only records in the selected price range are listed.`}</p><div className={styles.tableScroll}><table><thead><tr><th>{t("Date", "계약일")}</th><th>m²</th><th>{t("Price", "거래가격")}</th></tr></thead><tbody>{example.records.map((record, index) => <tr key={index}><td>{record.date}</td><td>{record.area.toFixed(2)}</td><td>{money(record.price)}</td></tr>)}</tbody></table></div></details>
       </div>)}</div></div>
     </section>
+    {BUDGET_READING_NOTES[guide.currency] && <section aria-labelledby="budget-differences"><h2 id="budget-differences">{t('What changes between these budgets?', '예산을 바꾸면 무엇이 달라지나요?')}</h2>{BUDGET_READING_NOTES[guide.currency]![ko ? 'ko' : 'en'].map(paragraph => <p key={paragraph}>{paragraph}</p>)}</section>}
     <section aria-labelledby="buying-costs"><h2 id="buying-costs">{t("02 \u00b7 Budget beyond the price", "02 · 집값 외에 필요한 비용")}</h2>
       {guide.currency === 'SGD' ? <label className={styles.profile}>{t("Buyer profile", "매수자 구분")}<select value={profile} onChange={event => { setProfile(Number(event.target.value)); record('cost_profile_change'); }}><option value={0}>{t("Foreign individual \u00b7 no remission", "외국인 개인 · 감면 미적용")}</option><option value={1}>{t("Singapore PR \u00b7 first home", "싱가포르 영주권자 · 첫 주택")}</option><option value={2}>{t("Singapore citizen \u00b7 first home", "싱가포르 시민권자 · 첫 주택")}</option></select></label> : null}
       <div aria-live="polite"><div className={styles.costBar} role="img" aria-label={costs.map(([label, value]) => `${costLabel(label)}: ${money(value)}`).join('; ')}>{costs.map(([label, value], index) => <span key={label} className={index === 0 ? styles.priceFill : index === 1 ? styles.taxFill : styles.additionalFill} style={{ width: `${value / subtotal * 100}%` }} />)}</div>

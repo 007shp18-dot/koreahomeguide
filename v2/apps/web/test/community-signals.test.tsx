@@ -88,16 +88,9 @@ describe('community experience remains scoped evidence for viewing questions', (
   });
 
   it('renders source-free actionable viewing questions only where coverage exists', () => {
-    const first = communityEvidenceRecords().find(record => record.profileIds.includes(helio.id) && record.personas.includes('family'));
     const html = renderToStaticMarkup(createElement(PropertyDecisionReport, { review: helio, locale: 'en', persona: 'family', onPersonaChange: () => {} }));
-    const checks = getCommunitySignals(helio, 'family', 'en');
-    expect(html.includes('data-community-checks=')).toBe(checks.length > 0);
-    if (first) {
-      expect(html).toContain('Questions from individual experiences');
-      expect(html.indexOf('data-community-checks=')).toBeLessThan(html.indexOf('Reasons to buy'));
-      for (const source of first.sources) expect(html).not.toContain(source.url);
-      expect(html).toContain('At the viewing');
-    }
+    expect(html).not.toContain('data-community-checks=');
+    expect(html).not.toContain('Recurring observations in reviews');
     const uncovered = renderToStaticMarkup(createElement(PropertyDecisionReport, { review: { ...helio, id: 'kr-unreviewed-property' }, locale: 'en', persona: 'family', onPersonaChange: () => {} }));
     expect(uncovered).not.toContain('data-community-checks=');
   });

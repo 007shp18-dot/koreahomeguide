@@ -33,7 +33,7 @@ describe('Simplified Chinese editorial release', () => {
     const markup = renderToStaticMarkup(await ChineseNews({ searchParams: Promise.resolve({type: 'analysis'}) }));
     expect(markup).toContain('data-newsroom-layout="insights"');
     expect(markup).toContain('aria-label="洞察城市"');
-    expect(markup).toContain('/zh-cn/news?topic=investment');
+    expect(markup).not.toContain('/zh-cn/news?topic=investment');
     expect(markup).not.toContain('data-newsroom-layout="news"');
   });
 

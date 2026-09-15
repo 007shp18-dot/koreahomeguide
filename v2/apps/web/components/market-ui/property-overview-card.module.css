@@ -9,3 +9,6 @@
 .overview[data-compact='true'] .impression { font-size: 14px; }
 .overview[data-compact='true'] dl { margin-top: 10px; }
 .overview[data-compact='true'] dl > div { padding: 6px 0; border: 0; }
+
+.overview [data-property-editorial] p { margin: 12px 0 0; font-size: 15px; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+.overview [data-property-editorial] p:first-child { margin-top: 0; }

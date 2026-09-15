@@ -1,3 +1,5 @@
+
+import type { PropertyReview } from '../../lib/research/property-review';
 import { PropertyDecisionWorkspace } from '../market-ui/property-decision-workspace';
 import { hasPropertyReviewForEntity } from '../../lib/research/property-review-locations';
 import type { DecisionPriceContext } from '../../lib/research/property-decision-price';
@@ -62,6 +64,7 @@ const COHORT_LABELS = {
 } as const satisfies Readonly<Record<BuildingContractCohort, string>>;
 
 export function BuildingDetailPage({
+  initialReview,
   model,
   decision,
   visual,
@@ -73,6 +76,7 @@ export function BuildingDetailPage({
   decisionPanelReady = true,
   locale = 'en',
 }: Readonly<{
+  initialReview?: PropertyReview;
   model: PublicBuildingModel;
   decision: BuildingDecisionModel;
   visual: BuildingVisualModel;
@@ -130,7 +134,7 @@ export function BuildingDetailPage({
   return (
     <div id="top" className={pageStyles.page}>
       <BuildingDetailHeader locale={locale} />
-      <PropertyDecisionWorkspace entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
+      <PropertyDecisionWorkspace initialReview={initialReview} entity={reviewEntity} locale={locale} priceContext={priceContext} ready={decisionPanelReady}>
       <main className={`${pageStyles.main} ${detailStyles.root}`} data-building-detail="ready" data-detail-layout="unified">
         <RecordPlaceVisit place={{ market: 'seoul', key: `${model.district.slug}/${model.building.buildingId}`, name: model.building.name, href: `${detailTarget.pathname}${detailTarget.search}` }} />
         <nav className={pageStyles.breadcrumb} aria-label={t('Breadcrumb')}><Link href={localizedSeoulHref('/kr/seoul/',locale)}>{t('Seoul')}</Link><Link href={exploreHref}>{locale === 'ko' ? `${districtName} 탐색으로` : `Back to ${districtName} Explore`}</Link><span aria-current="page">{model.building.name}</span></nav>

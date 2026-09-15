@@ -87,7 +87,7 @@ describe('SignedPrice brand mark', () => {
     expect(desktop).toContain('aria-label="More navigation"');
     expect(html.match(/market-local-nav__link/g)).toHaveLength(5);
     expect(html).toContain('>Overview</a>');
-    expect(html).toContain('>Buying guides</a>');
+    expect(html).toContain('>Buying &amp; renting</a>');
     expect(html).toContain('href="/kr/seoul/check"');
     expect(html).toContain('href="/kr/seoul/explore"');
     expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/kr\/seoul\/explore"/);

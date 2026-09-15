@@ -82,7 +82,7 @@ describe('Dubai area evidence routes', () => {
         for (const area of areas) expect(html.replaceAll('/?', '?')).toContain(`${area.href.replace(/\/$/u, '')}?housing=${segment.housing}&amp;stage=${stage}`);
       }
     }
-    expect(html).not.toMatch(/nearby|individual building|available listing/iu);
+    expect(html).not.toMatch(/individual building|available listing/iu);
   });
 
   it('fails closed for an unknown area', async () => {

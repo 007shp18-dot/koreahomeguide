@@ -13,7 +13,7 @@ import { propertyEditorialSchema, type PropertyReview } from './property-review'
 // A prose revision, not a new source-data observation. The original evidence,
 // rights checks, identity and source check dates remain unchanged.
 const editions = new Map(Object.entries({ ...seoul, ...singapore, ...dubai, ...tokyo })
-  .map(([id, editorial]) => [id, propertyEditorialSchema.parse({ ...editorial, revisedOn: '2026-09-14' })]));
+  .map(([id, editorial]) => [id, propertyEditorialSchema.parse({ ...editorial, revisedOn: '2026-09-15' })]));
 
 export function propertyEditorial(id: string) { return editions.get(id); }
 const prose = new Map([...seoulProse, ...singaporeProse, ...dubaiProse, ...tokyoProse].map(review => [review.id, review]));
@@ -48,6 +48,9 @@ function withReaderProse(review: PropertyReview): PropertyReview {
 
 export function withPropertyEditorial(review: PropertyReview): PropertyReview {
   review = withReaderProse(review);
+  if (review.id === 'kr-banpo-xi') {
+    review = { ...review, sources: review.sources.filter(source => source.id !== 'waterplay'), sections: { ...review.sections, daily: review.sections.daily.filter(point => !point.sourceIds.includes('waterplay')) } };
+  }
   const editorial = propertyEditorial(review.id);
   return editorial ? {
     ...review, editorial, verdict: editorial.headline,

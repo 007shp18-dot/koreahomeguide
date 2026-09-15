@@ -2,7 +2,7 @@ import 'server-only';
 import { BUYING_GUIDE_DATA } from '../../content/en/buying-guide-data';
 import { KOREAN_BUYING_GUIDE_DATA } from '../../content/ko/buying-guides';
 import { BUDGET_GUIDE_SERIES } from '../../content/budget-guide-series';
-import { comparisonSlug, cityPrefix, cityText } from '../../content/city-buying-content';
+import { cityPrefix, cityText } from '../../content/city-buying-content';
 import { tokyoBudgetBands } from '../../content/tokyo-budget-comparison';
 import { getPortfolioRecord } from '../../content/portfolio-manifest';
 import type { SiteLocale } from '../navigation/site-navigation';
@@ -33,9 +33,9 @@ export function createBuyingJourney(locale: SiteLocale): readonly BuyingCityMode
     const tokyo = series.city === 'tokyo';
     const currency = guide?.currency ?? 'JPY';
     return {
-      city: series.city, market: markets[index]!, name: names[locale][index]!, currency, slug: tokyo ? comparisonSlug('tokyo') : series.slug,
+      city: series.city, market: markets[index]!, name: names[locale][index]!, currency, slug: series.slug,
       scope: tokyo ? 'neighbourhood' : 'project', period: tokyo ? cityText(['2026 Q1 · Tokyo ward groups','2026년 1분기 · 도쿄 구별 거래','2026年第1季度 · 东京各区成交'],locale) : series.period[locale],
-      guideHref: tokyo ? `${cityPrefix(locale)}/guides/${comparisonSlug('tokyo')}/` : article.canonicalHref, guideLocale: tokyo ? locale : article.locale,
+      guideHref: tokyo ? `${cityPrefix(locale)}/guides/${series.slug}/` : article.canonicalHref, guideLocale: tokyo ? locale : article.locale,
       exploreHref: `${prefix}${bases[index]}/explore/`,
       checkHref: `${prefix}${bases[index]}/${tokyo ? 'tools' : 'check'}/`,
       costsHref: `${prefix}/tools/property-scenario/?market=${markets[index]}&currency=${currency}`,

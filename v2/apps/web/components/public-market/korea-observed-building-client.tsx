@@ -1,5 +1,7 @@
 'use client';
 
+import type { PropertyReview } from '../../lib/research/property-review';
+
 import { useSearchParams } from 'next/navigation';
 import type { ReactNode } from 'react';
 
@@ -65,6 +67,7 @@ export function buildKoreaObservedBuildingBackHref(
 }
 
 export function KoreaObservedBuildingClient({
+  initialReview,
   model,
   initialBackHref,
   visual,
@@ -72,6 +75,7 @@ export function KoreaObservedBuildingClient({
   facts,
   locale = 'en',
 }: Readonly<{
+  initialReview?: PropertyReview;
   model: ObservedBuildingIdentityModel;
   initialBackHref: string;
   visual?: ReactNode;
@@ -86,7 +90,7 @@ export function KoreaObservedBuildingClient({
     initialBackHref,
     locale,
   );
-  return <ObservedBuildingDetail
+  return <ObservedBuildingDetail initialReview={initialReview}
     model={model}
     backHref={backHref}
     visual={visual}

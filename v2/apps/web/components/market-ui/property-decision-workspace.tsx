@@ -1,6 +1,7 @@
 'use client';
 
-import dynamic from 'next/dynamic';
+import { PropertyDecisionReport as DecisionReport } from './property-decision-report';
+import type { PropertyReview } from '../../lib/research/property-review';
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from 'react';
 import type { LivingContext } from '../../lib/research/living-context';
 import type { MarketLocale } from '../../lib/locale/market-localization';
@@ -9,7 +10,6 @@ import type { DecisionPriceContext } from '../../lib/research/property-decision-
 import { hasPropertyReviewForEntity, reviewLocation, reviewLocationForEntity } from '../../lib/research/property-review-locations';
 import styles from './property-decision-workspace.module.css';
 
-const DecisionReport = dynamic(() => import('./property-decision-report').then(module => module.PropertyDecisionReport));
 const compactQuery = '(max-width: 1100px)';
 function subscribeCompact(onChange: () => void) {
   const media = window.matchMedia(compactQuery);
@@ -18,18 +18,18 @@ function subscribeCompact(onChange: () => void) {
 }
 const compactSnapshot = () => window.matchMedia(compactQuery).matches;
 const serverSnapshot = () => false;
-type WorkspaceProps = { showOverview?: boolean; entity?: string; profileId?: string; profile?: LivingContext; priceContext?: DecisionPriceContext; analysisScope?: 'property' | 'area'; ready?: boolean; locale: MarketLocale; children: ReactNode };
+type WorkspaceProps = { initialReview?: PropertyReview; showOverview?: boolean; entity?: string; profileId?: string; profile?: LivingContext; priceContext?: DecisionPriceContext; analysisScope?: 'property' | 'area'; ready?: boolean; locale: MarketLocale; children: ReactNode };
 
 /** Server-rendered data stays mounted while the independently scrolling report changes. */
 export function PropertyDecisionWorkspace(props: WorkspaceProps) {
-  const available = props.profile?.review || (props.profileId ? reviewLocation(props.profileId) : props.entity && hasPropertyReviewForEntity(props.entity));
+  const available = props.initialReview || props.profile?.review || (props.profileId ? reviewLocation(props.profileId) : props.entity && hasPropertyReviewForEntity(props.entity));
   // A whole-page Suspense fallback can be replaced after its own client children
   // hydrate. Only the committed detail should create an interactive session.
   if (props.ready === false || !available) return props.children;
   return <DecisionSession key={`${props.profileId ?? props.entity ?? props.profile?.id}:${props.locale}`} {...props} />;
 }
 
-function DecisionSession({ showOverview = true, entity, profileId, profile, priceContext, analysisScope = 'property', locale, children }: WorkspaceProps) {
+function DecisionSession({ initialReview, showOverview = true, entity, profileId, profile, priceContext, analysisScope = 'property', locale, children }: WorkspaceProps) {
   const compact = useSyncExternalStore(subscribeCompact, compactSnapshot, serverSnapshot);
   const [opened, setOpened] = useState<boolean | null>(null);
   const [expanded, setExpanded] = useState(false);
@@ -41,7 +41,7 @@ function DecisionSession({ showOverview = true, entity, profileId, profile, pric
   const dialog = useRef<HTMLDialogElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const focusOnOpen = useRef(false);
-  const loaded = useRef(Boolean(profile?.review));
+  const loaded = useRef(Boolean(initialReview || profile?.review));
   const headingId = useId();
   const panelId = useId();
   const visible = opened ?? !compact;
@@ -49,7 +49,8 @@ function DecisionSession({ showOverview = true, entity, profileId, profile, pric
   const t = (ko: string, en: string, zh: string) => locale === 'ko' ? ko : locale === 'zh-CN' ? zh : en;
   const location = profileId ? reviewLocation(profileId) : entity ? reviewLocationForEntity(entity) : profile ? reviewLocation(profile.id) : undefined;
   const selected = result?.profile;
-  const propertyName = selected?.review?.name[locale === 'ko' ? 'ko' : 'en'] ?? location?.name?.[locale === 'ko' ? 'ko' : 'en'];
+  const activeReview = selected?.review ?? initialReview;
+  const propertyName = activeReview?.name[locale === 'ko' ? 'ko' : 'en'] ?? location?.name?.[locale === 'ko' ? 'ko' : 'en'];
 
   function openPanel() {
     focusOnOpen.current = true;
@@ -150,10 +151,10 @@ function DecisionSession({ showOverview = true, entity, profileId, profile, pric
       </div>
     </header>
     <div className={styles.panelBody}>
-      {!result ? <div role="status" className={styles.loading}><span className={styles.skeleton} /><span className={styles.skeleton} /><p>{t('단지 분석을 불러오고 있어요.', 'Loading the property analysis.', '正在加载项目分析。')}</p></div>
-        : result.status === 'failed' ? <div role="status" className={styles.empty}><h3>{t('분석을 불러오지 못했어요', 'The analysis could not be loaded', '暂时无法加载分析')}</h3><p>{t('거래 데이터는 계속 볼 수 있어요.', 'The transaction data is still available.', '您仍可查看成交数据。')}</p><button type="button" className={styles.secondaryButton} onClick={() => { setResult(null); setAttempt(value => value + 1); }}>{t('다시 시도', 'Try again', '重试')}</button></div>
-          : !selected?.review ? <div className={styles.empty}><p>{t('이 단지의 판단 리포트가 아직 준비되지 않았어요.', 'A decision report is not yet available for this property.', '该项目的购房报告尚未发布。')}</p></div>
-            : <DecisionReport showOverview={showOverview} review={selected.review} priceContext={priceContext} analysisScope={analysisScope} locale={locale} persona={persona} onPersonaChange={setPersona} />}
+      {!result && !activeReview ? <div role="status" className={styles.loading}><span className={styles.skeleton} /><span className={styles.skeleton} /><p>{t('단지 분석을 불러오고 있어요.', 'Loading the property analysis.', '正在加载项目分析。')}</p></div>
+        : result?.status === 'failed' && !activeReview ? <div role="status" className={styles.empty}><h3>{t('분석을 불러오지 못했어요', 'The analysis could not be loaded', '暂时无法加载分析')}</h3><p>{t('거래 데이터는 계속 볼 수 있어요.', 'The transaction data is still available.', '您仍可查看成交数据。')}</p><button type="button" className={styles.secondaryButton} onClick={() => { setResult(null); setAttempt(value => value + 1); }}>{t('다시 시도', 'Try again', '重试')}</button></div>
+          : !activeReview ? <div className={styles.empty}><p>{t('이 단지의 판단 리포트가 아직 준비되지 않았어요.', 'A decision report is not yet available for this property.', '该项目的购房报告尚未发布。')}</p></div>
+            : <DecisionReport showOverview={showOverview} review={activeReview} priceContext={priceContext} analysisScope={analysisScope} locale={locale} persona={persona} onPersonaChange={setPersona} />}
     </div>
   </>;
 

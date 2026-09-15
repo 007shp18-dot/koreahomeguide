@@ -1,6 +1,8 @@
 import type { ProductLocale } from './product-copy';
 
 const korean: Readonly<Record<string, string>> = {
+  'Observed build year': '신고 건축연도',
+  'Observed floors': '신고 층 범위',
   'Observed filed area': '신고 전용면적 범위',
   'Breadcrumb': '현재 위치', 'Seoul': '서울', 'Overview': '개요', 'Transactions': '거래 내역', 'Source': '출처',
   'Property type': '주택 유형', 'Housing type': '주택 유형', 'Evidence': '거래 자료', 'Period': '집계 기간',

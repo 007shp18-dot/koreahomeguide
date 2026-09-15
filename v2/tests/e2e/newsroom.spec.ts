@@ -22,10 +22,10 @@ test('Insights keeps discovery simple and city selection works', async ({ page }
   await expect(page.getByRole('heading', { level: 1, name: 'Insights', exact: true })).toBeVisible();
   const cities = page.getByRole('navigation', { name: 'Insight cities' });
   await expect(cities.getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai', 'Tokyo']);
-  await expect(page.getByRole('region', { name: 'Buying guides by budget', exact: true }).getByRole('article')).toHaveCount(4);
-  await expect(page.locator('main article:visible')).toHaveCount(11);
+  await expect(page.getByRole('region', { name: 'Buying guides by budget', exact: true })).toHaveCount(0);
+  await expect(page.locator('main article:visible')).toHaveCount(7);
   await page.locator('summary').filter({ hasText: 'More stories' }).click();
-  expect(await page.locator('main article:visible').count()).toBeGreaterThan(11);
+  expect(await page.locator('main article:visible').count()).toBeGreaterThan(7);
   await cities.getByRole('link', { name: 'Tokyo', exact: true }).click();
   await expect(page).toHaveURL(/market=tokyo/);
   await expect(page.locator('main article[data-editorial-market]:not([data-editorial-market="jp-tokyo"])')).toHaveCount(0);
@@ -139,7 +139,7 @@ test('News & Insights and Guides keep the same global header and the guide highl
   await page.goto('/news/');
   let navigation = await openPrimaryNavigation(page);
   const newsLabels = await navigation.innerText();
-  await navigation.getByRole('link', { name: 'Buying guides', exact: true }).click();
+  await navigation.getByRole('link', { name: 'Buying & renting', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
   navigation = await openPrimaryNavigation(page);
   await expect(navigation).toHaveText(newsLabels, { useInnerText: true });
@@ -150,7 +150,7 @@ test('News & Insights and Guides keep the same global header and the guide highl
   }
   await page.getByRole('link', { name: /Buying property in Korea as a foreigner/ }).click();
   navigation = await openPrimaryNavigation(page);
-  await expect(navigation.getByRole('link', { name: 'Buying guides', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(navigation.getByRole('link', { name: 'Buying & renting', exact: true })).toHaveAttribute('aria-current', 'page');
   const openedMenu = page.locator('header.site-header details.site-header__mobile-menu[open]');
   if (await openedMenu.isVisible()) await openedMenu.locator('summary').press('Escape');
   const contents = page.locator('details[data-article-contents]');
@@ -165,12 +165,16 @@ test('Tokyo city journey opens its own article, chapters and Korean translation'
   const lead = page.locator('[data-newsroom-lead]');
   await expect(lead).toHaveAttribute('data-editorial-market', 'jp-tokyo');
   const leadStory = lead.getByRole('link', { name: /Read the story/ });
-  await expect(leadStory).toHaveAttribute('href', '/guides/tokyo-same-budget-property-comparison/');
+  await expect(leadStory).toHaveAttribute('href', /^\/news\//);
   await expect(page.getByText('View the buying steps', { exact: true })).toHaveCount(0);
   await leadStory.click();
-  await expect(page).toHaveURL(/\/guides\/tokyo-same-budget-property-comparison\/$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('JPY 50 million across five Tokyo wards: what changes with location?');
-  // The new budget comparison leads discovery; keep the older article and chapter coverage.
+  await expect(page).toHaveURL(/\/news\/.+\/$/);
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await page.goto('/news/?market=tokyo&topic=budget');
+  const budgetGuide = page.getByRole('region', { name: 'Buying guides by budget', exact: true });
+  await expect(budgetGuide.getByRole('article')).toHaveCount(1);
+  await expect(budgetGuide.getByRole('link', { name: /Open buying guide/ })).toHaveAttribute('href', '/guides/tokyo-apartment-buying-budget-guide/');
+  // General stories and budget transactions have separate discovery paths.
   await page.goto('/news/tokyo-cheaper-rent-longer-commute/');
   await expect(page).toHaveURL(/\/news\/tokyo-cheaper-rent-longer-commute\/$/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('You Saved ¥20,000 on Tokyo Rent. What Did the Commute Take?');

@@ -1,9 +1,9 @@
 export const BUYING_JOURNEY_COPY = {
   en: {
     changeCity: 'Change city', choose: 'Start with a city', hint: 'Choose a city to see its budgets and recorded-sale examples.',
-    guide: 'Buying guide', explore: 'Explore prices', budget: 'Purchase-price budget',
+    guide: 'Budget transactions', explore: 'Explore prices', budget: 'Purchase-price budget',
     budgetNote: 'Home price only. Taxes, fees and financing are separate.',
-    viewGuide: 'Compare in the buying guide', results: 'What traded around this budget',
+    viewGuide: 'Compare all budgets', results: 'What traded around this budget',
     evidence: 'See the transaction evidence', history: 'Historical sales · not available listings',
     scope: 'Three selected project groups. These are observed ranges, not all homes you could buy.',
     tokyoScope: 'One anonymous Chiyoda transaction at this checkpoint. Building names are not disclosed; this is not a typical or available home.',
@@ -16,9 +16,9 @@ export const BUYING_JOURNEY_COPY = {
   },
   ko: {
     changeCity: '도시 바꾸기', choose: '어느 도시부터 볼까요?', hint: '도시를 고르면 예산별 실제 거래 사례를 볼 수 있어요.',
-    guide: '구매 가이드', explore: '실거래 탐색', budget: '매매가격 예산',
+    guide: '예산별 실거래', explore: '실거래 탐색', budget: '매매가격 예산',
     budgetNote: '집값 기준입니다. 세금·수수료·금융 비용은 별도로 확인하세요.',
-    viewGuide: '구매 가이드에서 비교하기', results: '이 예산에서 거래된 집',
+    viewGuide: '전체 예산 비교하기', results: '이 예산에서 거래된 집',
     evidence: '실제 거래 근거 보기', history: '과거 거래 사례 · 현재 매물이 아닙니다',
     scope: '선정된 단지 3곳의 거래 범위입니다. 이 예산으로 살 수 있는 모든 집을 뜻하지 않습니다.',
     tokyoScope: '해당 예산과 일치하는 지요다구의 익명 거래 1건입니다. 건물명은 공개되지 않으며 평균 주택이나 현재 매물을 뜻하지 않습니다.',
@@ -31,7 +31,7 @@ export const BUYING_JOURNEY_COPY = {
   },
   'zh-CN': {
     changeCity: '切换城市', choose: '从哪座城市开始？', hint: '选择城市，查看对应预算与真实成交案例。',
-    guide: '购房指南', explore: '查看成交', budget: '房价预算',
+    guide: '预算成交比较', explore: '查看成交', budget: '房价预算',
     budgetNote: '仅为房价。税费、手续费与融资成本需单独考虑。',
     viewGuide: '在购房指南中比较', results: '这个预算附近的成交案例',
     evidence: '查看成交依据', history: '历史成交案例 · 并非在售房源',

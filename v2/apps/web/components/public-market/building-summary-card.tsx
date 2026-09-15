@@ -25,6 +25,11 @@ export function BuildingSummaryCard({ model, backHref, locale = 'en' }: Readonly
   const asOfYear = Number(model.generatedAt.slice(0, 4));
   const years = [...new Set(model.recentTransactions.map(row => row.buildYear).filter((year): year is number => year !== null && Number.isInteger(year) && year >= 1800 && year <= asOfYear))];
   const facts = [
+    ...(model.panelStats ? [
+      { label: ko ? '매매 중앙값' : locale === 'zh-CN' ? '买卖中位数' : 'Sale median', value: model.panelStats.sale ? `${money(model.panelStats.sale.median, locale)} · ${model.panelStats.sale.count}${ko ? '건' : ' records'}` : '—' },
+      { label: ko ? '신규 전세 중앙값' : locale === 'zh-CN' ? '新签全租中位数' : 'New jeonse median', value: model.panelStats.jeonse ? `${money(model.panelStats.jeonse.median, locale)} · ${model.panelStats.jeonse.count}${ko ? '건' : ' records'}` : '—' },
+      { label: ko ? '신규 전세가율 · 같은 기간·면적대' : locale === 'zh-CN' ? '新签全租比率 · 同时期及面积段' : 'New jeonse ratio · matched period and size', value: model.panelStats.ratio === null ? '—' : `${(model.panelStats.ratio * 100).toFixed(1)}%` },
+    ] : []),
     { label: ko ? '전용면적 조건' : locale === 'zh-CN' ? '专有面积筛选' : 'Unit size filter', value: area },
     { label: ko ? '주택 유형' : locale === 'zh-CN' ? '住宅类型' : 'Property type', value: seoulDetailText(locale, model.building.housingType) },
     ...(latestMonth ? [{ label: ko ? '최근 계약 월' : locale === 'zh-CN' ? '最新合同月份' : 'Latest contract month', value: latestMonth }] : []),
@@ -34,7 +39,7 @@ export function BuildingSummaryCard({ model, backHref, locale = 'en' }: Readonly
     id="building-overview"
     title={buildingDisplayName(model.building.officialName, locale)}
     location={`${neighborhoodDisplayName(model.building.neighborhoodName, locale)} · ${district}`}
-    context={`${transaction} · ${area}`}
+    context={`${transaction} · ${area}${model.defaultAreaSelected ? (ko ? ' · 매매가 가장 많았던 면적대' : locale === 'zh-CN' ? ' · 买卖成交最多的面积段' : ' · Most recorded sales') : ''}`}
     metric={{
       label,
       value: published ? `${money(model.evidence.medianWon!, locale)}${monthly ? (ko ? ' /월' : locale === 'zh-CN' ? ' /月' : ' /month') : ''}` : (ko ? '가격 집계 없음' : locale === 'zh-CN' ? '暂无公布价格' : 'Price not published'),

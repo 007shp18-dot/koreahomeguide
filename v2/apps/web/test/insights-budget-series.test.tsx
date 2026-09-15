@@ -16,16 +16,16 @@ describe('four-city budget collection', () => {
         expect(resolveNewsroomFilters(Object.fromEntries(url.searchParams))).toMatchObject({ market: 'tokyo', type: 'insights', ...(topic === 'all' ? {} : { topic }) });
       }
       const budget = buildInsightItems([], 'all', locale, 'budget');
-      expect(budget).toHaveLength(8);
+      expect(budget).toHaveLength(4);
       expect(new Set(budget.map(item => item.city))).toEqual(new Set(['seoul', 'singapore', 'dubai', 'tokyo']));
-      expect(buildInsightItems([], 'tokyo', locale, 'budget')).toHaveLength(2);
+      expect(buildInsightItems([], 'tokyo', locale, 'budget')).toHaveLength(1);
       const html = renderToStaticMarkup(<InsightsIndex articles={[]} market="all" locale={locale} topic="budget" />);
       for (const guide of BUDGET_GUIDE_SERIES) {
         expect(html).toContain(guide.slug);
-        expect(html).toContain(`${guide.city}-same-budget-property-comparison`);
+        expect(html).not.toContain(`${guide.city}-same-budget-property-comparison`);
       }
       expect(html).toContain('data-budget-edition="2026-09"');
-      expect(html.match(/data-newsroom-lead=/g)).toHaveLength(1);
+      expect(html).not.toContain('data-newsroom-lead=');
       expect(html).not.toContain('No stories match');
     }
   });
@@ -33,7 +33,8 @@ describe('four-city budget collection', () => {
     const all = buildInsightItems([], 'all');
     expect(all.some(item => item.href.includes('/city-stories/seoul/seongsu/'))).toBe(false);
     expect(all.length).toBeGreaterThan(4);
-    expect(all.every(item => item.investment)).toBe(true);
+    expect(all.some(item => item.topic === 'Neighborhood living')).toBe(true);
+    expect(all.some(item => item.slug?.includes('buying-budget-guide'))).toBe(false);
     expect(buildInsightItems([], 'all', 'en', 'neighborhood').every(item => item.topic === 'Neighborhood living')).toBe(true);
     expect(buildInsightItems([], 'all', 'en', 'neighborhood').length).toBeGreaterThan(0);
     const policies = buildInsightItems([], 'all', 'en', 'policy');
@@ -43,9 +44,9 @@ describe('four-city budget collection', () => {
   });
   it('labels the buying-led default without changing the explicit neighbourhood collection', () => {
     for (const [locale, buying, neighbourhood] of [
-      ['en', 'Buying', 'Neighbourhoods'],
-      ['ko', '구매', '동네·생활'],
-      ['zh-CN', '购房', '社区生活'],
+      ['en', 'All', 'Neighbourhoods'],
+      ['ko', '전체', '동네·생활'],
+      ['zh-CN', '全部', '社区生活'],
     ] as const) {
       const html = renderToStaticMarkup(<InsightsIndex articles={[]} market="all" locale={locale} />);
       expect(html).toMatch(new RegExp(`aria-current="page"[^>]*>${buying}</a>`));
@@ -62,9 +63,9 @@ describe('four-city budget collection', () => {
       expect(html).toContain('30,000,000');
       expect(html).toContain('50,000,000');
       expect(html).toContain('100,000,000');
-      expect(html).toContain('1977');
+      expect(article.evidenceReleaseIds.length).toBeGreaterThan(1);
       expect(html).toContain('currency=JPY');
-      expect(html).toContain('/jp/tokyo/shortlist/');
+      expect(html).toContain('/jp/tokyo/explore/');
     }
   });
 });
