@@ -68,6 +68,9 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   ...CITY_STORIES.map(story => ({ en: cityStoryHref(story.city) as `/${string}`, ko: cityStoryHref(story.city, 'ko') as `/${string}` })),
   ...JOURNEY_ARTICLE_ROUTES.map(({ city, id }) => ({ en: journeyArticleHref(city, id), ko: journeyArticleHref(city, id, 'ko') })),
   ...editorialLocalizedPairs,
+  { en: '/jp/tokyo/', ko: '/ko/jp/tokyo/', 'zh-Hans': '/zh-cn/jp/tokyo/' },
+  { en: '/jp/tokyo/explore/', ko: '/ko/jp/tokyo/explore/', 'zh-Hans': '/zh-cn/jp/tokyo/explore/' },
+  ...propertyReviewPaths.filter(path => !path.startsWith('/ko/')).map(en => ({ en, ko: `/ko${en}` as `/${string}` })),
   ...resourceParams().map(({ slug, resource }) => ({ en: regionalResourceHref(slug, resource), ko: regionalResourceHref(slug, resource, 'ko') })),
 ] as const);
 

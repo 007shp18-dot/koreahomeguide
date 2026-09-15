@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { HdbSnapshotRepository } from './hdb-snapshot-repository.server';
+import type { HdbSnapshotRepository, HdbBlockSummary } from './hdb-snapshot-repository.server';
 import { hdbTownSlug } from './hdb-route-model.server';
 
 export type PublishedHdbRouteParams = Readonly<{
@@ -19,6 +19,16 @@ function hasPublishedDistribution(
     || (rentalCount >= minimum && rentalMedianSgd !== null);
 }
 
+// A block detail must answer both resale and rent questions and identify the
+// residential building. A single aggregate remains available in the town explorer.
+export function hasUsefulHdbBlockEvidence(block: HdbBlockSummary, minimum: number): boolean {
+  const property = block.property;
+  return block.resaleCount >= minimum && block.resaleMedianSgd !== null
+    && block.rentalCount >= minimum && block.rentalMedianSgd !== null
+    && property !== null && property.residential
+    && property.yearCompleted > 0 && property.totalDwellingUnits > 0;
+}
+
 export function listPublishedHdbRouteParams(
   repository: HdbSnapshotRepository,
 ): PublishedHdbRouteParams {
@@ -32,11 +42,7 @@ export function listPublishedHdbRouteParams(
   const blocks = Object.freeze(publishedTowns.flatMap(({ town }) => {
     const townSlug = hdbTownSlug(town);
     return repository.listBlocks(town).flatMap((block) => (
-      hasPublishedDistribution(
-        block.resaleCount, block.resaleMedianSgd,
-        block.rentalCount, block.rentalMedianSgd,
-        minimum,
-      )
+      hasUsefulHdbBlockEvidence(block, minimum)
         ? [Object.freeze({ town: townSlug, blockId: block.blockId })]
         : []
     ));
@@ -66,9 +72,5 @@ export function isPublishedHdbBlock(
   if (summary === undefined || !isPublishedHdbTown(repository, town)) return false;
   const block = repository.listBlocks(summary.town).find((candidate) => candidate.blockId === blockId);
   const minimum = repository.getContext().publicationMinimum;
-  return block !== undefined && hasPublishedDistribution(
-    block.resaleCount, block.resaleMedianSgd,
-    block.rentalCount, block.rentalMedianSgd,
-    minimum,
-  );
+  return block !== undefined && hasUsefulHdbBlockEvidence(block, minimum);
 }

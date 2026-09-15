@@ -2,7 +2,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import sitemap from '../app/(en)/sg/singapore/sitemap';
+import sitemap, { buildSingaporeSitemap } from '../lib/seo/singapore-sitemap.server';
 import { generateMetadata } from '../app/(en)/sg/singapore/explore/[area]/[projectId]/page';
 import { generateMetadata as generateKoreanMetadata } from '../app/(ko)/ko/sg/singapore/explore/[area]/[projectId]/page';
 import { singaporeSnapshotRepositoryFromEnvironment } from '../lib/singapore/snapshot-repository.server';
@@ -43,4 +43,16 @@ it('lists every published Singapore project with the same canonical and publicat
   }
 // Loads the full checked-in URA and HDB snapshots on a cold worker.
 // This verifies publication coverage, not a response-time performance budget.
+}, 60_000);
+
+
+it('excludes aggregate-only projects without inspectable transaction history', async () => {
+  vi.stubEnv('NODE_ENV', 'production');
+  const repository = await singaporeSnapshotRepositoryFromEnvironment();
+  expect(repository).not.toBeNull();
+  const entries = buildSingaporeSitemap({
+    privateRepository: { ...repository!, listProjectRecords: () => [] },
+    hdbRepository: null, checkRepositories: null,
+  });
+  expect(entries).toEqual([]);
 }, 60_000);

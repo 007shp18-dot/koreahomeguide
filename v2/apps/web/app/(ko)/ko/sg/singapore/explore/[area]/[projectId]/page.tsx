@@ -1,3 +1,4 @@
+import { isSingaporeProjectIndexable } from '@/lib/singapore/project-index-policy.server';
 import { SingaporeRentalEvidence } from '@/components/singapore/singapore-rental-evidence';
 import { singaporeMetadata } from '@/lib/locale/singapore-copy';
 import { singaporeProjectDisplayName } from '@/lib/singapore/project-display-name';
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
   const repository = await singaporeSnapshotRepositoryFromEnvironment();
   const model = repository === null ? null : buildSingaporeProjectModel(repository, code, projectId);
-  if (model === null || model.status !== 'ready') return {
+  if (model === null || model.status !== 'ready' || repository === null || !isSingaporeProjectIndexable(repository, code, projectId)) return {
     title: '싱가포르 단지 매매 자료 | signedprice',
     robots: { index: false, follow: true },
   };

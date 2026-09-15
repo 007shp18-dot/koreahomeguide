@@ -97,3 +97,27 @@ describe('named property details in Explore', () => {
     expect(renderToStaticMarkup(<PropertyReviewDirectory locale="en" entries={entries} query="unknown property" />)).toBe('');
   });
 });
+
+it('keeps all 62 Dubai and Tokyo reviews discoverable with matching canonical metadata', () => {
+  const seen = new Set<string>();
+  for (const market of ['ae-dubai', 'jp-tokyo'] as const) {
+    const params = namedPropertyStaticParams(market);
+    expect(params).toHaveLength(31);
+    for (const { profileId } of params) {
+      const profile = namedPropertyProfile(market, profileId)!;
+      expect(profile.review.sources.length).toBeGreaterThan(0);
+      expect(profile.review.comparisons.length).toBeGreaterThan(0);
+      for (const locale of ['en', 'ko'] as const) {
+        const metadata = namedPropertyMetadata(locale, market, profileId);
+        expect(metadata.robots).toMatchObject({ index: true, follow: true });
+        expect(metadata.alternates?.languages).toHaveProperty('en');
+        expect(metadata.alternates?.languages).toHaveProperty('ko');
+        const canonical = String(metadata.alternates?.canonical);
+        expect(seen.has(canonical)).toBe(false);
+        seen.add(canonical);
+      }
+      expect(namedPropertyMetadata('zh-CN', market, profileId).robots).toMatchObject({ index: false });
+    }
+  }
+  expect(seen.size).toBe(124);
+});

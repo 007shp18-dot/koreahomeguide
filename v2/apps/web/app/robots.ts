@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       'https://www.signedprice.com/sitemap.xml',
       'https://www.signedprice.com/editorial-sitemap.xml',
       'https://www.signedprice.com/seoul-sitemap.xml',
-      'https://www.signedprice.com/sg/singapore/sitemap.xml',
+      'https://www.signedprice.com/singapore-sitemap.xml',
     ],
     host: 'https://www.signedprice.com',
   };

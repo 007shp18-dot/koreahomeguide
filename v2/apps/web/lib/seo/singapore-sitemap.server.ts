@@ -1,3 +1,4 @@
+import { isSingaporeProjectIndexable } from '@/lib/singapore/project-index-policy.server';
 import type { MetadataRoute } from 'next';
 
 import { publicCanonical } from '@/lib/public-metadata';
@@ -33,7 +34,7 @@ export function buildSingaporeSitemap({
   const entries: MetadataRoute.Sitemap = [];
   if (privateRepository !== null) {
     const lastModified = new Date(privateRepository.getContext().generatedAt);
-    entries.push(...privateRepository.listProjectRouteParams().flatMap(({ area, projectId }) => (
+    entries.push(...privateRepository.listProjectRouteParams().filter(({ area, projectId }) => isSingaporeProjectIndexable(privateRepository, area, projectId)).flatMap(({ area, projectId }) => (
       localizedEntries(
         `/sg/singapore/explore/${area}/${projectId}/`,
         `/ko/sg/singapore/explore/${area}/${projectId}/`,
@@ -84,4 +85,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     hdbRepository: hdbResult.status === 'fulfilled' ? hdbResult.value : null,
     checkRepositories: checkResult.status === 'fulfilled' ? checkResult.value : null,
   });
+}
+
+
+/** Each shard stays below 5 MB on the installed release and serves all locales. */
+export async function singaporeSitemapGroups(): Promise<Map<string, MetadataRoute.Sitemap>> {
+  const groups = new Map<string, MetadataRoute.Sitemap>();
+  for (const entry of await sitemap()) {
+    const path = new URL(entry.url).pathname.replace(/^\/(ko|zh-cn)/, '');
+    const project = path.match(/\/explore\/(ccr|rcr|ocr)\//);
+    const town = path.match(/\/hdb\/([^/]+)\//);
+    const key = project ? `private-${project[1]}` : town ? `hdb-${town[1]}` : 'check';
+    const entries = groups.get(key) ?? [];
+    entries.push(entry);
+    groups.set(key, entries);
+  }
+  return groups;
 }
