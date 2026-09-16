@@ -1,3 +1,4 @@
+import { CRYPTO_PROPERTY_EDITION } from '../content/crypto-property-edition';
 import { BUYERS_EDITION } from '../content/buyers-edition';
 import { EDITORIAL_DEPTH, DEPTH_REVISED_AT } from '../content/editorial-depth';
 import { describe, expect, it, vi } from 'vitest';
@@ -50,7 +51,7 @@ describe('whole editorial revision coverage', () => {
   it('covers the 14 retained legacy portfolio briefs and data stories in each language', () => {
     // This edition was authored after the one-time rewrite. Exclude its exact
     // records, rather than allowing a missing override to remove legacy coverage.
-    const nativeEditionIds = new Set([...SEPTEMBER_14_EDITORIAL, ...SEPTEMBER_15_EDITORIAL, ...BUYERS_EDITION].map(({ id }) => id));
+    const nativeEditionIds = new Set([...SEPTEMBER_14_EDITORIAL, ...SEPTEMBER_15_EDITORIAL, ...BUYERS_EDITION, ...CRYPTO_PROPERTY_EDITION].map(({ id }) => id));
     for (const locale of ['en','ko'] as const) {
       const articles = listPortfolioRecords(locale).filter(item => ['market-brief','data-story'].includes(item.type)
         && !nativeEditionIds.has(item.id));
