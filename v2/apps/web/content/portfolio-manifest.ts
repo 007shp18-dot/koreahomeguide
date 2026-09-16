@@ -1,3 +1,4 @@
+import { CRYPTO_PROPERTY_EDITION } from './crypto-property-edition';
 import { BUYERS_EDITION } from './buyers-edition';
 import retired from './retired-editorial.json';
 import { deepenEditorial } from './editorial-depth';
@@ -101,6 +102,7 @@ export function validateEditorialPortfolio(values: readonly unknown[]): readonly
 
 export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Object.freeze([
   ...BUYERS_EDITION,
+  ...CRYPTO_PROPERTY_EDITION,
   ...TOKYO_BUYING_GUIDES.map(original => {
     const expanded = CITY_BUDGET_COMPARISONS.find(article => article.marketId === 'jp-tokyo' && article.locale === original.locale)!;
     return { ...expanded, id: original.id, slug: original.slug, canonicalHref: original.canonicalHref, translationGroupId: original.translationGroupId ?? original.slug };

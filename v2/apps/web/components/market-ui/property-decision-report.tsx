@@ -71,9 +71,8 @@ export function PropertyDecisionReport({ showOverview = true, review, priceConte
         <p className={styles.discussionScope}>{item.mappingScope === 'named-property' ? t('단지 직접 언급', 'Property named in the account', '原文提及本楼盘') : t('지역 이야기 · 해당 단지 입주 후기 아님', 'Neighbourhood context · not a resident review of this property', '区域讨论 · 并非本楼盘入住评价')}</p>
         <h4>{item.title}</h4>
         <p lang={item.reactionLanguage}>{item.reaction}{locale === 'zh-CN' && <small className={styles.languageNote}> · 英文整理</small>}</p>
-        <p className={styles.discussionImplication}>{item.implication}</p>
-        <details className={styles.discussionSources}><summary>{t('읽은 원문과 시점', 'Accounts and dates', '原文与日期')}</summary><ul>{item.sources.map(source => <li key={source.url}>
-          <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a>
+        {item.implication && <p className={styles.discussionImplication}>{item.implication}</p>}
+        <details className={styles.discussionSources}><summary>{t('의견의 시점', 'Dates of the accounts', '讨论日期')}</summary><ul>{item.sources.map(source => <li key={source.url}>
           <p>{source.scope === 'individual-experience' ? t('개인 경험', 'Individual account', '个人经历') : t('공개 토론', 'Public discussion', '公开讨论')} · {source.publishedOn ? <>{t('작성', 'Published', '发布')} <time dateTime={source.publishedOn}>{source.publishedOn}</time></> : t('정확한 작성일 미확인', 'Exact publication date unknown', '确切发布日期不详')} · {t('원문 확인', 'Inspected', '原文核查')} <time dateTime={source.inspectedOn}>{source.inspectedOn}</time></p>
         </li>)}</ul></details>
       </article>)}</div>
@@ -114,7 +113,7 @@ export function PropertyDecisionReport({ showOverview = true, review, priceConte
     <details className={styles.sources} data-report-sources>
       <summary>{t('자료 출처', 'Sources', '资料来源')}</summary>
       <ul>{review.sources.map(source => <li key={source.id}>
-        <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a>
+        {source.kind === 'public-review' ? <span>{source.title}</span> : <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a>}
         <p>{source.note[locale === 'ko' ? 'ko' : 'en']}</p>
       </li>)}</ul>
     </details>

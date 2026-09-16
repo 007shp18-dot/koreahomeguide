@@ -11,8 +11,9 @@ export function ContactPageContent({ locale = 'en', privacyContact }: { locale?:
     <header className={styles.hero} data-product-intro="true">
       <p className={styles.eyebrow}>{ko ? '도움말' : 'Help'}</p>
       <h1>{ko ? '어떤 점이 궁금한가요?' : 'Contact SignedPrice'}</h1>
-      <p>{ko ? '집과 예산을 비교하는 질문, 공개 자료와 계산 방법, 제휴에 관해 문의하세요.' : 'Ask about a home or budget decision, a published source, a comparison on the site or working together.'}</p>
+      <p>{ko ? '관심 도시와 예산, 구매 시점을 알려주세요. 필요한 정보와 현지 업체 연결 가능 여부를 확인해 안내합니다.' : 'Tell us your city, budget and purchase timing. We will clarify what information or local introductions are available for your enquiry.'}</p>
     </header>
+    <div className={styles.links}><Link href={ko ? "/ko/about/" : "/about/"}>{ko ? "SignedPrice 소개와 서비스" : "About SignedPrice and our services"}</Link></div>
     <PurchaseEnquiry locale={locale} />
     <section className={styles.primary} aria-labelledby="contact-primary">
       <div>

@@ -12,6 +12,12 @@
     "excerpt": "? { methodLabel:`Monthly rents normalized to your deposit at ${(rate * 100).toFixed(1)}%/year statutory reference` }"
   },
   {
+    "file": "v2/apps/web/content/editions/september-16-crypto/dubai-crypto.json",
+    "line": 2,
+    "code": "fixed_rate_called_statutory",
+    "excerpt": "\"en\": \"A buyer opens a Dubai apartment listing and sees a price in dirhams. Their savings, however, are in Bitcoin. At that point, “Do you accept crypto?” sounds like the obvious question. A more useful one comes immediately after it: wh..."
+  },
+  {
     "file": "zh/rent-check-ui-utils.js",
     "line": 277,
     "code": "fixed_rate_called_statutory",
