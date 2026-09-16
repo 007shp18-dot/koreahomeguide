@@ -33,7 +33,7 @@ describe('browser route coverage contract', () => {
       '/ae/dubai/invest/',
       '/news/',
       '/news/policy/singapore-absd-policy-status/',
-      '/news/seoul-district-price-distribution/',
+      '/guides/read-seoul-sale-transactions/',
       '/guides/',
       '/guides/rent-an-apartment-in-korea/',
       '/zh-cn/news/',
