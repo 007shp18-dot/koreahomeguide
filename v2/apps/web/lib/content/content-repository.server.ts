@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { cache } from 'react';
+import retiredEditorial from '../../content/retired-editorial.json';
 import { BILINGUAL_DATABASE_SLUGS, EDITORIAL_REVISION_DATE, reviseEditorial } from '../../content/editorial-revision';
 import { refreshDiscovery } from '../../content/editorial-discovery';
 
@@ -34,6 +35,7 @@ export function isPublishableContent(
 ): boolean {
   if (
     article.status !== 'published'
+    || Object.hasOwn(retiredEditorial, article.slug)
     || !locales.includes(article.locale)
     || !contentTypes.includes(article.type)
     || article.evidenceState === 'withdrawn'

@@ -12,7 +12,7 @@ const readingGroups: readonly Readonly<{
     slugs: ['rent-in-korea-zh', 'wolse-vs-jeonse-zh', 'rent-an-apartment-in-korea', 'wolse-vs-jeonse', 'korea-rental-contract-checklist', 'seoul-jeonse-market-monthly-brief', 'seoul-monthly-rent-market-brief', 'seoul-new-renewal-rent-gap', 'korea-deposit-monthly-rent-cost-structure', 'korea-rental-deposit-protection-status', 'seoul-district-price-distribution'],
     links: [
       { label: 'Choose between wolse and jeonse', href: '/guides/wolse-vs-jeonse/' },
-      { label: 'Work through a rental-cost example', href: '/news/korea-deposit-monthly-rent-cost-structure/' },
+      { label: 'Prepare for renting in Korea', href: '/guides/rent-an-apartment-in-korea/' },
       { label: 'Check the rental contract before paying', href: '/guides/korea-rental-contract-checklist/' },
     ],
   },
@@ -46,12 +46,12 @@ export function relatedReading(article: Pick<PublishedContentArticle, 'slug' | '
       { label: article.locale === 'ko' ? '도쿄 시장 한눈에 보기' : article.locale === 'zh-CN' ? '东京市场概览' : 'Tokyo market overview', href: '/jp/tokyo/' },
     ] : article.marketId === 'sg-singapore' ? [
       { label: 'Read Singapore project transactions', href: '/guides/read-singapore-private-transactions/' },
-      { label: 'Compare CCR, RCR and OCR project prices', href: '/news/singapore-ccr-rcr-ocr-comparison/' },
-      { label: 'Read the official quarterly index brief', href: '/news/singapore-private-market-quarterly-brief/' },
+      { label: 'Can a small condo bring the next home closer?', href: '/news/singapore-small-condo-first-upgrade-trap/' },
+      { label: 'Read the monthly resale analysis', href: '/news/singapore-monthly-2026-09/' },
     ] : [
       { label: 'Build a Seoul apartment budget', href: '/guides/seoul-apartment-buying-budget-guide/' },
       { label: 'Compare Seoul sale transactions', href: '/guides/read-seoul-sale-transactions/' },
-      { label: 'Read the district price comparison', href: '/news/seoul-district-price-distribution/' },
+      { label: 'Price the move from 59 to 84 sqm', href: '/guides/seoul-59-to-84-upgrade-budget/' },
     ]);
   return links.filter(({ href }) => !href.endsWith(`/${article.slug}/`)).slice(0, 2);
 }

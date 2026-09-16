@@ -1,5 +1,9 @@
+import { readFileSync } from 'node:fs';
 import type { NextConfig } from "next";
 import { fileURLToPath } from "node:url";
+
+// Absolute resolution also works when Next starts from the workspace root.
+const retiredEditorial = JSON.parse(readFileSync(new URL('./content/retired-editorial.json', import.meta.url), 'utf8')) as Record<string, string>;
 
 const repositoryRoot = fileURLToPath(new URL("../../../", import.meta.url));
 
@@ -14,6 +18,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      ...['', '/ko', '/zh-cn'].flatMap(prefix => Object.entries(retiredEditorial).map(([slug, destination]) => ({ source: `${prefix}/news/${slug}/`, destination: `${prefix === '/zh-cn' ? '' : prefix}${destination}`, permanent: true }))),
       ...['', '/ko', '/zh-cn'].flatMap(prefix => [
         ['seoul', 'seoul-apartment-buying-budget-guide'],
         ['singapore', 'singapore-condo-buying-budget-guide'],

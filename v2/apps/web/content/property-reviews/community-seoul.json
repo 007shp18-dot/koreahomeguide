@@ -36,7 +36,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "헬리오시티와 파크리오를 비교한 글에는 시설을 긍정적으로 보는 반응과 단지 안 이동·환승 부담을 더 크게 보는 반응이 함께 있다. 거주자라고 밝힌 댓글도 있지만 이용 동선은 서로 다르다.",
+      "en": "A Helio City–Parkrio discussion values the facilities while other accounts give more weight to internal walking and transfers. Some contributors describe themselves as residents; their daily routes differ."
+    }
   },
   {
     "id": "seoul-parkrio-open-window",
@@ -76,7 +80,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "2011년의 거주자 자술 댓글은 공원 방향 집의 창을 열었을 때 소음과 환기를 함께 이야기한다. 현재 소음 수준을 보여주는 자료는 아니다.",
+      "en": "A self-described resident in 2011 discussed open-window sound and ventilation in a park-facing home. That historical account does not establish present noise levels."
+    }
   },
   {
     "id": "seoul-ricenz-school-move",
@@ -115,7 +123,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "파크리오에 산다고 밝힌 작성자는 학교생활의 연속성을 위해 리센츠로 옮길지 고민했다. 당시 가격과 배정 설명은 현재 판단의 근거에서 제외했다.",
+      "en": "A writer identifying as a Parkrio resident weighed moving to Ricenz for continuity in schooling. Historical prices and allocation claims are excluded from current conclusions."
+    }
   },
   {
     "id": "seoul-jamsil-academy-door",
@@ -154,7 +166,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "단체 방문기는 엘스·리센츠·트리지움이 이용하는 학원가를 언급한다. 작성자가 직접 방문한 엘스와 지나가며 본 트리지움의 관찰 범위가 다르다.",
+      "en": "A group-visit account discusses the academy area serving ELS, Ricenz and Trizium. The author visited ELS but only passed Trizium, so the observations have different scopes."
+    }
   },
   {
     "id": "seoul-mapo-raemian-lift-route",
@@ -193,7 +209,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "과거 거주자 토론에서는 경사와 아현·애오개역으로 가는 길, 승강기를 이용하는 대안이 함께 나왔다. 역 이름이 같아도 동에 따라 경로를 다르게 설명한다.",
+      "en": "A historical resident discussion describes slopes, routes to Ahyeon and Aeogae, and a lift alternative. The described approach depends on the part of the estate."
+    }
   },
   {
     "id": "seoul-mapo-prestige-everyday-gates",
@@ -232,7 +252,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "공개 후기에는 경사가 부담된다는 반응과 시설·학원 접근을 장점으로 보는 반응이 함께 있다. 확인한 관련 후기의 작성일은 2026년 7월이며 의견이 일치하지 않는다.",
+      "en": "Public reviews give differing weight to slopes and access to facilities or academies. Related accounts dated July 2026 do not express one shared verdict."
+    }
   },
   {
     "id": "seoul-oksu-outside-grounds",
@@ -271,7 +295,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "옥수파크힐스를 언급한 과거 지역 토론에서는 단지 내부 환경과 밖으로 나간 뒤의 경사를 구분했다. 단지 안에서 느낀 편안함이 외부 보행 평가로 그대로 이어지지 않았다.",
+      "en": "A historical Oksu discussion naming Park Hills distinguishes the internal grounds from slopes outside. Appreciation of the estate does not resolve the walk beyond it."
+    }
   },
   {
     "id": "seoul-centras-retail-lift",
@@ -311,7 +339,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "103동 거주자라고 밝힌 댓글은 상가로 가며 승강기를 바꾸는 경로와 다른 동의 경로를 구분해 설명한다. 단지 전체가 같은 방식으로 연결된다는 경험담은 아니다.",
+      "en": "A self-described building 103 resident describes lift transfers and distinguishes routes from other buildings. The account does not establish one retail connection for the whole estate."
+    }
   },
   {
     "id": "seoul-tenz-hill-size-refurbishment",
@@ -350,7 +382,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "텐즈힐을 검토한 과거 글에서는 더 넓은 집을 얻는 선택에 도로 노출과 수리 예산의 고민이 함께 붙었다. 정확한 단지 차수는 확인되지 않았다.",
+      "en": "A historical Tenz Hill discussion weighs additional space against road exposure and refurbishment spending. The numbered phase was not identified."
+    }
   },
   {
     "id": "seoul-godeok-quiet-commute",
@@ -390,7 +426,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "그라시움과 아르테온을 함께 언급한 지역 글은 주변의 한적함을 긍정적으로 보면서 강남 차량 출근을 별도 부담으로 다뤘다. 실제 혼잡을 측정한 기록은 아니다.",
+      "en": "An area discussion naming Gracium and Arteon contrasts quieter surroundings with a drive to Gangnam. It contains experiences rather than measured traffic conditions."
+    }
   },
   {
     "id": "seoul-foreon-facility-loop",
@@ -429,7 +469,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "포레온 공개 후기에서는 시설을 이용하는 방식과 단지 안 이동을 다르게 평가했다. 시설이 있다는 사실보다 어느 동에서 얼마나 자주 쓰는지가 반응 차이의 배경으로 등장한다.",
+      "en": "Public Foreon comments describe different facility-use routines and internal journeys. Where someone starts and how often they use a facility matter to the reactions."
+    }
   },
   {
     "id": "seoul-gyeonghuigung-grocery-return",
@@ -468,7 +512,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "경희궁자이 2·3단지를 언급한 과거 글에서는 시장 장보기와 대형마트에 따로 다녀오는 생활을 나눠 이야기했다. 당시 언급된 점포의 현재 운영은 확인되지 않았다.",
+      "en": "A historical discussion naming Gyeonghuigung Xi phases 2 and 3 distinguishes market errands from separate supermarket trips. The named shops have not been verified as currently operating."
+    }
   },
   {
     "id": "seoul-forest-weekday-errands",
@@ -507,7 +555,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "서울숲·성수 지역 비교에서는 공원 생활의 장점과 평일 장보기 같은 생활 동선을 따로 평가했다. 아크로서울포레스트 입주 전의 지역 글이므로 해당 단지 거주 후기에는 포함하지 않는다.",
+      "en": "A historical Seoul Forest–Seongsu comparison distinguishes park appeal from everyday errands. It predates Acro Seoul Forest and is not a resident review of that property."
+    }
   },
   {
     "id": "seoul-heukseok-return-slope",
@@ -546,7 +598,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "흑석자이를 방문한 작성자는 진입 경사와 뒤쪽 승강기 경로를 언급했다. 거주 경험이나 현재 승강기 이용 가능 여부를 확인한 자료는 아니다.",
+      "en": "A group visitor to Heukseok Xi described its approaches and a rear lift route. This is a visit account, not verified current resident access."
+    }
   },
   {
     "id": "seoul-banpo-riche-real-walk",
@@ -587,7 +643,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "area-context"
+    "mappingScope": "area-context",
+    "reaction": {
+      "ko": "반포리체를 비교한 과거 토론에서는 걷기 편한지에 대한 의견이 갈렸다. 퍼스티지와 아크로리버파크는 주변 대안으로 등장하며 직접 거주 후기의 범위와 구분해야 한다.",
+      "en": "A historical Banpo Riche comparison contains disagreement about walking effort. Firstige and Acro River Park appear as surrounding alternatives rather than equally supported resident accounts."
+    }
   },
   {
     "id": "seoul-banpo-terminal-commute",
@@ -627,7 +687,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "반포자이와 퍼스티지를 두고 남아 있는 댓글은 논현 출근 경로와 각자의 우선순위를 다르게 설명한다. 터미널 주변 경로를 어떻게 쓰는지가 비교의 쟁점이다.",
+      "en": "Surviving comments comparing Banpo Xi and Firstige describe different Nonhyeon commute routes and priorities, including the route around the terminal."
+    }
   },
   {
     "id": "seoul-one-bailey-view-quiet",
@@ -667,7 +731,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "원베일리 토론에는 조망을 높이 보는 반응과 소리·역 출구 편의를 더 따지는 반응이 함께 있다. 방문을 언급한 작성자는 있으나 전체를 검증된 거주자 의견으로 볼 수 없다.",
+      "en": "A One Bailey discussion contains differing priorities around views, sound and station exits. At least one contributor describes a visit; the group is not verified as residents."
+    }
   },
   {
     "id": "seoul-eunma-beyond-refurbished-interior",
@@ -706,7 +774,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "은마 관련 글에서는 수리한 실내의 인상과 공용부·주차 경험이 나뉘어 등장한다. 전 거주자 주장과 방문자 의견이 섞인 과거 토론이며 미확인 하자 주장은 제외했다.",
+      "en": "An older Eunma discussion distinguishes refurbished interiors from shared spaces and parking. Claimed former residents and visitors contribute; unverified defect allegations are excluded."
+    }
   },
   {
     "id": "seoul-daechi-actual-academy",
@@ -745,7 +817,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "렉슬과 래미안대치팰리스를 비교한 글에는 두 곳에 살았다는 작성자도 있고, 학원까지 걷는 부담을 다르게 보는 반응도 있다. 현재 통학 시간이나 배정을 확인한 결과는 아니다.",
+      "en": "A Rexle–Raemian Daechi Palace comparison includes someone claiming experience of both and disagreement about academy walks. It does not verify current walking times or school allocation."
+    }
   },
   {
     "id": "seoul-rexle-play-deliveries",
@@ -783,7 +859,11 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "2009년의 도곡렉슬 거주자 자술 토론에서는 놀이 공간과 지상 배송 동선이 함께 언급됐다. 당시 경험을 현재 차량 운영 규정으로 옮겨 읽을 수는 없다.",
+      "en": "Self-described Dogok Rexle residents discussed play areas and ground-level deliveries in 2009. Their accounts cannot establish today’s vehicle rules."
+    }
   },
   {
     "id": "seoul-la-classy-school-walk",
@@ -821,6 +901,10 @@
       }
     ],
     "evidenceKind": "community-anecdote",
-    "mappingScope": "named-property"
+    "mappingScope": "named-property",
+    "reaction": {
+      "ko": "공개된 후기 문단에서 거주자라고 밝힌 작성자는 교통 접근을 긍정적으로 보면서 아이의 학교까지 걷는 길은 다르게 평가했다. 더보기 뒤의 내용은 읽은 근거에 포함하지 않았다.",
+      "en": "In the publicly displayed paragraph, a self-described La Classy resident values transport access but distinguishes the school walk. Text hidden behind More was not part of the review."
+    }
   }
 ]

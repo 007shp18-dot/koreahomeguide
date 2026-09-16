@@ -84,7 +84,8 @@ test('SEO foundation: every sitemap URL is terminal, indexable, and self-canonic
   expect(locations).toContain('https://www.signedprice.com/sg/');
   expect(locations).toContain('https://www.signedprice.com/news/policy/');
   expect(locations).toContain('https://www.signedprice.com/news/policy/singapore-absd-policy-status/');
-  expect(locations).toContain('https://www.signedprice.com/news/seoul-district-price-distribution/');
+  expect(locations).toContain('https://www.signedprice.com/guides/read-seoul-sale-transactions/');
+  expect(locations).not.toContain('https://www.signedprice.com/news/seoul-district-price-distribution/');
   expect(locations).toContain('https://www.signedprice.com/zh-cn/news/');
   expect(locations).toContain('https://www.signedprice.com/zh-cn/guides/');
   expect(locations.some((url) => url.startsWith('https://www.signedprice.com/insights/'))).toBe(false);

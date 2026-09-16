@@ -17,14 +17,14 @@ afterEach(() => vi.useRealTimers());
 
 describe('consistent insight articles and curation', () => {
   it('publishes both recent property insights in English and Korean without draft tokens', () => {
-    for (const slug of ['singapore-condo-prices-2026-by-project', 'tokyo-asking-price-vs-contracted-price-2026']) {
+    for (const slug of ['singapore-small-condo-first-upgrade-trap', 'dubai-buy-now-or-too-late']) {
       for (const locale of ['en', 'ko'] as const) {
         const article = getPortfolioRecord(locale, slug);
         expect(article).not.toBeNull();
         expect(article!.title + article!.bodyMarkdown).not.toMatch(/\[(?:n|month|date|district[^\]]*)\]/i);
         const html = renderToStaticMarkup(<NewsroomArticle article={article!} />);
         expect(html).toContain('id="section-1"');
-        expect(html).toContain('%2Fassets%2Feditorial-2026-09%2F');
+        expect(html).toContain('data-neighbourhood-photo');
         expect(html).toContain('id="article-sources-title"');
         expect(article!.canonicalHref).toBe(`${locale === 'ko' ? '/ko' : ''}/news/${slug}/`);
       }
@@ -66,7 +66,7 @@ describe('consistent insight articles and curation', () => {
       expect(item.photo?.src.startsWith('/')).toBe(true);
       expect(existsSync(fileURLToPath(new URL(`../public${item.photo?.src}`, import.meta.url)))).toBe(true);
     }
-    expect(new Set(items.map(item => item.photo?.src)).size).toBeGreaterThanOrEqual(23);
+    expect(new Set(items.map(item => item.photo?.src)).size).toBeGreaterThanOrEqual(19);
     expect(items.some(item => item.href.endsWith('/wangsimni/') || item.href.endsWith('/mangwon/'))).toBe(false);
     expect(journeyArticlePhoto('seoul', 'wangsimni')?.src).toContain('wangsimni-station');
     expect(journeyArticlePhoto('seoul', 'mangwon')?.src).toContain('mangwon-river');
@@ -85,7 +85,7 @@ describe('consistent insight articles and curation', () => {
     expect(html).toContain(article.title.replaceAll("'", '&#x27;'));
   });
 
-  it('moves four coverage explainers out of Latest stories while preserving their pages and monthly-report links', () => {
+  it('removes retired coverage explainers from discovery and related reading', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-09-10T12:00:00Z'));
     const items = buildInsightItems([], 'all');
@@ -94,8 +94,8 @@ describe('consistent insight articles and curation', () => {
     const singapore = renderToStaticMarkup(<NewsroomArticle article={getPortfolioRecord('en', 'singapore-monthly-2026-09')!} />);
     for (const slug of INSIGHT_REFERENCE_SLUGS) {
       expect(items.some(item => item.href.includes(slug))).toBe(false);
-      expect(getPortfolioRecord('en', slug)?.status).toBe('published');
-      expect(seoul + singapore).toContain(`/news/${slug}`);
+      expect(getPortfolioRecord('en', slug)).toBeNull();
+      expect(seoul + singapore).not.toContain(`/news/${slug}`);
     }
   });
 });

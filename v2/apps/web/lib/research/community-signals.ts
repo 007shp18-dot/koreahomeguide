@@ -25,6 +25,7 @@ export const communitySignalSchema = z.object({
   personas: z.array(z.enum(['family', 'couple', 'investor'])).min(1),
   title: text,
   body: text,
+  reaction: z.object({ ko: z.string().trim().min(1), en: z.string().trim().min(1) }).optional(),
   visitQuestion: text,
   sources: z.array(z.object({
     url: z.url().refine(value => value.startsWith('https://'), 'Use the inspected HTTPS source URL'),
@@ -59,8 +60,7 @@ export type CommunityCheck = {
 const signals = [...seoul, ...singapore, ...dubai, ...tokyo].map(value => communitySignalSchema.parse(value));
 if (new Set(signals.map(signal => signal.id)).size !== signals.length) throw new Error('Duplicate community signal identities');
 
-/** Retained for editorial verification; consumers render localized questions,
- * not the source URLs or the researcher's notes. */
+/** Inspected evidence; researcher context is never included in public cards. */
 export function communityEvidenceRecords(): readonly CommunitySignal[] { return signals; }
 
 /** Exact identity matching avoids introducing another neighbourhood's issue.
@@ -71,13 +71,15 @@ export function selectCommunitySignals(
   review: PropertyReview,
   persona: DecisionPersona,
   analysisScope: 'property' | 'area' = 'property',
+  options: { allPersonas?: boolean; limit?: number; excludeComparisons?: boolean } = {},
 ): CommunitySignal[] {
   const areaPrefix = `area-${review.marketId}-`;
   const areaKey = analysisScope === 'area' && review.id.startsWith(areaPrefix) ? review.id.slice(areaPrefix.length) : null;
   const profiles = new Set(analysisScope === 'area'
     ? review.sources.flatMap(source => source.id.includes('::') ? [source.id.slice(0, source.id.indexOf('::'))] : [])
     : [review.id]);
-  const ranked = rows.filter(signal => signal.marketId === review.marketId && signal.personas.includes(persona)
+  const ranked = rows.filter(signal => signal.marketId === review.marketId && (options.allPersonas || signal.personas.includes(persona))
+    && (!options.excludeComparisons || signal.mappingScope !== 'comparable-setting')
     && (signal.profileIds.some(id => profiles.has(id)) || (areaKey !== null && signal.areaKeys.includes(areaKey))))
     .map((signal, index) => ({ signal, index,
       evidenceRank: signal.mappingScope === 'named-property' ? 0 : signal.mappingScope === 'area-context' ? 1 : 2,
@@ -91,9 +93,25 @@ export function selectCommunitySignals(
     if (identities.has(signal.id)) continue;
     selected.push(signal);
     identities.add(signal.id);
-    if (selected.length === 3) break;
+    if (selected.length === (options.limit ?? 3)) break;
   }
   return selected;
+}
+
+/** The same inspected accounts stay visible when the reader changes persona.
+ * Six is a display ceiling, never a required number of topics or reviewers. */
+export function getCommunityDiscussions(review: PropertyReview, locale: MarketLocale, analysisScope: 'property' | 'area' = 'property') {
+  return selectCommunitySignals(signals, review, 'family', analysisScope, { allPersonas: true, limit: 6, excludeComparisons: true })
+    .filter(signal => signal.reaction)
+    .map(signal => {
+      const reaction = signal.reaction![locale === 'ko' ? 'ko' : 'en'];
+      return {
+        id: signal.id, title: signal.title[locale], mappingScope: signal.mappingScope,
+        reaction, reactionLanguage: locale === 'ko' ? 'ko' : 'en',
+        implication: reaction === signal.body[locale] ? signal.visitQuestion[locale] : signal.body[locale],
+        sources: signal.sources.map(({ url, title, publishedOn, inspectedOn, scope }) => ({ url, title, publishedOn, inspectedOn, scope })),
+      };
+    });
 }
 
 export function getCommunitySignals(review: PropertyReview, persona: DecisionPersona, locale: MarketLocale, analysisScope: 'property' | 'area' = 'property'): CommunityCheck[] {

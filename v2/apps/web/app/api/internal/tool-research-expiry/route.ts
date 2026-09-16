@@ -13,6 +13,8 @@ export async function GET(request: Request): Promise<Response> {
     aggregate: async now => {
       const database = contentDatabase();
       if (!database) throw new Error('storage_not_configured');
+      await database.query('DELETE FROM purchase_enquiries WHERE expires_at <= $1::timestamptz', [now.toISOString()]);
+      await database.query("DELETE FROM sp_qa_rate_limits WHERE key LIKE 'enquiry:%' AND expires_at <= $1::timestamptz", [now.toISOString()]);
       await aggregateToolResearch({ query: (statement, params = []) => database.query(statement, [...params]) }, now);
     },
   });

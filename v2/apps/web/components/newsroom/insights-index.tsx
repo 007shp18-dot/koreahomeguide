@@ -53,7 +53,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
     href: 'canonicalHref' in item ? String(item.canonicalHref) : `${item.locale === 'ko' ? '/ko' : item.locale === 'zh-CN' ? '/zh-cn' : ''}/news/${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`,
     date: item.publishedAt, city: cities.find(city => marketIds[city] === item.marketId) ?? null,
     topic: isNeighborhoodEditorial(item.slug) ? 'Neighborhood living' : topicFor(englishTitles.get(item.slug) ?? ('translationGroupId' in item && typeof item.translationGroupId === 'string' ? englishTitles.get(item.translationGroupId) : undefined) ?? item.title, item.type, item.slug),
-    type: item.type, photo: insightPhoto(item.slug), uploadedPhoto: editorialImages(item.bodyMarkdown)[0],
+    type: item.type, requiresLocalPhoto: isNeighborhoodEditorial(item.slug), photo: insightPhoto(item.slug), uploadedPhoto: editorialImages(item.bodyMarkdown)[0],
   }));
   const seen = new Set<string>();
   const now = Date.now();

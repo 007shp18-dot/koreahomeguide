@@ -1,0 +1,491 @@
+{
+  "generatedAt": "2026-09-02T00:00:00.000Z",
+  "sourceDigest": "19098145e0d64ede336d87f6216bf89b920d9b830bddf4fdb573c02920343052",
+  "sourcePath": "data/korea-sale-evidence.json.gz",
+  "selection": "Three editorial examples outside the canonical budget shortlist; retained recent-sale rows only, maximum 20 per building, exact 59–<60 and 84–<85 sqm, at least five in each group. Not a complete or matched-unit sample.",
+  "examples": [
+    {
+      "officialName": "월계센트럴아이파크",
+      "buildingId": "nowon-gu-13g1n6q",
+      "districtSlug": "nowon-gu",
+      "groups": [
+        {
+          "area": 59,
+          "n": 7,
+          "median": 1050000000,
+          "records": [
+            {
+              "areaSqm": 59.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-06",
+              "floor": 12,
+              "priceWon": 1078000000
+            },
+            {
+              "areaSqm": 59.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 24,
+              "priceWon": 1080000000
+            },
+            {
+              "areaSqm": 59.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 13,
+              "priceWon": 1050000000
+            },
+            {
+              "areaSqm": 59.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 11,
+              "priceWon": 1023000000
+            },
+            {
+              "areaSqm": 59.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 20,
+              "priceWon": 1050000000
+            },
+            {
+              "areaSqm": 59.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 5,
+              "priceWon": 1038000000
+            },
+            {
+              "areaSqm": 59.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 20,
+              "priceWon": 1050000000
+            }
+          ]
+        },
+        {
+          "area": 84,
+          "n": 13,
+          "median": 1170000000,
+          "records": [
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-07",
+              "floor": 18,
+              "priceWon": 1250000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-07",
+              "floor": 4,
+              "priceWon": 1150000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-07",
+              "floor": 22,
+              "priceWon": 1240000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-06",
+              "floor": 5,
+              "priceWon": 1200000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-06",
+              "floor": 20,
+              "priceWon": 1180000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-06",
+              "floor": 10,
+              "priceWon": 1145000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 26,
+              "priceWon": 1250000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 29,
+              "priceWon": 1170000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 4,
+              "priceWon": 1105000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 6,
+              "priceWon": 1150000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 6,
+              "priceWon": 1100000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 18,
+              "priceWon": 850000000
+            },
+            {
+              "areaSqm": 84.99,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 27,
+              "priceWon": 1245000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "officialName": "양평현대6차",
+      "buildingId": "yeongdeungpo-gu-un2xfd",
+      "districtSlug": "yeongdeungpo-gu",
+      "groups": [
+        {
+          "area": 59,
+          "n": 11,
+          "median": 1360000000,
+          "records": [
+            {
+              "areaSqm": 59.98,
+              "buildYear": 2000,
+              "filedMonth": "2026-07",
+              "floor": 20,
+              "priceWon": 1420000000
+            },
+            {
+              "areaSqm": 59.98,
+              "buildYear": 2000,
+              "filedMonth": "2026-07",
+              "floor": 8,
+              "priceWon": 1400000000
+            },
+            {
+              "areaSqm": 59.98,
+              "buildYear": 2000,
+              "filedMonth": "2026-07",
+              "floor": 8,
+              "priceWon": 1385000000
+            },
+            {
+              "areaSqm": 59.98,
+              "buildYear": 2000,
+              "filedMonth": "2026-06",
+              "floor": 5,
+              "priceWon": 1378000000
+            },
+            {
+              "areaSqm": 59.98,
+              "buildYear": 2000,
+              "filedMonth": "2026-06",
+              "floor": 6,
+              "priceWon": 1360000000
+            },
+            {
+              "areaSqm": 59.98,
+              "buildYear": 2000,
+              "filedMonth": "2026-06",
+              "floor": 7,
+              "priceWon": 1360000000
+            },
+            {
+              "areaSqm": 59.98,
+              "buildYear": 2000,
+              "filedMonth": "2026-05",
+              "floor": 10,
+              "priceWon": 1330000000
+            },
+            {
+              "areaSqm": 59.98,
+              "buildYear": 2000,
+              "filedMonth": "2026-04",
+              "floor": 15,
+              "priceWon": 1405000000
+            },
+            {
+              "areaSqm": 59.98,
+              "buildYear": 2000,
+              "filedMonth": "2026-04",
+              "floor": 3,
+              "priceWon": 1360000000
+            },
+            {
+              "areaSqm": 59.98,
+              "buildYear": 2000,
+              "filedMonth": "2026-02",
+              "floor": 18,
+              "priceWon": 1360000000
+            },
+            {
+              "areaSqm": 59.98,
+              "buildYear": 2000,
+              "filedMonth": "2026-02",
+              "floor": 5,
+              "priceWon": 1160000000
+            }
+          ]
+        },
+        {
+          "area": 84,
+          "n": 9,
+          "median": 1500000000,
+          "records": [
+            {
+              "areaSqm": 84.92,
+              "buildYear": 2000,
+              "filedMonth": "2026-07",
+              "floor": 9,
+              "priceWon": 1490000000
+            },
+            {
+              "areaSqm": 84.94,
+              "buildYear": 2000,
+              "filedMonth": "2026-06",
+              "floor": 18,
+              "priceWon": 1540000000
+            },
+            {
+              "areaSqm": 84.94,
+              "buildYear": 2000,
+              "filedMonth": "2026-05",
+              "floor": 22,
+              "priceWon": 1540000000
+            },
+            {
+              "areaSqm": 84.94,
+              "buildYear": 2000,
+              "filedMonth": "2026-05",
+              "floor": 14,
+              "priceWon": 1537000000
+            },
+            {
+              "areaSqm": 84.94,
+              "buildYear": 2000,
+              "filedMonth": "2026-05",
+              "floor": 5,
+              "priceWon": 1535000000
+            },
+            {
+              "areaSqm": 84.94,
+              "buildYear": 2000,
+              "filedMonth": "2026-05",
+              "floor": 5,
+              "priceWon": 1500000000
+            },
+            {
+              "areaSqm": 84.94,
+              "buildYear": 2000,
+              "filedMonth": "2026-05",
+              "floor": 7,
+              "priceWon": 1445000000
+            },
+            {
+              "areaSqm": 84.94,
+              "buildYear": 2000,
+              "filedMonth": "2026-05",
+              "floor": 19,
+              "priceWon": 1490000000
+            },
+            {
+              "areaSqm": 84.94,
+              "buildYear": 2000,
+              "filedMonth": "2026-02",
+              "floor": 1,
+              "priceWon": 1335000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "officialName": "북한산두산위브",
+      "buildingId": "seodaemun-gu-exlxsq",
+      "districtSlug": "seodaemun-gu",
+      "groups": [
+        {
+          "area": 59,
+          "n": 6,
+          "median": 857500000.0,
+          "records": [
+            {
+              "areaSqm": 59.93,
+              "buildYear": 2020,
+              "filedMonth": "2026-07",
+              "floor": 9,
+              "priceWon": 880000000
+            },
+            {
+              "areaSqm": 59.54,
+              "buildYear": 2020,
+              "filedMonth": "2026-07",
+              "floor": 5,
+              "priceWon": 890000000
+            },
+            {
+              "areaSqm": 59.68,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 17,
+              "priceWon": 850000000
+            },
+            {
+              "areaSqm": 59.68,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 3,
+              "priceWon": 860000000
+            },
+            {
+              "areaSqm": 59.54,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 8,
+              "priceWon": 840000000
+            },
+            {
+              "areaSqm": 59.68,
+              "buildYear": 2020,
+              "filedMonth": "2026-02",
+              "floor": 7,
+              "priceWon": 855000000
+            }
+          ]
+        },
+        {
+          "area": 84,
+          "n": 14,
+          "median": 985000000.0,
+          "records": [
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-07",
+              "floor": 14,
+              "priceWon": 1078000000
+            },
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 12,
+              "priceWon": 1010000000
+            },
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 10,
+              "priceWon": 1050000000
+            },
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 12,
+              "priceWon": 960000000
+            },
+            {
+              "areaSqm": 84.78,
+              "buildYear": 2020,
+              "filedMonth": "2026-05",
+              "floor": 8,
+              "priceWon": 990000000
+            },
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 12,
+              "priceWon": 958000000
+            },
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 13,
+              "priceWon": 1000000000
+            },
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 14,
+              "priceWon": 930000000
+            },
+            {
+              "areaSqm": 84.78,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 5,
+              "priceWon": 980000000
+            },
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-04",
+              "floor": 11,
+              "priceWon": 990000000
+            },
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-03",
+              "floor": 4,
+              "priceWon": 950000000
+            },
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-03",
+              "floor": 21,
+              "priceWon": 1010000000
+            },
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-02",
+              "floor": 2,
+              "priceWon": 950000000
+            },
+            {
+              "areaSqm": 84.98,
+              "buildYear": 2020,
+              "filedMonth": "2026-02",
+              "floor": 9,
+              "priceWon": 970000000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

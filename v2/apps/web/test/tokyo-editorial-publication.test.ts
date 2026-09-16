@@ -6,7 +6,6 @@ vi.mock('../lib/db/postgres.server', () => ({
 }));
 import { parseEditorialArticleInput } from '../app/api/internal/content-articles/route';
 import { saveEditorialArticle } from '../lib/insights/content-article-store.server';
-import { refreshDiscovery } from '../content/editorial-discovery';
 import { TOKYO_RENEWAL_ARTICLES } from '../content/tokyo-renewal-2026-09-11';
 import { articleFromRow } from '../lib/content/content-repository.server';
 import { buildInsightItems } from '../components/newsroom/insights-index';
@@ -15,7 +14,7 @@ beforeEach(() => { vi.clearAllMocks(); mocks.sql.mockReturnValue(Promise.resolve
 
 describe('Tokyo editorial publication', () => {
   it('accepts reviewed Tokyo articles and persists Japan identifiers', async () => {
-    const a = TOKYO_RENEWAL_ARTICLES[0]!;
+    const a = { ...TOKYO_RENEWAL_ARTICLES[0]!, slug: 'tokyo-reviewed-market-example' };
     const payload = { slug: a.slug, marketKey: 'tokyo', title: a.title, summary: a.deck, bodyMarkdown: a.bodyMarkdown,
       status: 'published', locale: a.locale, contentType: a.type, evidenceState: a.evidenceState, reviewedBy: a.reviewedBy, sources: a.sources };
     const input = parseEditorialArticleInput(payload);
@@ -31,10 +30,10 @@ describe('Tokyo editorial publication', () => {
     expect(parseEditorialArticleInput({ ...payload, marketKey: 'unsupported' })).toBeNull();
   });
 
-  it.each(['en', 'ko', 'zh-CN'] as const)('shows the translated article in Tokyo Investment: %s', locale => {
+  it.each(['en', 'ko', 'zh-CN'] as const)('excludes the retired renewal introduction from Tokyo Investment: %s', locale => {
     const article = TOKYO_RENEWAL_ARTICLES.find(a => a.locale === locale)!;
     const found = buildInsightItems([], 'tokyo', locale, 'investment').find(item => item.href === article.canonicalHref);
-    expect(found).toMatchObject({ title: refreshDiscovery(article).title, language: locale, city: 'tokyo', investment: true });
+    expect(found).toBeUndefined();
     expect(article.bodyMarkdown.match(/^## /gm)).toHaveLength(locale === 'zh-CN' ? 4 : 3);
   });
 });

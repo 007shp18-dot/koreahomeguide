@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import seoul from '../content/property-reviews/seoul.json';
 import { propertyReviewSchema, type PropertyReview } from '../lib/research/property-review';
 import { allReviewLocations } from '../lib/research/property-review-locations';
-import { communityEvidenceRecords, communitySignalSchema, getCommunitySignals, selectCommunitySignals, type CommunitySignal } from '../lib/research/community-signals';
+import { getCommunityDiscussions, communityEvidenceRecords, communitySignalSchema, getCommunitySignals, selectCommunitySignals, type CommunitySignal } from '../lib/research/community-signals';
 import { PropertyDecisionReport } from '../components/market-ui/property-decision-report';
 
 const helio = propertyReviewSchema.parse(seoul.find(review => review.id === 'kr-helio-city'));
@@ -87,11 +87,34 @@ describe('community experience remains scoped evidence for viewing questions', (
     }
   });
 
-  it('renders source-free actionable viewing questions only where coverage exists', () => {
+  it('renders inspected accounts, scope and dated source links without claiming a resident survey', () => {
     const html = renderToStaticMarkup(createElement(PropertyDecisionReport, { review: helio, locale: 'en', persona: 'family', onPersonaChange: () => {} }));
-    expect(html).not.toContain('data-community-checks=');
+    const records = getCommunityDiscussions(helio, 'en');
+    expect(records.length).toBeGreaterThan(0);
+    expect(html).toContain('data-community-discussion');
+    expect(html).toContain('data-community-scope="named-property"');
+    expect(html).toContain(records[0]!.sources[0]!.url.replaceAll('&', '&amp;'));
+    expect(html).toContain('2026-09-14');
     expect(html).not.toContain('Recurring observations in reviews');
-    const uncovered = renderToStaticMarkup(createElement(PropertyDecisionReport, { review: { ...helio, id: 'kr-unreviewed-property' }, locale: 'en', persona: 'family', onPersonaChange: () => {} }));
-    expect(uncovered).not.toContain('data-community-checks=');
+    expect(html).not.toContain('reviewers agreed');
+    expect(html).toContain('data-document-checks');
+    const uncovered = getCommunityDiscussions({ ...helio, id: 'kr-unreviewed-property' }, 'en');
+    expect(uncovered).toEqual([]);
+  });
+
+  it('keeps direct and area accounts separate in every city and exposes no researcher notes', () => {
+    for (const city of ['seoul', 'singapore', 'dubai', 'tokyo']) {
+      const rows = communityEvidenceRecords().filter(row => row.marketId.endsWith(city));
+      expect(rows.length).toBeGreaterThan(0);
+      expect(rows.every(row => row.reaction?.en && row.reaction?.ko)).toBe(true);
+      for (const row of rows) {
+        const review = { ...helio, id: row.profileIds[0] ?? helio.id, marketId: row.marketId };
+        const cards = getCommunityDiscussions(review, 'en');
+        expect(cards.length).toBeLessThanOrEqual(6);
+        expect(cards.every(card => card.mappingScope !== 'comparable-setting')).toBe(true);
+        for (const card of cards) for (const source of card.sources) expect(source).not.toHaveProperty('context');
+        expect(new Set(cards.map(card => card.id)).size).toBe(cards.length);
+      }
+    }
   });
 });

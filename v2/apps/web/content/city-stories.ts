@@ -305,10 +305,10 @@ const BASE_CITY_STORIES: readonly [CityStory, ...CityStory[]] = [
         },
         "links": [
           {
-            "href": "/news/singapore-ccr-rcr-ocr-comparison/",
+            "href": "/guides/singapore-condo-buying-budget-guide/",
             "label": {
-              "en": "Compare the three regions",
-              "ko": "세 지역의 실제 가격 비교하기"
+              "en": "Compare condos by purchase budget",
+              "ko": "예산별 콘도 거래 비교하기"
             }
           }
         ]
