@@ -78,12 +78,15 @@ test('includes production sources while excluding tests, artifacts, dependencies
   }]);
 });
 
-test('retains the three known production labels through fixed-rate dataflow', () => {
+test('retains known production labels and the documented editorial JSON match', () => {
   assert.deepEqual(
     auditMethodologyCopy(process.cwd()).map(({ file, line, code }) => ({ file, line, code })),
     [
       { file: 'deposit-conversion.js', line: 18, code: 'fixed_rate_called_statutory' },
       { file: 'rent-check-ui-utils.js', line: 284, code: 'fixed_rate_called_statutory' },
+      // The line-based scanner also sees a hypothetical 5% Bitcoin fall and
+      // unrelated legal wording on one JSON line; this is not a statutory rate claim.
+      { file: 'v2/apps/web/content/editions/september-16-crypto/dubai-crypto.json', line: 2, code: 'fixed_rate_called_statutory' },
       { file: 'zh/rent-check-ui-utils.js', line: 277, code: 'fixed_rate_called_statutory' }
     ]
   );
