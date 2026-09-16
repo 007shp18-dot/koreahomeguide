@@ -33,7 +33,7 @@ export default function PrivacyPage() {
         </header>
         <section className={styles.notice} aria-labelledby="privacy-summary">
           <div>
-            <p className={styles.meta}>Effective 14 September 2026 · Current public product</p>
+            <p className={styles.meta}>Effective 16 September 2026 · Current public product</p>
             <h2 id="privacy-summary">We do not sell personal information.</h2>
           </div>
           <p>
@@ -58,7 +58,7 @@ export default function PrivacyPage() {
               <li>Privacy choices stored in your browser.</li>
               <li>Daily tool-completion counts grouped only by tool and city, with no input values, browser identifiers or individual event records. Historical voluntary research contributions remain subject to their original deletion and expiry controls.</li>
               <li>Structured community selections and a separate opaque first-party identifier when that feature is available.</li>
-              <li>Your email address and message when you contact us.</li>
+              <li>Your email address and message when you contact us. The purchase-enquiry form also stores your selected city, optional budget, purchase purpose, timing, language, consent version and submission time. These details are used to handle your enquiry, not for marketing.</li>
             </ul>
           </article>
           <article>
@@ -85,12 +85,12 @@ export default function PrivacyPage() {
           <article>
             <p className={styles.meta}>07 · Providers</p>
             <h2>Maps and infrastructure</h2>
-            <p>Hosting, security, analytics, advertising and map providers may receive technical request information needed to provide their service. Google Maps and NAVER Maps are loaded only on pages that use those maps. Their own privacy terms also apply.</p>
+            <p>The purchase-enquiry form is hosted by Vercel and stores its records in our Neon database, accessible through a restricted operator inbox. Hosting, security, analytics, advertising and map providers may receive technical request information needed to provide their service. Google Maps and NAVER Maps are loaded only on pages that use those maps. Their own privacy terms also apply.</p>
           </article>
           <article>
             <p className={styles.meta}>08 · Retention</p>
             <h2>How long we keep it</h2>
-            <p>We keep information only for the period needed for the purpose above, security, dispute handling or a legal obligation. Non-identifying daily aggregate usage counts may be retained for product planning. Historical optional product-research contributions are deleted automatically after 90 days. Their ownership cookie can remain for up to 12 months; clearing it means the browser can no longer find earlier contributions for direct deletion, but those records still expire after 90 days. Consent choices remain on your device until cleared; the separate community identifier expires after 12 months; contact messages are deleted or archived when no longer needed.</p>
+            <p>We keep information only for the period needed for the purpose above, security, dispute handling or a legal obligation. Non-identifying daily aggregate usage counts may be retained for product planning. Historical optional product-research contributions are deleted automatically after 90 days. Their ownership cookie can remain for up to 12 months; clearing it means the browser can no longer find earlier contributions for direct deletion, but those records still expire after 90 days. Consent choices remain on your device until cleared; the separate community identifier expires after 12 months; purchase-enquiry records are retained for 90 days and removed in the next daily cleanup. They are hidden from the operator inbox once that period ends. You can request earlier deletion by emailing the privacy address. Daily rotating, keyed network hashes limit form abuse; raw IP addresses are not stored with enquiries. Other correspondence is deleted or archived when no longer needed.</p>
           </article>
           <article>
             <p className={styles.meta}>09 · Your rights</p>

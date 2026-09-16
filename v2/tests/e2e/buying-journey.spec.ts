@@ -67,7 +67,12 @@ test('without JavaScript every city still offers a guide and an explorer', async
 });
 
 for (const [locale,prefix] of [['en',''],['ko','/ko'],['zh-CN','/zh-cn']] as const) {
- test(`${locale} prepares a purchase enquiry without claiming submission`,async({page})=>{
+ test(`${locale} receives a purchase enquiry only after a successful response`,async({page})=>{
+  const requests: Record<string, unknown>[] = [];
+  await page.route('**/api/purchase-enquiries/',async route=>{
+   const body=route.request().postDataJSON(); requests.push(body);
+   await route.fulfill({status:requests.length===1?503:201,contentType:'application/json',body:JSON.stringify(requests.length===1?{error:'unavailable'}:{state:'received',reference:body.requestId})});
+  });
   await page.goto(`${prefix}/contact/?city=tokyo&budget=50000000`,{waitUntil:'domcontentloaded'});
   const enquiry=page.locator('#purchase-enquiry');
   const selects=enquiry.getByRole('combobox');
@@ -75,16 +80,26 @@ for (const [locale,prefix] of [['en',''],['ko','/ko'],['zh-CN','/zh-cn']] as con
   await expect(enquiry.locator('input[type="number"]')).toHaveValue('50000000');
   await selects.nth(0).selectOption('dubai');
   await expect(enquiry.locator('input[type="number"]')).toHaveValue('');
-  await selects.nth(1).selectOption({index:1});
-  await selects.nth(2).selectOption({index:1});
+  await selects.nth(1).selectOption('own-use');
+  await selects.nth(2).selectOption('soon');
+  await enquiry.locator('input[type="email"]').fill('buyer@example.com');
   await enquiry.locator('textarea').fill('Compare two homes & check costs');
   await enquiry.getByRole('button').click();
-  const email=enquiry.locator('a[href^="mailto:"][href*="subject="]');
-  await expect(email).toHaveCount(1);
-  const url=new URL((await email.getAttribute('href'))!);
-  expect(url.pathname).toBe('contact@signedprice.com');
-  expect(url.searchParams.get('body')).toContain('Compare two homes & check costs');
-  await expect(enquiry.locator('textarea[readonly]')).toBeVisible();
+  expect(requests).toHaveLength(0);
+  await enquiry.getByRole('checkbox').check();
+  const bounds=await enquiry.locator('select,input[type="number"],input[type="email"]').evaluateAll(elements=>elements.map(el=>el.getBoundingClientRect().height));
+  expect(bounds.every(height=>height===48)).toBe(true);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await test.info().attach(`purchase-enquiry-${locale}`,{body:await page.screenshot(),contentType:'image/png'});
+  await enquiry.getByRole('button').click();
+  await expect(enquiry.getByRole('alert')).toBeVisible();
+  await expect(enquiry.locator('textarea')).toHaveValue('Compare two homes & check costs');
+  await enquiry.getByRole('button').click();
+  await expect(enquiry.getByRole('status')).toBeVisible();
+  expect(requests).toHaveLength(2);
+  expect(requests[0]?.requestId).toBe(requests[1]?.requestId);
+  expect(requests[1]).toMatchObject({city:'dubai',budget:'',locale,consent:true,email:'buyer@example.com'});
+  await expect(enquiry.locator('form')).toHaveCount(0);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  });
 }

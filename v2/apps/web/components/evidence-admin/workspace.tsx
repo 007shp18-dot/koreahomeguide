@@ -1,4 +1,5 @@
 'use client';
+import { EnquiriesPanel } from './enquiries-panel';
 import { AdminQuestions } from '../questions/admin-questions';
 import { OverviewPanel } from './overview-panel';
 import { EditorialOperationsPanel } from './editorial-operations-panel';
@@ -15,6 +16,7 @@ import { ResearchPanel } from './research-panel';
 import styles from './workspace.module.css';
 
 const views = {
+  enquiries: ['구매상담', '새 문의를 확인하고 답변과 처리 상태를 관리하세요.'],
   overview: ['운영 현황', '수집 결과와 확인할 항목, 발행할 글을 한곳에서 확인하세요.'],
   questions: ['질문·답변', '질문과 답변을 관리하고 신고·검토 대기를 확인하세요.'],
   operations: ['글 작성·관리', '기사를 검색하고 초안 저장부터 발행까지 진행하세요.'],
@@ -52,7 +54,7 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null, initia
   const [data, setData] = useState<PoolData | null>(initialData);
   const tab = useSyncExternalStore(subscribeView, currentView, () => null) ?? initialView;
   function setTab(view: AdminView) { window.history.pushState(null, '', `#${view}`); window.dispatchEvent(new HashChangeEvent('hashchange')); }
-  const needsPool = !['overview', 'operations', 'questions', 'research', 'collection'].includes(tab);
+  const needsPool = !['overview', 'operations', 'questions', 'research', 'collection', 'enquiries'].includes(tab);
   const [selected, setSelected] = useState<{ entity: 'source' | 'evidence'; id: string } | null>(null);
   const [filters, setFilterValues] = useState({ market: '', status: '', quality: '', q: '', page: 1, sourcePage: 1 });
   const [checked, setChecked] = useState<string[]>([]);
@@ -114,7 +116,7 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null, initia
   </section></main>;
   return <div className={styles.shell}>
     <aside className={styles.sidebar}><Link href="/" prefetch={false} className={styles.brand}>signedprice<span>INTERNAL</span></Link><nav aria-label="관리 메뉴">{([
-      ['시작', ['overview']], ['콘텐츠', ['operations', 'questions']], ['자료', ['evidence', 'sources', 'create', 'research']], ['운영', ['collection']],
+      ['시작', ['overview']], ['콘텐츠', ['operations', 'questions']], ['자료', ['evidence', 'sources', 'create', 'research']], ['운영', ['enquiries', 'collection']],
     ] as const).map(([group, entries]) => <div key={group} className={styles.navGroup}><p className={styles.eyebrow}>{group}</p>{entries.map(view => <button key={view} type="button" aria-current={tab === view ? 'page' : undefined} onClick={() => { setTab(view); setSelected(null); }}>{views[view][0]}{view === 'evidence' && <span>{data?.counts.pending ?? '—'}</span>}</button>)}</div>)}</nav><div className={styles.sidebarFoot}><p>내부 전용 · 공개되지 않음</p><small>수집·원문 검토·자료 승인·사이트 공개 시점을 구분해 확인하세요.</small><button type="button" disabled={busy} onClick={() => void logout()}>로그아웃</button></div></aside>
     <main className={styles.main}>
       <header className={styles.header}><div><p className={styles.eyebrow}>SIGNEDPRICE / 관리</p><h1>{views[tab][0]}</h1><p>{views[tab][1]}</p></div><div className={styles.actions}><Link href="/" target="_blank" rel="noreferrer" prefetch={false}>사이트 보기 ↗</Link>{needsPool && <button type="button" disabled={loading || busy} onClick={() => { setLoading(true); void load(); }}>{loading ? '불러오는 중…' : '자료 새로고침'}</button>}</div></header>
@@ -128,6 +130,7 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null, initia
       {['sources', 'create', 'evidence'].includes(tab) && data && (data.sourceTotal ?? 0) > 100 && <div className={styles.pagination} style={{ marginBottom: '1rem' }} aria-label="출처 페이지"><span>선택할 출처 {filters.sourcePage} / {Math.ceil((data.sourceTotal ?? 0) / 100)} 페이지</span><button type="button" disabled={loading || busy || filters.sourcePage <= 1} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage - 1 }); }}>이전 출처</button><button type="button" disabled={loading || busy || filters.sourcePage * 100 >= (data.sourceTotal ?? 0)} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage + 1 }); }}>다음 출처</button></div>}
       <section hidden={tab !== 'operations'} className={styles.panel}><EditorialOperationsPanel requestedSearch={editorialSearch} /></section>
       {tab === 'collection' && <section className={styles.panel}><CollectionPanel onUnauthorized={expireSession} /></section>}
+      {tab === 'enquiries' && <section className={styles.panel}><EnquiriesPanel onUnauthorized={expireSession} /></section>}
       {tab === 'questions' && <section className={styles.panel}><AdminQuestions /></section>}
       {tab === 'research' && <section className={styles.panel}><ResearchPanel /></section>}
       {['evidence', 'sources', 'create'].includes(tab) && data && <div className={selectedRow ? styles.split : ''}>

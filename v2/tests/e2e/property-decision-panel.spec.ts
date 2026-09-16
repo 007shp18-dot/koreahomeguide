@@ -99,7 +99,7 @@ test('desktop close, legacy links and expanded report keep the data mounted and 
   const scrollBefore = await page.evaluate(() => window.scrollY);
   await legacy.click();
   await expect(panel).toBeVisible();
-  await expect(panel.getByRole('radio', { name: 'Rental / investment', exact: true })).toBeChecked();
+  await expect(panel.getByRole('radio', { name: 'Rental / investment', exact: true, includeHidden: true })).toBeChecked();
   expect(new URL(page.url()).hash).toBe('#property-review');
   expect(new URL(page.url()).search).toBe('?year=2025&quarter=4');
   expect(Math.abs(await page.evaluate(() => window.scrollY) - scrollBefore)).toBeLessThanOrEqual(2);
@@ -109,7 +109,7 @@ test('desktop close, legacy links and expanded report keep the data mounted and 
   await expect(dialog).toBeVisible();
   expect(await dialog.evaluate(element => element.matches(':modal'))).toBe(true);
   await expect(sidePanel(page)).toHaveCount(0);
-  await expect(dialog.getByRole('radio', { name: 'Rental / investment', exact: true })).toBeChecked();
+  await expect(dialog.getByRole('radio', { name: 'Rental / investment', exact: true, includeHidden: true })).toBeChecked();
   expect(await mountedData!.evaluate(element => element.isConnected)).toBe(true);
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
@@ -151,10 +151,10 @@ test('mobile report opens on demand, traps focus, locks the background and retai
   await page.setViewportSize({ width: 1366, height: 900 });
   await expect(dialog).toHaveCount(0);
   await expect(sidePanel(page)).toBeVisible();
-  await expect(sidePanel(page).getByRole('radio', { name: 'Rental / investment', exact: true })).toBeChecked();
+  await expect(sidePanel(page).getByRole('radio', { name: 'Rental / investment', exact: true, includeHidden: true })).toBeChecked();
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole('radio', { name: 'Rental / investment', exact: true })).toBeChecked();
+  await expect(dialog.getByRole('radio', { name: 'Rental / investment', exact: true, includeHidden: true })).toBeChecked();
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
   await expect(trigger).toBeFocused();
@@ -235,6 +235,6 @@ test('static Seoul research stays available when its optional API is unavailable
   await expect(renewal).toHaveAttribute('aria-pressed', 'true');
   expect(await selectedControls.evaluateAll(links => links.map(link => link.getAttribute('href')))).toEqual(selectedLinks);
   await expect(workspace).toHaveCount(1);
-  await expect(panel.getByRole('radio', { name: 'Rental / investment', exact: true })).toBeChecked();
+  await expect(panel.getByRole('radio', { name: 'Rental / investment', exact: true, includeHidden: true })).toBeChecked();
   expect(new URL(page.url()).search).toBe(query);
 });
