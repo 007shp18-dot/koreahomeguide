@@ -102,13 +102,13 @@ export function selectCommunitySignals(
  * Six is a display ceiling, never a required number of topics or reviewers. */
 export function getCommunityDiscussions(review: PropertyReview, locale: MarketLocale, analysisScope: 'property' | 'area' = 'property') {
   return selectCommunitySignals(signals, review, 'family', analysisScope, { allPersonas: true, limit: 6, excludeComparisons: true })
-    .filter(signal => signal.reaction)
+    .filter(signal => signal.reaction && (analysisScope === 'area' || signal.mappingScope === 'named-property'))
     .map(signal => {
       const reaction = signal.reaction![locale === 'ko' ? 'ko' : 'en'];
       return {
         id: signal.id, title: signal.title[locale], mappingScope: signal.mappingScope,
         reaction, reactionLanguage: locale === 'ko' ? 'ko' : 'en',
-        implication: reaction === signal.body[locale] ? signal.visitQuestion[locale] : signal.body[locale],
+        implication: reaction === signal.body[locale] ? null : signal.body[locale],
         sources: signal.sources.map(({ url, title, publishedOn, inspectedOn, scope }) => ({ url, title, publishedOn, inspectedOn, scope })),
       };
     });

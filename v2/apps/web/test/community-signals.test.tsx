@@ -87,13 +87,14 @@ describe('community experience remains scoped evidence for viewing questions', (
     }
   });
 
-  it('renders inspected accounts, scope and dated source links without claiming a resident survey', () => {
+  it('renders inspected accounts and dates without external community links without claiming a resident survey', () => {
     const html = renderToStaticMarkup(createElement(PropertyDecisionReport, { review: helio, locale: 'en', persona: 'family', onPersonaChange: () => {} }));
     const records = getCommunityDiscussions(helio, 'en');
     expect(records.length).toBeGreaterThan(0);
     expect(html).toContain('data-community-discussion');
     expect(html).toContain('data-community-scope="named-property"');
-    expect(html).toContain(records[0]!.sources[0]!.url.replaceAll('&', '&amp;'));
+    expect(html).not.toContain(records[0]!.sources[0]!.url.replaceAll('&', '&amp;'));
+    expect(records.every(record => record.mappingScope === 'named-property')).toBe(true);
     expect(html).toContain('2026-09-14');
     expect(html).not.toContain('Recurring observations in reviews');
     expect(html).not.toContain('reviewers agreed');

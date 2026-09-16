@@ -13,6 +13,7 @@ import { isContentIndexable } from '../lib/seo/content-index-policy';
 import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '../content/portfolio-manifest';
 
 const primarySourceHosts = new Set([
+  'www.vara.ae', 'rulebook.centralbank.ae',
   'babahouse.nus.edu.sg', 'wojhati.rta.ae', 'www.rta.ae', 'www.onemap.gov.sg',
   'www.reins.or.jp', 'www.kinkireins.or.jp', 'www.reinfolib.mlit.go.jp',
   'www.data.go.kr', 'data.gov.sg', 'centers.ibs.re.kr', 'www.bok.or.kr',
@@ -36,8 +37,8 @@ function sectionCount(body: string): number {
 describe('pre-AdSense reviewed launch portfolio', () => {
   it('keeps the active portfolio and public English parameters after guide consolidation', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(104);
-    expect(english).toHaveLength(47);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(106);
+    expect(english).toHaveLength(48);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'news-brief' || type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));

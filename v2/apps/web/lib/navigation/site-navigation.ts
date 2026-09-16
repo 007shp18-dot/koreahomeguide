@@ -118,11 +118,11 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
-  } else if (['/sg', '/sg/singapore', '/ae/dubai', '/contact'].includes(english)) {
+  } else if (['/sg', '/sg/singapore', '/ae/dubai', '/contact', '/about'].includes(english)) {
     const canonical = english === '/sg/singapore' ? '/sg' : english;
     destinations.en = withQuery(canonical);
     destinations.ko = withQuery(`/ko${canonical}`);
-    if (english !== '/contact') destinations['zh-CN'] = withQuery(`/zh-cn${canonical}`);
+    if (!['/contact', '/about'].includes(english)) destinations['zh-CN'] = withQuery(`/zh-cn${canonical}`);
   } else if (english === '/') {
     destinations.en = '/';
     destinations.ko = '/ko/';

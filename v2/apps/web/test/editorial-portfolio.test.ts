@@ -45,11 +45,11 @@ describe('launch editorial portfolio', () => {
     }
   });
 
-  it('publishes the 104-item portfolio including the three-language Tokyo budget guide', () => {
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(104);
+  it('publishes the 106-item portfolio including the bilingual Dubai crypto column', () => {
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(106);
     expect(Object.isFrozen(EDITORIAL_PORTFOLIO)).toBe(true);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(47);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko')).toHaveLength(47);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(48);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko')).toHaveLength(48);
     expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'zh-CN')).toHaveLength(10);
     expect(Object.fromEntries(['news-brief', 'policy-update', 'market-brief', 'data-story', 'guide'].map((type) => [
       type,
@@ -57,7 +57,7 @@ describe('launch editorial portfolio', () => {
     ]))).toEqual({
       'news-brief': 6,
       'policy-update': 14,
-      'market-brief': 50,
+      'market-brief': 52,
       'data-story': 6,
       guide: 28,
     });
@@ -65,8 +65,8 @@ describe('launch editorial portfolio', () => {
 
   it('keeps every published claim attached to review, evidence and an internal next step', () => {
     expect(validateEditorialPortfolio(EDITORIAL_PORTFOLIO)).toBe(EDITORIAL_PORTFOLIO);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(104);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(104);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(106);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(106);
     for (const record of EDITORIAL_PORTFOLIO) {
       expect(record.status).toBe('published');
       expect(record.readerQuestion.length).toBeGreaterThan(record.locale === 'zh-CN' ? 8 : 20);
