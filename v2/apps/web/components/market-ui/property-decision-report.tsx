@@ -113,7 +113,7 @@ export function PropertyDecisionReport({ showOverview = true, review, priceConte
     <details className={styles.sources} data-report-sources>
       <summary>{t('자료 출처', 'Sources', '资料来源')}</summary>
       <ul>{review.sources.map(source => <li key={source.id}>
-        <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a>
+        {source.kind === 'public-review' ? <span>{source.title}</span> : <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a>}
         <p>{source.note[locale === 'ko' ? 'ko' : 'en']}</p>
       </li>)}</ul>
     </details>

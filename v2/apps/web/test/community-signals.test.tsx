@@ -99,6 +99,10 @@ describe('community experience remains scoped evidence for viewing questions', (
     expect(html).not.toContain('Recurring observations in reviews');
     expect(html).not.toContain('reviewers agreed');
     expect(html).toContain('data-document-checks');
+    const publicReview = { ...helio.sources[0]!, id: 'public-review-example', kind: 'public-review' as const, url: 'https://www.reddit.com/r/example/comments/test/' };
+    const withReview = renderToStaticMarkup(createElement(PropertyDecisionReport, { review: { ...helio, sources: [...helio.sources, publicReview] }, locale: 'en', persona: 'family', onPersonaChange: () => {} }));
+    expect(withReview).not.toContain(publicReview.url);
+    expect(withReview).toContain(helio.sources[0]!.url);
     const uncovered = getCommunityDiscussions({ ...helio, id: 'kr-unreviewed-property' }, 'en');
     expect(uncovered).toEqual([]);
   });
