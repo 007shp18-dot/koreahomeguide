@@ -15,7 +15,7 @@ beforeEach(() => vi.clearAllMocks());
 describe('direct purchase enquiry', () => {
   it('validates the supported cities, consent, email and bounded values before storage', async () => {
     const query = vi.fn(); const handler = createEnquiryHandler(() => ({ db: { query }, secret }));
-    for (const patch of [{ city: 'unknown' }, { consent: false }, { email: 'bad\r\naddress' }, { budget: '1e9' }, { context: 'x'.repeat(2001) }, { consentVersion: 'old' }, { requestId: 'invalid' }]) expect((await handler(request({ ...payload, ...patch }))).status).toBe(400);
+    for (const patch of [{ city: 'unknown' }, { city: ['tokyo'] }, { locale: ['en'] }, { consent: false }, { email: 'bad\r\naddress' }, { budget: '1e9' }, { context: 'x'.repeat(2001) }, { consentVersion: 'old' }, { requestId: 'invalid' }]) expect((await handler(request({ ...payload, ...patch }))).status).toBe(400);
     expect((await handler(request(payload, { origin: 'https://attacker.example' }))).status).toBe(403);
     expect((await handler(request(payload, { 'content-type': 'text/plain' }))).status).toBe(400);
     expect((await handler(request({ ...payload, junk: 'x'.repeat(12000) }))).status).toBe(400);

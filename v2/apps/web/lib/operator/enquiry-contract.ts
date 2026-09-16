@@ -16,7 +16,7 @@ export function parsePurchaseEnquiry(value: unknown): PurchaseEnquiryInput | nul
   if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || /[\u0000-\u001f\u007f]/.test(email)) return null;
   if (v.budget !== '' && (!/^\d{1,12}(\.\d{1,2})?$/.test(v.budget) || Number(v.budget) <= 0)) return null;
   if (context.length > 2000 || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(context)) return null;
-  if (!['seoul', 'singapore', 'dubai', 'tokyo'].includes(String(v.city)) || !['en', 'ko', 'zh-CN'].includes(String(v.locale))
+  if (typeof v.city !== 'string' || typeof v.locale !== 'string' || !['seoul', 'singapore', 'dubai', 'tokyo'].includes(v.city) || !['en', 'ko', 'zh-CN'].includes(v.locale)
     || !enquiryPurposes.includes(v.purpose as PurchaseEnquiryInput['purpose']) || !enquiryTimings.includes(v.timing as PurchaseEnquiryInput['timing'])
     || v.consent !== true || v.consentVersion !== ENQUIRY_NOTICE) return null;
   return { requestId: v.requestId, email, context, budget: v.budget, city: v.city as PurchaseEnquiryInput['city'],

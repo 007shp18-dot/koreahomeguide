@@ -10,7 +10,6 @@ const editorialTranslationPairs = [
   ['/news/', '/ko/news/', '/zh-cn/news/'],
   ['/guides/', '/ko/guides/', '/zh-cn/guides/'],
   ['/news/policy/singapore-absd-policy-status/', '/ko/news/singapore-absd-policy-status/', '/zh-cn/news/policy/sg-absd-policy-zh/'],
-  ['/news/seoul-district-price-distribution/', '/ko/news/seoul-district-price-distribution/', '/zh-cn/news/seoul-district-price-distribution-zh/'],
   ['/guides/rent-an-apartment-in-korea/', '/ko/guides/rent-an-apartment-in-korea/', '/zh-cn/guides/rent-in-korea-zh/'],
 ] as const;
 
@@ -105,7 +104,7 @@ export const publicRoutes = [
   { path: '/ae/dubai/invest/', heading: 'Invest in Dubai', indexing: 'noindex' },
   { path: '/news/', heading: 'Insights', indexing: 'index', canonical: '/news/' },
   { path: '/news/policy/singapore-absd-policy-status/', heading: 'Singapore ABSD: the tax that can change your home budget', indexing: 'index', canonical: '/news/policy/singapore-absd-policy-status/' },
-  { path: '/news/seoul-district-price-distribution/', heading: 'Yongsan Above Gangnam? Look at What This Table Counts.', indexing: 'index', canonical: '/news/seoul-district-price-distribution/' },
+  { path: '/guides/read-seoul-sale-transactions/', heading: 'Read Seoul sale transactions without pricing from one deal', indexing: 'index', canonical: '/guides/read-seoul-sale-transactions/', alternates: true },
   { path: '/guides/', heading: 'Guides', indexing: 'index', canonical: '/guides/' },
   { path: '/guides/rent-an-apartment-in-korea/', heading: 'Rent an apartment in Korea: search-to-move-in sequence', indexing: 'index', canonical: '/guides/rent-an-apartment-in-korea/' },
   { path: '/zh-cn/news/', heading: '洞察', indexing: 'index', canonical: '/zh-cn/news/' },

@@ -42,7 +42,7 @@ export function createEnquiryHandler(environment: () => { db: EnquiryDatabase | 
         expires_at=CASE WHEN sp_qa_rate_limits.expires_at<=now() THEN now()+interval '1 hour' ELSE sp_qa_rate_limits.expires_at END RETURNING hits`, [networkKey]);
       if (!allowance[0] || Number(allowance[0].hits) > 5) return enquiryReply({ error: 'rate_limited' }, 429);
       const stored = await db.query(`INSERT INTO purchase_enquiries(id,payload_hash,payload) VALUES($1,$2,$3::jsonb)
-        ON CONFLICT(id) DO UPDATE SET id=purchase_enquiries.id WHERE purchase_enquiries.payload_hash=EXCLUDED.payload_hash RETURNING id`, [input.requestId, hash, payload]);
+        ON CONFLICT(id) DO UPDATE SET id=purchase_enquiries.id WHERE purchase_enquiries.payload_hash=EXCLUDED.payload_hash AND purchase_enquiries.expires_at>now() RETURNING id`, [input.requestId, hash, payload]);
       if (!stored.length) return enquiryReply({ error: 'conflict' }, 409);
       return enquiryReply({ state: 'received', reference: input.requestId }, 201);
     } catch { return enquiryReply({ error: 'unavailable' }, 503); }

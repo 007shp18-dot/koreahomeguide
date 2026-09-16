@@ -64,7 +64,7 @@ for (const city of ['seoul', 'singapore', 'dubai', 'tokyo']) {
   });
 }
 
-for (const route of ['/guides/read-singapore-private-transactions/', '/news/singapore-private-market-quarterly-brief/']) {
+for (const route of ['/guides/read-singapore-private-transactions/']) {
   test(`article figures remain readable: ${route}`, async ({ page }, testInfo) => {
     await page.goto(route);
     const article = page.locator('main[data-editorial-content-id]:visible');
@@ -72,12 +72,8 @@ for (const route of ['/guides/read-singapore-private-transactions/', '/news/sing
     const figure = article.locator('[data-infographic-template="district-comparison"]');
     await expect(figure).toBeVisible();
     await expect(figure.getByRole('img')).toBeVisible();
-    if (route.startsWith('/guides/')) {
-      await expect(page.locator('[data-building-media="curated-market-photo"]')).toBeVisible();
-      await expect(figure.getByRole('img')).toContainText('SGD 1,200,000');
-    } else {
-      await expect(figure.getByRole('img')).toContainText('-1.2% q/q');
-    }
+    await expect(page.locator('[data-building-media="curated-market-photo"]')).toBeVisible();
+    await expect(figure.getByRole('img')).toContainText('SGD 1,200,000');
     await figure.locator('summary').click();
     await expect(figure.locator('table')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
@@ -90,5 +86,17 @@ for (const prefix of ['', '/ko']) {
     await page.goto(`${prefix}/guides/compare-seoul-district-prices/`);
     await expect(page).toHaveURL(new RegExp(`${prefix}/guides/read-seoul-sale-transactions/#section-6$`));
     await expect(page.locator('#section-6 h2')).toHaveText(prefix ? '건물을 고르기 전, 지역끼리 비교할 때' : 'Comparing districts before choosing a building');
+  });
+}
+
+for (const prefix of ['', '/ko']) {
+  test(`retired Singapore quarterly brief reaches current sourced analysis: ${prefix || 'en'}`, async ({ page, request }) => {
+    const oldPath = `${prefix}/news/singapore-private-market-quarterly-brief/`;
+    const response = await request.get(oldPath, { maxRedirects: 0 });
+    expect(response.status()).toBe(308);
+    expect(response.headers()['location']).toBe(`${prefix}/news/singapore-monthly-2026-09/`);
+    await page.goto(oldPath);
+    await expect(page.locator('main h1')).toHaveText(prefix ? '조용한 싱가포르 시장? 동네를 바꾸면 얘기가 달라진다' : 'Singapore Resales Looked Flat. The Districts Tell Another Story.');
+    await expect(page.locator('details#sources')).toBeVisible();
   });
 }

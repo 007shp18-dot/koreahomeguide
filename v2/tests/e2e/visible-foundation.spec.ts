@@ -401,7 +401,7 @@ test('sitemap includes only indexable canonical public routes', async ({ request
 for (const path of [
   '/news/',
   '/news/policy/singapore-absd-policy-status/',
-  '/news/seoul-district-price-distribution/',
+  '/guides/read-seoul-sale-transactions/',
   '/guides/rent-an-apartment-in-korea/',
   '/zh-cn/news/',
   '/zh-cn/guides/rent-in-korea-zh/',
