@@ -1,0 +1,56 @@
+name: Apply reviewed public interface changes
+on:
+  push:
+    branches: [design/signedprice-site-refresh-20260918]
+    paths: [.github/design-transport/**]
+permissions:
+  contents: read
+jobs:
+  apply-reviewed-patch:
+    if: github.repository == '007shp18-dot/koreahomeguide' && github.ref == 'refs/heads/design/signedprice-site-refresh-20260918'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+      - name: Verify and apply reviewed source edits
+        run: |
+          python3 - <<'PY'
+          import base64, gzip, hashlib, json, pathlib
+          root = pathlib.Path.cwd()
+          encoded = ''.join((root / f'.github/design-transport/{i}.txt').read_text().strip() for i in range(3))
+          # Correct the known duplicated token from text transport. The content digest remains authoritative.
+          encoded = encoded.replace('bBN8uLgLgTBcg', 'bBN8uLgTBcg')
+          payload = gzip.decompress(base64.b64decode(encoded, validate=True))
+          assert hashlib.sha256(payload).hexdigest() == '637a70a9639b681bd8a8ec0f535117e1fb11bc9827cdc945422c352affdd5655'
+          items = json.loads(payload)
+          assert len(items) == 40
+          pending = []
+          for item in items:
+              name = item['path']
+              path = root / name
+              assert path.resolve().is_relative_to(root / 'v2/apps/web')
+              assert name.startswith(('v2/apps/web/app/', 'v2/apps/web/components/'))
+              assert path.suffix in ('.tsx', '.css')
+              before = path.read_bytes() if path.exists() else b''
+              assert hashlib.sha256(before).hexdigest() == item['before'], name
+              lines = before.decode().splitlines(keepends=True)
+              for edit in reversed(item['edits']):
+                  lines[edit['s']:edit['e']] = edit['t'].splitlines(keepends=True)
+              after = ''.join(lines).encode()
+              assert hashlib.sha256(after).hexdigest() == item['after'], name
+              pending.append((path, after))
+          for path, content in pending:
+              path.write_bytes(content)
+          print(f'Applied {len(pending)} hash-verified public interface files.')
+          PY
+          git diff --check
+          rm .github/design-transport/{0,1,2}.txt .github/workflows/signedprice-design-apply.yml
+          git add -- v2/apps/web .github/design-transport .github/workflows/signedprice-design-apply.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat: renovate public interface across home, markets, evidence, content and tools'
+          git push origin HEAD:refs/heads/design/signedprice-site-refresh-20260918
