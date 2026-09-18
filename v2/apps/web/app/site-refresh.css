@@ -38,8 +38,8 @@ body[data-interface-release] .site-header__action { min-height: 44px; }
 /* Overview: photography introduces a city, without taking over the evidence workspace. */
 body[data-interface-release] [data-market-hero="overview"] {
   display: grid; grid-template-columns: minmax(0,1.08fr) minmax(0,1fr);
-  min-height: 0; margin-top: 24px; border: 1px solid var(--line);
-  border-radius: 18px; background: var(--surface-strong); box-shadow: var(--shadow-sm);
+  min-height: 0; gap: 0; margin-top: 24px; border: 1px solid var(--line);
+  border-radius: 16px; background: var(--surface-strong); box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 body[data-interface-release] [data-market-hero="overview"] > div:first-child {
@@ -57,6 +57,15 @@ body[data-interface-release] [data-market-hero="overview"] [data-market-tier] .s
 body[data-interface-release] [data-market-hero="overview"] > div:nth-child(2) { min-height: 280px; height: 100%; aspect-ratio: auto; background: var(--surface); }
 body[data-interface-release] [data-market-hero="overview"] > div:nth-child(2) > :is(section,figure,div) { min-height: 280px; height: 100%; }
 body[data-interface-release] [data-market-hero="overview"] > dl { color: var(--ink); background: #fff; }
+
+/* Tokyo uses the same overview composition with its existing direct photo figure. */
+body[data-interface-release] [data-tokyo-overview] { padding-top: 24px; color: var(--ink); }
+body[data-interface-release] [data-tokyo-overview] [data-market-hero] { align-items: stretch; }
+body[data-interface-release] [data-tokyo-overview] [data-market-hero] > figure { min-height: 280px; height: 100%; border-radius: 0; border: 0; display: flex; flex-direction: column; }
+body[data-interface-release] [data-tokyo-overview] [data-market-hero] > figure > div { flex: 1; min-height: 240px; aspect-ratio: auto; }
+body[data-interface-release] [data-tokyo-overview] [data-market-hero] > div > a { align-self: flex-start; min-height: 48px; }
+body[data-interface-release] [data-tokyo-overview] [data-market-hero] > div > p:first-child { color: var(--accent); }
+body[data-interface-release] [data-tokyo-overview] [data-market-hero] > div > p { color: var(--muted); }
 
 /* Discovery and detail: information is visible without decorative banners. */
 body[data-interface-release] .explore-page-heading h1 { color: var(--ink); font-weight: 700; font-size: clamp(27px,3vw,36px); line-height: 1.25; }
@@ -114,6 +123,8 @@ body[data-interface-release] dialog[data-explore-results-panel]::backdrop { back
   body[data-interface-release] [data-market-hero="overview"] > div:first-child { padding: 24px; }
   body[data-interface-release] [data-market-hero="overview"] > div:nth-child(2),
   body[data-interface-release] [data-market-hero="overview"] > div:nth-child(2) > :is(section,figure,div) { height: 200px; min-height: 200px; }
+  body[data-interface-release] [data-tokyo-overview] [data-market-hero] > figure { min-height: 200px; }
+  body[data-interface-release] [data-tokyo-overview] [data-market-hero] > figure > div { min-height: 180px; }
   body[data-interface-release] .data-state-notice { padding: 22px; }
 }
 @media (prefers-reduced-motion: reduce) {

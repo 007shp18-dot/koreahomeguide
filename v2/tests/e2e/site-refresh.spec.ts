@@ -1,6 +1,15 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+import { SINGAPORE_TEST_PROJECT_ID } from './singapore-snapshot-fixture';
 
-async function noOverflow(page: import('@playwright/test').Page) {
+async function publicPageReady(page: Page) {
+  await expect(page.locator('body')).toHaveAttribute('data-interface-release', '2026-09');
+  // Loading routes also have an H1. Wait for the final public page, not its fallback.
+  await expect(page.getByRole('contentinfo')).toBeVisible({ timeout: 20_000 });
+  await expect(page.locator('[data-explore-loading], [data-tool-loading]')).toHaveCount(0);
+  await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+}
+
+async function noOverflow(page: Page) {
   await page.evaluate(() => document.fonts.ready);
   const layout = await page.evaluate(() => ({ width: innerWidth, scroll: document.documentElement.scrollWidth }));
   expect(layout.scroll).toBeLessThanOrEqual(layout.width + 1);
@@ -8,7 +17,7 @@ async function noOverflow(page: import('@playwright/test').Page) {
 
 test('public refresh renders the real localized city search and four licensed city photographs', async ({ page }, testInfo) => {
   await page.goto('/ko/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('body')).toHaveAttribute('data-interface-release', '2026-09');
+  await publicPageReady(page);
   await expect(page.locator('[data-home-search] form[role="search"]')).toBeVisible();
   await expect(page.locator('[data-home-city-mosaic] img')).toHaveCount(4);
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
@@ -26,19 +35,22 @@ test('home search retains the selected city, locale and query when submitted', a
   await form.getByRole('searchbox').fill('Shibuya');
   await form.getByRole('button', { name: '선택 도시 탐색' }).click();
   await expect(page).toHaveURL(/\/ko\/jp\/tokyo\/explore\/?\?q=Shibuya/);
-  await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+  await publicPageReady(page);
   await noOverflow(page);
 });
 
-test('narrow homepage and reduced motion keep controls and text usable', async ({ page }) => {
+test('narrow homepage and reduced motion keep controls and text usable', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 800 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
+  await publicPageReady(page);
   await noOverflow(page);
   const form = page.locator('[data-home-search] form');
   const controls = await form.locator('input,select,button').evaluateAll(nodes => nodes.map(node => ({ height: node.getBoundingClientRect().height, width: node.getBoundingClientRect().width, font: getComputedStyle(node).fontSize })));
   expect(controls.every(control => control.height >= 44 && control.width >= 44)).toBe(true);
   expect(controls.slice(0, 2).every(control => parseFloat(control.font) >= 16)).toBe(true);
+  const fieldRows = await form.locator('label').evaluateAll(labels => labels.map(label => label.getBoundingClientRect().top));
+  expect(Math.abs(fieldRows[0]! - fieldRows[1]!)).toBeLessThanOrEqual(1);
   await form.getByRole('combobox').focus();
   await expect(form.getByRole('combobox')).toBeFocused();
   await page.keyboard.press('Tab');
@@ -46,6 +58,7 @@ test('narrow homepage and reduced motion keep controls and text usable', async (
   const credits = page.locator('details').filter({ hasText: 'Photography & sources' });
   await credits.locator('summary').click();
   await expect(credits.locator('[data-photo-credit]')).toHaveCount(4);
+  await testInfo.attach('home-320', { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
 });
 
 const surfaces = [
@@ -58,6 +71,7 @@ const surfaces = [
   ['seoul-building', '/kr/seoul/explore/jongno-gu/synthetic-test-building/'],
   ['dubai-project', '/ae/dubai/explore/projects/ae-skyflame-1/'],
   ['tokyo-property', '/jp/tokyo/explore/properties/jp-park-city-toyosu/'],
+  ['singapore-project', `/sg/singapore/explore/ccr/${SINGAPORE_TEST_PROJECT_ID}/`],
   ['guides', '/guides/'], ['guide-checklist', '/guides/seoul/checklist/'],
   ['insights', '/news/'], ['neighbourhood', '/news/neighbourhoods/yeonhui-dong/'],
   ['tools', '/tools/'], ['scenario', '/tools/property-scenario/'],
@@ -71,8 +85,7 @@ for (const [name, path] of surfaces) {
     page.on('pageerror', error => errors.push(error.message));
     const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
     expect(response?.ok(), path).toBe(true);
-    await expect(page.locator('body')).toHaveAttribute('data-interface-release', '2026-09');
-    await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+    await publicPageReady(page);
     await noOverflow(page);
     expect(errors).toEqual([]);
     await testInfo.attach(name, { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });

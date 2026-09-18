@@ -4,8 +4,8 @@ on:
     branches: [design/signedprice-site-refresh-20260918]
   pull_request:
     paths:
-      - v2/apps/web/app/site-refresh.css
-      - v2/apps/web/components/site-refresh/**
+      - v2/apps/web/app/**
+      - v2/apps/web/components/**
       - v2/tests/e2e/site-refresh.spec.ts
       - .github/workflows/signedprice-design-review.yml
 permissions:
@@ -33,12 +33,8 @@ jobs:
           cache: pnpm
           cache-dependency-path: v2/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - name: Retain installed framework documentation for review
-        run: |
-          mkdir -p design-review-docs
-          node -e "const fs=require('node:fs');const path=require('node:path');const root=path.join(path.dirname(require.resolve('next/package.json',{paths:['./apps/web']})),'dist/docs');if(fs.existsSync(root)){fs.cpSync(root,'design-review-docs/next',{recursive:true});}"
       - run: pnpm exec playwright install --with-deps chromium
-      - name: Check public interface in desktop and mobile Chromium
+      - name: Check final public pages in desktop and mobile Chromium
         run: pnpm exec playwright test site-refresh.spec.ts --project=desktop-chromium --project=mobile-chromium --workers=2
       - uses: actions/upload-artifact@v4
         if: always()
@@ -47,5 +43,4 @@ jobs:
           path: |
             v2/playwright-report
             v2/test-results
-            v2/design-review-docs
           retention-days: 7
