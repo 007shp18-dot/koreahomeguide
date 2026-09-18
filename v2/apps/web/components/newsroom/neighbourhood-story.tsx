@@ -43,7 +43,7 @@ export function NeighbourhoodArticle({ story, locale = 'en' }: { story: Neighbou
     inLanguage: locale, mainEntityOfPage: publicCanonical(neighbourhoodHref(story.slug, locale)),
     image: story.photosWithheld ? undefined : publicCanonical(story.hero.src as `/${string}`), author: { '@type': 'Organization', name: 'SignedPrice' },
     publisher: { '@type': 'Organization', name: 'SignedPrice' }, citation: story.sources.map(source => source.href) };
-  return <main className={layout.article} lang={locale}>
+  return <main data-interface-page="article" className={layout.article} lang={locale}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
     <nav className={layout.breadcrumb} aria-label={ko ? '현재 위치' : 'Breadcrumb'}><Link href={`${prefix}/news/`}>{ko ? '인사이트' : 'Insights'}</Link><span>/</span><Link href={`${prefix}/news/?market=${story.city}`}>{story.cityName}</Link></nav>
     <article data-editorial-content-id={`${locale}:${story.slug}`} data-editorial-content-type="guide" data-editorial-locale={locale} data-editorial-market={markets[story.city as keyof typeof markets]}>

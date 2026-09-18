@@ -7,7 +7,7 @@ export function GuideDocument({ guide }: Readonly<{ guide: GuideDocumentModel }>
   const [primaryLink] = guide.links;
   return (
     <>
-      <main className={styles.main}>
+      <main data-interface-page="article" className={styles.main}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
           <ol>
             <li><Link href="/kr/seoul/guide/">Guide</Link></li>

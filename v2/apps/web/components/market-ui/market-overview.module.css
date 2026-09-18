@@ -31,3 +31,16 @@
   .facts, .actions { grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .facts > div, .actions a { padding: 16px; }
 }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.content { gap: 28px; margin-top: 28px; }
+.facts,.actions { gap: 16px; }
+.facts > div { padding: 22px; border-radius: 14px; background: var(--soft-blue); border-color: var(--line); }
+.facts dd { font-size: clamp(21px,2.2vw,28px); font-variant-numeric: tabular-nums; color: var(--ink); }
+.facts small { font-size: 13px; }
+.actions a { display: flex; flex-direction: column; padding: 24px; border-radius: 14px; box-shadow: var(--shadow-sm); }
+.actions h3 { color: var(--accent); font-size: 18px; margin-bottom: 10px; }
+.actions p { font-size: 14px; }
+.actions a::after { content: '→'; display: block; padding-top: 16px; margin-top: auto; color: var(--accent); font-size: 22px; }
+.actions a:hover { background: var(--soft-blue); border-color: var(--control-selected-border); }
+@media(max-width:760px) { .facts,.actions { gap: 12px; }.facts > div,.actions a { padding: 20px; }.facts dd { font-size: 24px; } }

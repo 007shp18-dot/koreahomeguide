@@ -31,3 +31,9 @@
   .entry h3 { font-size: 1.125rem; }
   .filters { gap: 0 24px; }
 }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.heading h1 { font-weight: 700; }
+.filters { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 5px; gap: 4px; }
+.filters a { padding: 10px 16px; border: 0; border-radius: 8px; min-height: 44px; }
+.filters a[aria-current='page'] { color: var(--accent); background: #fff; box-shadow: var(--shadow-sm); }

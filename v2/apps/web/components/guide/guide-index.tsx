@@ -16,7 +16,7 @@ const guideStages = Object.freeze(
 export function GuideIndex() {
   return (
     <>
-      <main className={styles.main}>
+      <main data-interface-page="guide" className={styles.main}>
         <header className={styles.hero}>
           <p>Seoul · Decision methodology</p>
           <h1>Rent, verify, and compare with the full Korea guide library.</h1>

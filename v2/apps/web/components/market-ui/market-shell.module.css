@@ -59,3 +59,15 @@
 
 .exploreGrid[data-layout="list"] { grid-template-columns: minmax(0, 1fr); min-height: 0; }
 .exploreGrid[data-layout="list"] > .discovery { border: 0; }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.layers { background: var(--surface); border-color: var(--line); gap: 4px; }
+.layers a[aria-current='page'] { color: var(--accent); background: #fff; box-shadow: var(--shadow-sm); }
+.exploreGrid { gap: 20px; }
+.spatial { border: 1px solid var(--line); overflow: clip; }
+.detailTabs { gap: 6px; padding: 5px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.detailTabs a { padding: 10px 16px; min-height: 44px; border: 0; border-radius: 8px; color: var(--muted); }
+.detailTabs a:first-child { color: var(--accent); background: #fff; box-shadow: var(--shadow-sm); }
+.detailTabs a:hover { background: var(--accent-soft); color: var(--accent); }
+.detailRail > section { background: var(--soft-blue); border: 1px solid var(--line); border-radius: 12px; }
+@media(max-width:760px) { .detailTabs { gap: 4px; }.detailTabs a { padding-inline: 12px; }.exploreGrid { gap: 16px; } }

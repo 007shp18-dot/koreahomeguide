@@ -57,3 +57,23 @@
  .tableWrap td[data-label] { grid-column:2; display:flex; flex-wrap:wrap; justify-content:space-between; gap:6px 12px; white-space:normal; overflow-wrap:anywhere; }
  .tableWrap td[data-label]::before { content:attr(data-label); font-size:.875rem; color:var(--muted); font-weight:400; }
 }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.tabs { gap: 6px; border: 1px solid var(--line); padding: 5px; border-radius: 12px; background: var(--surface); margin-bottom: 24px; }
+.tabs a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 18px; border: 0; border-radius: 8px; font-size: 14px; text-decoration: none; }
+.tabs a[aria-current] { color: var(--accent); background: #fff; box-shadow: var(--shadow-sm); }
+.filters { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--soft-blue); gap: 14px; }
+.filters :is(select,button) { min-height: 48px; }
+.filters select { background: #fff; }
+.filters button { color: #fff; background: var(--accent); font-weight: 600; }
+.tableWrap { border: 1px solid var(--line); border-radius: 12px; }
+.tableWrap thead { background: var(--soft-blue); }
+.tableWrap th,.tableWrap td { padding: 15px 16px; }
+.tableWrap tbody tr:hover { background: #f7faff; }
+.rankBadge { min-width: 30px; min-height: 30px; padding: 6px; line-height: 18px; border-radius: 8px; background: var(--accent-soft); }
+.orderTabs a { border: 0; padding: 10px 14px; border-radius: 8px; }
+.orderTabs a[aria-current] { color: var(--accent); background: var(--accent-soft); }
+.tableWrap summary,.method summary { min-height: 44px; }
+.method { border: 1px solid var(--line); border-radius: 12px; padding: 4px 18px; background: var(--surface); }
+.empty { padding: 32px; background: var(--surface); border-radius: 12px; }
+@media(max-width:640px) { .tabs { gap: 4px; }.tabs a { padding-inline: 13px; }.filters { padding: 16px; }.tableWrap { border: 0; border-radius: 0; }.tableWrap tbody tr { margin-bottom: 12px; padding: 14px 10px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }.tableWrap th,.tableWrap td { padding: 6px; } }

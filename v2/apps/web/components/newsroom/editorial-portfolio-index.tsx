@@ -16,7 +16,7 @@ export function EditorialPortfolioIndex({ locale, records, section }: Readonly<{
     : chinese
       ? { eyebrow: 'SignedPrice 指南', title: '先理解本地流程，再作跨境决定。', deck: '围绕租房、买房与成交数据的实用指南。' }
       : { eyebrow: 'SignedPrice Guides', title: 'Understand the process before deciding.', deck: 'Guides to renting, buying and reading transaction prices.' };
-  return <main className={styles.index}>
+  return <main data-interface-page="content-index" className={styles.index}>
     <header className={styles.indexHero}><p>{copy.eyebrow}</p><h1>{copy.title}</h1><span>{copy.deck}</span></header>
     <section className={styles.latest} aria-labelledby="portfolio-list-title">
       <div className={styles.sectionHeading}><p>{records.length} {chinese ? '篇文章' : 'articles'}</p><h2 id="portfolio-list-title">{chinese ? '按读者问题开始' : 'Start with the reader question'}</h2></div>

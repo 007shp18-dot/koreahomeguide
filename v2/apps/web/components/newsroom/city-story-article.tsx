@@ -23,7 +23,7 @@ export function CityStoryArticle({ story, locale }: Readonly<{ story: CityStory;
   const ko = locale === 'ko';
   const href = cityStoryHref(story.city, locale);
   const next = CITY_STORIES[(CITY_STORIES.indexOf(story) + 1) % CITY_STORIES.length]!;
-  return <main className={layout.article} lang={locale}>
+  return <main data-interface-page="article" className={layout.article} lang={locale}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({ '@context': 'https://schema.org', '@type': 'Article', headline: story.title[locale], description: story.deck[locale], inLanguage: locale, datePublished: '2026-09-08', dateModified: '2026-09-08', mainEntityOfPage: publicCanonical(href as `/${string}`), author: { '@type': 'Organization', name: 'SignedPrice' }, publisher: { '@type': 'Organization', name: 'SignedPrice' }, citation: story.sources.map(source => source.href), isAccessibleForFree: true }) }} />
     <Link className={styles.readLink} href={`${ko ? '/ko' : ''}/news/?market=${story.city}`}><UiIcon name="arrow-left" /> {ko ? '인사이트' : 'Insights'}</Link>
     <EditorialArticleHeader topic={`${story.name[locale]} · ${ko ? '도시에서 내 집까지' : 'From city to home'}`} title={story.title[locale]} deck={story.deck[locale]}>

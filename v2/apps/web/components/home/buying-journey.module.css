@@ -120,3 +120,17 @@
   .nextSteps { display: grid; grid-template-columns: 1fr; }
   .selection > p:last-child .primary { width: 100%; }
 }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.cities { gap: 18px; }
+.city { border-radius: 14px; box-shadow: var(--shadow-sm); }
+.cityLabel { padding: 16px 18px; }
+.cityLabel strong { color: var(--ink); font-size: 22px; }
+.cityLabel svg { width: 20px; color: var(--accent); }
+.city[aria-pressed='true'] .cityLabel strong { color: var(--accent); }
+.cityLinks a[data-primary-action='explore'] { color: var(--accent); font-weight: 600; }
+.selection { background: var(--soft-blue); border-radius: 16px; }
+.chips { background: #e9eff8; }
+.chips button[aria-pressed='true'] { color: var(--accent); background: #fff; }
+.example { background: transparent; }
+@media(max-width:700px) { .cities { gap: 16px 12px; }.cityLabel { padding: 12px; }.cityLabel strong { font-size: 18px; }.cityLinks a { min-height: 44px; } }

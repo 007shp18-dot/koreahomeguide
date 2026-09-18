@@ -55,3 +55,13 @@
 .root[data-detail-layout] [data-building-media='licensed-photo'] { position: relative; }
 .root[data-detail-layout] [data-building-media='licensed-photo'] figcaption { position: absolute; bottom: 0; width: 100%; }
 .root[data-detail-layout] [data-building-section='official-facts'] { margin-inline: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.tool { border-radius: 12px; background: var(--soft-blue); }
+.tool h3 { color: var(--ink); }
+.filters { gap: 8px; }
+.filters a { min-height: 48px; border-color: var(--line); background: #fff; }
+.filters a[aria-current='true'] { border-color: var(--control-selected-border); background: var(--accent-soft); }
+.locationAttribution { border-left-width: 1px; border-color: var(--control-selected-border); border-radius: 12px; }
+.root[data-detail-layout] .disclosure > summary { color: var(--ink); min-height: 48px; }
+.root[data-detail-layout] .disclosure[open] > summary { color: var(--accent); }

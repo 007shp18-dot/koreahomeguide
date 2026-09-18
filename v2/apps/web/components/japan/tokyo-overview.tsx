@@ -20,10 +20,10 @@ export default async function TokyoOverview({ searchParams, locale = 'en' }: { s
   }
   return <>
     <SiteHeader copy={{ ...homepageCopy.header, homeHref:locale==='ko'?'/ko/':locale==='zh-CN'?'/zh-cn/':'/',marketLabel: text('Tokyo','도쿄','东京'),languageLabel:locale==='ko'?'KO':locale==='zh-CN'?'ZH':'EN', links: [{ label: 'Overview', href: href('/jp/tokyo/'), isCurrent: true }] }} />
-    <main className={styles.main}>
-      <div className={styles.overviewHero}>
+    <main className={styles.main} data-tokyo-overview>
+      <div className={styles.overviewHero} data-market-hero="overview">
         <div><p className={styles.eyebrow}>JAPAN / TOKYO</p><h1>{text('Find your part of Tokyo.','내게 맞는 도쿄의 동네를 찾아보세요.','找到适合你的东京社区。')}</h1><p className={styles.intro}>{text('Explore neighbourhoods through recorded prices, home sizes and quarterly sales.','분기별 실거래가와 주택 면적으로 동네를 비교하세요.','通过季度成交价格与住房面积比较社区。')}</p><Link className={styles.exploreAction} href={href('/jp/tokyo/explore/')}>{text('Explore Tokyo','도쿄 탐색','探索东京')}</Link></div>
-        <MarketRepresentativePhoto photo={MARKET_PHOTOS.tokyo} context="city" cityLabel="Tokyo" eager />
+        <MarketRepresentativePhoto photo={MARKET_PHOTOS.tokyo} context="city" cityLabel={text("Tokyo", "도쿄", "东京")} locale={locale} eager />
       </div>
       <TokyoNavigation locale={locale} current="overview" />
       <CityBuyingOverview city="tokyo" locale={locale} />
