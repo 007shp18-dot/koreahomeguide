@@ -14,7 +14,7 @@ export function PolicyRecordArticle({ policy, article }: Readonly<{
   article: EditorialPortfolioRecord;
 }>) {
   const market = policy.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore';
-  return <main
+  return <main data-interface-page="article"
     className={`${layout.article} ${styles.standardArticle}`}
     data-editorial-content-id={article.id}
     data-editorial-content-type={article.type}

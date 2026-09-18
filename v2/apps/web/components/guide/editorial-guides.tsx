@@ -45,7 +45,7 @@ export function EditorialGuides({ market, query = '' }: Readonly<{ market: Story
     { id: 'resources', title: 'Reference & checklists', entries: RESOURCE_TYPES.map(resource => ({ id: resource, label: RESOURCE_LABELS[resource].en, title: `${city} ${RESOURCE_LABELS[resource].en.toLowerCase()}`, deck: resource === 'checklist' ? REGIONAL_RESOURCES[market].intro.en : 'Local ownership, contracts, taxes, financing and building-management terms, with checks to make for each.', href: regionalResourceHref(market, resource) })) },
   ].map(group => ({ ...group, entries: group.entries.filter(matches) }));
 
-  return <main className={styles.page}>
+  return <main data-interface-page="guide" className={styles.page}>
     <header className={styles.heading}>
       <h1>Guides</h1>
       <p>Practical steps for buying, owning and renting a home.</p>

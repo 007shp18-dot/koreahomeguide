@@ -1,5 +1,7 @@
 import { HomeAnalysis } from '../home-analysis';
 import Link from 'next/link';
+import Image from 'next/image';
+import { HomeSearch } from '../home/home-search';
 import { UiIcon } from '../ui-icon';
 import type { EditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model';
 import type { SiteLocale } from '@/lib/navigation/site-navigation';
@@ -90,22 +92,31 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
   const models = createBuyingJourney(locale);
   const markets = models.map(model => ({ id: model.market as HomeMarket }));
 
-  return <main className={styles.homePage}>
+  return <main className={styles.homePage} data-interface-page="home">
     <header className={`${styles.section} ${styles.hero}`}>
       <div className={styles.heroCopy}>
-        <p className={styles.kicker}>GLOBAL REAL ESTATE · SIGNEDPRICE</p>
+        <p className={styles.kicker}>PRICES GROUNDED IN SIGNED CONTRACTS.</p>
         <h1>{copy.title}<span>{copy.titleEnd}</span></h1>
         <p className={styles.lead}>{copy.lead}</p>
+        <div data-home-search="true"><HomeSearch locale={locale} /></div>
         <ul className={styles.trustPoints}>{(locale === 'ko'
           ? ['거래 기간·범위 공개', '공식 자료 기반', '호가가 아닌 과거 거래']
           : locale === 'zh-CN' ? ['明确的成交时期与范围', '官方资料来源', '历史成交，并非挂牌价']
           : ['Dates and coverage shown', 'Official sources', 'Recorded sales, not asking prices']).map(point => <li key={point}>{point}</li>)}</ul>
       </div>
+      <div className={styles.heroVisual} data-home-city-mosaic="true">
+        {markets.map(({ id }, index) => <figure key={id} className={styles.heroCity}>
+          <Image src={CITY_PHOTOS[id].src} alt={locale === 'ko' ? CITY_PHOTOS[id].caption.ko : CITY_PHOTOS[id].caption.en}
+            fill sizes="(max-width: 700px) 25vw, (max-width: 1000px) 24vw, 13vw"
+            preload={index === 0} style={{ objectFit: 'cover', objectPosition: CITY_PHOTOS[id].position }} />
+          <figcaption><span>{String(index + 1).padStart(2, '0')}</span><strong>{copy.cities[id]}</strong></figcaption>
+        </figure>)}
+      </div>
     </header>
 
     <BuyingJourney models={models} photos={CITY_PHOTOS} locale={locale} />
 
-    <HomeAnalysis locale={locale} />
+    <HomeAnalysis locale={locale} photos={markets.slice(0, 3).map(({ id }) => ({ src: CITY_PHOTOS[id].src, alt: locale === 'ko' ? CITY_PHOTOS[id].caption.ko : CITY_PHOTOS[id].caption.en }))} />
 
     <nav className={`${styles.section} ${styles.directory}`} aria-label={copy.next}>
       <p className={styles.kicker}>{copy.next}</p>

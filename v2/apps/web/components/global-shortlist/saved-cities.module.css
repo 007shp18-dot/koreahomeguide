@@ -25,3 +25,10 @@
 .empty { max-width: none; display: grid; justify-items: center; text-align: center; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: 64px 24px; margin-top: 24px; }.bookmark { width: 64px; height: 64px; display: grid; place-items: center; background: var(--accent-soft); border-radius: 16px; }.bookmark svg { width: 28px; height: 28px; }.empty h3 { font-weight: 650; }.empty p { max-width: 50ch; }.empty a { margin-top: 24px; color: white; background: var(--accent); border-radius: 10px; padding: 12px 24px; text-decoration: none; font-weight: 600; }
 @media(max-width:1000px) { .list { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media(max-width:600px) { .list { grid-template-columns: minmax(0,1fr); gap: 14px; }.cities { gap: 6px; }.cities button,.cities a { padding-inline: 12px; }.empty { padding: 40px 20px; }.empty h3 { font-size: 22px; } }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.cities button,.cities a { min-height: 44px; border-radius: 8px; }
+.cities button[aria-pressed='true'],.cities a[aria-current] { color: var(--accent); background: var(--accent-soft); }
+.list li { box-shadow: var(--shadow-sm); border-radius: 12px; }
+.list button { min-height: 44px; }
+.empty { background: var(--soft-blue); border-color: var(--line); }

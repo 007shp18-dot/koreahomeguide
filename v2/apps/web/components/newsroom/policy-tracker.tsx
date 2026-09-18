@@ -40,7 +40,7 @@ export function PolicyTracker({ policies, referenceDate }: Readonly<{
   referenceDate: string;
 }>) {
   const groups = createPolicyRepository(policies).group(referenceDate);
-  return <main className={styles.policyTracker}>
+  return <main data-interface-page="content-index" className={styles.policyTracker}>
     <header className={styles.indexHero}>
       <p>SignedPrice Policy Tracker</p>
       <h1>Follow the date a housing rule actually changes.</h1>

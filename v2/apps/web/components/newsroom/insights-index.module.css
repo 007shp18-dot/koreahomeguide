@@ -54,3 +54,14 @@
 @media(max-width:960px) { .budgetGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media(max-width:760px) { .hero { grid-template-columns: 1fr; }.budgetCard { padding: 16px; }.budgetCard h3 { font-size: 17px; }.topicFilters { gap: 4px; }.topicFilters a { padding-inline: 12px; } }
 @media(max-width:420px) { .budgetGrid { gap: 12px; }.budgetCard { padding: 14px; }.budgetCard h3 { font-size: 16px; } }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.hero { background: var(--soft-blue); border-color: var(--line); border-radius: 16px; gap: 32px; }
+.hero h2 { color: var(--ink); font-size: clamp(26px,2.7vw,34px); }
+.photo > a { border-radius: 12px; }
+.card { min-width: 0; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.card .read { margin-top: 10px; }
+.budgetCard { background: #fff; box-shadow: var(--shadow-sm); border-radius: 12px; }
+.budgetCity { color: var(--accent); }
+.more > summary { min-height: 48px; }
+@media(max-width:760px) { .hero { gap: 20px; }.hero h2 { font-size: 26px; } }

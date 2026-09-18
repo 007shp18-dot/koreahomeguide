@@ -5,9 +5,9 @@ import styles from './contact-page.module.css';
 
 export function ContactPageContent({ locale = 'en', privacyContact }: { locale?: 'en' | 'ko' | 'zh-CN'; privacyContact: string }) {
   const ko = locale === 'ko';
-  if(locale==='zh-CN') return <main className={styles.page}><header className={styles.hero}><p className={styles.eyebrow}>联系 SignedPrice</p><h1>从预算到下一步</h1><p>说明意向城市、预算与问题，询问可提供的购房研究帮助。</p></header><PurchaseEnquiry locale={locale} /><section><h2>资料与隐私问题</h2><p><a href={`mailto:${SIGNEDPRICE_CONTACT_EMAIL}`}>{SIGNEDPRICE_CONTACT_EMAIL}</a></p><p><a href={`mailto:${privacyContact}`}>{privacyContact}</a> · <Link href="/privacy/">隐私政策（英文）</Link></p></section></main>;
+  if(locale==='zh-CN') return <main data-interface-page="contact" className={styles.page}><header className={styles.hero}><p className={styles.eyebrow}>联系 SignedPrice</p><h1>从预算到下一步</h1><p>说明意向城市、预算与问题，询问可提供的购房研究帮助。</p></header><PurchaseEnquiry locale={locale} /><section><h2>资料与隐私问题</h2><p><a href={`mailto:${SIGNEDPRICE_CONTACT_EMAIL}`}>{SIGNEDPRICE_CONTACT_EMAIL}</a></p><p><a href={`mailto:${privacyContact}`}>{privacyContact}</a> · <Link href="/privacy/">隐私政策（英文）</Link></p></section></main>;
 
-  return <main className={styles.page}>
+  return <main data-interface-page="contact" className={styles.page}>
     <header className={styles.hero} data-product-intro="true">
       <p className={styles.eyebrow}>{ko ? '도움말' : 'Help'}</p>
       <h1>{ko ? '어떤 점이 궁금한가요?' : 'Contact SignedPrice'}</h1>

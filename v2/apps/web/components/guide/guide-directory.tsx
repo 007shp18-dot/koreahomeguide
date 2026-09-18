@@ -14,7 +14,7 @@ export function GuideDirectory({ locale = 'en', market = 'all' }: Readonly<{ loc
     { id: 'buy', title: ko ? '주택 매수' : 'Buying a home', description: ko ? '매수 자격부터 비용과 계약 절차까지.' : 'Eligibility, costs and the steps to ownership.' },
     { id: 'rent', title: ko ? '한국에서 집 구하기' : 'Renting in Korea', description: ko ? '전세·월세 선택부터 보증금과 입주 준비까지.' : 'From choosing a rental to paying the deposit and moving in.' },
   ];
-  return <main className={styles.page} lang={locale}>
+  return <main data-interface-page="guide" className={styles.page} lang={locale}>
     <header className={styles.heading}>
       <p className={styles.eyebrow}>{ko ? 'GUIDES' : 'PRACTICAL GUIDES'}</p>
       <h1>{ko ? '매수·임대차 가이드' : 'Buying & renting guides'}</h1>

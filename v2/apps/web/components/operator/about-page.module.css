@@ -20,3 +20,9 @@
 .page a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; }
 :global(html[lang='ko']) .page { word-break: keep-all; overflow-wrap: anywhere; }
 @media (max-width: 720px) { .page { padding-block: 32px; } .hero { padding-bottom: 32px; } .services, .steps, .background { grid-template-columns: minmax(0, 1fr); gap: 24px; } .background h2 { margin-bottom: 0; } .cta { padding: 24px 20px; } }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.heading h1 { color: var(--ink); font-weight: 700; }
+.heading { padding-bottom: 28px; }
+.heading p { color: var(--muted); }
+.page a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

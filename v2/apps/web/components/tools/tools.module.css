@@ -31,3 +31,15 @@
 :global(html[lang='ko']) .list a { white-space: normal; }
 :global(html[lang='ko']) .list li { gap: 18px; }
 :global(html[lang='ko']) .list h2 { margin: 12px 0 10px; font-size: 1.25rem; line-height: 1.45; font-weight: 650; }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.group { gap: 32px; }
+.groupHeading h2 { color: var(--ink); font-weight: 650; letter-spacing: -.025em; }
+.groupHeading p,.list p { color: var(--muted); }
+.list { gap: 16px; }
+.list li,.list li:nth-child(-n + 2) { border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 22px; gap: 12px; box-shadow: var(--shadow-sm); }
+.list h3 { margin-top: 6px; }
+.list a { min-height: 44px; }
+.context { background: var(--soft-blue); }
+@media(max-width:760px) { .group { gap: 20px; } }
+@media(max-width:560px) { .list li,.list li:nth-child(-n + 2),.list li:first-child { border: 1px solid var(--line); padding: 20px; }.list { gap: 12px; } }
