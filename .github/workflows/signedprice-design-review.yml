@@ -1,5 +1,4 @@
 name: SignedPrice design review
-
 on:
   push:
     branches: [design/signedprice-site-refresh-20260918]
@@ -7,44 +6,46 @@ on:
     paths:
       - v2/apps/web/app/site-refresh.css
       - v2/apps/web/components/site-refresh/**
-      - v2/tests/site-refresh*
+      - v2/tests/e2e/site-refresh.spec.ts
       - .github/workflows/signedprice-design-review.yml
-
 permissions:
   contents: read
-
 concurrency:
   group: design-review-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
-  source-review:
+  interface-review:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: v2
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
-      - name: Package tracked interface source for review
-        run: |
-          python3 - <<'PY'
-          import pathlib, subprocess, tarfile
-          paths = subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0')
-          with tarfile.open('/tmp/signedprice-review-source.tar.gz', 'w:gz') as archive:
-              for name in paths:
-                  if not name or not name.startswith(('v2/', 'docs/', '.github/')):
-                      continue
-                  path = pathlib.Path(name)
-                  if not path.is_file() or path.stat().st_size > 2000000:
-                      continue
-                  if '/public/' in name or '/data/' in name or '-snapshots/' in name:
-                      continue
-                  if path.suffix.lower() not in {'.ts', '.tsx', '.css', '.js', '.jsx', '.json', '.md', '.mjs', '.mts', '.cjs', '.yml', '.yaml', '.txt', '.svg'}:
-                      continue
-                  archive.add(path, arcname=name, recursive=False)
-          PY
-      - uses: actions/upload-artifact@v4
+      - uses: pnpm/action-setup@v4
         with:
-          name: signedprice-review-source
-          path: /tmp/signedprice-review-source.tar.gz
-          retention-days: 3
+          version: 11.19.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: v2/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Retain installed framework documentation for review
+        run: |
+          mkdir -p design-review-docs
+          node -e "const fs=require('node:fs');const path=require('node:path');const root=path.join(path.dirname(require.resolve('next/package.json',{paths:['./apps/web']})),'dist/docs');if(fs.existsSync(root)){fs.cpSync(root,'design-review-docs/next',{recursive:true});}"
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Check public interface in desktop and mobile Chromium
+        run: pnpm exec playwright test site-refresh.spec.ts --project=desktop-chromium --project=mobile-chromium --workers=2
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: signedprice-interface-review
+          path: |
+            v2/playwright-report
+            v2/test-results
+            v2/design-review-docs
+          retention-days: 7
