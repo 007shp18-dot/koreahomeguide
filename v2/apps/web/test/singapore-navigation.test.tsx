@@ -35,10 +35,13 @@ const ready = {
 } as const;
 
 describe('Singapore navigation promotion gate', () => {
-  it('uses the compact product intro even when Singapore evidence is unavailable', () => {
+  it('retains the photographic intro and explicit unavailable-data state', () => {
     const html = renderToStaticMarkup(<SingaporeEntry model={unavailable} />);
 
-    expect(html).toContain('data-product-intro="true"');
+    expect(html).toContain('data-visual-hero="city"');
+    expect(html).toContain('data-singapore-entry="unavailable"');
+    expect(html).toContain('Transaction data is temporarily unavailable.');
+    expect(html).not.toContain('<dt>');
     expect(html.match(/<h1/g) ?? []).toHaveLength(1);
   });
 
