@@ -22,7 +22,7 @@ export const editorialAlternates: Readonly<Record<string, Readonly<Record<string
   }));
 
 export const publicRoutes = [
-  { path: '/', heading: /What can your budget buy\?/, indexing: 'index', canonical: '/' },
+  { path: '/', heading: /Real prices\./, indexing: 'index', canonical: '/' },
   { path: '/trust/', heading: 'Data & sources', indexing: 'index', canonical: '/trust/' },
   {
     path: '/kr/seoul/check/',

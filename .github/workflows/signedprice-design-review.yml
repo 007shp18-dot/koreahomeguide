@@ -1,0 +1,46 @@
+name: SignedPrice design review
+on:
+  push:
+    branches: [design/signedprice-site-refresh-20260918]
+  pull_request:
+    paths:
+      - v2/apps/web/app/**
+      - v2/apps/web/components/**
+      - v2/tests/e2e/site-refresh.spec.ts
+      - .github/workflows/signedprice-design-review.yml
+permissions:
+  contents: read
+concurrency:
+  group: design-review-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  interface-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: v2
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: v2/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Check final public pages in desktop and mobile Chromium
+        run: pnpm exec playwright test site-refresh.spec.ts --project=desktop-chromium --project=mobile-chromium --workers=2
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: signedprice-interface-review
+          path: |
+            v2/playwright-report
+            v2/test-results
+          retention-days: 7

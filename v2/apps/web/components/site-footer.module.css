@@ -16,3 +16,14 @@
 .links a:focus-visible, .intro a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; border-radius: 8px; }
 @media (max-width: 760px) { .inner { grid-template-columns: minmax(0, 1fr); gap: 32px; padding-block: 32px; } .navigation { gap: 16px; } .links a { min-height: 44px; font-size: 13px; } }
 @media (max-width: 380px) { .navigation { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; } }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.footer { margin-top: 56px; background: linear-gradient(180deg,#f6f9ff,#fff 72%); }
+.inner { padding-top: 40px; padding-bottom: 28px; gap: 28px 56px; }
+.descriptor { max-width: 34ch; font-size: 14px; }
+.navigation nav > p { color: var(--ink); font-size: 13px; font-weight: 650; margin-bottom: 8px; }
+.links a { min-height: 44px; }
+.social { padding-top: 20px; }
+.social a { border: 1px solid var(--line); border-radius: 50%; background: #fff; }
+.social a:hover { background: var(--accent-soft); }
+@media(max-width:760px) { .inner { gap: 28px; padding-block: 30px 24px; }.navigation { gap: 20px 16px; } }

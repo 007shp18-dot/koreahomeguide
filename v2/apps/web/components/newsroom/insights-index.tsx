@@ -140,7 +140,7 @@ export function InsightsIndex({ articles, market, locale = 'en', topic = 'all' }
   const hero = stories[0];
   const items = stories.filter(item => item !== hero);
   const t = copy[locale];
-  return <main className={styles.index} data-newsroom-layout="insights" lang={locale}>
+  return <main data-interface-page="content-index" className={styles.index} data-newsroom-layout="insights" lang={locale}>
     <header className={styles.header}><h1>{t.title}</h1><p>{t.deck}</p></header>
     <nav className={styles.filters} aria-label={t.cities}>{(['all', ...cities] as const).map(city => <Link prefetch={false} key={city} href={insightFilterHref(locale, city, topic)} aria-current={market === city ? 'page' : undefined}>{city === 'all' ? t.all : localizedCities[locale][city]}</Link>)}</nav>
     <nav className={styles.topicFilters} aria-label={t.topics}>{INSIGHT_TOPICS.filter(value => value !== 'investment').map(value => <Link prefetch={false} key={value} href={insightFilterHref(locale, market, value)} aria-current={topic === value ? 'page' : undefined}>{value === 'all' ? t.all : collectionCopy[locale][value]}</Link>)}</nav>

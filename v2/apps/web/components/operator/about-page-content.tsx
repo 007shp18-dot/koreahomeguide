@@ -15,7 +15,7 @@ export function AboutPageContent({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
     ['Purchase preparation', 'Understand the steps and costs, and put together the questions that need a local answer before signing. We help turn a shortlist into a more informed next conversation.'],
     ['Local introductions', 'Tell us your location, budget and purchase timing. We will explain whether an introduction is available and how it would work. Availability, scope and terms are confirmed for each enquiry.'],
   ];
-  return <main className={styles.page}>
+  return <main data-interface-page="about" className={styles.page}>
     <header className={styles.hero}>
       <p className={styles.eyebrow}>ABOUT SIGNEDPRICE</p>
       <h1>{ko ? '해외 주택 비교부터 현지 업체 연결까지' : 'From comparing homes abroad to finding local help'}</h1>

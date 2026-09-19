@@ -14,6 +14,7 @@ import {
 import { notoSansKr } from '../fonts';
 
 import '../globals.css';
+import "../site-refresh.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.signedprice.com'),
@@ -33,7 +34,7 @@ export default function ChineseRootLayout({ children }: Readonly<{ children: Rea
 
   return (
     <html lang="zh-CN" className={notoSansKr.variable}>
-      <body>
+      <body data-interface-release="2026-09">
         {children}
         <PublicSiteJsonLd />
         {analytics.status === 'ready' || advertising.status === 'ready' ? (

@@ -1,0 +1,42 @@
+/* Public design tokens only. Archived /design-review surfaces remain unchanged. */
+body[data-interface-release]:not(:has([data-review-surface])) {
+  --canvas:#fff; --surface:#f5f7fb; --surface-strong:#fff;
+  --ink:#13223c; --muted:#586981; --subtle:#8391a4;
+  --accent:#2563d8; --accent-soft:#edf4ff; --soft-blue:#f2f7ff;
+  --line:#e0e7f0; --divider:#ced8e6; --control-selected-border:#b8cdef;
+  --radius-card:14px; --radius-panel:16px; --radius-control:8px;
+  --control-height:48px; --control-min:44px;
+  --shadow-sm:0 3px 12px rgb(26 56 103 / 4%); --shadow-md:0 12px 32px rgb(26 56 103 / 8%);
+  background:var(--canvas); color:var(--ink); -webkit-font-smoothing:antialiased;
+}
+body[data-interface-release]:not(:has([data-review-surface])) [data-public-editorial-frame] { --review-canvas:#fff; --review-paper:#fff; --review-ink:#13223c; --review-accent:#2563d8; --review-line:#e0e7f0; background:#fff; color:var(--ink); }
+body[data-interface-release]:not(:has([data-review-surface])) :is(button,a,summary,input,select,textarea):focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; }
+body[data-interface-release]:not(:has([data-review-surface])) main :is(input,select,textarea):not([type='checkbox']):not([type='radio']):not([type='hidden']):not([type='range']) { font-size:16px; font-variant-numeric:tabular-nums; }
+body[data-interface-release]:not(:has([data-review-surface])) :is(a,button) { -webkit-tap-highlight-color:rgb(37 99 216 / 12%); touch-action:manipulation; }
+body[data-interface-release]:not(:has([data-review-surface])) .site-header { background:#fff; border-color:var(--line); }
+body[data-interface-release]:not(:has([data-review-surface])) .site-header__inner { min-height:72px; }
+body[data-interface-release]:not(:has([data-review-surface])) .site-header :is(.brand-wordmark,.brand-wordmark__signed,.brand-wordmark__price) { color:var(--accent); }
+body[data-interface-release]:not(:has([data-review-surface])) .site-header__product-link { font-weight:550; }
+body[data-interface-release]:not(:has([data-review-surface])) .site-header__product-link[aria-current='page'] { color:var(--accent); }
+body[data-interface-release]:not(:has([data-review-surface])) :is(.site-header__context-panel,.site-header__mobile-panel) { box-shadow:var(--shadow-md); }
+body[data-interface-release]:not(:has([data-review-surface])) .explore-page-heading h1 { color:var(--ink); font-weight:700; font-size:clamp(27px,3vw,36px); line-height:1.25; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-explore-price-guide] { background:var(--soft-blue); border-color:var(--line); border-radius:12px; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-market-summary] { background:linear-gradient(120deg,var(--soft-blue),#fff 72%); border-color:var(--line); border-radius:16px; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-detail-order='current-evidence'] > strong { color:var(--accent); font-variant-numeric:tabular-nums; }
+body[data-interface-release]:not(:has([data-review-surface])) :is([data-detail-layout],[data-ranking-frame]) thead th { background:var(--soft-blue); border-color:var(--line); color:var(--muted); }
+body[data-interface-release]:not(:has([data-review-surface])) :is([data-detail-layout],[data-ranking-frame]) tbody tr:hover > :is(th,td) { background:#f7faff; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-detail-layout] table { font-variant-numeric:tabular-nums; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-interface-page='article'] :is(p,li) { line-height:1.78; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-interface-page='article'] blockquote { border-color:var(--control-selected-border); background:var(--soft-blue); }
+body[data-interface-release]:not(:has([data-review-surface])) .data-state-notice { border:1px solid var(--line); border-radius:14px; padding:24px; background:var(--surface); box-shadow:none; }
+body[data-interface-release]:not(:has([data-review-surface])) .data-state-notice h2 { font-size:23px; line-height:1.4; }
+body[data-interface-release]:not(:has([data-review-surface])) .data-state-notice [data-state-action] { min-height:48px; color:var(--accent); }
+body[data-interface-release]:not(:has([data-review-surface])) [data-tokyo-overview] { width:100%; max-width:none; margin:0; padding:0; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-interface-page='article'] [data-market-pulse] { margin-block:28px; }
+@supports(animation-timeline:scroll()) {
+  body[data-interface-release]:not(:has([data-review-surface])):has([data-interface-page='article'])::before { content:''; position:fixed; inset:0 0 auto; height:3px; background:var(--accent); z-index:120; pointer-events:none; transform:scaleX(0); transform-origin:left; animation:signedprice-reading linear both; animation-timeline:scroll(root block); }
+}
+@keyframes signedprice-reading { to { transform:scaleX(1); } }
+@media(max-width:760px) { body[data-interface-release]:not(:has([data-review-surface])) { --page-gutter:16px; } body[data-interface-release]:not(:has([data-review-surface])) .site-header__inner { min-height:64px; } }
+@media(prefers-reduced-motion:reduce) { body[data-interface-release]::before { display:none; } body[data-interface-release] :is(a,button) { transition:none; } }
+@media print { body[data-interface-release]::before { display:none; } }

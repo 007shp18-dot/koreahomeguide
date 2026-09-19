@@ -16,7 +16,7 @@ export function SingaporeCorrectionsPage({ locale = 'en' }: { locale?: SiteLocal
  const t = copy[locale];
  const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
  return <div id="top"><SiteHeader copy={{ ...homepageCopy.header, homeHref: `${prefix}/`, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', links: [{ label: t.title, href: `${prefix}/sg/singapore/corrections/`, isCurrent: true }] }} />
-  <main className={styles.correctionsPage}><ResearchPageHeading title={t.title} description={t.description} actions={<Link href="mailto:contact@signedprice.com?subject=Singapore%20data%20correction">{t.report}</Link>} />
+  <main data-interface-page="trust" className={styles.correctionsPage}><ResearchPageHeading title={t.title} description={t.description} actions={<Link href="mailto:contact@signedprice.com?subject=Singapore%20data%20correction">{t.report}</Link>} />
   <div className={styles.ledgerWrap}><CorrectionLedger locale={locale} corrections={listCorrections('sg-singapore')} /><nav className={styles.relatedLinks} aria-label={t.related}><Link href={`${prefix}/sg/singapore/explore/`}>{t.explore}</Link><Link href="/trust/">{t.sources}</Link></nav></div>
   </main><SiteFooter copy={homepageCopy.footer} locale={locale} /></div>;
 }

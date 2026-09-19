@@ -342,11 +342,29 @@ describe('real route rendering contracts', () => {
     routeMarkup.push(renderToStaticMarkup(createElement(ComparePage)));
 
     expect(routeMarkup).toHaveLength(13);
-    for (const markup of routeMarkup) {
+    for (const [index, markup] of routeMarkup.entries()) {
       expect(markup).toContain('data-brand-wordmark="true"');
       expect(markup).toContain('href="/prices"');
-      expect(markup).not.toMatch(unsupportedClaimPattern);
-      expect(markup).not.toMatch(/<form|<input|<button/i);
+      expect(markup).not.toMatch(/guaranteed return|active partner marketplace|create account|sign[ -]?in/i);
+      let staticMarkup = markup;
+      const market = expectedMarketParams[index];
+      if (market) {
+        // The approved overview has one sourced historical chart and a real search.
+        // Validate both before applying the legacy static-only rule to the rest.
+        const chart = markup.match(/<section\b[^>]*data-market-pulse="[^"]+"[\s\S]*?<\/section>/)?.[0] ?? '';
+        expect(chart).toContain(`data-market-pulse="${market.city}"`);
+        expect(chart).toContain(`href="/news/${market.city}-monthly-2026-09"`);
+        expect(chart).toContain('September 2026 report');
+        expect(chart).toContain('not a price index');
+        expect(chart).toContain('<table>');
+        expect(chart.match(/<tr>/g)).toHaveLength(7);
+        const search = markup.match(/<form\b[^>]*role="search"[\s\S]*?<\/form>/)?.[0] ?? '';
+        expect(search).toContain(`action="/${market.country}/${market.city}/explore"`);
+        expect(search).toContain('name="q"');
+        staticMarkup = markup.replace(chart, '').replace(search, '');
+      }
+      expect(staticMarkup).not.toMatch(unsupportedClaimPattern);
+      expect(staticMarkup).not.toMatch(/<form|<input|<button/i);
     }
   });
 

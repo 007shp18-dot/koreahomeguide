@@ -86,7 +86,8 @@ export function NewsroomArticle({ article }: Readonly<{
   return <main
     lang={article.locale}
     className={`${layout.article} ${styles.standardArticle} ${isMonthlyReport(article.slug) ? styles.monthlyArticle : ''}`}
-    data-editorial-content-id={article.id}
+    data-interface-page="article"
+      data-editorial-content-id={article.id}
     data-editorial-content-type={article.type}
     data-editorial-locale={article.locale}
     data-editorial-market={article.marketId ?? undefined}

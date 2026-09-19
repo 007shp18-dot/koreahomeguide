@@ -13,6 +13,7 @@ import {
 import { homepageCopy } from "@/lib/site-copy";
 import { notoSansKr } from "../fonts";
 import "../globals.css";
+import "../site-refresh.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.signedprice.com'),
@@ -32,7 +33,7 @@ export default function EnglishRootLayout({ children }: { children: ReactNode })
 
   return (
     <html lang="en" className={notoSansKr.variable}>
-      <body>
+      <body data-interface-release="2026-09">
         {children}
         <PublicSiteJsonLd />
         {analytics.status === "ready" || advertising.status === "ready" ? (

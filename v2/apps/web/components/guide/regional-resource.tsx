@@ -14,7 +14,7 @@ export function RegionalResource({ city, resource, locale }: { city: StoryCity; 
   const data = REGIONAL_RESOURCES[city];
   const ko = locale === 'ko';
   const title = `${data.name[locale]} ${RESOURCE_LABELS[resource][locale]}`;
-  return <main className={styles.page} lang={locale}>
+  return <main data-interface-page="guide" className={styles.page} lang={locale}>
     <nav className={styles.breadcrumb} aria-label={ko ? '현재 위치' : 'Breadcrumb'}><Link href={`${ko ? '/ko' : ''}/guides/`}>{ko ? '가이드' : 'Guides'}</Link><Link href={`${ko ? '/ko' : ''}/guides/?market=${city}`}>{data.name[locale]}</Link><span>{RESOURCE_LABELS[resource][locale]}</span></nav>
     <header className={guideStyles.heading}><h1>{title}</h1><p>{data.intro[locale]}</p></header>
     <nav className={styles.switcher} aria-label={ko ? '자료 유형' : 'Resource type'}>{RESOURCE_TYPES.map(type => <Link key={type} href={regionalResourceHref(city, type, locale)} aria-current={resource === type ? 'page' : undefined}>{RESOURCE_LABELS[type][locale]}</Link>)}</nav>

@@ -39,13 +39,13 @@ export function BuyingJourney({ models, photos, locale }: Readonly<{
       <ol className={styles.cities}>
         {models.map((model, index) => {
           const photo = photos[model.market]!;
-          return <li key={model.city} data-market-id={model.market} data-contextual-action={model.market} {...eventContext(model)}>
+          return <li key={model.city} data-city-destination={model.city} data-market-id={model.market} data-contextual-action={model.market} {...eventContext(model)}>
             <button type="button" className={styles.city} aria-pressed={selection?.city === model.city}
               aria-label={model.name} aria-controls="buying-selection" data-buying-city={model.city}
               onClick={() => { setSelection({ city: model.city, band: 1 }); record(model.market, 'city_select'); }}>
               <span className={styles.photo}><Image src={photo.src} alt={photo.caption[locale === 'ko' ? 'ko' : 'en']} fill
                 loading={index < 2 ? 'eager' : 'lazy'} sizes="(max-width: 700px) 50vw, 25vw" style={{ objectPosition: photo.position }} /></span>
-              <span className={styles.cityLabel}><strong>{model.name}</strong><span>{model.currency}</span><UiIcon name="arrow-right" /></span>
+              <span className={styles.cityLabel}><strong>{model.name}</strong><span>{locale === 'ko' ? ({ seoul: '동네마다 다른 삶의 모습', singapore: '도시와 일상의 균형', dubai: '세계가 만나는 새로운 주거', tokyo: '나에게 맞는 동네의 발견' }[model.city]) : locale === 'zh-CN' ? ({ seoul: '探索不同社区的生活', singapore: '城市与生活的平衡', dubai: '世界交汇的居住地', tokyo: '发现适合你的社区' }[model.city]) : ({ seoul: 'A neighbourhood for every life', singapore: 'A city shaped around living', dubai: 'A different perspective on home', tokyo: 'Find your part of the city' }[model.city])}</span><UiIcon name="arrow-right" /></span>
             </button>
             <div className={styles.cityLinks}>
               <Link href={model.guideHref} data-editorial-event="article_open">{copy.guide}{languageNote(model)}</Link>

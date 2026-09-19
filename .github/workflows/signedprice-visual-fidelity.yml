@@ -1,0 +1,50 @@
+name: SignedPrice visual fidelity
+on:
+  push:
+    branches: [design/visual-fidelity-20260919]
+permissions:
+  contents: read
+concurrency:
+  group: visual-fidelity-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: v2
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: v2/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - name: Check all unit contracts
+        run: |
+          mkdir -p visual-logs
+          set -o pipefail
+          pnpm test 2>&1 | tee visual-logs/units.log
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Check photographic layout and retained buying and tools journeys
+        run: |
+          set -o pipefail
+          pnpm exec playwright test visual-fidelity.spec.ts stable-home-tools.spec.ts buying-journey.spec.ts --project=desktop-chromium --project=mobile-chromium --workers=2 2>&1 | tee visual-logs/browser.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-results
+          path: |
+            v2/test-results
+            v2/playwright-report
+            v2/visual-logs
+          retention-days: 7

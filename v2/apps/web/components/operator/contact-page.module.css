@@ -19,3 +19,9 @@
 .scope { max-width: 80ch; margin-top: 24px; color: var(--muted); font-size: 13px; line-height: 22px; text-wrap: pretty; }
 :global(html[lang='ko']) .page :is(h1, h2, h3, p) { word-break: keep-all; overflow-wrap: anywhere; letter-spacing: normal; }
 @media (max-width: 720px) { .page { padding-top: 32px; } .hero { padding-bottom: 24px; } .primary { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 24px 20px; } .routes { margin-top: 16px; } .routes article { grid-template-columns: minmax(0, 1fr); gap: 8px; padding-block: 24px; } }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.page h1 { color: var(--ink); font-weight: 700; }
+.page input:not([type='checkbox']):not([type='hidden']),.page select { min-height: 48px; }
+.page input,.page select,.page textarea { border-color: var(--line); border-radius: 8px; font-size: 16px; }
+.page button[type='submit'] { min-height: 48px; border-radius: 8px; background: var(--accent); }

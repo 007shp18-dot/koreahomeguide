@@ -20,7 +20,7 @@ export function SeoulCorrectionsPage({ locale = 'en' }: { locale?: SiteLocale })
   const href = `${prefix}/kr/seoul/corrections/`;
   return <div id="top">
     <SiteHeader copy={{ ...homepageCopy.header, homeHref: `${prefix}/`, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', links: [{ label: t.title, href, isCurrent: true }] }} />
-    <main className={styles.correctionsPage}>
+    <main data-interface-page="trust" className={styles.correctionsPage}>
       <ResearchPageHeading title={t.title} description={t.description} actions={<Link href="mailto:contact@signedprice.com?subject=Seoul%20data%20correction">{t.report}</Link>} />
       <div className={styles.ledgerWrap}>
         <CorrectionLedger corrections={listCorrections('kr-seoul')} locale={locale} />

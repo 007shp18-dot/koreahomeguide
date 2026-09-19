@@ -35,3 +35,19 @@
 .page a:focus-visible, .page input:focus-visible, .page button:focus-visible { outline: 2px solid #2155ff; outline-offset: 4px; }
 @media (max-width: 900px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .intro { gap: 24px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 @media (max-width: 640px) { .page { width: calc(100% - 40px); padding: 28px 0 56px; } .tabs { column-gap: 24px; margin-top: 20px; } .intro { grid-template-columns: 1fr; gap: 20px; padding-bottom: 24px; } .cards { grid-template-columns: 1fr; gap: 14px; } .section { margin-top: 28px; } .entry { padding: 20px; } .search button { padding-inline: 14px; } }
+
+/* Public interface refresh · September 2026. Data and responsive behavior stay with this module. */
+.heading h1 { font-family: inherit; color: var(--ink); font-size: clamp(32px,4vw,44px); font-weight: 700; }
+.tabs { display: flex; gap: 6px; border: 1px solid var(--line); padding: 5px; background: var(--surface); border-radius: 12px; }
+.tabs a { border: 0; min-height: 44px; padding: 8px 18px; border-radius: 8px; font-size: 14px; }
+.tabs a[aria-current] { background: #fff; color: var(--accent); box-shadow: var(--shadow-sm); }
+.search input[type='search'],.search button { min-height: 48px; font-size: 16px; }
+.search button { background: var(--accent); border-color: var(--accent); }
+.intro { padding: 24px; border: 1px solid var(--line); border-radius: 16px; background: var(--soft-blue); }
+.photo { border-radius: 12px; }
+.cards { gap: 16px; }.cards li { border-color: var(--line); border-radius: 12px; background: #fff; box-shadow: var(--shadow-sm); }
+.entry { padding: 22px; }.read { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); }
+.entry:hover { background: #f7faff; border-radius: 12px; }
+.empty { padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.next a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); }
+@media(max-width:640px) { .tabs { gap: 4px; }.tabs a { padding-inline: 12px; }.intro { padding: 18px; }.entry { padding: 20px; } }

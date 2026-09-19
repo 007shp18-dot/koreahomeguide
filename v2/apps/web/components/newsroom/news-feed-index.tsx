@@ -20,7 +20,7 @@ export function NewsFeedIndex({ market, locale = 'en', headlines }: Readonly<{
 }>) {
   const t = copy[locale];
   const prefix = locale === 'en' ? '' : locale === 'ko' ? '/ko' : '/zh-cn';
-  return <main className={styles.index} data-newsroom-layout="news" lang={locale}>
+  return <main data-interface-page="content-index" className={styles.index} data-newsroom-layout="news" lang={locale}>
     <header className={styles.header}><h1>{t.title}</h1><p>{t.deck}</p></header>
     <nav className={styles.filters} aria-label={t.navigation}>
       {(['all', ...Object.keys(markets)] as (City | 'all')[]).map((city, i) => <Link key={city}

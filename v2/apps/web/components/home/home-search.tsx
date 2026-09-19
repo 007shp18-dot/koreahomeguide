@@ -12,8 +12,8 @@ const CITIES = [
   { id: 'tokyo', en: 'Tokyo', ko: '도쿄', zh: '东京', href: '/jp/tokyo/explore/' },
 ] as const;
 
-export function HomeSearch({ locale }: Readonly<{ locale: SiteLocale }>) {
-  const [city, setCity] = useState('seoul');
+export function HomeSearch({ locale, initialCity = 'seoul' }: Readonly<{ locale: SiteLocale; initialCity?: typeof CITIES[number]['id'] }>) {
+  const [city, setCity] = useState<string>(initialCity);
   const selected = CITIES.find(item => item.id === city) ?? CITIES[0];
   const ko = locale === 'ko', zh = locale === 'zh-CN';
   const action = `${ko ? '/ko' : zh ? '/zh-cn' : ''}${selected.href}`;
