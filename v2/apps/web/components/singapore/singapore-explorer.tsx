@@ -204,7 +204,8 @@ export function SingaporeExplorer({ locale = 'en',
     ...(query.trim() ? [{ id: 'query', label: query, onRemove: removeFilter(() => setQuery('')) }] : []),
     ...(selectedSegment ? [{ id: 'region', label: selectedSegment, onRemove: removeFilter(() => setSelectedSegment(null)) }] : []),
     ...(district !== 'all' ? [{ id: 'district', label: `${sgText(locale, 'District')} ${district}`, onRemove: removeFilter(() => setDistrict('all')) }] : []),
-    ...(sort !== 'transactions' ? [{ id: 'sort', label: sgText(locale, 'Project name'), onRemove: removeFilter(() => setSort('transactions')) }] : []),
+    // Sorting changes presentation only; a project-only lookup remains in scope.
+    ...(sort !== 'transactions' ? [{ id: 'sort', label: sgText(locale, 'Project name'), onRemove: () => { setSort('transactions'); setPage(1); } }] : []),
     ...(lookupProjectId ? [{ id: 'project', label: sgText(locale, 'Project'), onRemove: removeFilter(() => setLookupProjectId(null)) }] : []),
   ];
 

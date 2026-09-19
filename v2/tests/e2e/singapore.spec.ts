@@ -311,6 +311,29 @@ test('Singapore Explore keeps filters and project selection in its shareable URL
 });
 
 
+test('removing the sort chip keeps a project-only progressive lookup selected', async ({ page }) => {
+  await page.goto('/sg/singapore/explore/?region=ccr');
+  await page.locator('[data-selected] > button').first().click();
+  await expect(page).toHaveURL(/project=[^&]+/);
+  const project = new URL(page.url()).searchParams.get('project');
+  expect(project).toBeTruthy();
+  await page.goto(`/sg/singapore/explore/?project=${encodeURIComponent(project!)}&sort=name`);
+  const selected = page.locator('[data-selected="true"]');
+  await expect(selected).toHaveCount(1);
+  const projectName = await selected.locator('button strong[title]').innerText();
+  await page.getByRole('navigation', { name: 'Applied filters', exact: true })
+    .getByRole('button', { name: 'Remove filter: Project name', exact: true }).click();
+  await expect(page.getByRole('combobox', { name: 'Sort', exact: true })).toHaveValue('transactions');
+  await expect(page).toHaveURL(url => url.searchParams.get('project') === project
+    && !url.searchParams.has('sort') && !url.searchParams.has('region')
+    && !url.searchParams.has('district') && !url.searchParams.has('q'));
+  await expect(selected).toHaveCount(1);
+  await expect(selected.locator('button strong[title]')).toHaveText(projectName);
+  await page.reload();
+  await expect(selected).toHaveCount(1);
+  await expect(selected.locator('button strong[title]')).toHaveText(projectName);
+});
+
 test('Prices sends a Singapore project search to Singapore Explore', async ({ page }) => {
   await page.goto('/sg/singapore/explore/');
   await page.getByRole('tab', { name: /^CCR/ }).click();
