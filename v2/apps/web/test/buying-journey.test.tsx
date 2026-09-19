@@ -11,8 +11,9 @@ describe('four-city buying journey', () => {
   it('keeps the initial home neutral with four equal city choices and crawlable guide links', () => {
     const html = renderToStaticMarkup(<PropertyHome locale="en" />);
     expect(html.match(/data-buying-city=/g)).toHaveLength(4);
-    expect(html.match(/aria-pressed="false"/g)).toHaveLength(4);
-    expect(html).not.toContain('aria-pressed="true"');
+    const cityButtons = html.match(/<button\b[^>]*\bdata-buying-city="[^"]+"[^>]*>/g) ?? [];
+    expect(cityButtons).toHaveLength(4);
+    for (const button of cityButtons) expect(button).toContain('aria-pressed="false"');
     expect(html).not.toContain('data-buying-results=');
     for (const model of createBuyingJourney('en')) expect(html).toContain(model.guideHref.replace(/\/$/, ''));
   });
