@@ -37,7 +37,9 @@ describe('public editorial homepage', () => {
     expect(markup).toContain('href="/jp/tokyo"');
     const main = markup.slice(markup.indexOf('<main'), markup.indexOf('</main>'));
     expect(main.match(/data-buying-city=/g)).toHaveLength(4);
-    expect(main).not.toContain('aria-pressed="true"');
+    const cityButtons = main.match(/<button\b[^>]*\bdata-buying-city="[^"]+"[^>]*>/g) ?? [];
+    expect(cityButtons).toHaveLength(4);
+    for (const button of cityButtons) expect(button).toContain('aria-pressed="false"');
     expect(main).not.toContain('data-home-region="passport"');
     expect(main.match(/data-editorial-content-id=/g)).toHaveLength(4);
     expect(main.match(/data-primary-action="explore"/g)).toHaveLength(4);
