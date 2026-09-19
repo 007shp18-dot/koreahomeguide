@@ -21,4 +21,17 @@ test('the home house rotates by keyboard and explains cost categories without ch
   await page.emulateMedia({ reducedMotion: 'reduce' });
   const geometry = scene.locator('[aria-hidden="true"] > div');
   await expect(geometry).toHaveCSS('transition-duration', '0s');
+  // Check every face, including the plinth, at every available angle. Reduced
+  // motion makes this a settled-geometry assertion rather than an animation race.
+  for (const [view, label] of [['right', '오른쪽'], ['left', '왼쪽'], ['front', '정면']] as const) {
+    await scene.getByRole('button', { name: label, exact: true }).click();
+    await expect(scene).toHaveAttribute('data-view', view);
+    const clearance = await scene.evaluate(node => {
+      const controlsTop = node.querySelector('[role="group"]')!.getBoundingClientRect().top;
+      const faces = [...node.querySelectorAll('[aria-hidden="true"] > div > div > div')];
+      return { count: faces.length, gaps: faces.map(face => controlsTop - face.getBoundingClientRect().bottom) };
+    });
+    expect(clearance.count).toBe(36);
+    for (const gap of clearance.gaps) expect(gap, `${view} view should clear the rotation controls`).toBeGreaterThanOrEqual(4);
+  }
 });
