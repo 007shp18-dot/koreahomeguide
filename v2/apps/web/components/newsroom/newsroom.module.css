@@ -786,8 +786,6 @@
 .readingLayout { display: grid; grid-template-columns: minmax(0, 700px); justify-content: center; gap: 28px; margin-top: 20px; }
 .readingColumn { min-width: 0; width: 100%; }
 .readingAside { min-width: 0; }
-.sourceBoundary { margin: 0 0 24px; padding: 12px 0; border-block: 1px solid var(--line); font-size: 12px; color: var(--muted); line-height: 1.7; }
-.sourceBoundary a { color: inherit; text-underline-offset: 3px; }
 .readingColumn > article { margin-top: 24px; }
 .readingColumn > article > section:first-child { margin-top: 0; }
 .readingColumn > .sources { margin-top: 40px; scroll-margin-top: 120px; }
@@ -804,3 +802,21 @@
 @media (max-width: 520px) {
   .readingColumn .sources small { grid-column: 1; }
 }
+
+/* Source metadata supports the story without inventing a market conclusion. */
+.standardArticle > .editorialPhoto { max-width: 1040px; margin: 0 auto 28px; }
+.editorialPhoto:empty { display: none; }
+.editorialPhoto > div { max-width: none; margin-block: 0; }
+.editorialPhoto figure { margin-bottom: 0; }
+.evidencePanel { display: grid; gap: 16px; margin-bottom: 28px; padding: 24px; border-radius: 12px; background: var(--accent); color: white; overflow-wrap: anywhere; }
+.evidenceLabel { margin: 0 0 8px; font-size: 12px; font-weight: 650; letter-spacing: .06em; }
+.evidencePublishers { margin: 0; font-size: clamp(18px, 2vw, 23px); line-height: 1.4; font-weight: 600; }
+.evidenceMeta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 20px; border-top: 1px solid rgb(255 255 255 / 30%); padding-top: 12px; }
+.evidenceMeta p { margin: 0; font-size: 12px; line-height: 1.7; }
+.evidenceMeta a { display: inline-flex; min-height: 44px; align-items: center; gap: 14px; color: white; font-size: 13px; text-underline-offset: 4px; }
+.evidenceMeta a:focus-visible { outline-color: white; }
+.readingColumn > .relatedAction { padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: var(--accent-soft); }
+@media (min-width: 1100px) {
+  .standardArticle:has(.withContents) > header { max-width: 850px; margin-left: 0; }
+}
+@media (max-width: 520px) { .evidencePanel { padding: 20px; } }

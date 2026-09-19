@@ -36,7 +36,7 @@ describe('property research calculations', () => {
   });
   it('shows only volume when every monthly price is withheld, without a made-up currency axis', () => {
     const html = renderToStaticMarkup(createElement(MonthlyTransactionResearch, { months: [{ month: '2026-01', count: 3, median: null }] }));
-    expect(html).toContain('Reported transaction activity');
+    expect(html).toContain('How many sales were reported each month?');
     expect(html).not.toContain('SGD');
     expect(html).toContain('3 reported sales');
   });

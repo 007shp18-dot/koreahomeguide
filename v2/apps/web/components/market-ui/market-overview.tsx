@@ -24,7 +24,6 @@ export function MarketOverview({ locale, city, buyingCity, description, media, f
   return <div className={styles.overview} lang={locale} data-market-overview="true">
     <MarketHero model={{ sectionLabel: city, eyebrow: localizedMarketCopy(locale, "Market overview", "시장 개요"), heading: city, description, facts: [], layout: 'overview' }} media={media} />
     <div className={styles.content}>
-      {buyingCity ? <CityBuyingOverview city={buyingCity} locale={locale} /> : null}
       <section aria-label={localizedMarketCopy(locale, "Market facts", "주요 수치")}>
         {available ? <>
           <dl className={styles.facts} style={{ '--overview-columns': Math.max(1, Math.min(facts.length, 4)) } as CSSProperties}>{facts.slice(0, 4).map(fact => <div key={fact.label}>
@@ -39,6 +38,7 @@ export function MarketOverview({ locale, city, buyingCity, description, media, f
           <h3>{action.label}</h3><p>{action.description}</p>
         </Link>)}</nav>
       </section>
+      {buyingCity ? <CityBuyingOverview city={buyingCity} locale={locale} /> : null}
       <section className={styles.notes} aria-labelledby="market-overview-sources">
         <h2 id="market-overview-sources">{localizedMarketCopy(locale, "Sources and coverage", "출처와 집계 범위")}</h2>
         {notes}

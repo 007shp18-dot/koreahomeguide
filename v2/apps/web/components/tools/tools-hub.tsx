@@ -44,8 +44,9 @@ export function ToolsHub({ locale = 'en' }: Readonly<{ locale?: SiteLocale }>) {
       <ResearchPageHeading title={ko ? '도구' : zh ? '工具' : 'Tools'} description={ko ? '실거래가와 매물 가격을 비교하고, 필요한 예산과 예상 수익을 계산해 보세요.' : zh ? '核对价格、比较条件，并用自己的假设进行计算。' : 'Check a price, compare terms and calculate your own scenario.'} />
     </div>
     <ToolEventOnMount event="tools_hub_open" market="global" surface="tools-hub" tool="tools-hub" />
+    <nav className={styles.taskNavigation} aria-label={ko ? '필요한 도구 찾기' : zh ? '按任务选择工具' : 'Choose a task'}>{groups.map(group => <a key={group.id} href={`#tool-${group.id}`}>{group.label}<span aria-hidden="true">↓</span></a>)}</nav>
     <div className={styles.directory}>
-      {groups.map((group) => <section className={styles.group} data-tool-group={group.id} key={group.id}>
+      {groups.map((group) => <section id={`tool-${group.id}`} className={styles.group} data-tool-group={group.id} key={group.id}>
         <div className={styles.groupHeading}><h2>{group.label}</h2><p>{group.description}</p></div>
         <ul className={styles.list}>{items.filter((item) => item.group === group.id).map((item) => <li key={item.tool} data-tool-id={item.tool} data-tool-market={item.market}>
           <div><small>{item.market === 'global' ? (item.tool === 'passport' ? 'USD · KRW · SGD · AED · JPY' : 'KRW · SGD · AED · JPY') : item.market === 'kr-seoul' ? (ko ? '서울' : 'Seoul') : item.market === 'jp-tokyo' ? (ko ? '도쿄' : 'Tokyo') : item.market === 'ae-dubai' ? (ko ? '두바이' : 'Dubai') : (ko ? '싱가포르' : 'Singapore')}</small><h3>{item.title}</h3><p>{item.description}</p></div>

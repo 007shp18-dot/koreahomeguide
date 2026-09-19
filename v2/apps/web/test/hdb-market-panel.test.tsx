@@ -6,6 +6,15 @@ import { HdbTownDetail } from '../components/singapore/hdb-town-detail';
 import { HdbBlockDetail } from '../components/singapore/hdb-block-detail';
 
 describe('HDB market panel', () => {
+  it('withholds bars for unpublished medians and exposes the actual sample size', () => {
+    const town = { town: 'BEDOK', href: '/sg/singapore/hdb/bedok/', resaleCount: 2, resaleCountLabel: '2', resaleMedianSgd: null, resaleMedianLabel: null, rentalCount: 0, rentalCountLabel: '0', rentalMedianSgd: null, rentalMedianLabel: null } as const;
+    const html = renderToStaticMarkup(<HdbMarketPanel model={{ status: 'ready', resalePeriod: '2026-01/2026-08', rentalPeriod: '2026-01/2026-08', propertyThrough: '2025-12', resaleTotalLabel: '2', rentalTotalLabel: '0', propertyTotalLabel: '1', publicationMinimum: 5, towns: [town], featuredResale: [town], featuredRental: [town] }} />);
+    expect(html).toContain('Sample · 2');
+    expect(html).toContain('Not published');
+    expect(html).not.toContain('--bar-width');
+    expect(html).not.toContain('SGD 0');
+  });
+
   it('renders separate, labelled resale and rental charts with an accessible table', () => {
     const town = {
       town: 'BEDOK', href: '/sg/singapore/hdb/bedok/', resaleCount: 10, resaleCountLabel: '10', resaleMedianSgd: 500_000,

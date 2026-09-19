@@ -1,14 +1,14 @@
 .card {
   min-width: 0;
-  padding: 20px 24px;
+  padding: clamp(20px, 3vw, 32px);
   border: 1px solid var(--divider);
-  border-radius: 12px;
-  background: var(--surface-strong, #fff);
+  border-radius: 16px;
+  background: linear-gradient(115deg, var(--surface-strong, #fff) 65%, var(--accent-soft));
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
 .actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
-.actions a { display: inline-flex; align-items: center; min-height: 44px; color: var(--muted); font-size: 14px; line-height: 20px; }
+.actions a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); font-size: 14px; font-weight: 600; line-height: 20px; }
 .overview { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(240px, 1fr); grid-template-areas: 'identity price'; gap: 24px; align-items: center; }
 .overview[data-has-trend='true'] { grid-template-columns: minmax(140px, .65fr) minmax(0, 1.1fr) minmax(240px, 1fr); grid-template-areas: 'trend identity price'; }
 .identity { grid-area: identity; min-width: 0; }

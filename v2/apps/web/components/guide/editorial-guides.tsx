@@ -10,9 +10,9 @@ import { MARKET_PHOTOS } from '../market-representative-photo';
 import { BudgetGuideCallout } from './budget-guide-callout';
 import styles from './editorial-guides.module.css';
 
-const cities = { seoul: 'Seoul', tokyo: 'Tokyo', singapore: 'Singapore', dubai: 'Dubai' } as const;
+const cities = { seoul: 'Seoul', singapore: 'Singapore', dubai: 'Dubai', tokyo: 'Tokyo' } as const;
 const explore = { seoul: '/kr/seoul/explore/', tokyo: '/jp/tokyo/explore/', singapore: '/sg/singapore/explore/', dubai: '/ae/dubai/explore/' } as const;
-const toolMarkets = { seoul: { market: 'kr-seoul', currency: 'KRW' }, singapore: { market: 'sg-singapore', currency: 'SGD' }, dubai: { market: 'ae-dubai', currency: 'AED' } } as const;
+const toolMarkets = { seoul: { market: 'kr-seoul', currency: 'KRW' }, singapore: { market: 'sg-singapore', currency: 'SGD' }, dubai: { market: 'ae-dubai', currency: 'AED' }, tokyo: { market: 'jp-tokyo', currency: 'JPY' } } as const;
 type Entry = { id: string; title: string; deck: string; href: string; label: string };
 
 export function EditorialGuides({ market, query = '' }: Readonly<{ market: StoryCity; query?: string }>) {
@@ -30,7 +30,7 @@ export function EditorialGuides({ market, query = '' }: Readonly<{ market: Story
   });
   const owning: Entry[] = [
     { id: 'cost-analysis', label: 'Local analysis', title: 'Understand the costs behind the price', deck: 'Read the local trade-offs before deciding what ownership could mean for you.', href: localIssueHref(market) },
-    ...(market === 'tokyo' ? [] : [{ id: 'cost-tool', label: 'Calculator', title: 'Build your ownership-cost scenario', deck: 'Work through purchase outlay and rental income using your own assumptions.', href: createPropertyScenarioHref({ locale: 'en', ...toolMarkets[market] }) }]),
+    { id: 'cost-tool', label: 'Calculator', title: 'Build your ownership-cost scenario', deck: 'Work through purchase outlay and rental income using your own assumptions.', href: createPropertyScenarioHref({ locale: 'en', ...toolMarkets[market] }) },
   ];
   const essential: Entry[] = market === 'tokyo'
     ? ['why-buy', 'where'].flatMap(id => {

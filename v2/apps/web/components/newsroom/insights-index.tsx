@@ -78,7 +78,7 @@ function StoryPhoto({ item, eager = false, locale = 'en' }: { item: Insight; eag
   if (!photo) return null;
   return <figure className={styles.photo}>
     <Link href={item.href} data-editorial-event="article_open" aria-label={item.title} tabIndex={-1}>
-      <Image src={photo.src} alt={photo.alt} fill priority={eager} sizes={eager ? '(max-width: 760px) calc(100vw - 40px), 700px' : '(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 380px'} />
+      <Image src={photo.src} alt={photo.alt} fill loading={eager ? 'eager' : 'lazy'} style={{ objectFit: 'width' in photo && photo.height > photo.width ? 'contain' : 'cover', objectPosition: 'focalPoint' in photo ? `${photo.focalPoint.x}% ${photo.focalPoint.y}%` : '50% 50%' }} sizes={eager ? '(max-width: 760px) calc(100vw - 40px), 700px' : '(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 380px'} />
     </Link>
     {item.photo && <figcaption className={styles.credit}><details><summary aria-label={locale === 'ko' ? '사진 출처' : locale === 'zh-CN' ? '图片来源' : 'Photo credit'}>{creditLabel}</summary><span>{item.photo.caption} · <a href={item.photo.source}>{item.photo.author}</a> · <a href={item.photo.licenseUrl}>{item.photo.license}</a></span></details></figcaption>}
   </figure>;

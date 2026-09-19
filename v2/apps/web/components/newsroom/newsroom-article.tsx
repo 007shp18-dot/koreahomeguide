@@ -102,13 +102,17 @@ export function NewsroomArticle({ article }: Readonly<{
       <span>{article.authorName}</span><time aria-label={`${t('Published', '발행일')}: ${article.publishedAt.slice(0, 10)}`} dateTime={article.publishedAt}>{t('Published', '발행')} {formatDate(article.publishedAt)}</time>
       {article.updatedAt.slice(0, 10) !== article.publishedAt.slice(0, 10) && <span>{t('Updated', '수정')} <time dateTime={article.updatedAt}>{formatDate(article.updatedAt)}</time></span>}
     </EditorialArticleHeader>
+    <div className={styles.editorialPhoto}>{articlePhoto ? <div className={layout.hero}><NeighbourhoodPhoto id={articlePhoto} eager context locale={article.locale} /></div> : article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" locale={article.locale} photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : article.marketId === 'jp-tokyo' ? MARKET_PHOTOS.tokyo : null} cityLabel={market} /></div> : null}</div>
     <div className={`${styles.readingLayout} ${hasContents ? styles.withContents : ''}`}>
     {hasContents && <aside className={styles.readingAside}><ArticleContents locale={article.locale} items={contents} sidebar /></aside>}
     <div className={styles.readingColumn}>
-    {sourceCheckedAt && <p className={styles.sourceBoundary}>{ko ? '최근 자료 확인' : zh ? '最近资料核查' : 'Latest source check'} <time dateTime={sourceCheckedAt}>{formatDate(sourceCheckedAt)}</time><span aria-hidden="true"> · </span><a href="#sources">{ko ? '출처·계산 방법' : zh ? '来源与方法' : 'Sources & methodology'}</a></p>}
+    {article.sources.length > 0 && <aside className={styles.evidencePanel} aria-label={ko ? '이 글의 근거' : zh ? '本文依据' : 'Behind the evidence'}>
+      <div><p className={styles.evidenceLabel}>{ko ? '이 글의 근거' : zh ? '本文依据' : 'Behind the evidence'}</p><p className={styles.evidencePublishers}>{[...new Set(article.sources.map(source => source.publisher))].join(' · ')}</p></div>
+      <div className={styles.evidenceMeta}><p>{article.sources.length} {ko ? '개 출처' : zh ? '个来源' : article.sources.length === 1 ? 'source' : 'sources'}{sourceCheckedAt && <><span aria-hidden="true"> · </span>{ko ? '최근 자료 확인' : zh ? '最近资料核查' : 'Latest source check'} <time dateTime={sourceCheckedAt}>{formatDate(sourceCheckedAt)}</time></>}</p><a href="#sources">{ko ? '출처·계산 방법' : zh ? '来源与方法' : 'Sources & methodology'} <span aria-hidden="true">↓</span></a></div>
+    </aside>}
     {budgetComparison && <p>{article.locale === 'ko' ? '2026년 9월 예산 가이드 · ' : article.locale === 'zh-CN' ? '2026年9月预算指南 · ' : 'September 2026 budget guide · '}{budgetGuidePeriod(article.slug, article.locale)}</p>}
     {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} locale={article.locale} /> : null}
-{articlePhoto ? <div className={layout.hero}><NeighbourhoodPhoto id={articlePhoto} eager context locale={article.locale} /></div> : article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : article.marketId === 'jp-tokyo' ? MARKET_PHOTOS.tokyo : null} cityLabel={market} /></div> : null}
+
     {figure == null ? null : <Infographic spec={figure} />}
     {buyingGuide ? <Suspense fallback={<BuyingGuide guide={buyingGuide} locale={ko ? "ko" : "en"} />}><BuyingGuideEntry guide={buyingGuide} locale={ko ? "ko" : "en"} /></Suspense> : null}
     <article className={layout.body}>

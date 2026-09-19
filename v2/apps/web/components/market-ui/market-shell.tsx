@@ -3,6 +3,7 @@ import Link from 'next/link';
 import styles from './market-shell.module.css';
 import detailStyles from './detail-layout.module.css';
 import { ResponsiveResultsPanel, type ResultsPanelLabels } from './responsive-results-panel';
+import { ExploreWorkspace } from './explore-workspace';
 import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
 
 
@@ -50,12 +51,9 @@ export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, lay
     {priceGuide}
     {t(layers)}
     {history}
-    <div className={styles.exploreGrid} data-layout={spatial == null ? 'list' : 'split'}>
-      <section className={styles.discovery} data-market-shell-region="discovery">{discoveryPanel
+    <ExploreWorkspace locale={locale} mobileViews={!discoveryPanel} discovery={discoveryPanel
         ? <ResponsiveResultsPanel labels={discoveryPanel}>{t(discovery)}</ResponsiveResultsPanel>
-        : t(discovery)}</section>
-      {spatial == null ? null : <section className={styles.spatial} data-market-shell-region="spatial">{t(spatial)}</section>}
-    </div>
+        : t(discovery)} spatial={t(spatial)} />
     {related}
   </div>;
 }
@@ -83,7 +81,7 @@ export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric
       { id: 'detail-evidence', label: 'Transactions' },
       { id: 'detail-source', label: 'Source' },
     ]).map(section => <a key={section.id} href={`#${section.id}`}>{t(section.label)}</a>)}</nav>
-    {summary && media ? <details className={styles.mediaDisclosure}>
+    {summary && media ? <details className={styles.mediaDisclosure} open>
       <summary>{locale === 'ko' ? '사진 및 위치 맥락' : locale === 'zh-CN' ? '照片与位置背景' : 'Photos and location context'}</summary>
       <div className={styles.summaryMedia} data-detail-media="true">{t(media)}</div>
     </details> : null}

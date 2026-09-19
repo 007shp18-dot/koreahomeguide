@@ -8,6 +8,7 @@ describe('guide calculator city context', () => {
     ['seoul', 'kr-seoul', 'KRW'],
     ['singapore', 'sg-singapore', 'SGD'],
     ['dubai', 'ae-dubai', 'AED'],
+    ['tokyo', 'jp-tokyo', 'JPY'],
   ] as const)('opens the %s calculator with the matching currency', (city, market, currency) => {
     const html = renderToStaticMarkup(<EditorialGuides market={city} />);
     expect(html).toContain(`href="/news?topic=budget&amp;market=${city}"`);
@@ -16,9 +17,9 @@ describe('guide calculator city context', () => {
     const url = new URL(href!.replaceAll('&amp;', '&'), 'https://signedprice.com');
     expect(parsePropertyScenarioContext(Object.fromEntries(url.searchParams))).toMatchObject({ market, currency });
   });
-  it('does not offer an unsupported Tokyo calculator', () => {
-    const html = renderToStaticMarkup(<EditorialGuides market="tokyo" />);
-    expect(html).toContain('href="/news?topic=budget&amp;market=tokyo"');
-    expect(html).not.toContain('/tools/property-scenario');
+  it('keeps city tabs in the sitewide order', () => {
+    const html = renderToStaticMarkup(<EditorialGuides market="seoul" />);
+    const tabs = html.match(/aria-label="Guide cities"[\s\S]*?<\/nav>/)?.[0] ?? '';
+    expect([...tabs.matchAll(/>((?:Seoul|Singapore|Dubai|Tokyo))<\/a>/g)].map(match => match[1])).toEqual(['Seoul', 'Singapore', 'Dubai', 'Tokyo']);
   });
 });

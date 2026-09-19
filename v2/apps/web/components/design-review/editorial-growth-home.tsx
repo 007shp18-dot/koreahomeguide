@@ -9,6 +9,8 @@ import { HomeSearch } from '../home/home-search';
 import { HomeReportPulse } from '../home/home-report-pulse';
 import type { EditorialPortfolioRecord } from '@/content/portfolio-types';
 import type { StoryPhoto } from '@/content/story-photos';
+import { getPortfolioRecord } from '@/content/portfolio-manifest';
+import { homeArticlePhoto } from '@/lib/home/home-article-photo';
 import styles from './editorial-growth-home.module.css';
 
 const COPY = {
@@ -58,11 +60,11 @@ const CITY_PHOTOS: Readonly<Record<HomeMarket, StoryPhoto & { place: string; cou
     place: 'Yeouido', country: 'South Korea', position: '50% 75%',
   },
   'sg-singapore': {
-    src: '/assets/home/singapore-filipe-freitas.jpg',
-    caption: { en: 'Clarke Quay rooftops and the Singapore skyline.', ko: '싱가포르 클라크 키의 지붕과 도심 풍경.' },
-    source: 'https://unsplash.com/photos/a-city-with-a-lot-of-tall-buildings-next-to-a-body-of-water-9nDDPLZM670',
-    author: 'Filipe Freitas', license: 'Unsplash License', licenseHref: 'https://unsplash.com/license', portrait: true,
-    place: 'Clarke Quay', country: 'Singapore', position: '50% 60%',
+    src: '/assets/home/singapore-kevin-wang.jpg',
+    caption: { en: 'Marina Bay and the Singapore skyline at dusk.', ko: '해 질 무렵 싱가포르 마리나 베이와 도심 풍경.' },
+    source: 'https://unsplash.com/photos/an-aerial-view-of-a-city-at-night-A1fSrS-mIs4',
+    author: 'Kevin Wang', license: 'Unsplash License', licenseHref: 'https://unsplash.com/license', portrait: true,
+    place: 'Marina Bay', country: 'Singapore', position: '50% 60%',
   },
   'ae-dubai': {
     src: '/assets/home/dubai-waqas-sultan.jpg',
@@ -72,11 +74,11 @@ const CITY_PHOTOS: Readonly<Record<HomeMarket, StoryPhoto & { place: string; cou
     place: 'Dubai Marina', country: 'United Arab Emirates', position: '50% 65%',
   },
   'jp-tokyo': {
-    src: '/assets/home/tokyo-pjh.jpg',
-    caption: { en: 'Tokyo rooftops and the NTT Docomo Yoyogi Building.', ko: '도쿄의 지붕들과 NTT 도코모 요요기 빌딩.' },
-    source: 'https://unsplash.com/photos/clear-blue-sky-over-a-city-skyline-with-buildings-tHMtWd_trtI',
-    author: 'PJH', license: 'Unsplash License', licenseHref: 'https://unsplash.com/license', portrait: true,
-    place: 'Yoyogi', country: 'Japan', position: '50% 100%',
+    src: '/assets/home/tokyo-christian-macmillan.jpg',
+    caption: { en: 'Tokyo Tower and the surrounding city.', ko: '도쿄 타워와 주변 도심 풍경.' },
+    source: 'https://unsplash.com/photos/aerial-view-of-city-buildings-during-daytime-cMTWrbqcESs',
+    author: 'Christian MacMillan', license: 'Unsplash License', licenseHref: 'https://unsplash.com/license', portrait: true,
+    place: 'Tokyo Tower', country: 'Japan', position: '50% 40%',
   },
 };
 
@@ -92,20 +94,32 @@ export function PropertyHome({ locale, articles }: Readonly<{ locale: SiteLocale
   const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const models = createBuyingJourney(locale);
   const markets = models.map(model => ({ id: model.market as HomeMarket }));
+  const featured = articles?.[0] ?? getPortfolioRecord(locale, 'seoul-apartment-buying-budget-guide');
+  const featurePhoto = featured ? homeArticlePhoto(featured) : undefined;
+  const story = getPortfolioRecord(locale, 'tokyo-apartment-buying-budget-guide');
+  const storyPhoto = story ? homeArticlePhoto(story) : undefined;
+  const text = locale === 'ko'
+    ? { featured: '지금 읽을 이야기', read: '기사 읽기', story: '도쿄에서의 다음 선택', planner: '집값 다음의 숫자까지.', plannerBody: '매입비용부터 매달 드는 돈까지, 내 조건으로 비교해 보세요.', plannerAction: '내 예산 계산하기' }
+    : locale === 'zh-CN'
+      ? { featured: '精选阅读', read: '阅读文章', story: '在东京，下一步怎么选', planner: '房价之外，还有什么？', plannerBody: '从购置费用到每月支出，用自己的条件比较。', plannerAction: '计算我的预算' }
+      : { featured: 'The latest perspective', read: 'Read the story', story: 'Your next move in Tokyo', planner: 'Beyond the asking price.', plannerBody: 'From buying costs to monthly expenses. Put your own numbers in perspective.', plannerAction: 'Plan my budget' };
+
 
   return <main className={styles.homePage} data-interface="research-first">
     <header className={`${styles.section} ${styles.hero}`}>
+      <Image className={styles.heroBackground} src="/assets/home/seoul-ethan-brooke.jpg" alt="" fill preload sizes="100vw" style={{ objectFit: 'cover', objectPosition: '50% 58%' }} />
       <div className={styles.heroCopy}>
-        <p className={styles.kicker}>SIGNEDPRICE / SEOUL · SINGAPORE · DUBAI · TOKYO</p>
+        <p className={styles.kicker}>SIGNEDPRICE / FOUR CITIES. YOUR NEXT MOVE.</p>
         <h1>{copy.title}<span>{copy.titleEnd}</span></h1>
         <p className={styles.lead}>{copy.lead}</p>
         <HomeSearch locale={locale} />
         <Link className={styles.heroHint} href={`${prefix}/prices/`}>{copy.markets}<UiIcon name="arrow-right" /></Link>
       </div>
-      <div className={styles.heroVisual}>
-        <Image src={CITY_PHOTOS['kr-seoul'].src} alt={CITY_PHOTOS['kr-seoul'].caption[locale === 'ko' ? 'ko' : 'en']} fill priority sizes="(max-width: 760px) 100vw, 45vw" style={{ objectFit: 'cover', objectPosition: '50% 72%' }} />
-        <span className={styles.photoCaption}>SEOUL / YEOUIDO</span>
-      </div>
+      {featured && featurePhoto && <article className={styles.heroStory}>
+        <Link href={featured.canonicalHref} className={styles.heroStoryPhoto} tabIndex={-1} aria-hidden="true"><Image src={featurePhoto.src} alt="" fill sizes="(max-width: 760px) 90px, 310px" style={{objectFit: featurePhoto.portrait ? 'contain' : 'cover'}} /></Link>
+        <div><p className={styles.kicker}>{text.featured}</p><h2><Link href={featured.canonicalHref}>{featured.title}</Link></h2><Link className={styles.storyAction} href={featured.canonicalHref}>{text.read}<UiIcon name="arrow-right" /></Link></div>
+      </article>}
+      <span className={styles.photoCaption}>SEOUL / ETHAN BROOKE</span>
     </header>
 
     <section className={`${styles.section} ${styles.cities}`} aria-labelledby="home-cities-title" data-home-region="markets">
@@ -122,26 +136,30 @@ export function PropertyHome({ locale, articles }: Readonly<{ locale: SiteLocale
       })}</div>
     </section>
 
-    <HomeAnalysis locale={locale} articles={articles} />
-
     <div className={`${styles.section} ${styles.researchGrid}`}>
       <HomeReportPulse locale={locale} />
+      {story && storyPhoto && <article className={styles.featureStory}>
+        <Link href={story.canonicalHref} className={styles.featureStoryPhoto} tabIndex={-1} aria-hidden="true"><Image src={storyPhoto.src} alt="" fill sizes="(max-width: 760px) 100vw, 25vw" style={{objectFit: storyPhoto.portrait ? 'contain' : 'cover'}} /></Link>
+        <div><p className={styles.kicker}>TOKYO / {copy.guides}</p><h2><Link href={story.canonicalHref}>{text.story}</Link></h2><p>{story.deck}</p><Link className={styles.storyAction} href={story.canonicalHref}>{copy.budgetGuide}<UiIcon name="arrow-right" /></Link></div>
+      </article>}
       <aside className={styles.planning}>
         <p className={styles.kicker}>{copy.tools}</p>
-        <svg className={styles.house} viewBox="0 0 180 130" fill="none" aria-hidden="true"><path d="M24 61 88 16l69 44v54H24Z" fill="#fff" fillOpacity=".14"/><path d="m24 61 64-45 69 44M42 49v65h97V49M77 114V77h30v37M52 64h15v18H52Z" stroke="white" strokeWidth="2.5" strokeLinejoin="round"/><path d="m88 16 51 33M107 77l16 10v27" stroke="white" strokeOpacity=".5" strokeWidth="2"/></svg>
-        <h2>{copy.toolsNote}</h2>
-        <p>{locale === 'ko' ? '집값과 취득·보유 비용을 한곳에서 비교하세요.' : locale === 'zh-CN' ? '一起比较房价、购置费用与持有成本。' : 'Bring the price, buying costs and ongoing expenses into one view.'}</p>
-        <Link href={`${prefix}/tools/`}>{copy.tools}<UiIcon name="arrow-right" /></Link>
-        <Link className={styles.planningSecondary} href={`${prefix}/guides/`}>{copy.guides}<UiIcon name="arrow-right" /></Link>
+        <div className={styles.house}><Image src="/assets/home/budget-house-3d.png" alt="" fill sizes="(max-width: 760px) 180px, 280px" style={{objectFit:'contain'}} /></div>
+        <h2>{text.planner}</h2>
+        <p>{text.plannerBody}</p>
+        <Link href={`${prefix}/tools/property-scenario/`}>{text.plannerAction}<UiIcon name="arrow-right" /></Link>
+        <Link className={styles.planningSecondary} href={`${prefix}/tools/`}>{copy.tools}<UiIcon name="arrow-right" /></Link>
       </aside>
     </div>
+
+    <HomeAnalysis locale={locale} articles={articles} />
 
     <div className={`${styles.section} ${styles.sources}`}>
       <Link href="/trust/">{copy.methodology} <UiIcon name="arrow-right" /></Link>
       <details className={styles.credits}>
         <summary>{copy.credits}<UiIcon name="chevron-down" /></summary>
         <p>{copy.modifications}</p>
-        <ul>{markets.map(({ id }) => {
+        <ul><li><a href="https://unsplash.com/photos/a-view-of-a-city-at-night-from-a-bridge-E0awymZfM1k" target="_blank" rel="noopener noreferrer">Seoul — Ethan Brooke / Unsplash</a> · <a href="https://unsplash.com/license">Unsplash License</a></li>{markets.map(({ id }) => {
           const photo = CITY_PHOTOS[id];
           return <li key={id} data-photo-credit={id}>{copy.cities[id]} — <a href={photo.source} target="_blank" rel="noopener noreferrer">{photo.author} / Unsplash</a> · <a href={photo.licenseHref} target="_blank" rel="noopener noreferrer">{photo.license}</a></li>;
         })}</ul>

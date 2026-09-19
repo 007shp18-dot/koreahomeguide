@@ -286,3 +286,7 @@
 .header h2 { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.25; }
 .footer dd { overflow-wrap: anywhere; }
 .dataTable td { font-variant-numeric: tabular-nums; }
+
+.trendLegend{display:flex;flex-wrap:wrap;gap:12px 24px;font-size:13px;line-height:1.5}.trendLegend>span{display:inline-flex;align-items:center;gap:8px}.trendLegend svg{flex:none}.trendLegend polyline{fill:none;stroke-width:3}
+
+.trendLegend polyline{stroke:var(--review-accent,var(--accent))}.trendLegend circle{fill:var(--review-accent,var(--accent))}.trendLegend .series2 circle{fill:var(--review-ink,var(--ink))}

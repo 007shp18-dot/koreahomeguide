@@ -50,3 +50,9 @@
   .price strong { font-size: 18px; }
   .rowActions { gap: 0 12px; }
 }
+
+.results { padding-inline: 16px; }
+.price strong { color: var(--accent); }
+.rowActions > a { color: var(--accent); font-size: var(--text-control); font-weight: 600; }
+.workspace [data-market-shell-region='discovery'] > section > :is(h2, p) { margin-inline: 16px; }
+@media (max-width: 640px) { .results { padding-inline: 12px; } }

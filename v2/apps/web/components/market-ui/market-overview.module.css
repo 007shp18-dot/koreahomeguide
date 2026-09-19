@@ -1,6 +1,7 @@
 .overview { color: var(--ink); overflow-wrap: anywhere; }
 .overview:lang(ko) { word-break: keep-all; letter-spacing: normal; }
-.overview h1, .overview:lang(ko) h1 { letter-spacing: normal; line-height: 1.2; }
+.overview h1, .overview:lang(ko) h1 { letter-spacing: -.045em; line-height: 1.04; font-size: clamp(3rem, 7vw, 6rem); }
+.overview:lang(ko) h1 { letter-spacing: normal; }
 .overview > [data-market-hero], .content { width: min(var(--content-frame), calc(100% - 2 * var(--page-gutter))); }
 .overview > [data-market-hero] > div { min-width: 0; }
 .content { margin: 32px auto 64px; display: grid; gap: 32px; }
@@ -30,4 +31,13 @@
   .content { margin-top: 24px; gap: 24px; }
   .facts, .actions { grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .facts > div, .actions a { padding: 16px; }
+}
+
+.actions h3 { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.actions h3::after { content: '→'; color: var(--accent); font-size: 1.25rem; }
+.facts dd { color: var(--ink); font-size: clamp(1.3rem, 2vw, 1.75rem); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+@media (max-width: 760px) {
+  .overview h1, .overview:lang(ko) h1 { font-size: clamp(3rem, 13vw, 4rem); }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .facts dd { font-size: 1.25rem; }
 }
