@@ -59,12 +59,12 @@ export function MarketPulse({ locale, city }: { locale: SiteLocale; city?: Repor
             {report.months.map((value, i) => <text key={value} x={x(i)} y="251" textAnchor="middle" fill="#637590" fontSize="12">{month(value)}</text>)}
           </svg>
           <div className={styles.chartTargets} style={{ left: left - 22, right: width - right - 22 }} role="group" aria-label={copy.selected}>
-            {report.months.map((value, i) => <button key={value} type="button" aria-pressed={active === i} aria-label={`${month(value)}: ${report.series.map(series => `${label(series.label)} ${number(series.values[i]!)}`).join(', ')}`} onMouseEnter={() => setActive(i)} onFocus={() => setActive(i)} onClick={() => setActive(i)} />)}
+            {report.months.map((value, i) => <button key={value} type="button" aria-pressed={active === i} aria-label={`${month(value)}: ${report.series.map(series => `${label(series.label)} ${number(series.values[i]!)}`).join(', ')}`} onMouseEnter={() => setActive(i)} onFocus={() => setActive(i)} onClick={() => setActive(i)}><span>{month(value)}</span></button>)}
           </div>
         </div>
         <p className={styles.legend}>{report.series.map((series, i) => <span key={series.label}><i className={i ? styles.secondaryDot : styles.primaryDot}/>{label(series.label)}</span>)}</p>
       </div>
-      <aside className={styles.chartAside} aria-live="polite" aria-atomic="true"><span>{copy.selected} · {month(report.months[active ?? 5])}</span><strong>{number(primary.values[active ?? 5]!)}<small>{copy.count}</small></strong><p>{copy.scope}</p><Link href={`${prefix}/news/${report.slug}/`}>{copy.read} <span aria-hidden="true">→</span></Link></aside>
+      <aside className={styles.chartAside} aria-live="polite" aria-atomic="true"><span>{copy.selected} · {month(report.months[active ?? 5]!)}</span><strong>{number(primary.values[active ?? 5]!)}<small>{copy.count}</small></strong><p>{copy.scope}</p><Link href={`${prefix}/news/${report.slug}/`}>{copy.read} <span aria-hidden="true">→</span></Link></aside>
     </div>
     <footer className={styles.chartFooter}><span>{copy.publication} · {period}</span><details><summary>{copy.table}</summary><div className={styles.tableWrap}><table><caption>{copy.scope}</caption><thead><tr><th scope="col">{copy.month}</th>{report.series.map(series => <th key={series.label} scope="col">{label(series.label)}</th>)}</tr></thead><tbody>{report.months.map((value, i) => <tr key={value}><th scope="row">{month(value)}</th>{report.series.map(series => <td key={series.label}>{number(series.values[i]!)}</td>)}</tr>)}</tbody></table></div></details></footer>
   </section>;
