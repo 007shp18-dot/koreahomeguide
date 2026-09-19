@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { HomeAnalysis } from '../home-analysis';
+import { HomeAnalysis } from './editorial-growth-archived-analysis';
 import { ExploreLink } from '../market-ui/explore-link';
 import Link from 'next/link';
 import { UiIcon } from '../ui-icon';

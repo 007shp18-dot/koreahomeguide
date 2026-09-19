@@ -114,7 +114,7 @@ export function NewsroomArticle({ article }: Readonly<{
     <article className={layout.body}>
       {contentSections.map((section, index) => isMethod(section.heading)?null:<section id={`section-${index + 1}`} key={`${section.heading}-${index}`}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}
     </article>
-    <details id="sources" open className={styles.sources} data-editorial-event="article_complete">
+    <details id="sources" className={styles.sources} data-editorial-event="article_complete">
       <summary>{ko ? '자료·계산 방법 보기' : zh ? '查看资料与计算方法' : 'Sources & methodology'}</summary>
       <h2 id="article-sources-title">{t("Sources","출처")}</h2>
       {contentSections.map((section,index)=>isMethod(section.heading)?<section id={`section-${index+1}`} key={index}><EditorialMarkdown source={section.body}/></section>:null)}

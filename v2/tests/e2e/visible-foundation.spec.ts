@@ -219,8 +219,8 @@ test('desktop exposes published analysis and the city destinations', async ({pag
   await expect(page.getByRole('search').getByRole('searchbox')).toBeVisible();
   const markets = page.locator('[data-home-region="markets"]');
   await expect(markets).toHaveAttribute('aria-labelledby', 'home-cities-title');
-  await page.getByRole('heading', { name: 'What the transactions tell us' }).scrollIntoViewIfNeeded();
-  await expect(page.getByRole('heading', { name: 'What the transactions tell us' })).toBeInViewport();
+  await page.getByRole('heading', { name: 'Latest analysis' }).scrollIntoViewIfNeeded();
+  await expect(page.getByRole('heading', { name: 'Latest analysis' })).toBeInViewport();
   await markets.scrollIntoViewIfNeeded();
   await expect(markets).toBeInViewport();
   await expect(markets.getByRole('navigation')).toHaveCount(0);

@@ -22,7 +22,8 @@ describe('editorial reading and topics', () => {
     expect(html).toContain('Latest source check');
     expect(html).toContain('href="#section-1"');
     expect(html).toContain('href="#sources"');
-    expect(html).toMatch(/<details[^>]+id="sources"[^>]+open/);
+    expect(html).not.toMatch(/<details[^>]+id="sources"[^>]+open/);
+    expect(html).toContain('<summary>Sources &amp; methodology</summary>');
     expect(html).toContain('Published Sep');
   });
 });

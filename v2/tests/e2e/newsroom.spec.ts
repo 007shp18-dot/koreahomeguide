@@ -96,8 +96,9 @@ test('Insights type and image layout stays readable across viewports', async ({ 
     const filter = main.querySelector('nav a')!;
     return { heading: parseFloat(getComputedStyle(heading).fontSize), deck: parseFloat(getComputedStyle(deck).fontSize), filter: parseFloat(getComputedStyle(filter).fontSize), height: filter.getBoundingClientRect().height };
   });
-  expect(values.heading).toBeGreaterThanOrEqual(32);
-  expect(values.heading).toBeLessThanOrEqual(60);
+  // Compact discovery headings retain a clear hierarchy above 15px body copy.
+  expect(values.heading).toBeGreaterThanOrEqual(28);
+  expect(values.heading).toBeLessThanOrEqual(38);
   expect(values.deck).toBeGreaterThanOrEqual(15);
   expect(values.filter).toBeGreaterThanOrEqual(14);
   expect(values.height).toBeGreaterThanOrEqual(44);
@@ -153,10 +154,29 @@ test('News & Insights and Guides keep the same global header and the guide highl
   await expect(navigation.getByRole('link', { name: 'Buying & renting', exact: true })).toHaveAttribute('aria-current', 'page');
   const openedMenu = page.locator('header.site-header details.site-header__mobile-menu[open]');
   if (await openedMenu.isVisible()) await openedMenu.locator('summary').press('Escape');
-  const contents = page.locator('details[data-article-contents]');
-  await expect(contents).not.toHaveAttribute('open', '');
-  await contents.locator('summary').click();
-  await expect(contents.getByRole('navigation', { name: 'Contents', exact: true })).toBeVisible();
+  const collapsibleContents = page.locator('details[data-article-contents]');
+  const sidebarContents = page.locator('div[data-article-contents]');
+  const usesSidebar = await page.evaluate(() => matchMedia('(min-width: 1100px)').matches);
+  if (usesSidebar) {
+    await expect(sidebarContents).toBeVisible();
+    await expect(collapsibleContents).toBeHidden();
+    await expect(sidebarContents.getByRole('navigation', { name: 'Contents', exact: true })).toBeVisible();
+  } else {
+    await expect(sidebarContents).toBeHidden();
+    await expect(collapsibleContents).toBeVisible();
+    await expect(collapsibleContents).not.toHaveAttribute('open', '');
+    await expect(collapsibleContents.getByRole('navigation', { name: 'Contents', exact: true })).toBeHidden();
+    await collapsibleContents.locator('summary').click();
+    await expect(collapsibleContents).toHaveAttribute('open', '');
+    await expect(collapsibleContents.getByRole('navigation', { name: 'Contents', exact: true })).toBeVisible();
+  }
+  const visibleContents = usesSidebar ? sidebarContents : collapsibleContents;
+  const sectionLink = visibleContents.getByRole('link').first();
+  const sectionHash = await sectionLink.getAttribute('href');
+  expect(sectionHash).toMatch(/^#[a-zA-Z0-9-]+$/);
+  await sectionLink.click();
+  await expect.poll(() => page.evaluate(() => location.hash)).toBe(sectionHash);
+  await expect(page.locator(sectionHash!)).toBeInViewport();
   await expectNoHorizontalOverflow(page);
 });
 

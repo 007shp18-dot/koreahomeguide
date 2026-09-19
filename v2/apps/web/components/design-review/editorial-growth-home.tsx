@@ -62,7 +62,7 @@ const CITY_PHOTOS: Readonly<Record<HomeMarket, StoryPhoto & { place: string; cou
     caption: { en: 'Clarke Quay rooftops and the Singapore skyline.', ko: '싱가포르 클라크 키의 지붕과 도심 풍경.' },
     source: 'https://unsplash.com/photos/a-city-with-a-lot-of-tall-buildings-next-to-a-body-of-water-9nDDPLZM670',
     author: 'Filipe Freitas', license: 'Unsplash License', licenseHref: 'https://unsplash.com/license', portrait: true,
-    place: 'Clarke Quay', country: 'Singapore', position: '50% 0%',
+    place: 'Clarke Quay', country: 'Singapore', position: '50% 60%',
   },
   'ae-dubai': {
     src: '/assets/home/dubai-waqas-sultan.jpg',

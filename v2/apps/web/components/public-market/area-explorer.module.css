@@ -2194,4 +2194,4 @@
 .districtRail button[aria-pressed='true'] small { color: var(--muted); }
 .toolbarSelect > span, .buildingSearch label { font-size: var(--text-control); font-weight: 500; letter-spacing: normal; text-transform: none; }
 .workspace[data-explorer-layout='split'] .buildingList li { padding-block: 16px; }
-.exploreToolbar :is(input, select, button, a):focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+.exploreToolbar :is(input, select, button, a):focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
