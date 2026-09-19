@@ -9,9 +9,9 @@ import styles from './visual-panels.module.css';
 
 type ReportCity = typeof reports[number]['city'];
 const TEXT = {
-  en: { title: 'A clearer view of the market', lead: 'Follow recorded activity, then read the story behind it.', latest: 'Latest month', change: 'From previous month', history: 'Six-month total', count: 'records', scope: 'Selected report series · transaction counts, not a price index', publication: 'September 2026 report', read: 'Read the source report', table: 'View the exact chart values', month: 'Month', year: '2026', selected: 'Selected month' },
-  ko: { title: '숫자로 보는 시장의 흐름', lead: '실제 거래가 어떻게 움직였는지, 그래프와 분석을 함께 살펴보세요.', latest: '최근 집계 월', change: '직전 월 대비', history: '6개월 합계', count: '건', scope: '보고서의 선정 거래군 · 거래 건수이며 가격지수가 아닙니다', publication: '2026년 9월 발행 보고서', read: '근거 보고서 읽기', table: '그래프의 원래 수치 보기', month: '월', year: '2026년', selected: '선택한 월' },
-  'zh-CN': { title: '从数据看市场走势', lead: '查看真实成交的变化，继续阅读数字背后的分析。', latest: '最新统计月', change: '较前月', history: '六个月合计', count: '笔', scope: '报告中的选定成交组 · 成交笔数，并非价格指数', publication: '2026年9月发布的报告', read: '阅读来源报告', table: '查看图表原始数值', month: '月份', year: '2026年', selected: '所选月份' },
+  en: { title: 'A clearer view of the market', trend: 'Six-month transaction trend', lead: 'Follow recorded activity, then read the story behind it.', latest: 'Latest month', change: 'From previous month', history: 'Six-month total', count: 'records', scope: 'Selected report series · transaction counts, not a price index', publication: 'September 2026 report', read: 'Read the source report', table: 'View the exact chart values', month: 'Month', year: '2026', selected: 'Selected month' },
+  ko: { title: '숫자로 보는 시장의 흐름', trend: '최근 6개월 거래 추이', lead: '실제 거래가 어떻게 움직였는지, 그래프와 분석을 함께 살펴보세요.', latest: '최근 집계 월', change: '직전 월 대비', history: '6개월 합계', count: '건', scope: '보고서의 선정 거래군 · 거래 건수이며 가격지수가 아닙니다', publication: '2026년 9월 발행 보고서', read: '근거 보고서 읽기', table: '그래프의 원래 수치 보기', month: '월', year: '2026년', selected: '선택한 월' },
+  'zh-CN': { title: '从数据看市场走势', trend: '近六个月成交趋势', lead: '查看真实成交的变化，继续阅读数字背后的分析。', latest: '最新统计月', change: '较前月', history: '六个月合计', count: '笔', scope: '报告中的选定成交组 · 成交笔数，并非价格指数', publication: '2026年9月发布的报告', read: '阅读来源报告', table: '查看图表原始数值', month: '月份', year: '2026年', selected: '所选月份' },
 } as const;
 
 /** All values come from the already-published monthly report, never a generated trend. */
@@ -35,6 +35,9 @@ export function MarketPulse({ locale, city }: { locale: SiteLocale; city?: Repor
   const x = (index: number) => left + index * (right - left) / 5;
   const y = (value: number) => bottom - value / max * (bottom - top);
   const period = `${copy.year} · ${month(report.months[0])}–${month(report.months[5])}`;
+  // A title must be one string; multiple JSX children produce an empty SSR title.
+  const chartTitle = `${cityName(report.city)} · ${copy.trend} · ${period}`;
+  const chartDescription = `${copy.scope}. ${report.series.map(series => `${label(series.label)}: ${report.months.map((value, i) => `${month(value)} ${number(series.values[i]!)}`).join('; ')}`).join('. ')}. ${copy.table}.`;
   return <section className={styles.pulse} data-market-pulse={report.city} aria-labelledby={`${uid}-heading`}>
     <header className={styles.heading}>
       <div><p className={styles.eyebrow}>MARKET PULSE</p><h2 id={`${uid}-heading`}>{city ? `${cityName(city)} · ${copy.title}` : copy.title}</h2><p>{copy.lead}</p></div>
@@ -49,8 +52,9 @@ export function MarketPulse({ locale, city }: { locale: SiteLocale; city?: Repor
       <div className={styles.chartMain}>
         <div className={styles.chartTop}><h3>{cityName(report.city)} · {label(primary.label)}</h3><span>{period}</span></div>
         <div ref={ref} className={styles.chart}>
-          <svg role="img" aria-labelledby={`${uid}-chart-title`} viewBox={`0 0 ${width} 264`} width="100%" height="264">
-            <title id={`${uid}-chart-title`}>{cityName(report.city)} · {copy.scope} · {period}. {copy.table}</title>
+          <svg role="img" aria-labelledby={`${uid}-chart-title`} aria-describedby={`${uid}-chart-description`} viewBox={`0 0 ${width} 264`} width="100%" height="264">
+            <title id={`${uid}-chart-title`}>{chartTitle}</title>
+            <desc id={`${uid}-chart-description`}>{chartDescription}</desc>
             <defs><linearGradient id={`${uid}-fill`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#2563d8" stopOpacity=".24"/><stop offset="100%" stopColor="#2563d8" stopOpacity=".015"/></linearGradient></defs>
             {[0, 1, 2, 3, 4].map(i => <g key={i}><line x1={left} x2={right} y1={y(max * i / 4)} y2={y(max * i / 4)} stroke="#e1e9f5"/><text x={left - 10} y={y(max * i / 4) + 4} textAnchor="end" fill="#637590" fontSize="12">{number(max * i / 4)}</text></g>)}
             <path d={`M ${left} ${bottom} ${primary.values.map((value, i) => `L ${x(i)} ${y(value)}`).join(' ')} L ${right} ${bottom} Z`} fill={`url(#${uid}-fill)`}/>
