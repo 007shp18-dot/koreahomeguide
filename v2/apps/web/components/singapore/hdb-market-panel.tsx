@@ -1,3 +1,4 @@
+import { chartCopy } from '../market-ui/chart-insight';
 import { localizedMarketCopy } from '../../lib/locale/market-localization';
 
 import { sgText } from '../../lib/locale/singapore-copy';
@@ -21,31 +22,34 @@ function ComparisonChart({ locale = 'en',
 }>) {
   const value = (town: HdbTownDisplay) => (
     kind === 'resale' ? town.resaleMedianSgd : town.rentalMedianSgd
-  ) ?? 0;
+  );
   const label = (town: HdbTownDisplay) => (
     kind === 'resale' ? town.resaleMedianLabel : town.rentalMedianLabel
   ) ?? 'Not published';
-  const maximum = Math.max(1, ...towns.map(value));
+  const maximum = Math.max(1, ...towns.flatMap(town => value(town) === null ? [] : [value(town)!]));
   return (
     <figure className={styles.chart} aria-labelledby={`hdb-${kind}-chart-title`}>
       <figcaption>
         <h3 id={`hdb-${kind}-chart-title`}>{sgText(locale, title)}</h3>
         <p>{sgText(locale, description)}</p>
       </figcaption>
-      <div className={styles.chartRows} role="img" aria-label={sgText(locale, `${title}. ${description}`)}>
+      <p>{chartCopy(locale, kind === 'resale' ? 'SGD total resale price · compare town medians' : 'SGD per month · compare town medians', kind === 'resale' ? '총 매매가 SGD · 타운 중앙값 비교' : '월 임대료 SGD · 타운 중앙값 비교', kind === 'resale' ? '转售总价 SGD · 比较市镇中位数' : '每月租金 SGD · 比较市镇中位数')}</p>
+      <div className={styles.chartRows}>
         {towns.map((town) => (
           <div className={styles.chartRow} key={town.town}>
-            <span className={styles.chartName}>{town.town}</span>
+            <span className={styles.chartName}>{town.town}<small style={{ display: 'block', fontWeight: 400 }}>{chartCopy(locale, 'Sample', '거래 수', '样本')} · {(kind === 'resale' ? town.resaleCount : town.rentalCount).toLocaleString(locale)}</small></span>
             <span className={styles.chartTrack} aria-hidden="true">
-              <span
+              {value(town) !== null && <span
                 className={styles.chartBar}
-                style={{ '--bar-width': `${Math.max(2, (value(town) / maximum) * 100)}%` } as CSSProperties}
-              />
+                style={{ '--bar-width': `${(value(town)! / maximum) * 100}%` } as CSSProperties}
+              />}
             </span>
             <strong className={styles.chartValue}>{sgText(locale, label(town))}</strong>
           </div>
         ))}
       </div>
+      <p>{chartCopy(locale, 'Towns are selected by record count. Differences also reflect flat size and type; these are full-period medians, not current asking prices.', '거래 수가 많은 타운을 보여줍니다. 면적·주택 유형에 따라 차이가 있으며, 현재 호가가 아닌 전체 기간의 중앙값입니다.', '按记录数量选择市镇。差异也反映面积及户型构成；这些是整个收录期间的中位数，并非当前挂牌价。')}</p>
+      <a href="#hdb-towns">{chartCopy(locale, 'Compare every town and sample size', '전체 타운과 거래 수 비교', '比较所有市镇及样本量')} →</a>
     </figure>
   );
 }

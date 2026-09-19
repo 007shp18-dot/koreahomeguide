@@ -44,3 +44,12 @@
 .entry p { font-size: 15px; line-height: 1.65; }
 @media (min-width: 1000px) { .section > header { position: sticky; top: 120px; align-self: start; } }
 @media (max-width: 740px) { .page { padding-top: 24px; } .filters { gap: 4px; } .filters a { padding-inline: 12px; } }
+
+.heading .eyebrow { color: var(--accent); font-weight: 650; }
+.heading a { min-height: 44px; display: inline-flex; align-items: center; }
+.rows { border-top: 1px solid var(--line); }
+.entry { border-radius: 8px; padding-inline: 16px; }
+.entry:hover { background: var(--surface); }
+.entry .city { color: var(--accent); font-size: 12px; font-weight: 600; }
+.section h2 { font-weight: 650; }
+@media (max-width: 740px) { .entry { padding-inline: 8px; } }

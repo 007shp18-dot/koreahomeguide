@@ -7,7 +7,7 @@
 .deck { font-size: 19px; line-height: 1.65; color: #4b5e75; }
 .meta { font-size: 12px; color: #607188; margin-top: 24px; }
 .hero { margin: 0 auto; max-width: 900px; }
-.hero img { width: 100%; height: auto; max-height: 680px; object-fit: cover; object-position: center 65%; aspect-ratio: 3 / 2; border-radius: 8px; }
+.hero img { width: 100%; height: auto; max-height: 420px; object-fit: contain; background: var(--surface); border-radius: 8px; }
 .hero figcaption, .photo figcaption { margin-top: 9px; font-size: 12px; line-height: 1.6; color: #637185; }
 .hero figcaption a, .photo figcaption a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .body { max-width: 700px; margin: 42px auto 0; }
@@ -36,4 +36,4 @@
 .cards .eyebrow { margin-top: 16px; }
 @media (max-width: 850px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sectionHeading { display: block; } }
 @media (max-width: 540px) { .page { width: calc(100% - 40px); } .header { margin-top: 34px; } .deck { font-size: 17px; } .body p { font-size: 16px; } .body .intro { font-size: 18px; } .cards { grid-template-columns: 1fr; } .hero img { max-height: 480px; } .body h2 { font-size: 25px; } }
-@media (prefers-reduced-motion: reduce) { .cardImage img { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .cardImage img { transition: none; } .cardImage:hover img { transform: none; } }

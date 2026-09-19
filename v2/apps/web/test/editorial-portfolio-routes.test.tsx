@@ -80,3 +80,18 @@ describe('editorial portfolio public routes', () => {
       .not.toContain(guide.reviewedBy);
   });
 });
+
+import {EditorialPortfolioIndex} from '../components/newsroom/editorial-portfolio-index';
+it('does not mislabel Dubai or Tokyo portfolio entries as Singapore', () => {
+ const base = listPortfolioRecords('en')[0]!;
+ const records = [
+  {...base, id:'dubai-regression', marketId:'ae-dubai' as const},
+  {...base, id:'tokyo-regression', marketId:'jp-tokyo' as const},
+  {...base, id:'global-regression', marketId:null},
+ ];
+ for (const locale of ['en', 'zh-CN'] as const) {
+  const html = renderToStaticMarkup(<EditorialPortfolioIndex locale={locale} records={records} section="news"/>);
+  for (const city of locale === 'en' ? ['Dubai','Tokyo','Across cities'] : ['迪拜','东京','跨城市']) expect(html).toContain(city);
+  expect(html).not.toContain('· Singapore');
+ }
+});

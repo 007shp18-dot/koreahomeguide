@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { chartCopy } from '../market-ui/chart-insight';
 import type { ReactNode } from 'react';
 
 import type { InfographicSpec } from '../../lib/infographics/infographic-types';
@@ -23,30 +24,30 @@ export function InfographicFrame({ children, spec }: Readonly<{
 }>) {
   return <figure className={styles.frame} data-infographic-template={spec.template}>
     <figcaption className={styles.header}>
-      <span>Data in focus</span>
+      <span>{chartCopy(spec.locale, 'Data in focus', '수치로 보는 근거', '数据聚焦')}</span>
       <h2>{spec.title}</h2>
       <p>{spec.accessibleSummary}</p>
     </figcaption>
     <div className={styles.visual}>{children}</div>
     <footer className={styles.footer}>
       <dl>
-        <div><dt>Source</dt><dd>{spec.sourceLabel}</dd></div>
-        <div><dt>Period</dt><dd><time dateTime={spec.period.start}>{spec.period.start}</time>{spec.period.end === spec.period.start ? null : <>–<time dateTime={spec.period.end}>{spec.period.end}</time></>}</dd></div>
-        <div><dt>Sample</dt><dd>{spec.sampleLabel}</dd></div>
+        <div><dt>{chartCopy(spec.locale, 'Source', '출처', '来源')}</dt><dd>{spec.sourceLabel}</dd></div>
+        <div><dt>{chartCopy(spec.locale, 'Period', '기간', '期间')}</dt><dd><time dateTime={spec.period.start}>{spec.period.start}</time>{spec.period.end === spec.period.start ? null : <>–<time dateTime={spec.period.end}>{spec.period.end}</time></>}</dd></div>
+        <div><dt>{chartCopy(spec.locale, 'Sample', '표본', '样本')}</dt><dd>{spec.sampleLabel}</dd></div>
       </dl>
-      {spec.conversionProvenance === null ? null : <p className={styles.conversion}>Conversion: {spec.conversionProvenance.note} · {spec.conversionProvenance.evidenceReleaseId}</p>}
+      {spec.conversionProvenance === null ? null : <p className={styles.conversion}>{chartCopy(spec.locale, 'Conversion:', '환산:', '换算：')} {spec.conversionProvenance.note} · {spec.conversionProvenance.evidenceReleaseId}</p>}
       <details className={styles.dataTable}>
-        <summary data-editorial-event="infographic_data_open" data-infographic-id={spec.id}>View the numbers</summary>
-        <p>Evidence releases: {spec.evidenceReleaseIds.join(', ')}</p>
+        <summary data-editorial-event="infographic_data_open" data-infographic-id={spec.id}>{chartCopy(spec.locale, 'View the numbers', '수치 보기', '查看数值')}</summary>
+        <p>{chartCopy(spec.locale, 'Evidence releases:', '근거 자료:', '依据版本：')} {spec.evidenceReleaseIds.join(', ')}</p>
         <div><table>
           <caption>{spec.title}</caption>
-          <thead><tr><th scope="col">Series</th><th scope="col">Label</th><th scope="col">Value</th><th scope="col">Evidence release</th></tr></thead>
+          <thead><tr><th scope="col">{chartCopy(spec.locale, 'Series', '계열', '系列')}</th><th scope="col">{chartCopy(spec.locale, 'Label', '항목', '项目')}</th><th scope="col">{chartCopy(spec.locale, 'Value', '수치', '数值')}</th><th scope="col">{chartCopy(spec.locale, 'Evidence release', '근거 자료', '依据版本')}</th></tr></thead>
           <tbody>{spec.series.flatMap((series) => series.values.map((datum) => <tr key={`${series.id}:${datum.label}`}>
             <th scope="row">{series.label}</th><td>{datum.label}</td><td>{formatInfographicValue(datum.value, spec.locale, spec.unit)}</td><td>{datum.evidenceReleaseId}</td>
           </tr>))}</tbody>
         </table></div>
       </details>
-      {spec.relatedHref === null ? null : <Link className={styles.related} href={spec.relatedHref}>Explore related data</Link>}
+      {spec.relatedHref === null ? null : <Link className={styles.related} href={spec.relatedHref}>{chartCopy(spec.locale, 'Explore related data', '관련 자료 탐색', '探索相关数据')}</Link>}
     </footer>
   </figure>;
 }

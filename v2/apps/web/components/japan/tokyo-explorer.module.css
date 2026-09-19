@@ -146,3 +146,13 @@
 .propertyAnalysis p { line-height: 1.6; }
 .propertyAnalysis nav { display: grid; gap: 4px; }
 .propertyAnalysis a { display: block; min-height: var(--control-min); padding-block: 10px; overflow-wrap: anywhere; font-size: 14px; }
+
+/* Delineate the evidence list from its map while keeping long names readable. */
+.page :global([data-market-shell-region='discovery']) { padding: 0 20px 16px; }
+.page :global([data-market-shell-region='spatial']) { padding: 0 16px 16px; background: var(--surface-strong); }
+.rowHeading h3 { font-weight: 650; }
+.price { color: var(--accent); }
+@media (max-width: 760px) {
+  .page :global([data-market-shell-region='discovery']) { padding: 0; background: transparent; overflow: visible; }
+  .page :global([data-market-shell-region='spatial']) { padding: 0 12px 12px; }
+}

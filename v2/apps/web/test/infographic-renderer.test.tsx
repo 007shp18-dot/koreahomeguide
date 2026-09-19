@@ -60,6 +60,19 @@ describe('infographic renderers', () => {
     }
   });
 
+  it('preserves missing periods as gaps while retaining exact values and series labels', () => {
+    const html = renderToStaticMarkup(<MarketTrendInfographic spec={{ ...base, template: 'market-trend', series: [{ ...base.series[0]!, values: [
+      { label: '2026-01', value: 10, evidenceReleaseId: 'release-one' },
+      { label: '2026-03', value: 12, evidenceReleaseId: 'release-one' },
+    ] }] }} />);
+    const chart = html.match(/<svg[^>]*role="img"[\s\S]*?<\/svg>/)?.[0];
+    expect(chart).toBeTruthy();
+    expect(chart).not.toContain('<polyline');
+    expect(html).toContain('Not comparable');
+    expect(html).toContain('Reported median');
+    expect(html).toContain('<td>KRW 12</td>');
+  });
+
   it('never shrinks infographic text below twelve pixels', () => {
     const css = readFileSync(new URL('../components/infographics/infographic.module.css', import.meta.url), 'utf8');
     expect(css).not.toMatch(/font-size:\s*(?:[0-9]|1[01])px/u);

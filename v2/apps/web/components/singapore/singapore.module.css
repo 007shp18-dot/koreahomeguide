@@ -1039,3 +1039,13 @@
 .exploreFilters nav { padding-bottom: 0; }
 .exploreFilters nav button { min-height: var(--control-min); font-size: var(--text-control); }
 .projectList > div > button strong { overflow-wrap: anywhere; }
+
+/* Evidence rows use the same clear price hierarchy as the shared market panels. */
+.projectList > div > button > span:last-child > strong { color: var(--accent); font-size: 20px; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.projectList > div > a { color: var(--accent); font-weight: 600; }
+.segmentPanel { background: var(--surface-strong); }
+.exploreFilters form { grid-template-columns: minmax(0, 1fr) minmax(160px, .35fr) minmax(160px, .35fr); }
+@media (max-width: 760px) {
+  .exploreFilters form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .exploreFilters form > label:first-child { grid-column: 1 / -1; }
+}

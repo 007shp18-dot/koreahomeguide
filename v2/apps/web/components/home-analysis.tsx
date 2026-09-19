@@ -1,6 +1,7 @@
 import 'server-only';
 import Link from 'next/link';
 import Image from 'next/image';
+import { homeArticlePhoto } from '@/lib/home/home-article-photo';
 import type { EditorialPortfolioRecord } from '../content/portfolio-types';
 import { getPortfolioRecord } from '@/content/portfolio-manifest';
 import type { SiteLocale } from '@/lib/navigation/site-navigation';
@@ -18,7 +19,6 @@ export function HomeAnalysis({ locale, articles: latest, classNames: styles = de
   const prefix = locale === 'en' ? '' : locale === 'ko' ? '/ko' : '/zh-cn';
   const cityNames = locale === 'ko' ? ['서울', '싱가포르', '두바이', '도쿄'] : locale === 'zh-CN' ? ['首尔', '新加坡', '迪拜', '东京'] : ['Seoul', 'Singapore', 'Dubai', 'Tokyo'];
   const ids = ['kr-seoul', 'sg-singapore', 'ae-dubai', 'jp-tokyo'];
-  const photoFiles = ['seoul-ethan-yoo', 'singapore-filipe-freitas', 'dubai-waqas-sultan', 'tokyo-pjh'];
   const articles = latest ? latest.slice(0, 3).map(record => ({ record, city: cityNames[ids.indexOf(record.marketId ?? '')] ?? '' })) : reports.flatMap((slug, index) => {
     const record = getPortfolioRecord(locale, slug);
     return record ? [{ record, city: text.cities[index] }] : [];
@@ -26,12 +26,12 @@ export function HomeAnalysis({ locale, articles: latest, classNames: styles = de
   if (!articles.length) return null;
   return <section className={`${styles.section} ${styles.analysis}`} aria-labelledby="home-analysis-title" data-home-region="analysis">
     <div className={styles.analysisHeading}><div><h2 id="home-analysis-title">{text.heading}</h2><p>{text.lead}</p></div><Link href={`${prefix}/news/`}>{text.all} →</Link></div>
-    <div className={styles.analysisGrid}>{articles.map(({ record, city }) => <article key={record.id} lang={record.locale} data-editorial-content-id={record.id}>
-      {record.marketId && ids.includes(record.marketId) && <Link className={styles.articlePhoto} href={record.canonicalHref} aria-hidden="true" tabIndex={-1}><Image src={`/assets/home/${photoFiles[ids.indexOf(record.marketId)]}.jpg`} alt="" fill sizes="(max-width: 760px) 92px, 30vw" style={{objectFit: 'cover'}} /></Link>}
+    <div className={styles.analysisGrid}>{articles.map(({ record, city }) => { const photo = homeArticlePhoto(record); return <article key={record.id} lang={record.locale} data-editorial-content-id={record.id}>
+      {photo && <Link className={styles.articlePhoto} href={record.canonicalHref} aria-hidden="true" tabIndex={-1}><Image src={photo.src} alt="" fill sizes="(max-width: 760px) 104px, 25vw" style={{objectFit: photo.portrait ? 'contain' : 'cover'}} /></Link>}
       <p className={styles.kicker}>{city}{record.locale !== locale ? ' · English' : ''} · <time dateTime={record.publishedAt}>{text.published} {new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : locale === 'ko' ? 'ko-KR' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(record.publishedAt))}</time></p>
       <h3><Link href={record.canonicalHref}>{record.title}</Link></h3>
       <p>{record.deck}</p>
       <Link className={styles.analysisLink} href={record.canonicalHref}>{text.read} →</Link>
-    </article>)}</div>
+    </article>; })}</div>
   </section>;
 }

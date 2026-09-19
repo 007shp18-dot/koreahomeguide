@@ -28,7 +28,7 @@ describe('detail reading order', () => {
     expect(html.indexOf('SGD 543,210')).toBeLessThan(html.indexOf('id="detail-evidence"'));
   });
 
-  it('keeps a supplied market summary before expandable media without repeating the overview anchor', () => {
+  it('keeps a supplied market summary before visible, collapsible media without repeating the overview anchor', () => {
     const html = renderToStaticMarkup(<MarketDetailShell breadcrumb="Explore"
       summary={<section><h1>Project</h1><strong>SGD 123,456</strong></section>}
       media={<figure aria-label="Building photo">Building photo</figure>}
@@ -38,7 +38,7 @@ describe('detail reading order', () => {
     expect(html.indexOf('SGD 123,456')).toBeLessThan(html.indexOf('Building photo'));
     expect(html).toContain('<details');
     expect(html).toContain('<summary>Photos and location context</summary>');
-    expect(html).not.toMatch(/<details[^>]* open/);
+    expect(html).toMatch(/<details[^>]* open/);
     for (const id of ['detail-overview', 'detail-evidence', 'detail-source']) expect(html).toContain(`href="#${id}"`);
   });
 });

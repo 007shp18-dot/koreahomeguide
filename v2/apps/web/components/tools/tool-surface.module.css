@@ -20,3 +20,7 @@
 .surface [data-tool-result] dd { white-space: normal; overflow-wrap: normal; word-break: normal; font-variant-numeric: tabular-nums; }
 @media(max-width:900px) { .surface [data-tool-layout] { grid-template-columns: minmax(0, 1fr); } }
 @media(max-width:560px) { .surface { --tool-panel-padding: 20px; } .surface [data-tool-layout] { gap: 16px; padding: 16px; } .surface [data-tool-header] { padding: 20px; } }
+
+/* Small static depth separates editable assumptions from computed output. */
+.surface [data-tool-result] { border-top: 3px solid var(--accent); box-shadow: 0 3px 0 var(--line), 0 12px 24px rgb(15 35 65 / 4%); }
+.surface [data-tool-input] { box-shadow: 0 1px 3px rgb(15 35 65 / 3%); }

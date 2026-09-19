@@ -1,9 +1,10 @@
 .article { width: min(1040px, calc(100% - 48px)); margin: 0 auto; padding: 28px 0 80px; color: var(--ink); }
 .breadcrumb { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; line-height: 1.6; color: var(--muted); }
-.breadcrumb a { color: inherit; }
+.breadcrumb a { color: inherit; min-height: 44px; display: inline-flex; align-items: center; }
+.breadcrumb { align-items: center; }
 .header { max-width: 700px; margin: 28px auto 24px; }
 .eyebrow { font-size: 12px; line-height: 1.6; color: var(--accent); font-weight: 600; letter-spacing: .04em; }
-.header h1 { max-width: 35ch; margin: 12px 0 20px; font-size: clamp(28px, 3vw, 38px); line-height: 1.2; letter-spacing: -.035em; text-wrap: pretty; overflow-wrap: anywhere; }
+.header h1 { max-width: 35ch; margin: 12px 0 16px; font-size: clamp(30px, 3.6vw, 44px); line-height: 1.2; letter-spacing: -.035em; text-wrap: pretty; overflow-wrap: anywhere; }
 .deck { max-width: 70ch; color: var(--muted); font-size: 17px; line-height: 1.65; margin: 0 0 20px; }
 .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12px; line-height: 1.7; color: var(--muted); }
 .meta a { color: inherit; }
@@ -28,7 +29,8 @@
 .neighborhoods ul, .related ul { list-style: none; padding: 0; }
 .neighborhoods li, .related li { padding: 15px 0; border-bottom: 1px solid var(--line); font-size: 16px; line-height: 1.6; }
 .neighborhoods a, .related a { text-decoration: none; }
-.body .nextAction { padding: 28px 0; border-block: 1px solid var(--line); }
+.body .nextAction { padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: var(--accent-soft); }
+.nextAction a { display: inline-flex; align-items: center; min-height: 44px; }
 .nextAction h2 { margin: 0; }
 .nextAction a { text-decoration: none; }
 .body .eyebrow { margin-bottom: 12px; font-size: 12px; }
@@ -57,10 +59,12 @@
 .scenePhoto figcaption a { color: inherit; text-underline-offset: 3px; }
 
 .hero .scenePhoto { margin-top: 0; }
-.hero .scenePhoto > img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.hero .scenePhoto > img { width: 100%; height: clamp(220px, 32vw, 400px); object-fit: cover; object-position: center 60%; }
+.hero .portraitScene { max-width: 500px; margin-inline: auto; }
+.hero .portraitScene > img { height: auto; max-height: 440px; object-fit: contain; }
 .scenePhoto figcaption { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
 .photoCredit { min-width: 0; max-width: 100%; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
-.photoCredit summary { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.photoCredit summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .photoCredit span { max-width: 100%; overflow-wrap: anywhere; }
 .journeyLinks { margin: 28px 0; border-block: 1px solid var(--line); }
 .journeyLinks > summary { cursor: pointer; min-height: 44px; padding-block: 12px; font-size: 14px; line-height: 1.5; }
