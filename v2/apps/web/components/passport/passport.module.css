@@ -23,7 +23,7 @@
 .resultHeader{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.7fr);gap:48px;align-items:end;margin-bottom:36px}
 .resultHeader .eyebrow{grid-column:1/-1;margin-bottom:-30px}
 .resultHeader h1{font-size:clamp(28px,2.5vw,34px);line-height:1.25;letter-spacing:-.01em}
-.resultForm{grid-template-columns:minmax(0,1fr) auto}
+.resultForm{grid-template-columns:minmax(0,1fr)}
 .resultForm label{grid-column:1/-1}
 .compactInput{min-height:50px;padding:0 14px;gap:8px}
 .resultForm button{padding:0 18px;white-space:nowrap}
@@ -84,4 +84,10 @@
 .journey strong { font-variant-numeric: tabular-nums; }
 .journey a { flex: none; color: var(--accent); white-space: nowrap; }
 .stageSelect { display: flex; gap: 8px; align-items: center; font-size: 14px; margin: 0 0 16px; }
-.stageSelect select { min-height: 40px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 10px; background: white; color: #111827; font: inherit; }
+.stageSelect select { min-height: var(--control-min); border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 10px; background: white; color: #111827; font: inherit; }
+
+.budgetHelp{grid-column:1/-1;color:var(--muted);font-size:13px;line-height:1.5}
+.budgetHelp:empty{display:none}
+.budgetActions{display:flex;flex-wrap:wrap;gap:8px;grid-column:1/-1}
+.budgetActions button[type="reset"]{background:var(--surface-strong);border:1px solid var(--line);color:var(--ink)}
+.budgetActions button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}

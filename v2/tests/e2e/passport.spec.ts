@@ -91,3 +91,55 @@ test('Passport handles clipboard denial without claiming that the result was cop
   await expect(page.getByRole('status')).toHaveText('The link could not be copied. Copy the address from your browser to share this result.');
   await expect(page.getByRole('button', { name: 'Link copied', exact: true })).toHaveCount(0);
 });
+
+
+test('Passport validates drafts without replacing them with another budget', async ({ page }) => {
+  await page.goto('/passport/?budget=500000&currency=USD');
+  const budget = page.getByLabel('Budget', { exact: true });
+  const currency = page.getByLabel('Budget currency', { exact: true });
+  await expect(budget).toHaveValue('500,000');
+  for (const invalid of ['', '1', '999999999999', '500000.001']) {
+    await budget.fill(invalid);
+    await page.getByRole('button', { name: 'Update comparison', exact: true }).click();
+    await expect(budget).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.getByRole('status')).toContainText('Enter a budget from USD');
+    await expect(page).toHaveURL(/budget=500000&currency=USD$/);
+  }
+  await budget.fill('');
+  await currency.selectOption('AED');
+  await expect(budget).toHaveValue('');
+  await expect(page.getByRole('status')).toContainText('Enter a budget from AED');
+  await budget.fill('1');
+  await currency.selectOption('USD');
+  await expect(budget).toHaveValue('0.27');
+  await expect(budget).toHaveAttribute('aria-invalid', 'true');
+  await budget.fill('600000.25');
+  await page.getByRole('button', { name: 'Update comparison', exact: true }).click();
+  await expect(page).toHaveURL(/budget=600000.25&currency=USD$/);
+  await expect(budget).toHaveAttribute('aria-invalid', 'false');
+});
+
+for (const locale of [
+  { route: '', label: 'Budget', currency: 'Budget currency', reset: 'Reset budget', amount: '500,000', code: 'USD' },
+  { route: '/ko', label: '예산', currency: '예산 통화', reset: '기본 예산으로 초기화', amount: '500,000,000', code: 'KRW' },
+  { route: '/zh-cn', label: '预算', currency: '预算币种', reset: '恢复默认预算', amount: '500,000', code: 'USD' },
+]) {
+  test(`Passport resets saved and unsaved budgets while retaining locale and Dubai stage: ${locale.code}-${locale.route}`, async ({ page }) => {
+    await page.goto(`${locale.route}/passport/?budget=1000000&currency=USD&dubaiStage=off-plan`);
+    const budget = page.getByLabel(locale.label, { exact: true });
+    await expect(budget).toHaveValue('1,000,000');
+    await budget.fill('');
+    await page.getByRole('button', { name: locale.reset, exact: true }).click();
+    await expect(budget).toHaveValue(locale.amount);
+    await expect(page.getByLabel(locale.currency, { exact: true })).toHaveValue(locale.code);
+    const url = new URL(page.url());
+    expect(url.pathname.replace(/\/$/, '')).toBe(`${locale.route}/passport`);
+    expect(url.searchParams.get('dubaiStage')).toBe('off-plan');
+    await expect(budget).toHaveAttribute('aria-invalid', 'false');
+    // Reset must also clear an unsaved edit when the applied budget is already the default.
+    await budget.fill('1');
+    await page.getByRole('button', { name: locale.reset, exact: true }).click();
+    await expect(budget).toHaveValue(locale.amount);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  });
+}

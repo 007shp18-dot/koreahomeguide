@@ -1,3 +1,4 @@
+import { isPracticalJourneyGuide } from '../content/city-journey-routes';
 import { PassportBudgetContext } from './passport/passport-journey';
 import { Suspense } from 'react';
 import { editorialLanguageRoutes } from '../lib/navigation/editorial-language-routes';
@@ -59,6 +60,7 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
   if (currentHref === undefined) return false;
   href = href.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
   currentHref = currentHref.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
+  if (isPracticalJourneyGuide(currentHref)) return href === '/guides/';
   if (href.startsWith('/news/')) {
     const newsSelected = ['news', 'headlines'].includes(new URLSearchParams(currentHref.split('?')[1] ?? '').get('type') ?? '');
     if (href.includes('?type=news')) return currentHref.includes('/news/') && newsSelected;

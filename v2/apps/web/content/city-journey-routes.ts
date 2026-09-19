@@ -32,3 +32,14 @@ export const JOURNEY_ARTICLE_ROUTES = [
   ...SEOUL_NEIGHBORHOODS.map(id => ({ city: 'seoul' as const, id })),
   ...Object.entries(LOCAL_ISSUE_IDS).map(([city, id]) => ({ city: city as StoryCity, id })),
 ] as const;
+
+// These practical guides keep their published URLs; discovery and analysis remain Insights.
+export function isPracticalJourneyStep(step: string): boolean {
+  return ['can-i-buy', 'which-home', 'make-it-happen'].includes(step);
+}
+
+export function isPracticalJourneyGuide(href: string): boolean {
+  const path = href.split(/[?#]/)[0]!.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
+  const match = path.match(/^\/news\/city-stories\/(?:seoul|singapore|dubai|tokyo)\/([^/]+)\/?$/);
+  return Boolean(match && isPracticalJourneyStep(match[1]!));
+}

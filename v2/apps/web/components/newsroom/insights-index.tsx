@@ -1,3 +1,4 @@
+import { cityPhotoLabel } from '../../lib/content/article-photo';
 import {editorialImages,type EditorialImage} from '../../lib/insights/editorial-images';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -21,7 +22,7 @@ type City = typeof cities[number];
 const cityNames = { seoul: 'Seoul', tokyo: 'Tokyo', singapore: 'Singapore', dubai: 'Dubai' };
 const marketIds = { seoul: 'kr-seoul', tokyo: 'jp-tokyo', singapore: 'sg-singapore', dubai: 'ae-dubai' };
 export type { InsightTopic } from '../../content/insight-topics';
-type Insight = { slug?: string; investment: boolean; language: ContentLocale; id: string; title: string; deck: string; href: string; date: string; city: City | null; topic: string; type: string; photo?: NeighbourhoodPhoto; uploadedPhoto?:EditorialImage; requiresLocalPhoto?: boolean };
+type Insight = { slug?: string; investment: boolean; language: ContentLocale; id: string; title: string; deck: string; href: string; date: string; city: City | null; topic: string; type: string; propertyPhoto?: PublishedContentArticle['propertyPhoto']; photo?: NeighbourhoodPhoto; uploadedPhoto?:EditorialImage; requiresLocalPhoto?: boolean };
 
 function topicFor(title: string, type: string, slug: string) {
   if (type === 'policy-update') return 'Buying rules';
@@ -53,7 +54,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
     href: 'canonicalHref' in item ? String(item.canonicalHref) : `${item.locale === 'ko' ? '/ko' : item.locale === 'zh-CN' ? '/zh-cn' : ''}/news/${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`,
     date: item.publishedAt, city: cities.find(city => marketIds[city] === item.marketId) ?? null,
     topic: isNeighborhoodEditorial(item.slug) ? 'Neighborhood living' : topicFor(englishTitles.get(item.slug) ?? ('translationGroupId' in item && typeof item.translationGroupId === 'string' ? englishTitles.get(item.translationGroupId) : undefined) ?? item.title, item.type, item.slug),
-    type: item.type, requiresLocalPhoto: isNeighborhoodEditorial(item.slug), photo: insightPhoto(item.slug), uploadedPhoto: editorialImages(item.bodyMarkdown)[0],
+    type: item.type, propertyPhoto: item.propertyPhoto, requiresLocalPhoto: isNeighborhoodEditorial(item.slug), photo: insightPhoto(item.slug), uploadedPhoto: editorialImages(item.bodyMarkdown)[0],
   }));
   const seen = new Set<string>();
   const now = Date.now();
@@ -73,6 +74,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
 
 function StoryPhoto({ item, eager = false, locale = 'en' }: { item: Insight; eager?: boolean; locale?: ContentLocale }) {
   const creditLabel = locale === 'ko' ? '사진 출처' : locale === 'zh-CN' ? '图片来源' : 'Photo credit';
+  if (item.propertyPhoto) { const photo = item.propertyPhoto; return <figure className={styles.photo} data-photo-context="property"><Link href={item.href} aria-label={item.title} tabIndex={-1}><Image src={photo.src} alt={photo.buildingName} fill unoptimized loading={eager ? 'eager' : 'lazy'} sizes="(max-width: 760px) 100vw, 700px" /></Link><figcaption className={styles.credit}>{photo.buildingName} · <a href={photo.sourceUrl}>{photo.attributionName}</a></figcaption></figure>; }
   if(item.uploadedPhoto)return <figure className={styles.photo}><Link href={item.href} data-editorial-event="article_open" aria-label={item.title} tabIndex={-1}><Image src={item.uploadedPhoto.src} alt={item.uploadedPhoto.alt} fill loading={eager?'eager':'lazy'} unoptimized={!item.uploadedPhoto.src.startsWith('/assets/')} sizes={eager ? '(max-width: 760px) calc(100vw - 40px), 700px' : '(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 380px'} /></Link>{item.uploadedPhoto.caption&&<figcaption className={styles.credit}><details><summary>{creditLabel}</summary><span>{item.uploadedPhoto.caption}</span></details></figcaption>}</figure>;
   const photo = item.photo ?? (!item.requiresLocalPhoto && item.city ? MARKET_PHOTOS[item.city] : undefined);
   if (!photo) return null;
@@ -80,6 +82,7 @@ function StoryPhoto({ item, eager = false, locale = 'en' }: { item: Insight; eag
     <Link href={item.href} data-editorial-event="article_open" aria-label={item.title} tabIndex={-1}>
       <Image src={photo.src} alt={photo.alt} fill loading={eager ? 'eager' : 'lazy'} style={{ objectFit: 'width' in photo && photo.height > photo.width ? 'contain' : 'cover', objectPosition: 'focalPoint' in photo ? `${photo.focalPoint.x}% ${photo.focalPoint.y}%` : '50% 50%' }} sizes={eager ? '(max-width: 760px) calc(100vw - 40px), 700px' : '(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 380px'} />
     </Link>
+    {!item.photo && <figcaption className={styles.credit} data-photo-context="city">{cityPhotoLabel(locale)}</figcaption>}
     {item.photo && <figcaption className={styles.credit}><details><summary aria-label={locale === 'ko' ? '사진 출처' : locale === 'zh-CN' ? '图片来源' : 'Photo credit'}>{creditLabel}</summary><span>{item.photo.caption} · <a href={item.photo.source}>{item.photo.author}</a> · <a href={item.photo.licenseUrl}>{item.photo.license}</a></span></details></figcaption>}
   </figure>;
 }

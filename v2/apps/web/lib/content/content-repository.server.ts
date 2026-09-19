@@ -5,6 +5,7 @@ import retiredEditorial from '../../content/retired-editorial.json';
 import { BILINGUAL_DATABASE_SLUGS, EDITORIAL_REVISION_DATE, reviseEditorial } from '../../content/editorial-revision';
 import { refreshDiscovery } from '../../content/editorial-discovery';
 
+import { articlePhotoFromRow } from './article-photo';
 import { publicContentDatabase } from '../db/postgres.server';
 import type {
   ContentLocale,
@@ -150,6 +151,7 @@ export function articleFromRow(row: Readonly<Record<string, unknown>>): Publishe
     updatedAt: row.updated_at,
     relatedHref: isInternalHref(row.related_href) ? row.related_href : null,
     sources,
+    propertyPhoto: articlePhotoFromRow(row.property_photo),
   });
   return isPublishableContent(article) ? Object.freeze(reviseEditorial(article)) : null;
 }
@@ -164,7 +166,8 @@ async function queryPublishedContent(query: PublishedContentQuery, slug?: string
         article.title, article.summary, article.body_markdown, article.evidence_state,
         article.author_name, article.reviewed_at, article.reviewed_by,
         article.published_at, article.updated_at, article.related_href,
-        COALESCE(source_set.sources, '[]'::jsonb) AS sources
+        COALESCE(source_set.sources, '[]'::jsonb) AS sources,
+        property_photo.photo AS property_photo
       FROM content_articles article
       LEFT JOIN LATERAL (
         SELECT jsonb_agg(jsonb_build_object(
@@ -176,6 +179,35 @@ async function queryPublishedContent(query: PublishedContentQuery, slug?: string
         JOIN content_sources source ON source.id = link.source_id
         WHERE link.content_slug = article.slug
       ) source_set ON true
+      LEFT JOIN LATERAL (
+        SELECT jsonb_build_object(
+          'src', public.display_url, 'entityId', entity.id,
+          'buildingName', entity.canonical_name,
+          'attributionName', public.attribution_name,
+          'attributionUrl', public.attribution_url, 'sourceUrl', media.source_url
+        ) AS photo
+        FROM content_entity_links link
+        JOIN property_entities entity ON entity.id = link.entity_id
+        JOIN public_entity_media public ON public.entity_id = entity.id
+        JOIN media_assets media ON media.id = public.media_asset_id
+        JOIN rights_policies rights ON rights.id = media.rights_policy_id
+        LEFT JOIN building_photos legacy ON legacy.registry_key = media.legacy_registry_key
+        WHERE link.content_slug = article.slug AND link.entity_type IN ('building', 'project')
+          AND entity.market_id = article.market_id AND entity.identity_status = 'verified'
+          AND public.exact_subject AND public.entity_id = media.subject_entity_id
+          AND public.role IN ('hero', 'exterior', 'entrance') AND public.display_url IS NOT NULL
+          AND media.review_state = 'approved' AND rights.can_display
+          AND media.subject_kind = 'exact-property' AND media.rights_state IN ('licensed', 'owned')
+          AND (media.legacy_registry_key IS NULL OR (
+            legacy.status = 'approved' AND legacy.approved_at IS NOT NULL
+            AND legacy.approved_by IS NOT NULL AND legacy.visual_reviewed_at IS NOT NULL
+            AND media.approved_at = legacy.approved_at AND public.published_at = legacy.approved_at
+            AND legacy.rights_status IN ('licensed', 'owned', 'provider-display-only')
+            AND entity.local_attributes ->> 'legacyBuildingKey' = legacy.building_key
+            AND legacy.subject_kind IN ('building-exterior', 'building-front')
+          ))
+        ORDER BY public.position, public.media_asset_id, entity.id LIMIT 1
+      ) property_photo ON true
       WHERE article.editorial_status = 'published'
         AND article.locale = ${query.locale}
         AND (${translationTarget ?? null}::text IS NULL OR NOT EXISTS (

@@ -36,7 +36,7 @@ it.each(['en','ko','zh-CN'] as const)('links each candidate to its own median-pr
   const links=[...html.matchAll(/href="([^"]*\/tools\/property-scenario\/?[^"]+)"/g)].map(match=>match[1]!.replaceAll('&amp;','&'));
   expect(links).toHaveLength(3);
   for(const [index,href] of links.entries()) {
-    const context=parsePropertyScenarioContext(Object.fromEntries(new URL(href,'https://signedprice.test').searchParams),locale==='ko'?'ko':'en');
+    const context=parsePropertyScenarioContext(Object.fromEntries(new URL(href,'https://signedprice.test').searchParams),locale);
     expect(context.market).toBe(['kr-seoul','sg-singapore','ae-dubai'][index]);
     expect(context.currency).toBe(['KRW','SGD','AED'][index]);
     expect(context.price).toBe(400_000);
@@ -45,7 +45,7 @@ it.each(['en','ko','zh-CN'] as const)('links each candidate to its own median-pr
     const returned = new URL(context.returnTo!, 'https://signedprice.test');
     expect(returned.searchParams.get('passport')).toBe(context.passportHref);
     returned.searchParams.delete('passport');
-    expect(`${returned.pathname}${returned.search}`).toBe(`${locale === 'ko' ? '/ko' : ''}${model.markets[index]!.scopes[0]!.href}`);
+    expect(`${returned.pathname}${returned.search}`).toBe(`${locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : ''}${model.markets[index]!.scopes[0]!.href}`);
   }
 });
 
@@ -70,4 +70,24 @@ it('limits the initial candidate page to three and offers navigation for the rem
   expect(html).toContain('1 / 2');
   expect(html).toMatch(/<button[^>]+disabled[^>]*>Previous/);
   expect(html).toMatch(/<button type="button">Next/);
+});
+
+
+it.each(['en', 'ko', 'zh-CN'] as const)('requires a bounded purchase-price budget and offers an explicit reset: %s', locale => {
+  const html = renderToStaticMarkup(<PassportWorkspace initialModel={buildPassportModel({budgetWon: 500_000_000, locale, evidence})} />);
+  const input = html.match(/<input[^>]*id="passport-result-budget"[^>]*>/)?.[0];
+  expect(input).toContain('required=""');
+  expect(input).toContain('min="10000000"');
+  expect(input).toContain('max="100000000000"');
+  expect(input).toContain('step="0.01"');
+  expect(input).toContain('aria-describedby="passport-result-budget-help passport-result-budget-error"');
+  expect(html).toContain('type="reset"');
+  expect(html).toContain(locale === 'ko' ? '보유 현금이나 대출 한도가 아닌 매매가격 기준 예산' : locale === 'zh-CN' ? '用于比较购房价格，不代表可用现金或贷款额度' : 'A purchase-price budget, not your cash savings or borrowing limit');
+});
+
+it('keeps Chinese market exploration and candidate calculation in Chinese', () => {
+  const html = renderToStaticMarkup(<PassportWorkspace initialModel={buildPassportModel({budgetWon: 500_000_000, locale: 'zh-CN', evidence})} />);
+  expect(html).toContain('href="/zh-cn/kr/seoul/explore');
+  expect(html).toContain('href="/zh-cn/sg/singapore/explore');
+  expect(html).toContain('迪拜交房状态');
 });

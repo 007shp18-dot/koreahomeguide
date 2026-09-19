@@ -1,14 +1,12 @@
 import type { Metadata } from 'next';
 
 import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
-import { EditorialPortfolioIndex } from '@/components/newsroom/editorial-portfolio-index';
-import { listPortfolioRecords } from '@/content/portfolio-manifest';
+import { EditorialGuides } from '@/components/guide/editorial-guides';
 import { indexableMetadata } from '@/lib/public-metadata';
-import { BudgetGuideCallout } from '@/components/guide/budget-guide-callout';
 
-export const metadata: Metadata = indexableMetadata({ path: '/zh-cn/guides/', title: '韩国房地产中文实用指南 | signedprice', description: '面向跨境租客与买家的已核验韩国房地产中文指南。', languageAlternates: { en: '/guides/', ko: '/ko/guides/', 'zh-Hans': '/zh-cn/guides/' }, locale: 'zh_CN' });
-export default async function ChineseGuidesPage({ searchParams }: { searchParams: Promise<{ market?: string }> }) {
-  const { market } = await searchParams;
-  const selected = market === 'seoul' || market === 'singapore' || market === 'dubai' || market === 'tokyo' ? market : 'all';
-  return <EditorialGrowthPublicFrame locale="zh-CN" surface="content" activeSection="guides"><BudgetGuideCallout locale="zh-CN" market={selected} /><EditorialPortfolioIndex locale="zh-CN" records={listPortfolioRecords('zh-CN').filter(({ type }) => type === 'guide')} section="guides" /></EditorialGrowthPublicFrame>;
+export const metadata: Metadata = indexableMetadata({ path: '/zh-cn/guides/', title: '买房与租房实用指南 | signedprice', description: '首尔、新加坡、迪拜与东京的购房预算、费用和签约准备。', languageAlternates: { en: '/guides/', ko: '/ko/guides/', 'zh-Hans': '/zh-cn/guides/' }, locale: 'zh_CN' });
+export default async function ChineseGuidesPage({ searchParams }: { searchParams: Promise<{ market?: string; q?: string }> }) {
+  const { market, q } = await searchParams;
+  const selected = market === 'seoul' || market === 'singapore' || market === 'dubai' || market === 'tokyo' ? market : 'seoul';
+  return <EditorialGrowthPublicFrame locale="zh-CN" surface="content" activeSection="guides" currentHref={`/zh-cn/guides/?market=${selected}`}><EditorialGuides locale="zh-CN" market={selected} query={typeof q === 'string' ? q.slice(0, 120) : ''} /></EditorialGrowthPublicFrame>;
 }

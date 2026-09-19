@@ -56,7 +56,7 @@ describe('public Newsroom routes', () => {
     expect(insights).not.toContain('aria-label="News and insight types"');
     expect(markup('policy')).toContain('href="/news/policy"');
   });
-  it('keeps budget comparisons in Insights and Data Stories, with a matching article breadcrumb', () => {
+  it('makes budget guides discoverable from Insights and Data Stories while retaining their city guide breadcrumb', () => {
     for (const locale of ['en', 'ko'] as const) {
       const budget = getPortfolioRecord(locale, 'singapore-condo-buying-budget-guide')!;
       for (const type of ['insights', 'data-stories']) {
@@ -66,7 +66,8 @@ describe('public Newsroom routes', () => {
       }
       const detail = renderToStaticMarkup(<NewsroomArticle article={budget} />);
       const breadcrumb = detail.match(/<nav[\s\S]*?<\/nav>/)?.[0] ?? '';
-      expect(breadcrumb).toContain(locale === 'ko' ? '/ko/news' : '/news');
+      expect(breadcrumb).toContain(locale === 'ko' ? '/ko/guides?market=singapore' : '/guides?market=singapore');
+      expect(breadcrumb).not.toContain('/news');
       expect(breadcrumb).toContain(locale === 'ko' ? '예산 비교' : 'Budget comparison');
     }
   });

@@ -14,6 +14,15 @@ export type ContentSource = Readonly<{
   publishedAt?: string | null;
 }>;
 
+export type PublishedArticlePhoto = Readonly<{
+  src: string;
+  entityId: string;
+  buildingName: string;
+  attributionName: string;
+  attributionUrl: string | null;
+  sourceUrl: string;
+}>;
+
 export type PublishedContentArticle = Readonly<{
   id: string;
   slug: string;
@@ -32,6 +41,7 @@ export type PublishedContentArticle = Readonly<{
   updatedAt: string;
   relatedHref: string | null;
   sources: readonly ContentSource[];
+  propertyPhoto?: PublishedArticlePhoto;
 }>;
 
 export type PublishedContentQuery = Readonly<{

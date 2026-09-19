@@ -3,7 +3,7 @@ import { UiIcon } from '../ui-icon';
 import type { ReactNode } from 'react';
 import { CITY_STORIES, cityStoryHref, type StoryLocale } from '../../content/city-stories';
 import { getJourneyArticle, journeyArticleActions, type JourneyArticle as Article } from '../../content/city-journey-articles';
-import { SEOUL_NEIGHBORHOODS, STORY_STEPS, journeyArticleHref } from '../../content/city-journey-routes';
+import { SEOUL_NEIGHBORHOODS, STORY_STEPS, journeyArticleHref, isPracticalJourneyStep } from '../../content/city-journey-routes';
 import { publicCanonical, safeJsonLd } from '../../lib/public-metadata';
 import { ArticleContents } from './article-contents';
 import { NeighbourhoodPhoto, PHOTO_ESSAYS } from './neighbourhood-photo';
@@ -28,6 +28,8 @@ function InlineCopy({ text }: Readonly<{ text: string }>) {
 
 export function JourneyArticle({ article, locale }: Readonly<{ article: Article; locale: StoryLocale }>) {
   const ko = locale === 'ko';
+  const practicalGuide = article.kind === 'journey' && isPracticalJourneyStep(article.id);
+  const guideHref = `${ko ? '/ko' : ''}/guides/?market=${article.city}`;
   const photoEssay = PHOTO_ESSAYS[`${article.city}/${article.id}`];
   const city = CITY_STORIES.find(story => story.city === article.city)!;
   const step = STORY_STEPS.find(item => item.id === article.id);
@@ -35,14 +37,14 @@ export function JourneyArticle({ article, locale }: Readonly<{ article: Article;
   const href = journeyArticleHref(article.city, article.id, locale);
   const actions = journeyArticleActions(article, locale);
   const exploreHref = { seoul: '/kr/seoul/explore/', singapore: '/sg/singapore/explore/', dubai: '/ae/dubai/explore/', tokyo: '/jp/tokyo/explore/' }[article.city];
-  const photoExplore = photoEssay && article.kind !== 'local-issue';
-  const nextHref = photoExplore ? `${ko && article.city !== 'tokyo' ? '/ko' : ''}${exploreHref}` : actions.primary.href;
+  const photoExplore = photoEssay && article.kind !== 'local-issue' && !practicalGuide;
+  const nextHref = photoExplore ? `${ko ? '/ko' : ''}${exploreHref}` : actions.primary.href;
   const nextEvent = nextHref.includes('/explore') ? 'article_to_explore' : /\/(check|tools|passport)\//.test(nextHref) ? 'article_to_check' : 'article_open';
   const minutes = Math.max(3, Math.ceil(article.sections.flatMap(section => section.paragraphs[locale]).join(' ').length / (ko ? 550 : 1100)));
   const photoScene = article.id === 'where' || article.id === 'which-home' ? 'comparison' : 'neighborhood';
-  return <main className={styles.article} lang={locale} data-journey-article={`${article.city}/${article.id}`} data-editorial-content-id={`${locale}:${article.city}-${article.id}`} data-editorial-content-type="guide" data-editorial-locale={locale} data-editorial-market={{seoul:'kr-seoul',singapore:'sg-singapore',dubai:'ae-dubai',tokyo:'jp-tokyo'}[article.city]}>
+  return <main className={styles.article} lang={locale} data-journey-article={`${article.city}/${article.id}`} data-editorial-content-id={`${locale}:${article.city}-${article.id}`} data-editorial-content-type={practicalGuide ? "guide" : "market-brief"} data-editorial-locale={locale} data-editorial-market={{seoul:'kr-seoul',singapore:'sg-singapore',dubai:'ae-dubai',tokyo:'jp-tokyo'}[article.city]}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({ '@context': 'https://schema.org', '@type': 'Article', headline: article.title[locale], description: article.deck[locale], inLanguage: locale, mainEntityOfPage: publicCanonical(href), author: { '@type': 'Organization', name: 'SignedPrice' }, publisher: { '@type': 'Organization', name: 'SignedPrice' }, citation: article.sources.map(source => source.href), isAccessibleForFree: true }) }} />
-    <nav className={styles.breadcrumb} aria-label={ko ? '현재 위치' : 'Breadcrumb'}><Link href={`${ko ? '/ko' : ''}/news/?market=${article.city}`}>{ko ? '인사이트' : 'Insights'}</Link><span aria-hidden="true">/</span><Link href={cityStoryHref(article.city, locale)}>{city.name[locale]}</Link><span aria-hidden="true">/</span><span>{kind}</span></nav>
+    <nav className={styles.breadcrumb} aria-label={ko ? '현재 위치' : 'Breadcrumb'}><Link href={practicalGuide ? guideHref : `${ko ? '/ko' : ''}/news/?market=${article.city}`}>{practicalGuide ? (ko ? '가이드' : 'Guides') : (ko ? '인사이트' : 'Insights')}</Link><span aria-hidden="true">/</span><Link href={practicalGuide ? guideHref : cityStoryHref(article.city, locale)}>{city.name[locale]}</Link><span aria-hidden="true">/</span><span>{kind}</span></nav>
     <EditorialArticleHeader topic={`${city.name[locale]} · ${kind}`} title={article.title[locale]} deck={article.deck[locale]}>
       <span>SignedPrice</span><span>{ko ? `${minutes}분 읽기` : `${minutes} min read`}</span>{article.editedAt && <span>{ko ? '수정 ' : 'Updated '}{article.editedAt}</span>}
     </EditorialArticleHeader>

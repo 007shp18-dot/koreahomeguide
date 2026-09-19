@@ -1,3 +1,5 @@
+import { BUDGET_GUIDE_SERIES } from '../../content/budget-guide-series';
+import { getPortfolioRecord } from '../../content/portfolio-manifest';
 import Link from 'next/link';
 import type { ContentLocale } from '../../lib/content/content-types';
 import type { GuideMarket } from '../../content/guide-directory';
@@ -29,10 +31,14 @@ export function BudgetGuideCallout({ locale = 'en', market = 'all' }: Readonly<{
   market?: GuideMarket;
 }>) {
   const t = copy[locale];
-  const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
-  const href = `${prefix}/news/?topic=budget${market === 'all' ? '' : `&market=${market}`}`;
+  const guides = BUDGET_GUIDE_SERIES.filter(guide => market === 'all' || guide.city === market).flatMap(guide => {
+    const translated = getPortfolioRecord(locale, guide.slug);
+    const record = translated ?? getPortfolioRecord('en', guide.slug);
+    return record ? [{ ...guide, href: record.canonicalHref, translated: Boolean(translated) }] : [];
+  });
+  const cities = { en: ['Seoul', 'Singapore', 'Dubai', 'Tokyo'], ko: ['서울', '싱가포르', '두바이', '도쿄'], 'zh-CN': ['首尔', '新加坡', '迪拜', '东京'] };
   return <aside className={styles.callout} aria-labelledby={`budget-guide-callout-${locale}`}>
     <div><p>{t.eyebrow}</p><h2 id={`budget-guide-callout-${locale}`}>{t.title}</h2><span>{t.deck}</span></div>
-    <Link href={href}>{t.action} <span aria-hidden="true">→</span></Link>
+    <nav aria-label={t.action}>{guides.map(guide => <Link key={guide.city} href={guide.href}>{market === 'all' ? cities[locale][BUDGET_GUIDE_SERIES.findIndex(item => item.city === guide.city)] : t.action}{guide.translated ? '' : locale === 'zh-CN' ? '（英文）' : ' (English)'} <span aria-hidden="true">→</span></Link>)}</nav>
   </aside>;
 }

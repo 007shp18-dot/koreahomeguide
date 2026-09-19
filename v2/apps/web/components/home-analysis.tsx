@@ -1,6 +1,7 @@
 import 'server-only';
 import Link from 'next/link';
 import Image from 'next/image';
+import { cityPhotoLabel } from '@/lib/content/article-photo';
 import { homeArticlePhoto } from '@/lib/home/home-article-photo';
 import type { EditorialPortfolioRecord } from '../content/portfolio-types';
 import { getPortfolioRecord } from '@/content/portfolio-manifest';
@@ -27,7 +28,9 @@ export function HomeAnalysis({ locale, articles: latest, classNames: styles = de
   return <section className={`${styles.section} ${styles.analysis}`} aria-labelledby="home-analysis-title" data-home-region="analysis">
     <div className={styles.analysisHeading}><div><h2 id="home-analysis-title">{text.heading}</h2><p>{text.lead}</p></div><Link href={`${prefix}/news/`}>{text.all} →</Link></div>
     <div className={styles.analysisGrid}>{articles.map(({ record, city }) => { const photo = homeArticlePhoto(record); return <article key={record.id} lang={record.locale} data-editorial-content-id={record.id}>
-      {photo && <Link className={styles.articlePhoto} href={record.canonicalHref} aria-hidden="true" tabIndex={-1}><Image src={photo.src} alt="" fill sizes="(max-width: 760px) 104px, 25vw" style={{objectFit: photo.portrait ? 'contain' : 'cover'}} /></Link>}
+      {photo && <Link className={styles.articlePhoto} href={record.canonicalHref} aria-hidden="true" tabIndex={-1}><Image src={photo.src} alt={photo.alt ?? ""} unoptimized={!photo.src.startsWith("/assets/")} fill sizes="(max-width: 760px) 104px, 25vw" style={{objectFit: photo.portrait ? 'contain' : 'cover'}} /></Link>}
+      {photo?.context === 'city' && <small data-photo-context="city">{cityPhotoLabel(locale)}</small>}
+      {photo?.context === 'property' && photo.credit && <small data-photo-context="property"><a href={photo.credit.source}>{photo.alt} · {photo.credit.author}</a></small>}
       <p className={styles.kicker}>{city}{record.locale !== locale ? ' · English' : ''} · <time dateTime={record.publishedAt}>{text.published} {new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : locale === 'ko' ? 'ko-KR' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(record.publishedAt))}</time></p>
       <h3><Link href={record.canonicalHref}>{record.title}</Link></h3>
       <p>{record.deck}</p>

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getJourneyArticle, journeyArticleParams } from '@/content/city-journey-articles';
-import { journeyArticleHref } from '@/content/city-journey-routes';
+import { journeyArticleHref, isPracticalJourneyStep } from '@/content/city-journey-routes';
 import { JourneyArticle } from '@/components/newsroom/journey-article';
 import { indexableMetadata } from '@/lib/public-metadata';
 import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
@@ -27,5 +27,5 @@ export default async function Page({ params }: Props) {
   const article = getJourneyArticle(city, step);
   if (!article) notFound();
   const href = journeyArticleHref(article.city, article.id, 'en');
-  return <EditorialGrowthPublicFrame locale="en" surface="content" currentHref={href}><JourneyArticle article={article} locale="en" /></EditorialGrowthPublicFrame>;
+  return <EditorialGrowthPublicFrame locale="en" surface="content" activeSection={isPracticalJourneyStep(article.id) ? "guides" : "news"} currentHref={href}><JourneyArticle article={article} locale="en" /></EditorialGrowthPublicFrame>;
 }
