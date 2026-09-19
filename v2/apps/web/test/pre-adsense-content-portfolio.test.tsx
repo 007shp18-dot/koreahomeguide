@@ -79,9 +79,12 @@ describe('pre-AdSense reviewed launch portfolio', () => {
     const news = (await Promise.all(['insights', 'news', 'policy'].map(async (type) =>
       renderToStaticMarkup(await ChineseNewsPage({ searchParams: Promise.resolve({ type }) })),
     ))).join('');
-    const guides = renderToStaticMarkup(await ChineseGuidesPage({ searchParams: Promise.resolve({}) }));
+    const guides = (await Promise.all(['seoul', 'singapore', 'dubai', 'tokyo'].map(async market =>
+      renderToStaticMarkup(await ChineseGuidesPage({ searchParams: Promise.resolve({ market }) })),
+    ))).join('');
     for (const article of listPortfolioRecords('zh-CN')) {
-      expect(article.type === 'guide' ? guides : news).toContain(article.title);
+      if (article.type === 'guide') expect(guides).toContain(`href="${article.canonicalHref.replace(/\/$/, '')}"`);
+      else expect(news).toContain(article.title);
     }
 
     const article = listPortfolioRecords('zh-CN').find(({ type }) => type === 'market-brief')!;

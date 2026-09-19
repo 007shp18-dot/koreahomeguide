@@ -47,3 +47,20 @@ describe('Passport journey', () => {
     expect(model.href).toBe(passport);
   });
 });
+
+
+it('retains the selected Dubai cohort through Chinese detail navigation', () => {
+  const source = passportCandidateHref('/zh-cn/ae/dubai/explore/?housing=apartment&stage=off-plan&budgetMax=2000000', passportHref('zh-CN', 500000, 'USD', 'off-plan'));
+  const detail = new URL(retainPassportContext('/zh-cn/ae/dubai/explore/business-bay/', source, true), 'https://example.test');
+  expect(detail.searchParams.get('stage')).toBe('off-plan');
+  expect(detail.searchParams.get('housing')).toBe('apartment');
+  expect(detail.searchParams.get('budgetMax')).toBe('2000000');
+});
+
+
+it('preserves Dubai filters on normalized Explore URLs without a trailing slash', () => {
+  const source = passportCandidateHref('/ae/dubai/explore?housing=apartment&stage=off-plan', passport);
+  const next = new URL(retainPassportContext('/ae/dubai/explore', source, true), 'https://example.test');
+  expect(next.searchParams.get('stage')).toBe('off-plan');
+  expect(next.searchParams.get('housing')).toBe('apartment');
+});

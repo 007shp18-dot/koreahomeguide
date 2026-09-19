@@ -1,12 +1,31 @@
 .section { container-type: inline-size; margin-block: 32px; min-width: 0; color: var(--ink); }
 .section h2 { margin: 0 0 10px; font-size: 24px; line-height: 1.25; letter-spacing: normal; }
 .section p { color: var(--muted); font-size: 1rem; line-height: 1.7; max-width: 76ch; }
-.workspace { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); margin-top: 24px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface-strong, white); }
+.workspace { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); margin-top: 24px; border: 1px solid var(--line); border-radius: 12px; overflow: clip; background: var(--surface-strong, white); }
 .inputPanel, .resultPanel { min-width: 0; padding: clamp(20px, 3vw, 32px); }
 .workspace h3 { margin: 0 0 24px; font-size: 16px; font-weight: 650; }
 .resultPanel { background: var(--soft-blue, #eef5ff); border-left: 1px solid var(--line); }
 .form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; }
 .form label { display: grid; grid-template-rows: 1fr auto; gap: 9px; color: var(--muted); font-size: .875rem; line-height: 1.5; }
+.field { display: grid; gap: 9px; min-width: 0; align-content: start; }
+.field:first-child { grid-column: 1 / -1; }
+.section .fieldHint { margin: 0; font-size: 13px; }
+.section .error { margin: 0; color: var(--danger, #b42318); font-size: 14px; }
+.field input[aria-invalid="true"] { border-color: var(--danger, #b42318); }
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.toolbar button, .costRules button { min-height: var(--control-min); padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface-strong); color: var(--ink); cursor: pointer; font: inherit; }
+.toolbar button { flex-shrink: 0; }
+.resultContent { position: sticky; top: 100px; }
+.results .outlayResult dd { color: var(--accent); font-size: clamp(24px, 3vw, 38px); }
+.results + .results { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
+.results .equation { font-size: 16px; line-height: 1.5; font-weight: 500; }
+.empty ul { padding-left: 20px; margin: 10px 0; }
+.empty a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); }
+.methodDisclosure { margin-top: 12px; }
+.methodDisclosure summary { font-size: 14px; }
+.rentChoice { display: grid; gap: 8px; margin-bottom: 20px; }
+.rentChoice label { font-size: 14px; color: var(--muted); }
+.rentChoice select { width: 100%; min-height: var(--control-height); padding: 10px; border: 1px solid var(--line); border-radius: var(--radius-control); font-size: 16px; color: var(--ink); background: var(--surface-strong); }
 .form label:first-child { grid-column: 1 / -1; }
 .form input { width: 100%; min-width: 0; min-height: 50px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--surface-strong, white); font: inherit; font-size: 16px; font-variant-numeric: tabular-nums; box-sizing: border-box; }
 .form input::placeholder { font-size: .875rem; }
@@ -33,3 +52,4 @@
 .costLines dd { margin: 0; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 @container (max-width: 760px) { .section [data-tool-layout] { grid-template-columns: minmax(0, 1fr); } }
+@container (max-width: 760px) { .resultContent { position: static; } .toolbar { align-items: stretch; flex-direction: column; gap: 8px; } }

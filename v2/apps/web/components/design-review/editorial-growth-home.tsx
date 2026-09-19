@@ -5,11 +5,13 @@ import type { EditorialGrowthReviewModel } from '@/lib/design-review/editorial-g
 import type { SiteLocale } from '@/lib/navigation/site-navigation';
 import { createBuyingJourney } from '@/lib/home/buying-journey-model.server';
 import Image from 'next/image';
+import { BudgetHouseScene } from '../home/budget-house-scene';
 import { HomeSearch } from '../home/home-search';
 import { HomeReportPulse } from '../home/home-report-pulse';
 import type { EditorialPortfolioRecord } from '@/content/portfolio-types';
 import type { StoryPhoto } from '@/content/story-photos';
 import { getPortfolioRecord } from '@/content/portfolio-manifest';
+import { cityPhotoLabel } from '@/lib/content/article-photo';
 import { homeArticlePhoto } from '@/lib/home/home-article-photo';
 import styles from './editorial-growth-home.module.css';
 
@@ -100,7 +102,7 @@ export function PropertyHome({ locale, articles }: Readonly<{ locale: SiteLocale
     canonicalHref: `${prefix}/jp/tokyo/explore/`,
     deck: locale === 'zh-CN' ? '按地区、面积与房龄比较季度成交，找到值得进一步了解的街区。' : 'Explore recorded prices by neighbourhood, size and building age.',
   };
-  const storyPhoto = 'bodyMarkdown' in story ? homeArticlePhoto(story) : {src: CITY_PHOTOS['jp-tokyo'].src, portrait: true};
+  const storyPhoto = 'bodyMarkdown' in story ? homeArticlePhoto(story) : {src: CITY_PHOTOS['jp-tokyo'].src, portrait: true, context: 'city' as const};
   const creditRecords = articles?.slice(0, 3) ?? ['seoul', 'singapore', 'dubai'].flatMap(city => {
     const record = getPortfolioRecord(locale, `${city}-monthly-2026-09`);
     return record ? [record] : [];
@@ -125,8 +127,8 @@ export function PropertyHome({ locale, articles }: Readonly<{ locale: SiteLocale
         <Link className={styles.heroHint} href={`${prefix}/prices/`}>{copy.markets}<UiIcon name="arrow-right" /></Link>
       </div>
       {featured && featurePhoto && <article className={styles.heroStory}>
-        <Link href={featured.canonicalHref} className={styles.heroStoryPhoto} tabIndex={-1} aria-hidden="true"><Image src={featurePhoto.src} alt="" fill sizes="(max-width: 760px) 90px, 310px" style={{objectFit: featurePhoto.portrait ? 'contain' : 'cover'}} /></Link>
-        <div><p className={styles.kicker}>{text.featured}</p><h2><Link href={featured.canonicalHref}>{featured.title}</Link></h2><Link className={styles.storyAction} href={featured.canonicalHref}>{text.read}<UiIcon name="arrow-right" /></Link></div>
+        <Link href={featured.canonicalHref} className={styles.heroStoryPhoto} tabIndex={-1} aria-hidden="true"><Image src={featurePhoto.src} alt={featurePhoto.alt ?? ""} unoptimized={!featurePhoto.src.startsWith("/assets/")} fill sizes="(max-width: 760px) 90px, 310px" style={{objectFit: featurePhoto.portrait ? 'contain' : 'cover'}} /></Link>
+        <div>{featurePhoto.context === 'city' && <small data-photo-context="city">{cityPhotoLabel(locale)}</small>}<p className={styles.kicker}>{text.featured}</p><h2><Link href={featured.canonicalHref}>{featured.title}</Link></h2><Link className={styles.storyAction} href={featured.canonicalHref}>{text.read}<UiIcon name="arrow-right" /></Link></div>
       </article>}
       <span className={styles.photoCaption}>SEOUL / ETHAN BROOKE</span>
     </header>
@@ -148,12 +150,12 @@ export function PropertyHome({ locale, articles }: Readonly<{ locale: SiteLocale
     <div className={`${styles.section} ${styles.researchGrid}`}>
       <HomeReportPulse locale={locale} />
       {story && storyPhoto && <article className={styles.featureStory}>
-        <Link href={story.canonicalHref} className={styles.featureStoryPhoto} tabIndex={-1} aria-hidden="true"><Image src={storyPhoto.src} alt="" fill sizes="(max-width: 760px) 100vw, 25vw" style={{objectFit: storyPhoto.portrait ? 'contain' : 'cover'}} /></Link>
+        <Link href={story.canonicalHref} className={styles.featureStoryPhoto} tabIndex={-1} aria-hidden="true"><Image src={storyPhoto.src} alt="" unoptimized={!storyPhoto.src.startsWith("/assets/")} fill sizes="(max-width: 760px) 100vw, 25vw" style={{objectFit: storyPhoto.portrait ? 'contain' : 'cover'}} /></Link>
         <div><p className={styles.kicker}>TOKYO / {copy.guides}</p><h2><Link href={story.canonicalHref}>{text.story}</Link></h2><p>{story.deck}</p><Link className={styles.storyAction} href={story.canonicalHref}>{copy.budgetGuide}<UiIcon name="arrow-right" /></Link></div>
       </article>}
       <aside className={styles.planning}>
         <p className={styles.kicker}>{copy.tools}</p>
-        <div className={styles.house}><Image src="/assets/home/budget-house-3d.png" alt="" fill sizes="(max-width: 760px) 180px, 280px" style={{objectFit:'contain'}} /></div>
+        <BudgetHouseScene locale={locale} />
         <h2>{text.planner}</h2>
         <p>{text.plannerBody}</p>
         <Link href={`${prefix}/tools/property-scenario/`}>{text.plannerAction}<UiIcon name="arrow-right" /></Link>
@@ -171,7 +173,7 @@ export function PropertyHome({ locale, articles }: Readonly<{ locale: SiteLocale
         <ul><li><a href="https://unsplash.com/photos/a-view-of-a-city-at-night-from-a-bridge-E0awymZfM1k" target="_blank" rel="noopener noreferrer">Seoul — Ethan Brooke / Unsplash</a> · <a href="https://unsplash.com/license">Unsplash License</a></li>{markets.map(({ id }) => {
           const photo = CITY_PHOTOS[id];
           return <li key={id} data-photo-credit={id}>{copy.cities[id]} — <a href={photo.source} target="_blank" rel="noopener noreferrer">{photo.author} / Unsplash</a> · <a href={photo.licenseHref} target="_blank" rel="noopener noreferrer">{photo.license}</a></li>;
-        })}{storyCredits.map(credit => <li key={credit.source}><a href={credit.source} target="_blank" rel="noopener noreferrer">{credit.author}</a> · <a href={credit.licenseHref} target="_blank" rel="noopener noreferrer">{credit.license}</a></li>)}</ul>
+        })}{storyCredits.map(credit => <li key={credit.source}><a href={credit.source} target="_blank" rel="noopener noreferrer">{credit.author}</a>{credit.license && <> · <a href={credit.licenseHref} target="_blank" rel="noopener noreferrer">{credit.license}</a></>}</li>)}</ul>
       </details>
     </div>
   </main>;

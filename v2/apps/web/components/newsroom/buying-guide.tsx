@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
 import { BUDGET_READING_NOTES } from '../../content/budget-reading-notes';
 import { budgetBandIndex } from '../../lib/home/buying-journey';
 import Link from 'next/link';
@@ -45,6 +46,8 @@ export function BuyingGuide({ guide, locale = 'en', initialBudget }: Readonly<{ 
   const [profile, setProfile] = useState(0);
   const budget = guide.bands[selected] ?? guide.bands[0]!;
   const money = (value: number) => ko && guide.currency === 'KRW' ? formatKrwKo(Math.round(value)) : `${guide.currency === 'SGD' ? 'S$' : guide.currency + ' '}${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+  const scenarioMarket = guide.currency === 'KRW' ? 'kr-seoul' : guide.currency === 'SGD' ? 'sg-singapore' : 'ae-dubai';
+  const scenarioHref = createPropertyScenarioHref({ locale, market: scenarioMarket, currency: guide.currency === 'KRW' ? 'KRW' : guide.currency === 'SGD' ? 'SGD' : 'AED', price: budget.cap });
   const costs = buyingGuideCosts(guide.currency, budget.cap, profile);
   const subtotal = costs.reduce((sum, [, value]) => sum + value, 0);
   const maximumArea = Math.max(...budget.examples.map(example => example.area[1]!));
@@ -73,6 +76,7 @@ export function BuyingGuide({ guide, locale = 'en', initialBudget }: Readonly<{ 
       <dl className={styles.costRows}>{costs.map(([label, value]) => <div key={label}><dt>{costLabel(label)}</dt><dd>{money(value)}</dd></div>)}<div><dt>{t("Subtotal of displayed items", "위 항목 합계")}</dt><dd>{money(subtotal)}</dd></div></dl></div>
       <p className={styles.meta}>{ko ? (guide.currency === 'KRW' ? '주택 취득세 기본세율만 적용한 예시입니다. 중과·감면, 지방교육세, 농어촌특별세, 중개·등기·금융 비용은 제외해 실제 총매입 비용과 다릅니다.' : guide.currency === 'SGD' ? '과세 기준 금액이 집값과 같다고 가정했습니다. 실제 BSD·ABSD는 매매가격과 시가 중 높은 금액을 기준으로 합니다. 공동명의, 보유 주택과 감면 여부에 따라 달라지며 법률·감정·금융 비용은 제외했습니다. FTA에 따른 감면 대상 여부도 별도로 확인하세요.' : `DLD 안내상 등록비는 매도자 2%, 매수자 2%입니다. 위 합계는 매수자 부담분과 AED 50만 이상 거래의 등록 대행 기본 수수료를 포함합니다. 부가세, 증서·지도 발급비, 지식·혁신 수수료, 중개·NOC·금융 비용은 제외했습니다. 계약상 매수자가 등록비 4% 전액을 부담한다면 ${money(budget.cap * .02)}를 추가해야 합니다.`) : guide.currency === 'KRW' ? 'Basic residential acquisition-tax rates only. Surcharges, relief, local education tax, rural special tax, brokerage, registration and financing costs are excluded. This is not your total purchase cost.' : guide.currency === 'SGD' ? 'Assumes the taxable value equals the price. Actual BSD and ABSD use the higher of price and market value. Joint ownership, existing properties and remissions can change treatment. Legal, valuation and financing costs are excluded. Qualifying FTA buyers should check remission separately.' : `DLD lists a seller share of 2% and buyer share of 2%. The subtotal includes the buyer share and the service partner base fee for sales of at least AED 500,000. VAT, certificate/map fees, knowledge/innovation fees, brokerage, NOC and financing are excluded. If the contract assigns the full 4% registration charge to the buyer, add ${money(budget.cap * .02)}.`}</p><a href="#article-sources-title">{t("Official fee and tax sources", "세금·수수료 공식 자료")}</a>
     </section>
+    <p><Link href={scenarioHref}>{t('Continue with this price in the cost calculator', '선택한 집값으로 비용 계산 계속하기')}</Link><br /><span className={styles.meta}>{t('Carries the selected price ceiling, not a property valuation. Enter your verified fees and financing separately in the calculator.', '선택한 매매가격 상한을 전달합니다. 특정 집의 평가액은 아니며, 실제 세금·수수료·대출 조건은 계산기에서 별도로 입력하세요.')}</span></p>
     <section aria-labelledby="buying-eligibility"><h2 id="buying-eligibility">{t("03 \u00b7 Can you buy the property?", "03 · 매수 자격 확인")}</h2><p className={styles.callout}>{guide.eligibility}</p><a href="#article-sources-title">{t("Official ownership sources", "소유권 관련 공식 자료")}</a></section>
     <section aria-labelledby="buying-checklist"><h2 id="buying-checklist">{t("04 \u00b7 Before you commit", "04 · 계약 전 체크리스트")}</h2>{guide.checks.map(check => <label className={styles.check} key={check}><input type="checkbox" />{check}</label>)}<p className={styles.meta}>{t("Checklist selections are not saved.", "체크한 항목은 저장되지 않습니다.")}</p>
       {journey ? <p><Link href={localHref(journey.report)} onClick={() => record('report_open')}>{ko ? `${guide.city} 2026년 9월 거래 보고서 보기` : `What changed in ${journey.city}? Read the September 2026 transaction report`}</Link></p> : null}</section>

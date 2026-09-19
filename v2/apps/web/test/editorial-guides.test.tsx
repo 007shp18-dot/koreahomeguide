@@ -11,7 +11,8 @@ describe('guide calculator city context', () => {
     ['tokyo', 'jp-tokyo', 'JPY'],
   ] as const)('opens the %s calculator with the matching currency', (city, market, currency) => {
     const html = renderToStaticMarkup(<EditorialGuides market={city} />);
-    expect(html).toContain(`href="/news?topic=budget&amp;market=${city}"`);
+    const slug = { seoul: 'seoul-apartment-buying-budget-guide', singapore: 'singapore-condo-buying-budget-guide', dubai: 'dubai-ready-apartment-buying-budget-guide', tokyo: 'tokyo-apartment-buying-budget-guide' }[city];
+    expect(html).toContain(`href="/guides/${slug}"`);
     const href = html.match(/href="([^"]*\/tools\/property-scenario[^\"]*)"/)?.[1];
     expect(href).toBeDefined();
     const url = new URL(href!.replaceAll('&amp;', '&'), 'https://signedprice.com');

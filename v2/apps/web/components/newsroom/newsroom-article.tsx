@@ -1,3 +1,5 @@
+import { GuideNextSteps } from '../guide/guide-next-steps';
+import Image from 'next/image';
 import { isNeighborhoodEditorial } from '../../content/insight-curation';
 import {editorialImages} from '../../lib/insights/editorial-images';
 import { INSIGHT_PHOTOS } from '../../content/insight-photos';
@@ -65,8 +67,9 @@ export function NewsroomArticle({ article }: Readonly<{
   const hasContents = !buyingGuide && contents.length >= 3;
   const formatDate = (value:string) => new Intl.DateTimeFormat(article.locale,{year:'numeric',month:'short',day:'numeric',timeZone:'UTC'}).format(new Date(value));
   const sourceCheckedAt = article.sources.map(source=>source.checkedAt).filter(Boolean).sort().at(-1);
-  const section = article.type === 'guide' && !budgetComparison
-    ? { label: t('Guides','가이드'), href: `${prefix}/guides/` }
+  const guideCity = ({ 'kr-seoul': 'seoul', 'sg-singapore': 'singapore', 'ae-dubai': 'dubai', 'jp-tokyo': 'tokyo' } as const)[article.marketId ?? 'kr-seoul'];
+  const section = article.type === 'guide'
+    ? { label: t('Guides','가이드'), href: `${prefix}/guides/?market=${guideCity}` }
     : article.type === 'news-brief' ? { label: t('News', '뉴스'), href: `${prefix}/news/?type=news` } : { label: t('Insights', '인사이트'), href: `${prefix}/news/` };
   const market = article.marketId === 'kr-seoul' ? t('Seoul','서울')
     : article.marketId === 'sg-singapore' ? t('Singapore','싱가포르') : article.marketId === 'ae-dubai' ? t('Dubai','두바이') : article.marketId === 'jp-tokyo' || article.slug.startsWith('tokyo-') ? t('Tokyo','도쿄') : t('Global','전체 도시');
@@ -102,7 +105,7 @@ export function NewsroomArticle({ article }: Readonly<{
       <span>{article.authorName}</span><time aria-label={`${t('Published', '발행일')}: ${article.publishedAt.slice(0, 10)}`} dateTime={article.publishedAt}>{t('Published', '발행')} {formatDate(article.publishedAt)}</time>
       {article.updatedAt.slice(0, 10) !== article.publishedAt.slice(0, 10) && <span>{t('Updated', '수정')} <time dateTime={article.updatedAt}>{formatDate(article.updatedAt)}</time></span>}
     </EditorialArticleHeader>
-    <div className={styles.editorialPhoto}>{articlePhoto ? <div className={layout.hero}><NeighbourhoodPhoto id={articlePhoto} eager context locale={article.locale} /></div> : article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" locale={article.locale} photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : article.marketId === 'jp-tokyo' ? MARKET_PHOTOS.tokyo : null} cityLabel={market} /></div> : null}</div>
+    <div className={styles.editorialPhoto}>{article.propertyPhoto ? <figure className={styles.articlePhoto} data-photo-context="property"><Image src={article.propertyPhoto.src} alt={article.propertyPhoto.buildingName} width={1200} height={800} unoptimized style={{width:'100%',height:'auto'}} /><figcaption>{article.propertyPhoto.buildingName} · <a href={article.propertyPhoto.sourceUrl}>{article.propertyPhoto.attributionName}</a></figcaption></figure> : articlePhoto ? <div className={layout.hero}><NeighbourhoodPhoto id={articlePhoto} eager context locale={article.locale} /></div> : article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" locale={article.locale} photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : article.marketId === 'jp-tokyo' ? MARKET_PHOTOS.tokyo : null} cityLabel={market} /></div> : null}</div>
     <div className={`${styles.readingLayout} ${hasContents ? styles.withContents : ''}`}>
     {hasContents && <aside className={styles.readingAside}><ArticleContents locale={article.locale} items={contents} sidebar /></aside>}
     <div className={styles.readingColumn}>
@@ -118,6 +121,7 @@ export function NewsroomArticle({ article }: Readonly<{
     <article className={layout.body}>
       {contentSections.map((section, index) => isMethod(section.heading)?null:<section id={`section-${index + 1}`} key={`${section.heading}-${index}`}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}
     </article>
+    {article.type === 'guide' && <GuideNextSteps city={guideCity} locale={article.locale} renting={/rent|wolse|jeonse/.test(article.slug)} />}
     <details id="sources" className={styles.sources} data-editorial-event="article_complete">
       <summary>{ko ? '자료·계산 방법 보기' : zh ? '查看资料与计算方法' : 'Sources & methodology'}</summary>
       <h2 id="article-sources-title">{t("Sources","출처")}</h2>

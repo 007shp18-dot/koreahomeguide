@@ -37,10 +37,11 @@ export function PassportBudgetContext() {
   // original amount rather than recomputing it with unrelated bundled rates.
   const budget = Number(params.get('budget'));
   const ko = passport.startsWith('/ko/');
-  const label = `${currency} ${budget.toLocaleString(ko ? 'ko-KR' : 'en')}`;
+  const zh = passport.startsWith('/zh-cn/');
+  const label = `${currency} ${budget.toLocaleString(ko ? 'ko-KR' : zh ? 'zh-CN' : 'en')}`;
   const compact = `${currency} ${new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 2 }).format(budget)}`;
-  return <aside className={styles.journey} aria-label="Passport budget">
-    <span title={label}>{ko ? '참고 예산' : 'Budget'} · <strong aria-label={label}>≈ {compact}</strong></span>
-    <Link href={passport}>{ko ? '예산 비교로' : 'Back to Passport'}</Link>
+  return <aside className={styles.journey} aria-label={ko ? '참고 예산' : zh ? '参考预算' : 'Passport budget'}>
+    <span title={label}>{ko ? '참고 예산' : zh ? '参考预算' : 'Budget'} · <strong aria-label={label}>≈ {compact}</strong></span>
+    <Link href={passport}>{ko ? '예산 비교로' : zh ? '返回预算比较' : 'Back to Passport'}</Link>
   </aside>;
 }

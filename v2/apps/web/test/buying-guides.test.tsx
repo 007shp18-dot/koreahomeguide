@@ -43,10 +43,10 @@ describe('budget buying guides', () => {
       expect(BUYING_GUIDES.find(record => record.slug === guide.slug)?.canonicalHref).toBe(`/guides/${guide.slug}/`);
     }
   });
-  it('keeps the Dubai process guide in its city filter without unrelated or budget articles', () => {
+  it('keeps the Dubai process guide in its city filter with its budget guide and without unrelated cities', () => {
     const html = renderToStaticMarkup(<GlobalProductHub kind="guides" guideMarket="dubai" />);
     expect(html).toContain('href="/ae/dubai/guide"');
-    expect(html).not.toContain('dubai-ready-apartment-buying-budget-guide');
+    expect(html).toContain('dubai-ready-apartment-buying-budget-guide');
     expect(html).not.toContain('seoul-apartment-buying-budget-guide');
     expect(html).not.toContain('Read guide');
   });

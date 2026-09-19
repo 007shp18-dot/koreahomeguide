@@ -1,3 +1,4 @@
+import { isPracticalJourneyGuide } from '../../content/city-journey-routes';
 export type SiteLocale = 'en' | 'ko' | 'zh-CN';
 
 export const marketNavigation = [
@@ -24,6 +25,7 @@ export function marketDestination(marketId: NavigationMarketId, currentHref = '/
   if (path === '/community/' || path.startsWith('/community/')) return `${prefix}/community/?market=${city}`;
   if (path === '/living/') return `${prefix}/living/?market=${marketId}`;
   if (marketId === 'jp-tokyo' && /\/tools\//.test(path)) return `${tokyoPrefix}/jp/tokyo/tools/`;
+  if (isPracticalJourneyGuide(currentHref)) return `${prefix}/guides/?market=${city}`;
   if (path.includes('/news/') || path.includes('/insights/')) {
     const query = new URLSearchParams(currentHref.split('?')[1] ?? '');
     const requestedType = query.get('type');

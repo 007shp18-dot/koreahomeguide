@@ -116,3 +116,17 @@ test('removing one Dubai condition preserves other filters and reset restores de
   await expect(page.getByRole('combobox', { name: 'Maximum median price', exact: true })).toHaveValue('');
   await expect(page).toHaveURL(url => !url.searchParams.has('q') && !url.searchParams.has('budgetMax') && !url.searchParams.has('page'));
 });
+
+test('choosing a Dubai rent reference preserves entered purchase costs and operating assumptions', async ({ page }) => {
+  await page.goto('/tools/property-scenario/?market=ae-dubai&currency=AED');
+  const reference = page.getByLabel('Rent starting point · area and home type', { exact: true });
+  await expect(reference).toBeVisible();
+  await page.getByLabel('Purchase price (AED)', { exact: true }).fill('1000000');
+  await page.getByLabel('Acquisition costs, including taxes and fees (AED)').fill('50000');
+  await page.getByLabel('Annual operating costs, including taxes (AED)').fill('12000');
+  await reference.selectOption({ index: 1 });
+  await expect(page.getByLabel('Purchase price (AED)', { exact: true })).toHaveValue('1,000,000');
+  await expect(page.getByLabel('Acquisition costs, including taxes and fees (AED)')).toHaveValue('50,000');
+  await expect(page.getByLabel('Annual operating costs, including taxes (AED)')).toHaveValue('12,000');
+  await expect(page.getByLabel('Expected monthly rent (AED)', { exact: true })).not.toHaveValue('');
+});

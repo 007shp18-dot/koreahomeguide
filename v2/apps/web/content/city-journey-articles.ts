@@ -1,3 +1,4 @@
+import { createPropertyScenarioHref } from '../lib/tools/property-scenario-context';
 import type { StoryCity, StoryLink, StoryLocale, StoryText } from './city-stories';
 import { JOURNEY_ARTICLE_ROUTES, STORY_STEPS, journeyArticleHref, localIssueHref } from './city-journey-routes';
 import articles from './city-journey-articles.json';
@@ -44,7 +45,7 @@ export function journeyArticleActions(article: JourneyArticle, locale: StoryLoca
     href: journeyArticleHref(article.city, id, locale),
     label: getJourneyArticle(article.city, id)!.title,
   });
-  const prefix = locale === 'ko' && article.city !== 'tokyo' ? '/ko' : '';
+  const prefix = locale === 'ko' ? '/ko' : '';
   const explore: StoryLink = { href: `${prefix}${cityExplore[article.city]}`, label: text('Explore this city', '이 도시의 지역 살펴보기') };
   if (article.kind === 'local-issue') return { primary: articleLink('which-home'), related: [articleLink('can-i-buy'), articleLink('make-it-happen')] };
   if (article.kind === 'neighborhood') return { primary: explore, related: [articleLink('where'), articleLink('which-home')] };
@@ -52,6 +53,6 @@ export function journeyArticleActions(article: JourneyArticle, locale: StoryLoca
   const primary = next ? articleLink(next.id) : explore;
   if (article.id === 'discover') return { primary, related: [articleLink('can-i-buy'), articleLink('where')] };
   if (article.id === 'where') return { primary, related: [articleLink('can-i-buy'), explore] };
-  if (article.id === 'can-i-buy') return { primary, related: [articleLink('make-it-happen'), { href: `${locale === 'ko' ? '/ko' : ''}/tools/property-scenario/`, label: text('Build a purchase-cost scenario', '매입·보유 비용 계산하기') }] };
+  if (article.id === 'can-i-buy') return { primary, related: [articleLink('make-it-happen'), { href: createPropertyScenarioHref({ locale, ...({ seoul: { market: 'kr-seoul', currency: 'KRW' }, singapore: { market: 'sg-singapore', currency: 'SGD' }, dubai: { market: 'ae-dubai', currency: 'AED' }, tokyo: { market: 'jp-tokyo', currency: 'JPY' } } as const)[article.city] }), label: text('Build a purchase-cost scenario', '매입·보유 비용 계산하기') }] };
   return { primary, related: [articleLink(article.id === 'make-it-happen' ? 'can-i-buy' : 'where'), { href: localIssueHref(article.city, locale), label: text('Read the local issue analysis', '현지 이슈 분석 읽기') }] };
 }
