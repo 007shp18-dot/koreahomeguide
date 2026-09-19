@@ -54,3 +54,28 @@ test('Tokyo ward map changes the ward while retaining period and property filter
   }
   await test.info().attach('tokyo-ward-map', { body: await map.screenshot(), contentType: 'image/png' });
 });
+
+test('mobile results restore focus, release scroll lock and reset after a desktop resize', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/jp/tokyo/explore/?city=13103&year=2025&quarter=4');
+  const trigger = page.getByRole('button', { name: 'View neighbourhoods & prices', exact: true });
+  const dialog = page.getByRole('dialog', { name: 'Neighbourhoods & prices', exact: true });
+  await trigger.click();
+  await expect(dialog).toBeVisible();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe('hidden');
+  await page.keyboard.press('Escape');
+  await expect(dialog).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  expect(await page.evaluate(() => document.body.style.overflow)).not.toBe('hidden');
+  await trigger.click();
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await expect(dialog).toHaveCount(0);
+  expect(await page.evaluate(() => document.body.style.overflow)).not.toBe('hidden');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  await trigger.click();
+  await expect(dialog).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+});

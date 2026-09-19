@@ -25,8 +25,8 @@ export function HomeSearch({ locale }: Readonly<{ locale: SiteLocale }>) {
     </label>
     <label className={styles.searchField}><span>{ko ? '지역·건물' : zh ? '区域或建筑' : 'Where'}</span>
       <input key={city} name="q" type="search" maxLength={100} autoComplete="off"
-        aria-label={ko ? (city === 'tokyo' ? '도쿄 지역 검색' : '지역 또는 건물 검색') : zh ? '搜索地区或建筑' : city === 'tokyo' ? 'Tokyo neighbourhood' : 'Neighbourhood or building'}
-        placeholder={ko ? (city === 'tokyo' ? '지역명' : '지역명 또는 건물명') : zh ? '地区或建筑名称' : city === 'tokyo' ? 'Neighbourhood' : 'Neighbourhood or building'} />
+        aria-label={ko ? '지역 또는 건물 검색' : zh ? '搜索地区或建筑' : 'Neighbourhood or building'}
+        placeholder={ko ? '지역명 또는 건물명' : zh ? '地区或建筑名称' : 'Neighbourhood or building'} />
     </label>
     <button type="submit" aria-label={ko ? '선택 도시 탐색' : zh ? '探索所选城市' : 'Explore selected city'}>
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>

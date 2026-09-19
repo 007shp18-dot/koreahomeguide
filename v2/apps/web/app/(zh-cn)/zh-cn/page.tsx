@@ -1,3 +1,4 @@
+import { listLatestInsightArticles } from '@/lib/content/newsroom-content.server';
 import type { Metadata } from 'next';
 
 import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
@@ -16,6 +17,10 @@ export const metadata: Metadata = indexableMetadata({
   locale: 'zh_CN',
 });
 
-export default function ChineseHome() {
-  return <EditorialGrowthPublicFrame locale="zh-CN" surface="home" shell><PropertyHome locale="zh-CN" /></EditorialGrowthPublicFrame>;
+export default async function ChineseHome() {
+  const articles = await listLatestInsightArticles('zh-CN', 4);
+  return <EditorialGrowthPublicFrame locale="zh-CN" surface="home" shell><PropertyHome locale="zh-CN" articles={articles} /></EditorialGrowthPublicFrame>;
 }
+
+// Editorial discovery must reflect publication without a new static deployment.
+export const dynamic = 'force-dynamic';

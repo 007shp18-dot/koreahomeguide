@@ -24,6 +24,7 @@ import { ExplorePriceGuide } from '../market-ui/explore-price-guide';
 import { ExploreResultsLoading } from '../market-ui/explore-results-loading';
 import { SingaporeEvidence, SingaporePage, singaporeStyles as styles } from './singapore-shell';
 import searchStyles from '../price-market-search.module.css';
+import { AppliedFilterButtons } from '../market-ui/applied-filters';
 
 import { selectedResultPage } from '../../lib/navigation/selected-result-page';
 import { RecentPlaces, RecordPlaceVisit } from '../discovery/recent-places';
@@ -197,7 +198,15 @@ export function SingaporeExplorer({ locale = 'en',
     }
     return [...counts.entries()].sort(([left], [right]) => left.localeCompare(right));
   }, [allProjects, selectedSegment, progressive, districtSummary]);
-  const hasFilters = query.trim() !== '' || selectedSegment !== null || district !== 'all' || sort !== 'transactions' || lookupProjectId !== null;
+  const clearFilters = () => { setQuery(''); setLookupProjectId(null); setSelectedSegment(null); setDistrict('all'); setSort('transactions'); setPage(1); setSelectedProjectId(null); };
+  const removeFilter = (update: () => void) => () => { update(); setLookupProjectId(null); setPage(1); setSelectedProjectId(null); };
+  const appliedFilters = [
+    ...(query.trim() ? [{ id: 'query', label: query, onRemove: removeFilter(() => setQuery('')) }] : []),
+    ...(selectedSegment ? [{ id: 'region', label: selectedSegment, onRemove: removeFilter(() => setSelectedSegment(null)) }] : []),
+    ...(district !== 'all' ? [{ id: 'district', label: `${sgText(locale, 'District')} ${district}`, onRemove: removeFilter(() => setDistrict('all')) }] : []),
+    ...(sort !== 'transactions' ? [{ id: 'sort', label: sgText(locale, 'Project name'), onRemove: removeFilter(() => setSort('transactions')) }] : []),
+    ...(lookupProjectId ? [{ id: 'project', label: sgText(locale, 'Project'), onRemove: removeFilter(() => setLookupProjectId(null)) }] : []),
+  ];
 
   useEffect(() => {
     if (!restoreStateFromUrl) return;
@@ -266,8 +275,12 @@ export function SingaporeExplorer({ locale = 'en',
         <label className={searchStyles.query}>{sgText(locale, "Search Singapore projects")}<input name="q" type="search" value={query} placeholder={sgText(locale, "Project, street or district number")} onChange={(event) => { setQuery(event.currentTarget.value); setLookupProjectId(null); setPage(1); setSelectedProjectId(null); }} /></label>
         <label>{sgText(locale, "District")}<select value={district} onChange={(event) => { setDistrict(event.currentTarget.value); setLookupProjectId(null); setPage(1); setSelectedProjectId(null); }}><option value="all">{sgText(locale, "All districts")}</option>{districtCounts.map(([value, count]) => <option key={value} value={value}>{sgText(locale, "District ")}{sgText(locale, value)}{sgText(locale, " · ")}{sgText(locale, count.toLocaleString('en'))}{sgText(locale, " projects")}</option>)}</select></label>
         <label>{sgText(locale, "Sort")}<select value={sort} onChange={(event) => { setSort(event.currentTarget.value); setPage(1); }}><option value="transactions">{sgText(locale, "Most transactions")}</option><option value="name">{sgText(locale, "Project name")}</option></select></label>
-        {hasFilters ? <button type="button" className={styles.clearFilters} onClick={() => { setQuery(''); setLookupProjectId(null); setSelectedSegment(null); setDistrict('all'); setSort('transactions'); setPage(1); setSelectedProjectId(null); }}>{sgText(locale, "Clear filters")}</button> : null}
+
       </form>
+      <AppliedFilterButtons items={appliedFilters}
+        label={locale === 'ko' ? '적용된 필터' : locale === 'zh-CN' ? '已应用筛选' : 'Applied filters'}
+        removeLabel={locale === 'ko' ? '필터 제거' : locale === 'zh-CN' ? '移除筛选' : 'Remove filter'}
+        clearLabel={sgText(locale, 'Clear filters')} onClear={clearFilters} />
     </div>
   </>;
   if (model.status === 'unavailable') return <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed><div className={styles.exploreSupportingContent}><h1>{sgText(locale, "Explore")}</h1><p>{sgText(locale, model.message)}</p><HdbMarketPanel locale={locale} model={hdbModel} /></div></SingaporePage>;

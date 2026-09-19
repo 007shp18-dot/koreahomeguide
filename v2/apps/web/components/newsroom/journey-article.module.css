@@ -1,10 +1,10 @@
 .article { width: min(1040px, calc(100% - 48px)); margin: 0 auto; padding: 28px 0 80px; color: var(--ink); }
 .breadcrumb { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; line-height: 1.6; color: var(--muted); }
 .breadcrumb a { color: inherit; }
-.header { max-width: 700px; margin: 42px auto 28px; }
+.header { max-width: 700px; margin: 28px auto 24px; }
 .eyebrow { font-size: 12px; line-height: 1.6; color: var(--accent); font-weight: 600; letter-spacing: .04em; }
-.header h1 { max-width: 28ch; margin: 12px 0 20px; font-size: clamp(30px, 3.6vw, 46px); line-height: 1.2; letter-spacing: -.035em; text-wrap: pretty; overflow-wrap: anywhere; }
-.deck { max-width: 70ch; color: var(--muted); font-size: 18px; line-height: 1.7; margin: 0 0 24px; }
+.header h1 { max-width: 35ch; margin: 12px 0 20px; font-size: clamp(28px, 3vw, 38px); line-height: 1.2; letter-spacing: -.035em; text-wrap: pretty; overflow-wrap: anywhere; }
+.deck { max-width: 70ch; color: var(--muted); font-size: 17px; line-height: 1.65; margin: 0 0 20px; }
 .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12px; line-height: 1.7; color: var(--muted); }
 .meta a { color: inherit; }
 .stages { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; max-width: 700px; margin: 28px auto; }
@@ -42,7 +42,7 @@
 @media (max-width: 740px) {
   .article { width: calc(100% - 2 * var(--page-gutter, 20px)); padding-top: 20px; }
   .header { margin-top: 28px; }
-  .header h1 { font-size: 32px; }
+  .header h1 { font-size: 28px; }
   .deck { font-size: 17px; }
   .stages { grid-template-columns: 1fr; gap: 0; }
   .stages a { flex-direction: row; align-items: center; gap: 12px; min-height: 44px; padding: 9px 0; }

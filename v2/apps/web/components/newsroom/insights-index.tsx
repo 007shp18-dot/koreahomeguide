@@ -44,7 +44,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
   const english = listPortfolioRecords('en');
   const englishTitles = new Map(english.flatMap(item => [[item.slug, item.title] as const, [item.translationGroupId ?? item.slug, item.title] as const]));
   const translated = listPortfolioRecords(locale);
-  const translatedGroups = new Set(translated.map(item => item.translationGroupId ?? item.slug));
+  const translatedGroups = new Set([...articles.filter(item=>item.locale===locale),...translated].map(item => 'translationGroupId' in item && item.translationGroupId ? item.translationGroupId : item.slug.replace(/-(?:ko|en|zh-cn)$/u,'')));
   const fallback = locale === 'en' ? [] : english.filter(item => !translatedGroups.has(item.translationGroupId ?? item.slug) && !translated.some(local => local.slug === item.slug));
   const records = [...articles, ...fallback, ...translated.filter(item => item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))].filter(item => !isInsightReference(item.slug));
   const analysis: Insight[] = records.filter(item => item.status === 'published' && item.evidenceState !== 'withdrawn' && item.type !== 'news-brief' && (item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))).map(item => ({
@@ -68,7 +68,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
     if ((market !== 'all' && item.city !== market) || seen.has(item.href)) return false;
     seen.add(item.href);
     return true;
-  }).sort((a, b) => b.date.slice(0, 10).localeCompare(a.date.slice(0, 10)));
+  }).sort((a, b) => b.date.localeCompare(a.date) || a.href.localeCompare(b.href));
 }
 
 function StoryPhoto({ item, eager = false, locale = 'en' }: { item: Insight; eager?: boolean; locale?: ContentLocale }) {

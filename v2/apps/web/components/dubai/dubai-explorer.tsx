@@ -28,6 +28,7 @@ import { GooglePlaceMap, type GoogleMarketMapPoint } from '../maps/google-place-
 import { MarketExploreShell } from '../market-ui/market-shell';
 import { ExplorePriceGuide } from '../market-ui/explore-price-guide';
 import styles from './dubai-research.module.css';
+import { AppliedFilterButtons } from '../market-ui/applied-filters';
 import type { DubaiProjectEvidence } from '../../lib/dubai/project-evidence';
 import { selectedResultPage } from '../../lib/navigation/selected-result-page';
 import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
@@ -257,10 +258,17 @@ export function DubaiExplorer({ locale = 'en',
     setBudgetMaximumAed(null);
     setYieldMinimumPct(null);
     setSelectedArea(null);
+    setSelectedProjectId(null);
     setPage(1);
   };
-  const hasFilters = query.trim() !== '' || housing !== 'apartment' || stage !== 'ready'
-    || budgetMaximumAed !== null || yieldMinimumPct !== null;
+  const removeFilter = (update: () => void) => () => { update(); setSelectedArea(null); setSelectedProjectId(null); setPage(1); };
+  const appliedFilters = [
+    ...(query.trim() ? [{ id: 'query', label: query, onRemove: removeFilter(() => setQuery('')) }] : []),
+    ...(housing !== 'apartment' ? [{ id: 'housing', label: t('Villa'), onRemove: removeFilter(() => setHousing('apartment')) }] : []),
+    ...(stage !== 'ready' ? [{ id: 'stage', label: t('Off-Plan'), onRemove: removeFilter(() => switchStage('ready')) }] : []),
+    ...(budgetMaximumAed !== null ? [{ id: 'budget', label: `${t('Maximum median price')}: ${money(budgetMaximumAed)}`, onRemove: removeFilter(() => setBudgetMaximumAed(null)) }] : []),
+    ...(yieldMinimumPct !== null ? [{ id: 'ratio', label: `${t('Minimum gross ratio')}: ${yieldMinimumPct}%`, onRemove: removeFilter(() => setYieldMinimumPct(null)) }] : []),
+  ];
 
   return <div className={`${styles.explorer} ${layout.workspace}`} data-dubai-evidence="ready" data-dubai-explore-workspace="true">
     <RecordPlaceVisit place={selected ? { market: 'dubai', key: selected.area.slug, name: t(selected.area.name), href: buildDubaiExploreHref({ query, housing, stage, budgetMaximumAed, yieldMinimumPct, page: activePage, selectedArea: selected.area.slug, selectedProject: selectedProject?.id ?? null }) } : null} />
@@ -299,8 +307,12 @@ export function DubaiExplorer({ locale = 'en',
             setSelectedArea(null);
             setPage(1);
           }}><option value="">{t("Any ratio")}</option><option value="5">{t("5%+")}</option><option value="6">{t("6%+")}</option><option value="7">{t("7%+")}</option><option value="8">{t("8%+")}</option></select></label> : null}
-          {hasFilters ? <button type="button" className={styles.clearFilters} onClick={clearFilters}>{t("Clear filters")}</button> : null}
+
         </form>
+        <AppliedFilterButtons items={appliedFilters}
+          label={locale === 'ko' ? '적용된 필터' : locale === 'zh-CN' ? '已应用筛选' : 'Applied filters'}
+          removeLabel={locale === 'ko' ? '필터 제거' : locale === 'zh-CN' ? '移除筛选' : 'Remove filter'}
+          clearLabel={t('Clear filters')} onClear={clearFilters} />
         <div className={layout.toolbarFooter}><div className={styles.stageTabs} role="tablist" aria-label={t("Dubai sale stage")}>
           <button type="button" role="tab" aria-selected={stage === 'ready'} onClick={() => switchStage('ready')}>{t("Ready")}</button>
           <button type="button" role="tab" aria-selected={stage === 'off-plan'} onClick={() => switchStage('off-plan')}>{t("Off-Plan")}</button>

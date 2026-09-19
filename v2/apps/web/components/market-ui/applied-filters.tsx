@@ -15,3 +15,18 @@ export function AppliedFilters({ items, label, removeLabel, clearLabel, clearHre
     <Link href={clearHref} className={styles.clear} prefetch={false} scroll={false}>{clearLabel}</Link>
   </nav>;
 }
+
+/** State-backed explorers use the same removable conditions as URL-backed results. */
+export function AppliedFilterButtons({ items, label, removeLabel, clearLabel, onClear }: {
+  items: readonly Readonly<{ id: string; label: string; onRemove: () => void }>[];
+  label: string; removeLabel: string; clearLabel: string; onClear: () => void;
+}) {
+  if (!items.length) return null;
+  return <nav className={styles.filters} aria-label={label}>
+    {items.map(item => <button key={item.id} type="button" className={styles.chip}
+      onClick={item.onRemove} aria-label={`${removeLabel}: ${item.label}`}>
+      <span>{item.label}</span><span aria-hidden="true">×</span>
+    </button>)}
+    <button type="button" className={styles.clear} onClick={onClear}>{clearLabel}</button>
+  </nav>;
+}

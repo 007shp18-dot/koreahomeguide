@@ -4,13 +4,16 @@ import { UiIcon } from '../ui-icon';
 import type { EditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model';
 import type { SiteLocale } from '@/lib/navigation/site-navigation';
 import { createBuyingJourney } from '@/lib/home/buying-journey-model.server';
-import { BuyingJourney } from '../home/buying-journey';
+import Image from 'next/image';
+import { HomeSearch } from '../home/home-search';
+import { HomeReportPulse } from '../home/home-report-pulse';
+import type { EditorialPortfolioRecord } from '@/content/portfolio-types';
 import type { StoryPhoto } from '@/content/story-photos';
 import styles from './editorial-growth-home.module.css';
 
 const COPY = {
   en: {
-    title: 'What can your budget buy?', titleEnd: 'Four cities. Your next move.',
+    title: 'Find your place.', titleEnd: 'Know its price.',
     lead: 'Compare recorded home sales, understand buying costs, and narrow your search.',
     markets: 'Choose a city', explore: 'Explore', index: 'The city index',
     next: 'Take a closer look', tools: 'Tools', toolsNote: 'Budgets & buying costs',
@@ -21,7 +24,7 @@ const COPY = {
     cities: { 'kr-seoul': 'Seoul', 'sg-singapore': 'Singapore', 'ae-dubai': 'Dubai', 'jp-tokyo': 'Tokyo' },
   },
   ko: {
-    title: '내 예산으로 어떤 집을?', titleEnd: '네 도시에서 찾는 다음 선택.',
+    title: '살고 싶은 곳,', titleEnd: '거래부터 알아보세요.',
     lead: '실제 거래와 구매비용을 비교하며, 나에게 맞는 선택지를 좁혀보세요.',
     markets: '도시 선택', explore: '탐색', index: '도시 둘러보기',
     next: '조금 더 자세히', tools: '도구', toolsNote: '예산 비교와 매입 비용',
@@ -32,7 +35,7 @@ const COPY = {
     cities: { 'kr-seoul': '서울', 'sg-singapore': '싱가포르', 'ae-dubai': '두바이', 'jp-tokyo': '도쿄' },
   },
   'zh-CN': {
-    title: '你的预算，能买怎样的家？', titleEnd: '四座城市，下一步由你选择。',
+    title: '找到心仪的家，', titleEnd: '先了解真实成交。',
     lead: '比较真实成交，了解购房成本，逐步缩小选择范围。',
     markets: '选择城市', explore: '探索', index: '城市索引',
     next: '进一步了解', tools: '工具', toolsNote: '预算比较与购房成本',
@@ -84,41 +87,54 @@ export function EditorialGrowthHome({ model }: Readonly<{
   return <PropertyHome locale={model.locale} />;
 }
 
-export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
+export function PropertyHome({ locale, articles }: Readonly<{ locale: SiteLocale; articles?: readonly EditorialPortfolioRecord[] }>) {
   const copy = COPY[locale];
   const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const models = createBuyingJourney(locale);
   const markets = models.map(model => ({ id: model.market as HomeMarket }));
 
-  return <main className={styles.homePage}>
+  return <main className={styles.homePage} data-interface="research-first">
     <header className={`${styles.section} ${styles.hero}`}>
       <div className={styles.heroCopy}>
-        <p className={styles.kicker}>GLOBAL REAL ESTATE · SIGNEDPRICE</p>
+        <p className={styles.kicker}>SIGNEDPRICE / SEOUL · SINGAPORE · DUBAI · TOKYO</p>
         <h1>{copy.title}<span>{copy.titleEnd}</span></h1>
         <p className={styles.lead}>{copy.lead}</p>
-        <ul className={styles.trustPoints}>{(locale === 'ko'
-          ? ['거래 기간·범위 공개', '공식 자료 기반', '호가가 아닌 과거 거래']
-          : locale === 'zh-CN' ? ['明确的成交时期与范围', '官方资料来源', '历史成交，并非挂牌价']
-          : ['Dates and coverage shown', 'Official sources', 'Recorded sales, not asking prices']).map(point => <li key={point}>{point}</li>)}</ul>
+        <HomeSearch locale={locale} />
+        <Link className={styles.heroHint} href={`${prefix}/prices/`}>{copy.markets}<UiIcon name="arrow-right" /></Link>
+      </div>
+      <div className={styles.heroVisual}>
+        <Image src={CITY_PHOTOS['kr-seoul'].src} alt={CITY_PHOTOS['kr-seoul'].caption[locale === 'ko' ? 'ko' : 'en']} fill priority sizes="(max-width: 760px) 100vw, 45vw" style={{ objectFit: 'cover', objectPosition: '50% 72%' }} />
+        <span className={styles.photoCaption}>SEOUL / YEOUIDO</span>
       </div>
     </header>
 
-    <BuyingJourney models={models} photos={CITY_PHOTOS} locale={locale} />
+    <section className={`${styles.section} ${styles.cities}`} aria-labelledby="home-cities-title" data-home-region="markets">
+      <div className={styles.cityHeading}><h2 id="home-cities-title">{copy.index}</h2><span>{locale === 'ko' ? '도시를 선택해 실제 거래를 살펴보세요' : locale === 'zh-CN' ? '选择城市，查看真实成交' : 'Choose a city. Explore its recorded prices.'}</span></div>
+      <div className={styles.cityGrid}>{models.map((model, index) => {
+        const photo = CITY_PHOTOS[model.market as HomeMarket];
+        return <article className={styles.cityCard} key={model.market} data-market-id={model.market}>
+          <Link className={styles.cityLink} href={model.exploreHref} data-city-destination={model.city} data-primary-action="explore">
+            <div className={styles.cityPhoto}><Image src={photo.src} alt={photo.caption[locale === 'ko' ? 'ko' : 'en']} fill sizes="(max-width: 760px) 45vw, 23vw" style={{ objectFit: 'cover', objectPosition: photo.position }} /></div>
+            <div className={styles.cityLabel}><span className={styles.cityNumber}>0{index + 1}</span><h3>{model.name}</h3><span>{model.currency}</span><UiIcon name="arrow-right" /></div>
+          </Link>
+          <Link className={styles.cityGuide} href={model.guideHref}>{copy.budgetGuide}<UiIcon name="arrow-right" /></Link>
+        </article>;
+      })}</div>
+    </section>
 
-    <HomeAnalysis locale={locale} />
+    <HomeAnalysis locale={locale} articles={articles} />
 
-    <nav className={`${styles.section} ${styles.directory}`} aria-label={copy.next}>
-      <p className={styles.kicker}>{copy.next}</p>
-      <div className={styles.directoryLinks}>
-        {[
-          { href: `${prefix}/tools/`, title: copy.tools, note: copy.toolsNote },
-          { href: `${prefix}/news/`, title: copy.insights, note: copy.insightsNote },
-          { href: `${prefix}/guides/`, title: copy.guides, note: copy.guidesNote },
-        ].map(item => <Link key={item.href} href={item.href}>
-          <span className={styles.directoryTitle}>{item.title}</span><span className={styles.directoryNote}>{item.note}</span><UiIcon name="arrow-right" />
-        </Link>)}
-      </div>
-    </nav>
+    <div className={`${styles.section} ${styles.researchGrid}`}>
+      <HomeReportPulse locale={locale} />
+      <aside className={styles.planning}>
+        <p className={styles.kicker}>{copy.tools}</p>
+        <svg className={styles.house} viewBox="0 0 180 130" fill="none" aria-hidden="true"><path d="M24 61 88 16l69 44v54H24Z" fill="#fff" fillOpacity=".14"/><path d="m24 61 64-45 69 44M42 49v65h97V49M77 114V77h30v37M52 64h15v18H52Z" stroke="white" strokeWidth="2.5" strokeLinejoin="round"/><path d="m88 16 51 33M107 77l16 10v27" stroke="white" strokeOpacity=".5" strokeWidth="2"/></svg>
+        <h2>{copy.toolsNote}</h2>
+        <p>{locale === 'ko' ? '집값과 취득·보유 비용을 한곳에서 비교하세요.' : locale === 'zh-CN' ? '一起比较房价、购置费用与持有成本。' : 'Bring the price, buying costs and ongoing expenses into one view.'}</p>
+        <Link href={`${prefix}/tools/`}>{copy.tools}<UiIcon name="arrow-right" /></Link>
+        <Link className={styles.planningSecondary} href={`${prefix}/guides/`}>{copy.guides}<UiIcon name="arrow-right" /></Link>
+      </aside>
+    </div>
 
     <div className={`${styles.section} ${styles.sources}`}>
       <Link href="/trust/">{copy.methodology} <UiIcon name="arrow-right" /></Link>

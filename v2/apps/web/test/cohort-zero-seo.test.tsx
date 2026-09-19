@@ -47,7 +47,7 @@ describe('SignedPrice cohort zero SEO', () => {
     ];
 
     expect(entries.map(({ title }) => title)).toEqual([
-      'Home buying budgets: Seoul, Singapore, Dubai & Tokyo | SignedPrice',
+      'Property prices & analysis: Seoul, Singapore, Dubai & Tokyo | SignedPrice',
       'Seoul reported prices | signedprice',
       'Compare an asking price in Seoul | signedprice',
       'Seoul sale, jeonse and monthly-rent evidence | signedprice',

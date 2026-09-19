@@ -21,8 +21,8 @@ describe('Simplified Chinese editorial release', () => {
       expect(markup).not.toContain('Design review');
       expect(markup).not.toContain('/design-review/');
     }
-    expect(home).toContain('你的预算，能买怎样的家？');
-    expect(home).toContain('四座城市，下一步由你选择。');
+    expect(home).toContain('找到心仪的家，');
+    expect(home).toContain('先了解真实成交。');
     expect(home.match(/data-primary-action="explore"/g)).toHaveLength(4);
     expect(home).toContain('href="/zh-cn/news');
     expect(news).toContain('了解四座城市的购房预算、持有成本与市场决策。');
