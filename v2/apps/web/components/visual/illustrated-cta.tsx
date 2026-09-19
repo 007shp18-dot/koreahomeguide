@@ -15,7 +15,7 @@ export function IllustratedCta({ locale }: { locale: SiteLocale }) {
         <Link href={`${prefix}/prices/`}>{copy[3]} <span aria-hidden="true">→</span></Link>
         <Link href={`${prefix}/guides/`}>{copy[4]}</Link>
         <Link className={styles.ctaText} href={`${prefix}/news`}>{locale === 'ko' ? '시장 인사이트' : locale === 'zh-CN' ? '市场洞察' : 'Market insights'}</Link>
-        <Link className={styles.ctaText} href={`${prefix}/tools/`}>{locale === 'ko' ? '예산 비교·비용 계산' : locale === 'zh-CN' ? '预算与费用工具' : 'Tools & calculators'}</Link>
+        <Link className={styles.ctaText} href={`${prefix}/tools`}>{locale === 'ko' ? '예산 비교·비용 계산' : locale === 'zh-CN' ? '预算与费用工具' : 'Tools & calculators'}</Link>
       </nav>
     </div>
     <div className={styles.ctaArt}><Image src="/assets/visual/blue-houses.webp" alt="" width={331} height={180} sizes="(max-width:700px) 80vw, 38vw" /><span aria-hidden="true">A brighter home.</span></div>

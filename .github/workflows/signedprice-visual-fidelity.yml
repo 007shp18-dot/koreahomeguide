@@ -29,10 +29,16 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck
-      - run: pnpm test
+      - name: Check all unit contracts
+        run: |
+          mkdir -p visual-logs
+          set -o pipefail
+          pnpm test 2>&1 | tee visual-logs/units.log
       - run: pnpm exec playwright install --with-deps chromium
       - name: Check photographic layout and retained buying and tools journeys
-        run: pnpm exec playwright test visual-fidelity.spec.ts stable-home-tools.spec.ts buying-journey.spec.ts --project=desktop-chromium --project=mobile-chromium --workers=2
+        run: |
+          set -o pipefail
+          pnpm exec playwright test visual-fidelity.spec.ts stable-home-tools.spec.ts buying-journey.spec.ts --project=desktop-chromium --project=mobile-chromium --workers=2 2>&1 | tee visual-logs/browser.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -40,4 +46,5 @@ jobs:
           path: |
             v2/test-results
             v2/playwright-report
+            v2/visual-logs
           retention-days: 7
