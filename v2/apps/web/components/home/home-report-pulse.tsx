@@ -28,7 +28,7 @@ export function HomeReportPulse({ locale }: { locale: SiteLocale }) {
   const scope = ko ? '보고서의 선정 거래군 · 거래 건수이며 가격지수가 아닙니다.' : zh ? '报告中的选定成交组 · 成交笔数，并非价格指数。' : 'Selected report cohort · transaction counts, not a price index.';
   return <section className={styles.pulse} aria-labelledby={`${id}-heading`}>
     <p className={styles.kicker}>{ko ? '2026년 과거 보고서 · 선정 거래군' : zh ? '2026年历史报告 · 选定成交组' : '2026 REPORT ARCHIVE · SELECTED COHORTS'}</p>
-    <h2 id={`${id}-heading`}>{ko ? '신고 거래는 얼마나 늘었을까요?' : zh ? '申报成交量有何变化？' : 'How did reported activity change?'}</h2>
+    <h2 id={`${id}-heading`}>{ko ? '거래량은 어떻게 달라졌을까요?' : zh ? '申报成交量有何变化？' : 'How did reported activity change?'}</h2>
     <div className={styles.pulseTabs} role="group" aria-label={ko ? '시장 선택' : zh ? '选择市场' : 'Choose market'}>{reports.map(r => <button key={r.city} aria-pressed={r.city === city} onClick={() => setCity(r.city)}>{name(r.city)}</button>)}</div>
     <p className={styles.pulsePeriod}>{label} <strong>{period}</strong></p>
     <ChartInsight locale={locale} latest={series.values.at(-1)} previous={series.values.at(-2)} latestLabel={`${month(report.months.at(-1)!)} 2026`} previousLabel={`${month(report.months.at(-2)!)} 2026`} format={n} />

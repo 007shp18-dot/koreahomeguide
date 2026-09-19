@@ -74,7 +74,7 @@
 .mobileViews { display: none; }
 @media (max-width: 760px) {
   .mobileViews { display: flex; gap: 4px; margin: 0 0 16px; padding: 4px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface-strong); }
-  .mobileViews button { flex: 1; min-height: var(--control-min); padding: 10px 16px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); font: inherit; font-size: var(--text-control); font-weight: 600; cursor: pointer; }
+  .mobileViews button { flex: 1; min-height: var(--control-min); padding: 10px 16px; border: 0; border-radius:8px; background: transparent; color: var(--muted); font: inherit; font-size: var(--text-control); font-weight: 600; cursor: pointer; }
   .mobileViews button[aria-pressed='true'] { background: var(--accent); color: white; }
   .mobileViews button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
   .exploreGrid[data-mobile-view] { min-height: 0; }

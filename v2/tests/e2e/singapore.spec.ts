@@ -365,7 +365,11 @@ test('Singapore region selection keeps district filtering local and reuses a loa
   await expect(page.getByText(/matching projects$/)).toBeVisible();
   expect(requests).toHaveLength(1);
   await districts.getByRole('button', { name: /^District / }).first().click();
+  const mobile = (page.viewportSize()?.width ?? 1366) <= 760;
+  const views = page.getByRole('group', { name: 'Explore view', exact: true });
+  if (mobile) await views.getByRole('button', { name: 'Map', exact: true }).click();
   await expect(page.locator('[data-singapore-map-level="projects"]')).toBeVisible();
+  if (mobile) await views.getByRole('button', { name: 'List', exact: true }).click();
   await expect(page.getByText(/matching projects$/)).toBeVisible();
   expect(requests).toHaveLength(1);
   await page.getByRole('tab', { name: /^OCR/ }).click();

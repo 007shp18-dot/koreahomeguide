@@ -94,10 +94,19 @@ export function PropertyHome({ locale, articles }: Readonly<{ locale: SiteLocale
   const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
   const models = createBuyingJourney(locale);
   const markets = models.map(model => ({ id: model.market as HomeMarket }));
-  const featured = articles?.[0] ?? getPortfolioRecord(locale, 'seoul-apartment-buying-budget-guide');
+  const featured = articles?.[0] ?? getPortfolioRecord(locale, 'seoul-apartment-buying-budget-guide') ?? getPortfolioRecord(locale, 'seoul-monthly-2026-09');
   const featurePhoto = featured ? homeArticlePhoto(featured) : undefined;
-  const story = getPortfolioRecord(locale, 'tokyo-apartment-buying-budget-guide');
-  const storyPhoto = story ? homeArticlePhoto(story) : undefined;
+  const story = getPortfolioRecord(locale, 'tokyo-apartment-buying-budget-guide') ?? {
+    canonicalHref: `${prefix}/jp/tokyo/explore/`,
+    deck: locale === 'zh-CN' ? '按地区、面积与房龄比较季度成交，找到值得进一步了解的街区。' : 'Explore recorded prices by neighbourhood, size and building age.',
+  };
+  const storyPhoto = 'bodyMarkdown' in story ? homeArticlePhoto(story) : {src: CITY_PHOTOS['jp-tokyo'].src, portrait: true};
+  const creditRecords = articles?.slice(0, 3) ?? ['seoul', 'singapore', 'dubai'].flatMap(city => {
+    const record = getPortfolioRecord(locale, `${city}-monthly-2026-09`);
+    return record ? [record] : [];
+  });
+  const storyCredits = [...new Map([featurePhoto, storyPhoto, ...creditRecords.map(homeArticlePhoto)]
+    .flatMap(photo => photo && 'credit' in photo && photo.credit ? [[photo.src, photo.credit] as const] : [])).values()];
   const text = locale === 'ko'
     ? { featured: '지금 읽을 이야기', read: '기사 읽기', story: '도쿄에서의 다음 선택', planner: '집값 다음의 숫자까지.', plannerBody: '매입비용부터 매달 드는 돈까지, 내 조건으로 비교해 보세요.', plannerAction: '내 예산 계산하기' }
     : locale === 'zh-CN'
@@ -128,7 +137,7 @@ export function PropertyHome({ locale, articles }: Readonly<{ locale: SiteLocale
         const photo = CITY_PHOTOS[model.market as HomeMarket];
         return <article className={styles.cityCard} key={model.market} data-market-id={model.market}>
           <Link className={styles.cityLink} href={model.exploreHref} data-city-destination={model.city} data-primary-action="explore">
-            <div className={styles.cityPhoto}><Image src={photo.src} alt={photo.caption[locale === 'ko' ? 'ko' : 'en']} fill sizes="(max-width: 760px) 45vw, 23vw" style={{ objectFit: 'cover', objectPosition: photo.position }} /></div>
+            <div className={styles.cityPhoto}><Image src={photo.src} alt={photo.caption[locale === 'ko' ? 'ko' : 'en']} fill sizes="(max-width: 760px) 48px, 70px" style={{ objectFit: 'cover', objectPosition: photo.position }} /></div>
             <div className={styles.cityLabel}><span className={styles.cityNumber}>0{index + 1}</span><h3>{model.name}</h3><span>{model.currency}</span><UiIcon name="arrow-right" /></div>
           </Link>
           <Link className={styles.cityGuide} href={model.guideHref}>{copy.budgetGuide}<UiIcon name="arrow-right" /></Link>
@@ -155,14 +164,14 @@ export function PropertyHome({ locale, articles }: Readonly<{ locale: SiteLocale
     <HomeAnalysis locale={locale} articles={articles} />
 
     <div className={`${styles.section} ${styles.sources}`}>
-      <Link href="/trust/">{copy.methodology} <UiIcon name="arrow-right" /></Link>
+      <div className={styles.sourceLinks}><Link href={`${prefix}/guides/`}>{copy.guides}<UiIcon name="arrow-right" /></Link><Link href="/trust/">{copy.methodology} <UiIcon name="arrow-right" /></Link></div>
       <details className={styles.credits}>
         <summary>{copy.credits}<UiIcon name="chevron-down" /></summary>
         <p>{copy.modifications}</p>
         <ul><li><a href="https://unsplash.com/photos/a-view-of-a-city-at-night-from-a-bridge-E0awymZfM1k" target="_blank" rel="noopener noreferrer">Seoul — Ethan Brooke / Unsplash</a> · <a href="https://unsplash.com/license">Unsplash License</a></li>{markets.map(({ id }) => {
           const photo = CITY_PHOTOS[id];
           return <li key={id} data-photo-credit={id}>{copy.cities[id]} — <a href={photo.source} target="_blank" rel="noopener noreferrer">{photo.author} / Unsplash</a> · <a href={photo.licenseHref} target="_blank" rel="noopener noreferrer">{photo.license}</a></li>;
-        })}</ul>
+        })}{storyCredits.map(credit => <li key={credit.source}><a href={credit.source} target="_blank" rel="noopener noreferrer">{credit.author}</a> · <a href={credit.licenseHref} target="_blank" rel="noopener noreferrer">{credit.license}</a></li>)}</ul>
       </details>
     </div>
   </main>;

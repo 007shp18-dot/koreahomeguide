@@ -10,7 +10,10 @@ test('Singapore and Dubai keep filters when switching mobile list and map views'
     await expect(views).toBeVisible();
     await expect(list).toBeVisible();
     await expect(map).toBeHidden();
-    const search = page.getByRole('searchbox').first();
+    const search = page.locator('[data-market-explore-shell]').getByRole('searchbox', {
+      name: market === 'sg/singapore' ? 'Search Singapore projects' : /^Find an area(?: or project)?$/,
+      exact: true,
+    });
     await search.fill('marina');
     await views.getByRole('button', { name: 'Map', exact: true }).click();
     await expect(map).toBeVisible();

@@ -59,8 +59,9 @@
 .scenePhoto figcaption a { color: inherit; text-underline-offset: 3px; }
 
 .hero .scenePhoto { margin-top: 0; }
-.hero .scenePhoto > img { width: 100%; height: auto; max-height: 420px; object-fit: contain; background: var(--surface); }
-.hero .portraitScene > img { max-height: 400px; }
+.hero .scenePhoto > img { width: 100%; height: clamp(220px, 32vw, 400px); object-fit: cover; object-position: center 60%; }
+.hero .portraitScene { max-width: 500px; margin-inline: auto; }
+.hero .portraitScene > img { height: auto; max-height: 440px; object-fit: contain; }
 .scenePhoto figcaption { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
 .photoCredit { min-width: 0; max-width: 100%; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
 .photoCredit summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }

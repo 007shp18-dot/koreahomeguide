@@ -3,16 +3,22 @@ import { expect, test } from '@playwright/test';
 for (const width of [390, 760]) {
   test.describe(`Dubai Explore at ${width}px`, () => {
     test.use({ viewport: { width, height: 844 } });
-    test('puts the map before compact results and preserves area selection', async ({ page }) => {
+    test('switches between the map and compact results and preserves area selection', async ({ page }) => {
       await page.goto('/ae/dubai/explore/');
       const spatial = page.locator('[data-market-shell-region="spatial"]');
       const discovery = page.locator('[data-market-shell-region="discovery"]');
+      const views = page.getByRole('group', { name: 'Explore view', exact: true });
+      await expect(discovery).toBeVisible();
+      await expect(spatial).toBeHidden();
+      await views.getByRole('button', { name: 'Map', exact: true }).click();
       await expect(spatial).toBeVisible();
+      await expect(discovery).toBeHidden();
       const mapBox = await spatial.boundingBox();
-      const resultsBox = await discovery.boundingBox();
       expect(mapBox).not.toBeNull();
+      await views.getByRole('button', { name: 'List', exact: true }).click();
+      await expect(discovery).toBeVisible();
+      const resultsBox = await discovery.boundingBox();
       expect(resultsBox).not.toBeNull();
-      expect(mapBox!.y + mapBox!.height).toBeLessThanOrEqual(resultsBox!.y + 1);
       // The isolated release fixture intentionally withholds Dubai prices.
       // Verify its curated fallback as well as the published evidence path.
       if (await discovery.getByRole('heading', { name: 'Area guide', exact: true }).count()) {
@@ -21,6 +27,10 @@ for (const width of [390, 760]) {
         await expect(firstArea).toHaveAttribute('aria-pressed', 'true');
         await expect(discovery.getByRole('link', { name: 'Official neighbourhood guide' })).toBeVisible();
         await expect(page).toHaveURL(/[?&]area=/);
+        await views.getByRole('button', { name: 'Map', exact: true }).click();
+        await expect(spatial).toBeVisible();
+        await views.getByRole('button', { name: 'List', exact: true }).click();
+        await expect(firstArea).toHaveAttribute('aria-pressed', 'true');
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
         return;
       }
@@ -44,7 +54,11 @@ for (const width of [390, 760]) {
       await first.locator('[data-area-evidence] > summary').click();
       await expect(first.locator('[data-area-evidence]')).toHaveAttribute('open');
       await expect(first.getByText('Median annual rent', { exact: true })).toBeVisible();
+      await views.getByRole('button', { name: 'Map', exact: true }).click();
       await expect(spatial).toBeVisible();
+      await views.getByRole('button', { name: 'List', exact: true }).click();
+      await expect(first.getByRole('button').first()).toHaveAttribute('aria-pressed', 'true');
+      await expect(first.locator('[data-area-evidence]')).toHaveAttribute('open');
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
     });
   });

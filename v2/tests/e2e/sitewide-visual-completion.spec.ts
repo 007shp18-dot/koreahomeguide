@@ -6,13 +6,14 @@ test('completed home, article and discovery layouts render their images without 
   for (const [name, path] of [
     ['home-ko', '/ko/'],
     ['home-en', '/'],
-    ['article', '/news/seoul-apartment-buying-budget-guide/'],
+    ['article', '/guides/seoul-apartment-buying-budget-guide/'],
     ['explore-singapore', '/sg/singapore/explore/'],
     ['guides', '/guides/'],
     ['tools-zh', '/zh-cn/tools/'],
   ]) {
     await page.goto(path!, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('main')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'This route is not available.', exact: true })).toHaveCount(0);
     await page.evaluate(() => document.fonts.ready);
     // Trigger lazy media before checking real image decode, including offscreen article cards.
     for (const img of await page.locator('main img').filter({visible:true}).all()) {

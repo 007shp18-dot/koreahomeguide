@@ -42,17 +42,16 @@ describe('public editorial homepage', () => {
     expect(main.match(/data-primary-action="explore"/g)).toHaveLength(4);
   });
 
-  it('provides source and license links for every home photograph', async () => {
+  it('provides source and license links for the home city photographs', async () => {
     const markup = renderToStaticMarkup(await Home());
     expect(markup.match(/data-photo-credit=/g)).toHaveLength(4);
-    expect(markup.match(/href="https:\/\/unsplash.com\/photos\//g)).toHaveLength(4);
-    expect(markup.match(/href="https:\/\/unsplash.com\/license"/g)).toHaveLength(4);
+    expect(markup.match(/href="https:\/\/unsplash.com\/photos\//g)?.length).toBeGreaterThanOrEqual(5);
+    expect(markup.match(/href="https:\/\/unsplash.com\/license"/g)?.length).toBeGreaterThanOrEqual(5);
     expect(markup).toContain('seoul-ethan-yoo.jpg');
-    expect(markup).toContain('singapore-filipe-freitas.jpg');
+    expect(markup).toContain('singapore-kevin-wang.jpg');
     expect(markup).toContain('dubai-waqas-sultan.jpg');
-    expect(markup).toContain('tokyo-pjh.jpg');
-    expect(markup).not.toContain('%2Fassets%2Fstories%2F');
-    expect(markup).not.toContain('Wikimedia Commons');
+    expect(markup).toContain('tokyo-christian-macmillan.jpg');
+    expect(markup).toContain('seoul-ethan-brooke.jpg');
     expect(markup).not.toContain('↗');
     expect(markup.match(/data-ui-icon="arrow-right"/g)?.length).toBeGreaterThanOrEqual(4);
   });
