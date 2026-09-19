@@ -29,18 +29,26 @@ for (const edition of [
   });
 }
 
-test('Korean guide directory separates practical reference from budget analysis', async ({ page }, testInfo) => {
+test('Korean guide directory opens the budget guide for the selected city', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/ko/guides/');
   const main = page.locator('main');
   await expect(main.getByRole('heading', { name: '매수·임대차 가이드', exact: true })).toBeVisible();
   await expect(main.getByRole('link', { name: '가이드 보기', exact: true })).toHaveCount(0);
-  await expect(main.locator('a[href*="buying-budget-guide"]')).toHaveCount(0);
+  const budgetGuide = main.locator('a[href*="buying-budget-guide"]');
+  await expect(budgetGuide).toHaveCount(1);
+  await expect(budgetGuide).toHaveAttribute('href', '/ko/guides/seoul-apartment-buying-budget-guide/');
   await main.getByRole('navigation', { name: '가이드 도시' }).getByRole('link', { name: '싱가포르', exact: true }).click();
+  await expect(page).toHaveURL(/\/ko\/guides\/\?market=singapore$/);
   await expect(main.getByRole('heading', { name: '싱가포르 콘도 가격과 매수 비용' })).toBeVisible();
+  await expect(budgetGuide).toHaveCount(1);
+  await expect(budgetGuide).toHaveAttribute('href', '/ko/guides/singapore-condo-buying-budget-guide/');
   await expect(main.locator('a[href*="korea-rental-contract-checklist"]')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await testInfo.attach('korean-guides-phone', { body: await page.screenshot(), contentType: 'image/png' });
+  await budgetGuide.click();
+  await expect(page).toHaveURL(/\/ko\/guides\/singapore-condo-buying-budget-guide\/$/);
+  await expect(page.getByRole('navigation', { name: '현재 위치', exact: true }).getByRole('link', { name: '가이드', exact: true })).toHaveAttribute('href', '/ko/guides/?market=singapore');
 });
 
 for (const city of ['seoul', 'singapore', 'dubai', 'tokyo']) {
