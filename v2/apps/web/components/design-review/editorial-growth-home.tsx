@@ -102,7 +102,7 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
           <h1>{copy.title}<span>{copy.titleEnd}</span></h1>
           <p className={styles.lead}>{copy.lead}</p>
           <div data-home-search="true"><HomeSearch locale={locale} /></div>
-          <nav className={styles.heroCities} aria-label={copy.markets}>{models.map(model => <Link key={model.city} href={model.exploreHref}>{copy.cities[model.market as HomeMarket]} <span aria-hidden="true">↗</span></Link>)}</nav>
+          <nav className={styles.heroCities} aria-label={copy.markets}>{models.map(model => <Link key={model.city} href={model.exploreHref}>{copy.cities[model.market as HomeMarket]} <span aria-hidden="true"><UiIcon name="arrow-right" /></span></Link>)}</nav>
         </div>
         <aside className={styles.heroNote}><UiIcon name="globe"/><strong>{locale === 'ko' ? '네 도시, 하나의 출발점' : locale === 'zh-CN' ? '四座城市，从这里出发' : 'Four cities. One starting point.'}</strong><span>{locale === 'ko' ? '실거래 · 집계 기간 · 근거 자료' : locale === 'zh-CN' ? '真实成交 · 统计时期 · 资料来源' : 'Recorded prices · Stated periods · Sources'}</span></aside>
       </div>
