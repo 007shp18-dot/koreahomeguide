@@ -1,0 +1,67 @@
+name: SignedPrice visual fidelity
+on:
+  push:
+    branches: [design/visual-fidelity-20260919]
+permissions:
+  contents: read
+concurrency:
+  group: visual-fidelity-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: v2
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Package tracked presentation source and existing home photos
+        working-directory: .
+        run: |
+          python3 - <<'PY'
+          import pathlib, subprocess, tarfile
+          names = subprocess.check_output(['git','ls-files','-z']).decode().split('\0')
+          with tarfile.open('/tmp/visual-source.tar.gz','w:gz') as archive:
+              for name in names:
+                  if not name or not name.startswith(('v2/','docs/','.github/')):
+                      continue
+                  path=pathlib.Path(name)
+                  if not path.is_file():
+                      continue
+                  code = '/public/' not in name and '/data/' not in name and '-snapshots/' not in name and path.suffix.lower() in {'.ts','.tsx','.css','.js','.jsx','.json','.md','.mjs','.mts','.yml','.yaml'}
+                  photo = name.startswith('v2/apps/web/public/assets/home/')
+                  if code or photo:
+                      archive.add(path,arcname=name,recursive=False)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: visual-source
+          path: /tmp/visual-source.tar.gz
+          retention-days: 3
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: v2/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Retain the installed Next.js guide
+        run: |
+          node -e "const fs=require('node:fs'),p=require('node:path');const root=p.join(p.dirname(require.resolve('next/package.json',{paths:['./apps/web']})),'dist/docs');if(fs.existsSync(root))fs.cpSync(root,'visual-framework-docs',{recursive:true});"
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Check photographic layout
+        run: pnpm exec playwright test visual-fidelity.spec.ts --project=desktop-chromium --project=mobile-chromium --workers=2
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-results
+          path: |
+            v2/test-results
+            v2/playwright-report
+            v2/visual-framework-docs
+          retention-days: 7
