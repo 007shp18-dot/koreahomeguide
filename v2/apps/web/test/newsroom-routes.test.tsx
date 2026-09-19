@@ -141,16 +141,17 @@ describe('public Newsroom routes', () => {
     expect(items.every(item => item.city === 'seoul')).toBe(true);
   });
 
-  it('shows article provenance and at most three first-viewport takeaways', () => {
+  it('shows author, publication dates and source provenance without reviewer internals', () => {
     const html = renderToStaticMarkup(<NewsroomArticle article={article} />);
 
     for (const value of [
-      'Data Story', 'Seoul', article.title, article.deck, 'Publisher', 'SignedPrice', 'Published', 'Updated', 'Sources',
+      'Data Story', 'Seoul', article.title, article.deck, article.authorName, 'Published', 'Updated', 'Sources',
     ]) expect(html).toContain(value);
     expect(html).not.toContain('Reviewer');
     expect(html).not.toContain(article.reviewedBy!);
-    expect(html).not.toContain(article.authorName);
-    expect(html).not.toContain('Checked');
+    expect(html).toContain(article.authorName);
+    expect(html).toContain('Latest source check');
+    expect(html).toContain('Checked');
     expect(html).toContain(article.publishedAt.slice(0, 10));
     expect(html).toContain(article.updatedAt.slice(0, 10));
     expect(html).not.toContain('data-article-takeaway=');

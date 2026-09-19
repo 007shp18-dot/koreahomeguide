@@ -22,7 +22,7 @@ export function SeoulOverview({ locale = 'en' }: { locale?: 'en' | 'ko' | 'zh-CN
     ...(sale ? [{ label: locale==='zh-CN' ? '买卖合同' : ko ? '매매 계약' : 'Sale contracts', value: sale.stats.eligibleRecordCount.toLocaleString(), detail: sale.period.replace('/', '–') }] : []),
     ...(rent ? [{ label: locale==='zh-CN' ? '租赁合同' : ko ? '전세·월세 계약' : 'Rental contracts', value: rent.stats.eligibleRecordCount.toLocaleString(), detail: rent.period.replace('/', '–') }] : []),
     ...(districts.size ? [{ label: locale==='zh-CN' ? '首尔各区' : ko ? '서울 자치구' : 'Seoul districts', value: String(districts.size), detail: ko ? '구 → 동 → 단지' : 'District → neighbourhood → building' }] : []),
-    ...(updated ? [{ label: locale==='zh-CN' ? '资料更新' : ko ? '자료 갱신' : 'Data updated', value: updated.slice(0, 10), detail: ko ? '국토교통부 신고 자료 기준' : 'Source: MOLIT reported contracts' }] : []),
+    ...(updated ? [{ label: locale==='zh-CN' ? '最近公开数据生成' : ko ? '최근 공개 자료 생성' : 'Latest snapshot built', value: new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(updated)), detail: locale==='zh-CN' ? '合同期间分别显示' : ko ? '계약 기간은 항목별로 표시' : 'Contract periods shown separately' }] : []),
   ];
   return <div id="top">
     <SiteHeader copy={ko ? KOREAN_SITE_HEADER : { ...homepageCopy.header, marketLabel: 'Seoul', links: [{ label: 'Seoul', href: '/kr/seoul/', isCurrent: true }] }} />
@@ -31,6 +31,7 @@ export function SeoulOverview({ locale = 'en' }: { locale?: 'en' | 'ko' | 'zh-CN
         media={<MarketRepresentativePhoto photo={ko ? { ...MARKET_PHOTOS.seoul, alt: '남산을 배경으로 한 서울 아파트 전경' } : MARKET_PHOTOS.seoul} eager context="city" locale={locale} />}
         facts={summaries} available={!!sale || !!rent} actions={actions}
         notes={<><p>{ko ? '매매와 전세·월세는 각각 표시된 기간으로 따로 집계합니다. 신고된 계약 내역이며, 현재 나온 매물이 아닙니다. 신고 지연이나 정정으로 수치가 달라질 수 있습니다.' : 'Sale and rental samples are counted separately for their stated periods. Reported transactions are not current listings and may change after reporting delays or corrections.'}</p>
+          <p>{locale==='zh-CN' ? '公开统计使用已结束月份的资料。每日采集的记录经核验并发布后才会反映在此处。' : ko ? '공개 통계는 완료된 월을 기준으로 합니다. 매일 수집한 계약은 검증과 공개를 거친 뒤 이 화면에 반영됩니다.' : 'Published statistics use completed months. Daily collected contracts appear here after validation and publication.'}</p>
           <p><a href="https://rt.molit.go.kr/">{ko ? '국토교통부 실거래가 공개시스템' : 'MOLIT reported contracts'}</a></p></>} />
     </main>
     <PublicBreadcrumbJsonLd items={[{ name: ko ? '홈' : 'Home', path: '/' }, { name: locale==='zh-CN' ? '首尔' : ko ? '서울' : 'Seoul', path: `${prefix}/kr/seoul/` }]} />

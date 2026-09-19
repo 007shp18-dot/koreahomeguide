@@ -102,3 +102,17 @@ test('Dubai recent places follow real selections, reopen their filters and clear
   const journal = await page.evaluate(() => JSON.parse(localStorage.getItem('signedprice_discovery_journal_v1') ?? '{}'));
   expect(journal.recent).toEqual([]);
 });
+
+test('removing one Dubai condition preserves other filters and reset restores defaults', async ({ page }) => {
+  await page.goto('/ae/dubai/explore/?q=Marina&housing=villa&budgetMax=2500000');
+  const filters = page.getByRole('navigation', { name: 'Applied filters', exact: true });
+  await filters.getByRole('button', { name: 'Remove filter: Marina', exact: true }).click();
+  await expect(page).toHaveURL(url => !url.searchParams.has('q')
+    && url.searchParams.get('housing') === 'villa' && url.searchParams.get('budgetMax') === '2500000');
+  await expect(page.getByRole('combobox', { name: 'Home type', exact: true })).toHaveValue('villa');
+  await filters.getByRole('button', { name: 'Clear filters', exact: true }).click();
+  await expect(filters).toHaveCount(0);
+  await expect(page.getByRole('combobox', { name: 'Home type', exact: true })).toHaveValue('apartment');
+  await expect(page.getByRole('combobox', { name: 'Maximum median price', exact: true })).toHaveValue('');
+  await expect(page).toHaveURL(url => !url.searchParams.has('q') && !url.searchParams.has('budgetMax') && !url.searchParams.has('page'));
+});

@@ -35,11 +35,11 @@ describe('signedprice public editorial homepage', () => {
 
   it('gives each city an explorer and buying guide without repeating article feeds', async () => {
     const markup = renderToStaticMarkup(await Home());
-    expect(markup.match(/data-contextual-action=/g)).toHaveLength(4);
-    expect(markup.match(/data-editorial-content-id=/g)).toHaveLength(4);
+    expect(markup.match(/data-market-id=/g)).toHaveLength(4);
+    expect(markup.match(/data-editorial-content-id=/g)).toHaveLength(3);
     expect(markup).not.toMatch(/data-what-changed-item|data-lead-data-story|data-home-guide|three-market-home-title/);
     for (const city of ['kr-seoul', 'sg-singapore', 'ae-dubai', 'jp-tokyo']) {
-      const card = markup.match(new RegExp('<li[^>]*data-contextual-action="' + city + '"[^>]*>([\\s\\S]*?)</li>'))?.[1] ?? '';
+      const card = markup.match(new RegExp('<article[^>]*data-market-id="' + city + '"[^>]*>([\\s\\S]*?)</article>'))?.[1] ?? '';
       expect(card.match(/<a /g)).toHaveLength(2);
       expect(card.match(/data-primary-action="explore"/g)).toHaveLength(1);
       expect(card).toMatch(city === 'jp-tokyo' ? /href="\/guides\/tokyo-apartment-buying-budget-guide\/?"/ : /href="\/guides\/[^"]*buying-budget-guide\/?"/);

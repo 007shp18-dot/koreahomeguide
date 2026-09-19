@@ -22,7 +22,7 @@ describe('signedprice homepage copy', () => {
   it('leads with city discovery and links to separate functional pages', async () => {
     const markup = renderToStaticMarkup(await Home());
     const markets = markup.indexOf('data-home-region="markets"');
-    const directory = markup.indexOf('aria-label="Take a closer look"');
+    const directory = markup.indexOf('data-home-region="analysis"');
     expect(markets).toBeGreaterThan(0);
     expect(directory).toBeGreaterThan(markets);
     for (const href of ['/tools', '/news', '/guides']) expect(markup).toContain(`href="${href}"`);
@@ -111,7 +111,7 @@ describe('signedprice homepage copy', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('href="/trust">Data &amp; sources</a>');
-    expect(markup).toContain('aria-label="Take a closer look"');
+    expect(markup).toContain('data-home-region="analysis"');
     expect(markup).not.toMatch(/₩0|0 contracts/);
   });
 
@@ -141,11 +141,11 @@ describe('signedprice homepage copy', () => {
     vi.unstubAllEnvs();
   });
 
-  it('presents all four cities before the section directory', async () => {
+  it('presents all four cities before the analysis feed', async () => {
     const markup = renderToStaticMarkup(await Home());
     const globalPromise = markup.indexOf('<h1');
     const marketTabs = markup.indexOf('data-home-region="markets"');
-    const editorial = markup.indexOf('aria-label="Take a closer look"');
+    const editorial = markup.indexOf('data-home-region="analysis"');
 
     expect(globalPromise).toBeGreaterThanOrEqual(0);
     expect(marketTabs).toBeGreaterThan(globalPromise);

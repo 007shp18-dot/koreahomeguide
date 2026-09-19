@@ -77,13 +77,16 @@ export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric
     <div className={styles.breadcrumb}>{t(breadcrumb)}</div>
     {summary ? <>
       <div id="detail-overview">{summary}</div>
-      {media ? <div className={styles.summaryMedia} data-detail-media="true">{t(media)}</div> : null}
     </> : <header className={styles.identity} data-has-media={media ? "true" : "false"}><div>{t(identity)}</div>{media ? <div className={styles.heroMedia}>{t(media)}</div> : null}</header>}
     <nav className={styles.detailTabs} aria-label={t("Detail sections")}>{(sections ?? [
       { id: 'detail-overview', label: 'Overview' },
       { id: 'detail-evidence', label: 'Transactions' },
       { id: 'detail-source', label: 'Source' },
     ]).map(section => <a key={section.id} href={`#${section.id}`}>{t(section.label)}</a>)}</nav>
+    {summary && media ? <details className={styles.mediaDisclosure}>
+      <summary>{locale === 'ko' ? '사진 및 위치 맥락' : locale === 'zh-CN' ? '照片与位置背景' : 'Photos and location context'}</summary>
+      <div className={styles.summaryMedia} data-detail-media="true">{t(media)}</div>
+    </details> : null}
     {metric ? <section className={styles.detailSummary} id={summary ? undefined : "detail-overview"}><div>{t(metric)}</div></section> : null}
     <div className={styles.detailGrid}>
       <div className={styles.detailMain}>

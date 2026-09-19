@@ -14,6 +14,8 @@ export function isInsightReference(slug: string): boolean {
 // Stored profiles use the data-story route but belong with neighborhood stories.
 // Curate their topic explicitly; titles and author names are not reliable types.
 const NEIGHBORHOOD_EDITORIAL_SLUGS: readonly string[] = [
+  'singapore-little-india-tekka-campbell-lane',
+  'dubai-jaddaf-waterfront-jameel-arts-centre',
   'dubai-without-a-car-metro-last-mile',
   'singapore-everton-park-blair-plain-afternoon',
   'seoul-euljiro-read-the-workshop-signs',
@@ -29,7 +31,7 @@ const NEIGHBORHOOD_EDITORIAL_SLUGS: readonly string[] = [
 ];
 
 export function isNeighborhoodEditorial(slug: string): boolean {
-  return NEIGHBORHOOD_EDITORIAL_SLUGS.includes(slug);
+  return NEIGHBORHOOD_EDITORIAL_SLUGS.includes(slug.replace(/-(?:ko|en|zh-cn)$/u, ''));
 }
 
 export const MONTHLY_REPORT_REFERENCES: Readonly<Record<string, readonly string[]>> = {};

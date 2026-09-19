@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, it } from 'vitest';
 import { CollectionPanel } from '../components/evidence-admin/collection-panel';
 import type { CollectionStatus } from '../lib/data-operations/repository.server';
+import type { MarketCollectionStatus } from '../lib/data-operations/market-status.server';
 const source: CollectionStatus = {sourceId:'test',name:'Official fees',market:'singapore',category:'fees',url:'https://example.com/fees',mode:'page-monitor',intervalDays:7,limitation:'Review conditions',lastSuccessAt:'2026-09-09T00:00:00Z',lastAttemptAt:'2026-09-10T00:00:00Z',nextDueAt:'2026-09-10T02:00:00Z',lastPublishedAt:null,consecutiveFailures:2,lastError:'http_503',anomaly:'content_size_drop_over_50_percent',newCount:1,changedCount:0,pendingCount:3,latestSnapshotId:null,probe:null,pendingCandidateCount:0,recordCount:0};
 it('distinguishes successful collection from publication and exposes failures and pending review', () => {
  const html=renderToStaticMarkup(<CollectionPanel initialData={{sources:[source],publication:'review required'}}/>);
@@ -21,4 +22,12 @@ it('shows OneMap candidate and publication counts without treating candidates as
  expect(html).toContain('위치 후보 100건 · 위치 검토 대기 14건');
  expect(html).toContain('공식 주소 API');expect(html).not.toContain('수집 이력');
  expect(html).toContain('마지막 공개');expect(html).toContain('2026-09-10 02:00:00 UTC');
+});
+it('shows successful Singapore private-market jobs in the Singapore collection overview', () => {
+ const market:MarketCollectionStatus={job:'sg-private-sale',enabled:true,state:'succeeded',lastAttemptAt:'2026-09-19T02:10:41Z',lastSuccessAt:'2026-09-19T02:10:54Z',sourceAsOf:'2026-09-19T02:10:41Z',errorCode:null,received:2017,inserted:276,updated:0,unchanged:1741,unlinked:0,consecutiveFailures:0,anomaly:null};
+ const html=renderToStaticMarkup(<CollectionPanel initialData={{sources:[],markets:[market,{...market,job:'sg-private-rent'}],publication:'review required'}}/>);
+ expect(html).toContain('2 / 2 작업 성공');
+ expect(html).toContain('가장 최근 성공 2026-09-19 02:10 UTC');
+ expect(html).toContain('싱가포르 매매');
+ expect(html).toContain('싱가포르 임대');
 });

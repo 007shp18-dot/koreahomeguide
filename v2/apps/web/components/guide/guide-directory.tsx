@@ -9,7 +9,7 @@ export function GuideDirectory({ locale = 'en', market = 'all' }: Readonly<{ loc
   const ko = locale === 'ko';
   const base = ko ? '/ko' : '';
   const entries = guideDirectory(locale, market);
-  const cities = { all: ko ? '전체' : 'All cities', seoul: ko ? '서울' : 'Seoul', tokyo: ko ? '도쿄' : 'Tokyo', singapore: ko ? '싱가포르' : 'Singapore', dubai: ko ? '두바이' : 'Dubai' };
+  const cities = { all: ko ? '전체' : 'All cities', seoul: ko ? '서울' : 'Seoul', singapore: ko ? '싱가포르' : 'Singapore', dubai: ko ? '두바이' : 'Dubai', tokyo: ko ? '도쿄' : 'Tokyo' };
   const groups = [
     { id: 'buy', title: ko ? '주택 매수' : 'Buying a home', description: ko ? '매수 자격부터 비용과 계약 절차까지.' : 'Eligibility, costs and the steps to ownership.' },
     { id: 'rent', title: ko ? '한국에서 집 구하기' : 'Renting in Korea', description: ko ? '전세·월세 선택부터 보증금과 입주 준비까지.' : 'From choosing a rental to paying the deposit and moving in.' },

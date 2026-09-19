@@ -3757,7 +3757,7 @@ h1 {
 }
 body { background: var(--canvas); }
 .site-header { background: rgb(255 255 255 / 97%); border-bottom: 1px solid var(--line); box-shadow: none; }
-.site-header__inner { max-width: 1360px; min-height: 76px; gap: 32px; padding-inline: 32px; }
+.site-header__inner { max-width: 1360px; min-height: 68px; gap: 32px; padding-inline: 32px; }
 .site-header__links { gap: 24px; }
 .site-header__product-link { font-size: 14px; font-weight: 550; min-height: 48px; letter-spacing: -.01em; }
 .site-header__product-link[aria-current='page'] { color: var(--accent); }

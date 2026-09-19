@@ -3,7 +3,7 @@ import type { MarketCollectionStatus } from './market-status.server';
 
 export const COLLECTION_CITIES = [
   {id:'seoul',name:'서울',prefix:'kr-seoul'},
-  {id:'singapore',name:'싱가포르',prefix:'sg-singapore'},
+  {id:'singapore',name:'싱가포르',prefix:'sg-'},
   {id:'dubai',name:'두바이',prefix:'ae-dubai'},
   {id:'tokyo',name:'도쿄',prefix:'jp-tokyo'},
 ] as const;

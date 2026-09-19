@@ -780,3 +780,27 @@
 .sources > summary { cursor: pointer; min-height: 44px; padding-block: 12px; font-size: 14px; line-height: 1.5; }
 .sources > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .sources, .sources li, .relatedAction, .relatedAction a { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+
+/* Article navigation stays beside the reading column on wide screens. */
+.standardArticle > .readingLayout { max-width: 1040px; }
+.readingLayout { display: grid; grid-template-columns: minmax(0, 700px); justify-content: center; gap: 28px; margin-top: 20px; }
+.readingColumn { min-width: 0; width: 100%; }
+.readingAside { min-width: 0; }
+.sourceBoundary { margin: 0 0 24px; padding: 12px 0; border-block: 1px solid var(--line); font-size: 12px; color: var(--muted); line-height: 1.7; }
+.sourceBoundary a { color: inherit; text-underline-offset: 3px; }
+.readingColumn > article { margin-top: 24px; }
+.readingColumn > article > section:first-child { margin-top: 0; }
+.readingColumn > .sources { margin-top: 40px; scroll-margin-top: 120px; }
+.readingColumn .sources h2 { font-size: 22px; }
+.readingColumn .sources small { grid-column: 2; color: var(--muted); }
+@media (min-width: 1100px) {
+  .withContents { grid-template-columns: 230px minmax(0, 700px); gap: 48px; justify-content: start; }
+  .readingAside { position: sticky; top: 112px; align-self: start; max-height: calc(100vh - 144px); overflow-y: auto; }
+  .standardArticle:has(.withContents) > header { max-width: 700px; margin-left: 278px; }
+}
+@media (max-width: 1099px) {
+  .readingAside { grid-row: 1; }
+}
+@media (max-width: 520px) {
+  .readingColumn .sources small { grid-column: 1; }
+}

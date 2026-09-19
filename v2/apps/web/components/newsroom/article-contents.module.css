@@ -12,3 +12,22 @@
 .contents a > span { display: block; }
 .contents a > .stage { color: var(--muted); font-size: 12px; font-weight: 600; margin-bottom: 3px; }
 @media (max-width: 740px) { .contents ol { grid-template-columns: minmax(0, 1fr); } }
+
+.sidebar { margin: 0; }
+.sidebar ol { grid-template-columns: minmax(0, 1fr); }
+.sidebar summary { padding-block: 12px; font-size: 14px; }
+.sidebar summary span { display: block; margin-left: 0; font-size: 12px; }
+.sidebar a { font-size: 13px; padding-block: 9px; }
+@media (min-width: 1100px) {
+  .sidebar { border-bottom: 0; }
+  .sidebar nav { padding-bottom: 0; }
+}
+
+.sidebar { display: none; }
+.sidebarLabel { margin: 0; padding: 14px 0; font-size: 14px; font-weight: 600; }
+.sidebarLabel > span { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; font-weight: 400; }
+.mobileContents { margin-bottom: 0; }
+@media (min-width: 1100px) {
+  .sidebar { display: block; }
+  .mobileContents { display: none; }
+}

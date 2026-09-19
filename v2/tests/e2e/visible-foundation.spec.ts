@@ -102,11 +102,11 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: /What can your budget buy\?/,
+      name: /Find your place\.\s*Know its price\./,
     }),
   ).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Seoul', exact: true }),
+    page.getByRole('search').getByRole('combobox'),
   ).toBeVisible();
 
   await (await openPrimaryNavigation(page)).getByRole('link', { name: 'Explore' }).click();
@@ -214,17 +214,17 @@ for (const route of publicRoutes) {
 test('desktop exposes published analysis and the city destinations', async ({page}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1, name: /What can your budget buy\?/ })).toBeInViewport();
-  await expect(page.locator('[data-buying-city]')).toHaveCount(4);
-  await expect(page.locator('[data-buying-results]')).toHaveCount(0);
+  await expect(page.getByRole('heading', { level: 1, name: /Find your place\.\s*Know its price\./ })).toBeInViewport();
+  await expect(page.locator('[data-city-destination]')).toHaveCount(4);
+  await expect(page.getByRole('search').getByRole('searchbox')).toBeVisible();
   const markets = page.locator('[data-home-region="markets"]');
-  await expect(markets).toHaveAttribute('aria-labelledby', 'buying-city-title');
-  await page.getByRole('heading', { name: 'What the transactions tell us' }).scrollIntoViewIfNeeded();
-  await expect(page.getByRole('heading', { name: 'What the transactions tell us' })).toBeInViewport();
+  await expect(markets).toHaveAttribute('aria-labelledby', 'home-cities-title');
+  await page.getByRole('heading', { name: 'Latest analysis' }).scrollIntoViewIfNeeded();
+  await expect(page.getByRole('heading', { name: 'Latest analysis' })).toBeInViewport();
   await markets.scrollIntoViewIfNeeded();
   await expect(markets).toBeInViewport();
   await expect(markets.getByRole('navigation')).toHaveCount(0);
-  await expect(markets.locator('[data-contextual-action]')).toHaveCount(4);
+  await expect(markets.locator('article')).toHaveCount(4);
   await expect(markets.locator('[data-primary-action="explore"]')).toHaveCount(4);
 });
 

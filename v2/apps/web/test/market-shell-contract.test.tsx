@@ -42,6 +42,24 @@ describe('shared market composition', () => {
     expect(html.indexOf('Reported contracts')).toBeLessThan(html.indexOf('Sources'));
   });
 
+  it.each([
+    ['en', 'Photos and location context'],
+    ['ko', '사진 및 위치 맥락'],
+    ['zh-CN', '照片与位置背景'],
+  ] as const)('keeps %s source imagery available in a closed disclosure after section navigation', (locale, label) => {
+    const html = renderToStaticMarkup(<MarketDetailShell locale={locale}
+      breadcrumb={<nav>Explore / Building</nav>}
+      summary={<h1>Evidence Tower</h1>}
+      media={<figure><figcaption>Area context only</figcaption></figure>}
+      evidence={<p>Reported contracts</p>} rail={<aside>Sources</aside>} />);
+    expect(html).toContain(`<summary>${label}</summary>`);
+    expect(html).toMatch(/<details[^>]*><summary>/);
+    expect(html).not.toMatch(/<details[^>]*open/);
+    expect(html.indexOf('href="#detail-evidence"')).toBeLessThan(html.indexOf(label));
+    expect(html).toContain('Area context only');
+    expect(html).toContain('Reported contracts');
+  });
+
   it('owns archive geometry and mobile stacking in one stylesheet', () => {
     const css = readFileSync(new URL('../components/market-ui/market-shell.module.css', import.meta.url), 'utf8');
     const overviewCss = readFileSync(new URL('../components/market-dashboard.module.css', import.meta.url), 'utf8');

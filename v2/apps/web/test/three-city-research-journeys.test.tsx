@@ -39,9 +39,9 @@ describe('three-city research journeys', () => {
   it('routes homepage readers from curated analysis to the dedicated insights page', async () => {
     vi.stubEnv('DATABASE_URL', '');
     const markup = renderToStaticMarkup(await Home());
-    const start = markup.indexOf('aria-label="Take a closer look"');
+    const start = markup.indexOf('data-home-region="analysis"');
     expect(start).toBeGreaterThan(0);
-    const section = markup.slice(start, markup.indexOf('</nav>', start));
+    const section = markup.slice(start, markup.indexOf('</section>', start));
     expect(section).toContain('href="/news"');
     expect(markup).toContain('data-home-region="analysis"');
   });
