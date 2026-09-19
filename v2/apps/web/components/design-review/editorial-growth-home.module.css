@@ -1,6 +1,6 @@
 .homePage { color:var(--ink); background:#fff; padding-bottom:24px; --home-ink:var(--ink); --home-muted:var(--muted); --home-line:var(--line); }
 .section { width:min(1248px,calc(100% - 64px)); margin-inline:auto; }
-.hero { position:relative; isolation:isolate; overflow:hidden; min-height:540px; border-radius:0 0 24px 24px; margin-bottom:48px; background:#edf5ff; }
+.hero { position:relative; isolation:isolate; overflow:hidden; min-height:540px; border-radius:0 0 16px 16px; margin-bottom:48px; background:#edf5ff; }
 .heroBackdrop { position:absolute; inset:0; z-index:-2; }
 .heroBackdrop::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,#f8fbff 2%,rgb(248 251 255 / 96%) 26%,rgb(245 250 255 / 82%) 43%,rgb(237 246 255 / 12%) 72%),linear-gradient(0deg,rgb(240 247 255 / 14%),transparent 55%); }
 .heroInner { display:flex; align-items:center; justify-content:space-between; gap:40px; min-height:540px; padding-block:54px; }

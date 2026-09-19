@@ -1,0 +1,5 @@
+.heading { margin:14px 0 18px; }
+.heading h1 { margin:0; }
+.heading > p { margin:6px 0 0; color:var(--accent); font-size:clamp(36px,3.6vw,50px); line-height:1.18; font-weight:750; letter-spacing:-.025em; }
+@media(max-width:700px) { .heading > p { font-size:35px; } }
+:global([lang='zh-CN']) .heading > p { letter-spacing:normal; }

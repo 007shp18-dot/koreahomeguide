@@ -19,11 +19,11 @@ test('public refresh renders the real localized city search and four licensed ci
   await page.goto('/ko/', { waitUntil: 'domcontentloaded' });
   await publicPageReady(page);
   await expect(page.locator('[data-home-search] form[role="search"]')).toBeVisible();
-  await expect(page.locator('[data-home-city-mosaic] img')).toHaveCount(4);
+  await expect(page.locator('[data-city-destination] img')).toHaveCount(4);
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
   await expect(page.locator('[data-buying-city]')).toHaveCount(4);
   await expect(page.locator('[data-home-region="analysis"] article')).toHaveCount(3);
-  await expect.poll(() => page.locator('[data-home-city-mosaic] img').evaluateAll(images => images.every(image => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
+  await expect.poll(() => page.locator('[data-city-destination] img').evaluateAll(images => images.every(image => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
   await noOverflow(page);
   await testInfo.attach('home-ko', { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
 });
