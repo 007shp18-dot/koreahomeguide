@@ -1,137 +1,42 @@
-/* SignedPrice public interface. Imported only by public locale roots.
-   Stable semantic hooks preserve CSS-module boundaries and native table/modal behavior. */
-body[data-interface-release="2026-09"] {
-  --canvas: #ffffff; --surface: #f5f7fb; --surface-strong: #ffffff;
-  --ink: #13223c; --muted: #586981; --subtle: #8391a4;
-  --accent: #2563d8; --accent-soft: #edf4ff; --soft-blue: #f2f7ff;
-  --line: #e0e7f0; --divider: #ced8e6; --control-selected-border: #b8cdef;
-  --radius-card: 14px; --radius-panel: 16px; --radius-control: 8px;
-  --control-height: 48px; --control-min: 44px;
-  --shadow-sm: 0 3px 12px rgb(26 56 103 / 4%);
-  --shadow-md: 0 12px 32px rgb(26 56 103 / 8%);
-  background: var(--canvas); color: var(--ink);
-  -webkit-font-smoothing: antialiased;
+/* Public design tokens only. Archived /design-review surfaces remain unchanged. */
+body[data-interface-release]:not(:has([data-review-surface])) {
+  --canvas:#fff; --surface:#f5f7fb; --surface-strong:#fff;
+  --ink:#13223c; --muted:#586981; --subtle:#8391a4;
+  --accent:#2563d8; --accent-soft:#edf4ff; --soft-blue:#f2f7ff;
+  --line:#e0e7f0; --divider:#ced8e6; --control-selected-border:#b8cdef;
+  --radius-card:14px; --radius-panel:16px; --radius-control:8px;
+  --control-height:48px; --control-min:44px;
+  --shadow-sm:0 3px 12px rgb(26 56 103 / 4%); --shadow-md:0 12px 32px rgb(26 56 103 / 8%);
+  background:var(--canvas); color:var(--ink); -webkit-font-smoothing:antialiased;
 }
-body[data-interface-release] [data-public-editorial-frame] {
-  --review-canvas: #fff; --review-paper: #fff; --review-ink: #13223c;
-  --review-accent: #2563d8; --review-line: #e0e7f0;
-  background: var(--canvas); color: var(--ink);
+body[data-interface-release]:not(:has([data-review-surface])) [data-public-editorial-frame] { --review-canvas:#fff; --review-paper:#fff; --review-ink:#13223c; --review-accent:#2563d8; --review-line:#e0e7f0; background:#fff; color:var(--ink); }
+body[data-interface-release]:not(:has([data-review-surface])) :is(button,a,summary,input,select,textarea):focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; }
+body[data-interface-release]:not(:has([data-review-surface])) main :is(input,select,textarea):not([type='checkbox']):not([type='radio']):not([type='hidden']):not([type='range']) { font-size:16px; font-variant-numeric:tabular-nums; }
+body[data-interface-release]:not(:has([data-review-surface])) :is(a,button) { -webkit-tap-highlight-color:rgb(37 99 216 / 12%); touch-action:manipulation; }
+body[data-interface-release]:not(:has([data-review-surface])) .site-header { background:#fff; border-color:var(--line); }
+body[data-interface-release]:not(:has([data-review-surface])) .site-header__inner { min-height:72px; }
+body[data-interface-release]:not(:has([data-review-surface])) .site-header :is(.brand-wordmark,.brand-wordmark__signed,.brand-wordmark__price) { color:var(--accent); }
+body[data-interface-release]:not(:has([data-review-surface])) .site-header__product-link { font-weight:550; }
+body[data-interface-release]:not(:has([data-review-surface])) .site-header__product-link[aria-current='page'] { color:var(--accent); }
+body[data-interface-release]:not(:has([data-review-surface])) :is(.site-header__context-panel,.site-header__mobile-panel) { box-shadow:var(--shadow-md); }
+body[data-interface-release]:not(:has([data-review-surface])) .explore-page-heading h1 { color:var(--ink); font-weight:700; font-size:clamp(27px,3vw,36px); line-height:1.25; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-explore-price-guide] { background:var(--soft-blue); border-color:var(--line); border-radius:12px; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-market-summary] { background:linear-gradient(120deg,var(--soft-blue),#fff 72%); border-color:var(--line); border-radius:16px; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-detail-order='current-evidence'] > strong { color:var(--accent); font-variant-numeric:tabular-nums; }
+body[data-interface-release]:not(:has([data-review-surface])) :is([data-detail-layout],[data-ranking-frame]) thead th { background:var(--soft-blue); border-color:var(--line); color:var(--muted); }
+body[data-interface-release]:not(:has([data-review-surface])) :is([data-detail-layout],[data-ranking-frame]) tbody tr:hover > :is(th,td) { background:#f7faff; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-detail-layout] table { font-variant-numeric:tabular-nums; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-interface-page='article'] :is(p,li) { line-height:1.78; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-interface-page='article'] blockquote { border-color:var(--control-selected-border); background:var(--soft-blue); }
+body[data-interface-release]:not(:has([data-review-surface])) .data-state-notice { border:1px solid var(--line); border-radius:14px; padding:24px; background:var(--surface); box-shadow:none; }
+body[data-interface-release]:not(:has([data-review-surface])) .data-state-notice h2 { font-size:23px; line-height:1.4; }
+body[data-interface-release]:not(:has([data-review-surface])) .data-state-notice [data-state-action] { min-height:48px; color:var(--accent); }
+body[data-interface-release]:not(:has([data-review-surface])) [data-tokyo-overview] { width:100%; max-width:none; margin:0; padding:0; }
+body[data-interface-release]:not(:has([data-review-surface])) [data-interface-page='article'] [data-market-pulse] { margin-block:28px; }
+@supports(animation-timeline:scroll()) {
+  body[data-interface-release]:not(:has([data-review-surface])):has([data-interface-page='article'])::before { content:''; position:fixed; inset:0 0 auto; height:3px; background:var(--accent); z-index:120; pointer-events:none; transform:scaleX(0); transform-origin:left; animation:signedprice-reading linear both; animation-timeline:scroll(root block); }
 }
-body[data-interface-release] :is(h1,h2,h3) { text-wrap: pretty; }
-body[data-interface-release] :is(button,a,summary,input,select,textarea):focus-visible {
-  outline: 2px solid var(--focus-ring); outline-offset: 3px;
-}
-body[data-interface-release] :is(a,button) { -webkit-tap-highlight-color: rgb(37 99 216 / 12%); }
-body[data-interface-release] main :is(input,select,textarea):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="range"]) {
-  font-size: 16px; font-variant-numeric: tabular-nums;
-}
-body[data-interface-release] main :is(button,summary) { touch-action: manipulation; }
-body[data-interface-release] .site-header { background: #fff; border-color: var(--line); }
-body[data-interface-release] .site-header__inner { min-height: 72px; }
-body[data-interface-release] .site-header :is(.brand-wordmark,.brand-wordmark__signed,.brand-wordmark__price) { color: var(--accent); }
-body[data-interface-release] .site-header__product-link { font-weight: 550; }
-body[data-interface-release] .site-header__product-link[aria-current="page"] { color: var(--accent); }
-body[data-interface-release] :is(.site-header__context-panel,.site-header__mobile-panel) { box-shadow: var(--shadow-md); }
-body[data-interface-release] .site-header__context-panel a { border-radius: var(--radius-control); }
-body[data-interface-release] .site-header__action { min-height: 44px; }
-
-/* Overview: photography introduces a city, without taking over the evidence workspace. */
-body[data-interface-release] [data-market-hero="overview"] {
-  display: grid; grid-template-columns: minmax(0,1.08fr) minmax(0,1fr);
-  min-height: 0; gap: 0; margin-top: 24px; border: 1px solid var(--line);
-  border-radius: 16px; background: var(--surface-strong); box-shadow: var(--shadow-sm);
-  overflow: hidden;
-}
-body[data-interface-release] [data-market-hero="overview"] > div:first-child {
-  display: flex; flex-direction: column; justify-content: center;
-  padding: clamp(24px,3vw,40px); background: linear-gradient(120deg,#f1f6ff,#ffffff);
-  color: var(--ink); min-height: 0;
-}
-body[data-interface-release] [data-market-hero="overview"] h1 {
-  color: var(--ink); max-width: 22ch; font-size: clamp(28px,3.4vw,44px);
-  font-weight: 700; letter-spacing: -.025em; line-height: 1.24; margin: 14px 0;
-}
-body[data-interface-release] [data-market-hero="overview"] > div:first-child > p:last-child { color: var(--muted); font-size: 16px; line-height: 1.65; }
-body[data-interface-release] [data-market-hero="overview"] > div:first-child > div > p { color: var(--accent); }
-body[data-interface-release] [data-market-hero="overview"] [data-market-tier] .status-label { color: var(--ink); background: var(--accent-soft); border-color: var(--control-selected-border); }
-body[data-interface-release] [data-market-hero="overview"] > div:nth-child(2) { min-height: 280px; height: 100%; aspect-ratio: auto; background: var(--surface); }
-body[data-interface-release] [data-market-hero="overview"] > div:nth-child(2) > :is(section,figure,div) { min-height: 280px; height: 100%; }
-body[data-interface-release] [data-market-hero="overview"] > dl { color: var(--ink); background: #fff; }
-
-/* Tokyo uses the same overview composition with its existing direct photo figure. */
-body[data-interface-release] [data-tokyo-overview] { padding-top: 24px; color: var(--ink); }
-body[data-interface-release] [data-tokyo-overview] [data-market-hero] { align-items: stretch; }
-body[data-interface-release] [data-tokyo-overview] [data-market-hero] > figure { min-height: 280px; height: 100%; border-radius: 0; border: 0; display: flex; flex-direction: column; }
-body[data-interface-release] [data-tokyo-overview] [data-market-hero] > figure > div { flex: 1; min-height: 240px; aspect-ratio: auto; }
-body[data-interface-release] [data-tokyo-overview] [data-market-hero] > div > a { align-self: flex-start; min-height: 48px; }
-body[data-interface-release] [data-tokyo-overview] [data-market-hero] > div > p:first-child { color: var(--accent); }
-body[data-interface-release] [data-tokyo-overview] [data-market-hero] > div > p { color: var(--muted); }
-
-/* Discovery and detail: information is visible without decorative banners. */
-body[data-interface-release] .explore-page-heading h1 { color: var(--ink); font-weight: 700; font-size: clamp(27px,3vw,36px); line-height: 1.25; }
-body[data-interface-release] [data-market-explore-shell] .explore-page-heading { width: 100%; }
-body[data-interface-release] [data-research-page-heading] h1 { font-weight: 700; letter-spacing: -.025em; }
-body[data-interface-release] :is([data-singapore-explore-workspace],[data-dubai-explore-workspace],[data-market-explore-shell]) {
-  --surface: #f5f7fb; --surface-strong: #fff; --line: #e0e7f0;
-}
-body[data-interface-release] [data-explore-price-guide] { border-color: var(--line); border-radius: 12px; background: var(--soft-blue); }
-body[data-interface-release] :is([data-ranking-filters],[data-newsroom-filter-bar]) { border-color: var(--line); border-radius: 12px; }
-body[data-interface-release] [data-detail-layout] { --detail-section-size: 1.375rem; color: var(--ink); }
-body[data-interface-release] [data-detail-layout] h1 { font-weight: 700; color: var(--ink); }
-body[data-interface-release] [data-market-summary] { border-color: var(--line); border-radius: 16px; background: linear-gradient(120deg,var(--soft-blue),#fff 72%); }
-body[data-interface-release] [data-detail-layout] [data-detail-order="current-evidence"] > strong { color: var(--accent); font-variant-numeric: tabular-nums; }
-body[data-interface-release] [data-detail-layout] :is([data-detail-order="media"],[data-detail-media]) { border-radius: 14px; }
-body[data-interface-release] :is([data-detail-layout],[data-ranking-frame],[data-project-transactions]) table { font-variant-numeric: tabular-nums; }
-body[data-interface-release] :is([data-detail-layout],[data-ranking-frame],[data-project-transactions]) thead th { color: var(--muted); background: var(--soft-blue); border-color: var(--line); }
-body[data-interface-release] :is([data-detail-layout],[data-ranking-frame]) tbody tr:hover > :is(th,td) { background: #f7faff; }
-body[data-interface-release] :is([data-detail-layout],[data-interface-page]) [id] { scroll-margin-top: 96px; }
-
-/* Reading surfaces, including guide, report, neighbourhood and travel variants. */
-body[data-interface-release] [data-interface-page] { color: var(--ink); }
-body[data-interface-release] [data-interface-page] > header > h1 { font-family: inherit; font-weight: 700; line-height: 1.23; letter-spacing: -.025em; }
-body[data-interface-release] [data-interface-page="article"] :is(p,li) { line-height: 1.78; }
-body[data-interface-release] [data-interface-page="article"] :is(h2,h3) { line-height: 1.4; }
-body[data-interface-release] [data-interface-page="article"] blockquote { border-color: var(--control-selected-border); background: var(--soft-blue); color: var(--ink); }
-body[data-interface-release] [data-article-contents] { border-color: var(--line); border-radius: 12px; background: var(--surface-strong); }
-body[data-interface-release] [data-article-contents] a { min-height: 44px; }
-body[data-interface-release] [data-newsroom-lead] { border-radius: 16px; }
-body[data-interface-release] :is([data-tool-input],[data-tool-result]) { border-color: var(--line); box-shadow: var(--shadow-sm); }
-body[data-interface-release] [data-tool-result] { background: var(--soft-blue); }
-body[data-interface-release] [data-tool-result] :is(dd,strong) { font-variant-numeric: tabular-nums; }
-
-/* Distinct real loading/empty/insufficient/error states remain informative. */
-body[data-interface-release] .data-state-notice { border: 1px solid var(--line); border-radius: 16px; padding: 28px; background: var(--surface); box-shadow: none; }
-body[data-interface-release] .data-state-notice h2 { color: var(--ink); font-size: 23px; line-height: 1.4; }
-body[data-interface-release] .data-state-notice [data-state-cause] { max-width: 65ch; color: var(--muted); }
-body[data-interface-release] .data-state-notice [data-state-action] { min-height: 48px; padding: 12px 18px; border-radius: 8px; color: var(--accent); background: var(--accent-soft); }
-body[data-interface-release] dialog[data-explore-results-panel] { border: 1px solid var(--line); box-shadow: var(--shadow-md); }
-body[data-interface-release] dialog[data-explore-results-panel]::backdrop { background: rgb(15 30 56 / 35%); }
-
-/* A decorative reading indicator progressively enhances capable browsers; no JS or hidden content. */
-@supports (animation-timeline: scroll()) {
-  body[data-interface-release]:has([data-interface-page="article"])::before {
-    content: ""; position: fixed; inset: 0 0 auto; z-index: 120; height: 3px;
-    pointer-events: none; background: var(--accent); transform: scaleX(0); transform-origin: left;
-    animation: signedprice-reading linear both; animation-timeline: scroll(root block);
-  }
-}
-@keyframes signedprice-reading { to { transform: scaleX(1); } }
-@media (max-width: 760px) {
-  body[data-interface-release] { --page-gutter: 16px; }
-  body[data-interface-release] .site-header__inner { min-height: 64px; }
-  body[data-interface-release] [data-market-hero="overview"] { grid-template-columns: minmax(0,1fr); margin-top: 16px; border-radius: 14px; }
-  body[data-interface-release] [data-market-hero="overview"] > div:first-child { padding: 24px; }
-  body[data-interface-release] [data-market-hero="overview"] > div:nth-child(2),
-  body[data-interface-release] [data-market-hero="overview"] > div:nth-child(2) > :is(section,figure,div) { height: 200px; min-height: 200px; }
-  body[data-interface-release] [data-tokyo-overview] [data-market-hero] > figure { min-height: 200px; }
-  body[data-interface-release] [data-tokyo-overview] [data-market-hero] > figure > div { min-height: 180px; }
-  body[data-interface-release] .data-state-notice { padding: 22px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  body[data-interface-release]::before { animation: none; display: none; }
-  body[data-interface-release] :is(a,button,summary) { transition: none; scroll-behavior: auto; }
-}
-@media print {
-  body[data-interface-release]::before { display: none; }
-  body[data-interface-release] { background: #fff; --shadow-sm: none; --shadow-md: none; }
-}
+@keyframes signedprice-reading { to { transform:scaleX(1); } }
+@media(max-width:760px) { body[data-interface-release]:not(:has([data-review-surface])) { --page-gutter:16px; } body[data-interface-release]:not(:has([data-review-surface])) .site-header__inner { min-height:64px; } }
+@media(prefers-reduced-motion:reduce) { body[data-interface-release]::before { display:none; } body[data-interface-release] :is(a,button) { transition:none; } }
+@media print { body[data-interface-release]::before { display:none; } }
